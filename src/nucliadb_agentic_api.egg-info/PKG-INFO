@@ -1,0 +1,179 @@
+Metadata-Version: 2.4
+Name: nucliadb_agentic_api
+Version: 1.0.0
+Summary: NucliaDB Agentic API for Hyperforge
+Author-email: AI Data Team <learning@nuclia.com>
+License-Expression: Apache-2.0
+Project-URL: Progress, https://progress.com
+Project-URL: Github, https://github.com/nuclia/forge
+Project-URL: API Reference, https://docs.rag.progress.cloud
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic
+Requires-Dist: backoff
+Requires-Dist: nats-py
+Requires-Dist: nuclia>=4.9.25
+Requires-Dist: nuclia-models>=0.52.1
+Requires-Dist: nucliadb-models>=6.13.0.post6252
+Requires-Dist: nucliadb-protos
+Requires-Dist: nucliadb-sdk>=6.13.0.post6252
+Requires-Dist: nucliadb-telemetry
+Requires-Dist: nucliadb-utils
+Requires-Dist: hyperforge
+Requires-Dist: pydantic_settings
+Requires-Dist: mcp>=1.26.0
+Requires-Dist: prometheus_client
+Requires-Dist: mrflagly>=0.2.11
+Requires-Dist: aiodns
+Requires-Dist: httpx
+Requires-Dist: jinja2
+Requires-Dist: databases[asyncpg]
+Requires-Dist: sqlalchemy
+Requires-Dist: cryptography
+Requires-Dist: mmh3
+Requires-Dist: psycopg2
+Requires-Dist: tenacity
+Requires-Dist: websockets
+Requires-Dist: redis[hiredis]>=6.4.0
+Requires-Dist: types-redis>=4.6.0.20241004
+Requires-Dist: ruff>=0.15.10
+Requires-Dist: alembic>=1.18.4
+Requires-Dist: fastapi
+
+# NucliaDB Agentic API
+
+The NucliaDB Agentic API package exposes NucliaDB-oriented agentic capabilities
+for Hyperforge, including ASK/search flows and MCP integrations.
+
+## Install
+
+From the workspace root:
+
+```bash
+uv sync
+```
+
+## Run
+
+Start the service:
+
+```bash
+uv run nucliadb-agentic-api
+```
+
+Useful endpoints:
+
+- `/health/ready`
+- `/health/alive`
+- `/metrics`
+
+## Configuration
+
+Runtime configuration is provided through environment variables consumed by
+Pydantic settings. Common settings include:
+
+- `HTTP_HOST` and `HTTP_PORT`
+- `MEMORY_READER_NUCLIADB`, `MEMORY_WRITER_NUCLIADB`, and
+  `MEMORY_SEARCH_NUCLIADB`
+- `MEMORY_APIKEY_NUCLIADB`
+- `VALKEY_URL`
+- `IDP_REGIONAL_GRPC`
+- `LOAD_MODULES`
+
+## Development
+
+Run the package tests from the workspace root:
+
+```bash
+make test
+```
+
+
+# Objective
+Enhance the RAG experience by offering RAO features directly in a KB.
+
+# How?
+The same way we store search configs in the KB, we could store agentic configs, and when calling the `/ask` endpoint we can refer to a given agentic config.
+
+# Scope
+
+The corresponding RAO workflow will be:
+- a Rephrase (optionally)
+- a SmartAgent
+- a Summarize
+
+Possible sources for the SmartAgent:
+- The current KB (possibly several times with different filters)
+- Sync service (using connections defined in the current KB)
+- Google
+- Perplexity
+- MCP
+
+Out of scope
+- Other KBs
+- SQL
+- Snowflake (?)
+- Sitefinity (?)
+
+# Config spec
+
+```json
+{
+  "rephrase": { // optional
+    "ask_to": <filter_expression>, //optional
+    "prompt": <string>, // optional
+    "model": <model>, // optional
+  },
+  "smart_agent": {
+    "mode": <reactive | plan_execute>,
+    "extra_prompt": <string>, // optional
+    "models": { // optional
+      "context_validation": <model>, // optional
+      "planner": <model>, // optional
+      "executor": <model>, // optional
+    },
+    "sources": [<source list>]
+  },
+  "summarize": { // optional
+    "user_prompt": <string>, // optional
+    "system_prompt": <string>, // optional
+    "conversational": <boolean>,
+    "model": <model>, // optional
+    // and citations must be forced to chunk-level
+  }
+}
+```
+
+And sources can be:
+
+```json
+{
+  "type": "nucliadb",
+  "description": <string>,
+  "filter_expression": <filter_expression>, //optional
+}
+
+{
+  "type": "sync",
+  "description": <string>,
+  "connection": <connection_id>
+}
+
+{
+  "type": "google",
+  "description": <string>
+}
+
+{
+  "type": "perplexity",
+  "description": <string>
+}
+
+{
+  "type": "mcp",
+  "description": <string>,
+  <...the MCP driver params>
+}
+````

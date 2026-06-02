@@ -1,0 +1,3 @@
+[console_scripts]
+nucliadb-agentic-api = nucliadb_agentic_api.commands:run
+nucliadb-agentic-api-extract-openapi = nucliadb_agentic_api.commands:extract_openapi
