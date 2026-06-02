@@ -14,6 +14,8 @@ src/nucliadb_agentic_api.egg-info/dependency_links.txt
 src/nucliadb_agentic_api.egg-info/entry_points.txt
 src/nucliadb_agentic_api.egg-info/requires.txt
 src/nucliadb_agentic_api.egg-info/top_level.txt
+src/nucliadb_agentic_api/agentic/__init__.py
+src/nucliadb_agentic_api/agentic/transform.py
 src/nucliadb_agentic_api/ask/__init__.py
 src/nucliadb_agentic_api/ask/audit.py
 src/nucliadb_agentic_api/ask/exceptions.py
@@ -46,6 +48,7 @@ src/nucliadb_agentic_api/db/settings.py
 src/nucliadb_agentic_api/v1/__init__.py
 src/nucliadb_agentic_api/v1/agentic_configs.py
 src/nucliadb_agentic_api/v1/ask.py
+src/nucliadb_agentic_api/v1/ask_websocket.py
 src/nucliadb_agentic_api/v1/mcp_content.py
 src/nucliadb_agentic_api/v1/mcp_nucliadb.py
 src/nucliadb_agentic_api/v1/router.py

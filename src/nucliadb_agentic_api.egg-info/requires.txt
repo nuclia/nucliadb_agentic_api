@@ -9,6 +9,13 @@ nucliadb-sdk>=6.13.0.post6252
 nucliadb-telemetry
 nucliadb-utils
 hyperforge
+hyperforge_mcp
+hyperforge_nucliadb
+hyperforge_rephrase
+hyperforge_smart
+hyperforge_summarize
+hyperforge_google
+hyperforge_perplexity
 pydantic_settings
 mcp>=1.26.0
 prometheus_client

@@ -22,6 +22,13 @@ Requires-Dist: nucliadb-sdk>=6.13.0.post6252
 Requires-Dist: nucliadb-telemetry
 Requires-Dist: nucliadb-utils
 Requires-Dist: hyperforge
+Requires-Dist: hyperforge_mcp
+Requires-Dist: hyperforge_nucliadb
+Requires-Dist: hyperforge_rephrase
+Requires-Dist: hyperforge_smart
+Requires-Dist: hyperforge_summarize
+Requires-Dist: hyperforge_google
+Requires-Dist: hyperforge_perplexity
 Requires-Dist: pydantic_settings
 Requires-Dist: mcp>=1.26.0
 Requires-Dist: prometheus_client

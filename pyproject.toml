@@ -27,6 +27,13 @@ dependencies = [
     "nucliadb-telemetry",
     "nucliadb-utils",
     "hyperforge",
+    "hyperforge_mcp",
+    "hyperforge_nucliadb",
+    "hyperforge_rephrase",
+    "hyperforge_smart",
+    "hyperforge_summarize",
+    "hyperforge_google",
+    "hyperforge_perplexity",
     "pydantic_settings",
     "mcp>=1.26.0",
     "prometheus_client",
@@ -65,3 +72,35 @@ asyncio_mode = "auto"
 [project.scripts]
 nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
 nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
+
+
+[dependency-groups]
+dev = [
+    # Linting
+    "mypy-protobuf>=3.6.0",
+    "mypy",
+    "pre-commit",
+    "ruff",
+    # Testing
+    "aioresponses",
+    "faker>=25.1.0",
+    "jsonschema",
+    "pdbpp>=0.10.3",
+    "pytest-asyncio>=0.23.0",
+    "pytest-benchmark",
+    "pytest-cov",
+    "pytest-docker-fixtures[pg]>=1.4.2",
+    "pytest-lazy-fixtures",
+    "pytest-mock",
+    "pytest-rerunfailures>=11.1.2",
+    "pytest-shard",
+    "pytest-xdist>=3.6.1",
+    "pytest-recording",
+    "pytest>=8.2.2,<9",
+    "requests",
+    "requests-mock>=1.12.1",
+    "types-PyYAML>=6.0.12.20240808",
+    "ty>=0.0.34",
+    "sqlalchemy_utils",
+    "inline_snapshot",
+]

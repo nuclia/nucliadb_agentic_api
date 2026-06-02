@@ -18,14 +18,14 @@ from nucliadb_models.search import ChatModel, RephraseModel
 from nucliadb_protos.utils_pb2 import RelationNode
 from nucliadb_utils.utilities import Utility
 
-from nucliadb_agentic_api.src.nucliadb_agentic_api.ask.predict import (
+from nucliadb_agentic_api.ask.predict import (
     NUCLIA_LEARNING_ID_HEADER,
     PredictEngine,
     RephraseResponse,
     convert_relations,
 )
-from nucliadb_agentic_api.src.nucliadb_agentic_api.ask.predict_models import QueryModel
-from nucliadb_agentic_api.tests.fixtures.utils import global_utility
+from nucliadb_agentic_api.ask.predict_models import QueryModel
+from tests.fixtures.utils import global_utility
 
 DUMMY_RELATION_NODE = [
     RelationNode(value="Ferran", ntype=RelationNode.NodeType.ENTITY, subtype="PERSON"),
