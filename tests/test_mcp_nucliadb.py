@@ -390,7 +390,7 @@ async def test_text_content_audience_includes_assistant():
     ask_mock = AsyncMock(return_value=ask_result_mock)
 
     with patch(
-        "nuclia_arag_api.v1.mcp_nucliadb.ask",
+        "nucliadb_agentic_api.api.v1.mcp_nucliadb.ask",
         new=ask_mock,
     ):
         results = await call_tool(
@@ -427,7 +427,7 @@ async def test_text_content_audience_includes_assistant():
     # --- test call_tool search_documents without search_configuration ---
     ask_mock_no_config = AsyncMock(return_value=ask_result_mock)
     with patch(
-        "nuclia_arag_api.v1.mcp_nucliadb.ask",
+        "nucliadb_agentic_api.api.v1.mcp_nucliadb.ask",
         new=ask_mock_no_config,
     ):
         await call_tool(
@@ -449,7 +449,7 @@ async def test_text_content_audience_includes_assistant():
     # An unrecognised exception from `ask` is wrapped into a ResourceError.
     ask_mock_invalid = AsyncMock(side_effect=Exception("Invalid configuration"))
     with (
-        patch("nuclia_arag_api.v1.mcp_nucliadb.ask", new=ask_mock_invalid),
+        patch("nucliadb_agentic_api.api.v1.mcp_nucliadb.ask", new=ask_mock_invalid),
         pytest.raises(
             ResourceError,
             match="Search failed: Invalid configuration",
@@ -501,7 +501,8 @@ async def test_call_tool_search_documents_known_exceptions():
     for exc, expected_fragment in cases:
         with (
             patch(
-                "nuclia_arag_api.v1.mcp_nucliadb.ask", new=AsyncMock(side_effect=exc)
+                "nucliadb_agentic_api.api.v1.mcp_nucliadb.ask",
+                new=AsyncMock(side_effect=exc),
             ),
             pytest.raises(ResourceError, match=expected_fragment),
         ):

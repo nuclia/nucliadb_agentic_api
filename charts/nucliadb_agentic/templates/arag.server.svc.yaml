@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: arag-server
+  labels:
+    app: arag-server
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  selector:
+    app: arag-server
+  {{- with .Values.server.service.ports }}
+  ports:
+{{ toYaml . | indent 4 }}
+  {{- end }}

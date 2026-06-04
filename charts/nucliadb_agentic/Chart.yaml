@@ -1,0 +1,14 @@
+apiVersion: v2
+description: NucliaDB Agentic API
+name: nucliadb_agentic_api
+version: 99999.99999.99999
+appVersion: 99999.99999.99999
+keywords:
+- stashify
+home: https://progress.com
+icon: https://progress.com/logo.png
+sources:
+- https://github.com/nuclia/nucliadb_agentic_api
+maintainers:
+- name: Nuclia Team
+  email: ramon@nuclia.com

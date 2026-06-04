@@ -1,0 +1,100 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: arag-api
+  labels:
+    app: arag-api
+    metrics: enabled
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  revisionHistoryLimit: {{ .Values.api.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: arag-api
+      release: "{{ .Release.Name }}"
+      heritage: "{{ .Release.Service }}"
+  template:
+    metadata:
+      name: arag-api
+      {{- with .Values.api.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: arag-api
+        metrics: enabled
+        version: "{{ .Values.hash }}"
+        chart: "{{ .Chart.Name }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      {{- with .Values.api.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.api.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.api.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.api.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      serviceAccountName: {{ if kindIs "string" .Values.api.serviceAccount }}{{ .Values.api.serviceAccount }}{{ else }}{{ .Values.api.serviceAccount.name | default "default" }}{{ end }}
+{{- with .Values.api.priorityClassName }}
+      priorityClassName: {{ . }}
+{{- end }}
+      containers:
+      - name: arag-api
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.aragApi }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- with .Values.api.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health/alive
+            port: 8080
+          initialDelaySeconds: 20
+          timeoutSeconds: 10
+          periodSeconds: 20
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 2
+          timeoutSeconds: 10
+          periodSeconds: 20
+        command: ["arag-api"]
+        {{- with .Values.envFrom }}
+        envFrom:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        env:
+          - name: VERSION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['version']
+          {{- include "toEnv" .Values.env | indent 10 }}
+        {{- with .Values.api.ports }}  
+        ports:
+{{ toYaml . | indent 10 }}
+        {{- end }}
+        {{- with .Values.api.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end}}
+      {{- with .Values.extraContainers }}
+{{ toYaml . | indent 6 }}
+      {{- end}}

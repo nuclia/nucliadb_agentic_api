@@ -3,7 +3,7 @@ from collections.abc import AsyncIterator
 import pytest
 from httpx import AsyncClient
 
-from nucliadb_agentic_api.tests.utils.dirty_index import mark_dirty, wait_for_sync
+from tests.utils.dirty_index import mark_dirty, wait_for_sync
 
 
 @pytest.fixture(scope="function")

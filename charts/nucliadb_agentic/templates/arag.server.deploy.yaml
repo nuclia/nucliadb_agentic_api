@@ -1,0 +1,176 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: arag-server
+  labels:
+    app: arag-server
+    metrics: enabled
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  revisionHistoryLimit: {{ .Values.server.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: arag-server
+      release: "{{ .Release.Name }}"
+      heritage: "{{ .Release.Service }}"
+  template:
+    metadata:
+      name: arag-server
+      {{- with .Values.server.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: arag-server
+        metrics: enabled
+        version: "{{ .Values.hash }}"
+        chart: "{{ .Chart.Name }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.server.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.server.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.server.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      serviceAccountName: {{ if kindIs "string" .Values.server.serviceAccount }}{{ .Values.server.serviceAccount }}{{ else }}{{ .Values.server.serviceAccount.name | default "default" }}{{ end }}
+{{- with .Values.server.priorityClassName }}
+      priorityClassName: {{ . }}
+{{- end }}
+      initContainers:
+      {{- with .Values.server.sandbox }}
+      {{- if .enabled }}
+      - name: sandbox-iptables
+        image: "{{ $.Values.containerRegistry }}/{{ .iptablesImage }}:{{ .iptablesVersion }}"
+        imagePullPolicy: {{ $.Values.imagePullPolicy }}
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - NET_RAW
+            drop:
+            - ALL
+        args: ["iptables", "-I", "OUTPUT", "1", "-m", "owner", "--uid-owner", "{{ .uid }}", "-m", "state", "--state", "NEW", "-j", "REJECT"]
+      {{- end }}
+      {{- end }}
+      containers:
+      - name: arag-server
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.aragServer }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- with .Values.server.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health/alive
+            port: 8000
+          initialDelaySeconds: 20
+          timeoutSeconds: 10
+          periodSeconds: 20
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health/ready
+            port: 8000
+          initialDelaySeconds: 2
+          timeoutSeconds: 10
+          periodSeconds: 20
+        command: ["arag-server"]
+        {{- with .Values.envFrom }}
+        envFrom:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        env:
+          - name: VERSION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['version']
+          {{- include "toEnv" .Values.env | indent 10 }}
+          {{- if .Values.server.sandbox.enabled }}
+          - name: "SANDBOX_SOCKET"
+            value: "{{ .Values.server.sandbox.socket_mount }}/sandbox.sock"
+          {{- end }}
+        {{- with .Values.server.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end}}
+        {{- with .Values.server.ports }}
+        ports:
+{{ toYaml . | indent 10 }}
+        {{- end }}
+        {{- if .Values.server.sandbox.enabled }}
+        volumeMounts:
+        - mountPath: {{ .Values.server.sandbox.socket_mount }}
+          name: sandbox-socket
+        {{- end }}
+
+      {{- with .Values.server.sandbox }}
+      {{- if .enabled }}
+      - name: sandbox
+        image: "{{ $.Values.containerRegistry }}/{{ $.Values.image.aragServer }}:{{ $.Values.image.tag }}"
+        imagePullPolicy: {{ $.Values.imagePullPolicy }}
+        securityContext:
+          runAsUser: {{ .uid }}
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /metrics
+            port: 8091
+          initialDelaySeconds: 20
+          timeoutSeconds: 10
+          periodSeconds: 20
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /metrics
+            port: 8091
+          initialDelaySeconds: 2
+          timeoutSeconds: 10
+          periodSeconds: 20
+        command: ["arag-sandbox"]
+        env:
+        - name: "SANDBOX_VERIFY"
+          value: "true"
+        - name: "SANDBOX_SOCKET"
+          value: "{{ .socket_mount }}/sandbox.sock"
+        volumeMounts:
+        - mountPath: {{ .socket_mount }}
+          name: sandbox-socket
+        {{- with .resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end}}
+        {{- with .ports }}
+        ports:
+{{ toYaml . | indent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .Values.server.sandbox.enabled }}
+      volumes:
+      - name: sandbox-socket
+        emptyDir:
+          sizeLimit: 5Mi
+      {{- end }}
+
+      {{- with .Values.extraContainers }}
+{{ toYaml . | indent 6 }}
+      {{- end}}

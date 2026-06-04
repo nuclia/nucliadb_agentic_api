@@ -8,8 +8,8 @@ from nucliadb_protos.utils_pb2 import RelationNode
 
 
 @pytest.mark.parametrize("relation_ranking", ["generative", "reranker"])
-@patch("nuclia_arag_ask.search.graph_strategy.rank_relations_reranker")
-@patch("nuclia_arag_ask.search.graph_strategy.rank_relations_generative")
+@patch("nucliadb_agentic_api.ask.search.graph_strategy.rank_relations_reranker")
+@patch("nucliadb_agentic_api.ask.search.graph_strategy.rank_relations_generative")
 async def test_ask_graph_strategy(
     mocker_generative,
     mocker_reranker,
@@ -157,8 +157,8 @@ async def test_ask_graph_strategy(
     await assert_ask(data, expected_paragraphs_text, expected_paragraphs_relations)
 
 
-@patch("nuclia_arag_ask.search.graph_strategy.rank_relations_reranker")
-@patch("nuclia_arag_ask.search.graph_strategy.rank_relations_generative")
+@patch("nucliadb_agentic_api.ask.search.graph_strategy.rank_relations_reranker")
+@patch("nucliadb_agentic_api.ask.search.graph_strategy.rank_relations_generative")
 async def test_ask_graph_strategy_with_user_relations(
     mocker_generative,
     mocker_reranker,

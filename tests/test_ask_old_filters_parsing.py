@@ -448,7 +448,7 @@ async def test_old_filters_parsing(
     parser._query = retrieval_models.RawQuery()
 
     with patch(
-        "nuclia_arag_ask.search.parsers.fetcher.rpc.labelsets",
+        "nucliadb_agentic_api.ask.search.parsers.fetcher.rpc.labelsets",
         return_value=kb_labelsets,
     ):
         parsed_filters = await parser._parse_filters(reader_sdk=None)  # type: ignore
@@ -484,7 +484,7 @@ async def test_old_filters_parsing_invalid_combinations(
 
     with (
         patch(
-            "nuclia_arag_ask.search.parsers.fetcher.rpc.labelsets",
+            "nucliadb_agentic_api.ask.search.parsers.fetcher.rpc.labelsets",
             return_value=kb_labelsets,
         ),
         pytest.raises(InvalidQueryError),

@@ -159,8 +159,8 @@ async def dummy_predict() -> AsyncIterator[DummyPredictEngine]:
 
     """
     with (
-        patch("nuclia_arag_api.app.start_predict_engine"),
-        patch("nuclia_arag_api.app.stop_predict_engine"),
+        patch("nucliadb_agentic_api.api.app.start_predict_engine"),
+        patch("nucliadb_agentic_api.api.app.stop_predict_engine"),
     ):
         predict_util = DummyPredictEngine()
         await predict_util.initialize()

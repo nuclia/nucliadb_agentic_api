@@ -1,0 +1,19 @@
+{{- if and (kindIs "map" .Values.migrations.serviceAccount) .Values.migrations.serviceAccount.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.migrations.serviceAccount.name }}
+  labels:
+    app: arag-migrate
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    {{- with .Values.migrations.serviceAccount.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.migrations.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

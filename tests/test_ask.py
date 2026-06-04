@@ -809,7 +809,7 @@ async def test_ask_handles_stream_unexpected_errors_sync(
 
     with (
         mock.patch(
-            "nuclia_arag_ask.search.ask.AskResult._stream",
+            "nucliadb_agentic_api.ask.search.ask.AskResult._stream",
             side_effect=ValueError("foobar"),
         ),
         pytest.raises(ValueError),
@@ -832,7 +832,7 @@ async def test_ask_handles_stream_unexpected_errors_stream(
     kbid = knowledgebox
 
     with mock.patch(
-        "nuclia_arag_ask.search.ask.AskResult._stream",
+        "nucliadb_agentic_api.ask.search.ask.AskResult._stream",
         side_effect=ValueError("foobar"),
     ):
         # Stream ask -- should handle by yielding the error item

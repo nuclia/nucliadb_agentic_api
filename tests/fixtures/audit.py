@@ -6,8 +6,8 @@ from nucliadb_utils.settings import audit_settings
 from nucliadb_utils.utilities import Utility
 from pytest_mock import MockerFixture
 
-from nucliadb_agentic_api.src.nucliadb_agentic_api.ask.audit import StreamAuditStorage
-from nucliadb_agentic_api.tests.fixtures.utils import global_utility
+from nucliadb_agentic_api.ask.audit import StreamAuditStorage
+from tests.fixtures.utils import global_utility
 
 
 @pytest.fixture(scope="function")
@@ -16,8 +16,8 @@ async def audit(
     mocker: MockerFixture,
 ) -> AsyncIterator[StreamAuditStorage]:
     with (
-        patch("nuclia_arag_api.app.start_audit_utility"),
-        patch("nuclia_arag_api.app.stop_audit_utility"),
+        patch("nucliadb_agentic_api.app.start_audit_utility"),
+        patch("nucliadb_agentic_api.app.stop_audit_utility"),
         patch.object(audit_settings, "audit_driver", "stream"),
         patch.object(audit_settings, "audit_jetstream_servers", [nats_server]),
     ):
@@ -27,7 +27,7 @@ async def audit(
             audit_settings.audit_partitions,
             audit_settings.audit_hash_seed,
             nats_creds=None,
-            service="nuclia_arag_ask.tests",
+            service="nucliadb_agentic_api.ask.tests",
         )
         await audit.initialize()
 

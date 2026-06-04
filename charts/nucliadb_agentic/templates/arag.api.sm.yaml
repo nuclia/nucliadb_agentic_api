@@ -1,0 +1,19 @@
+{{- if .Values.api.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: arag-api
+  labels:
+    app: arag-api
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: arag-api
+  endpoints:
+    - targetPort: {{.Values.api.serviceMonitor.port }}
+      interval: {{ ((.Values.api.serviceMonitor).interval) | default "60s" }}
+      path: /metrics
+{{- end }}

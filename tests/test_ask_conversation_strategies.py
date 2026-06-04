@@ -358,10 +358,10 @@ async def test_ask_conversational_strategy__attachments(
 
     with (
         patch(
-            "nuclia_arag_ask.search.rpc.augment",
+            "nucliadb_agentic_api.ask.search.rpc.augment",
             side_effect=mocked_augment,
         ),
-        patch("nuclia_arag_ask.search.rpc.download_image", return_value=image),
+        patch("nucliadb_agentic_api.ask.search.rpc.download_image", return_value=image),
     ):
         spy = mocker.spy(ask, "get_answer_stream")
 
@@ -462,5 +462,7 @@ def mocked_retrieve(*, result_paragraph_id: str):
             ]
         )
 
-    with patch("nuclia_arag_ask.search.rpc.retrieve", side_effect=mock_retrieve):
+    with patch(
+        "nucliadb_agentic_api.ask.search.rpc.retrieve", side_effect=mock_retrieve
+    ):
         yield

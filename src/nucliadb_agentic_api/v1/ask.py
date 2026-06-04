@@ -1,6 +1,6 @@
 import asyncio
 import json
-from typing import AsyncGenerator, AsyncIterable, Awaitable, Callable, Dict
+from typing import AsyncGenerator, TYPE_CHECKING, Dict
 from uuid import UUID, uuid4
 
 from fastapi import Header, Request, Response
@@ -40,7 +40,7 @@ from pydantic import ValidationError
 from starlette.responses import StreamingResponse
 
 from nucliadb_agentic_api.agentic.transform import transform_agentic_config
-from nucliadb_agentic_api.app import HTTPApplication
+
 from nucliadb_agentic_api.ask.exceptions import (
     AnswerJsonSchemaTooLong,
 )
@@ -56,6 +56,9 @@ from nucliadb_agentic_api.ask.utils.responses import (
 )
 from nucliadb_agentic_api.models import AgenticConfigSchema
 from nucliadb_agentic_api.v1.router import router
+
+if TYPE_CHECKING:
+    from nucliadb_agentic_api.app import HTTPApplication
 
 
 @router.post(

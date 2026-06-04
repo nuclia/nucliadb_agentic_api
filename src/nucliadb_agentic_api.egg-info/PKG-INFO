@@ -20,7 +20,7 @@ Requires-Dist: nucliadb-models>=6.13.0.post6252
 Requires-Dist: nucliadb-protos
 Requires-Dist: nucliadb-sdk>=6.13.0.post6252
 Requires-Dist: nucliadb-telemetry
-Requires-Dist: nucliadb-utils
+Requires-Dist: nucliadb-utils[fastapi,storages]
 Requires-Dist: hyperforge
 Requires-Dist: hyperforge_mcp
 Requires-Dist: hyperforge_nucliadb
