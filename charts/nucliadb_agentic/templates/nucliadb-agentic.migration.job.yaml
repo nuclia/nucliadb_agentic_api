@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: arag-migrate
+  name: nucliadb-agentic-migrate
   labels:
-    app: arag-migrate
+    app: nucliadb-agentic-migrate
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     helm.sh/chart: "{{ .Chart.Name }}"
@@ -15,13 +15,13 @@ metadata:
 spec:
   template:
     metadata:
-      name: arag-migrate
+      name: nucliadb-agentic-migrate
       {{- with .Values.migrations.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: arag-migrate
+        app: nucliadb-agentic-migrate
         app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
         helm.sh/chart: "{{ .Chart.Name }}"
@@ -34,9 +34,9 @@ spec:
       serviceAccountName: {{ if kindIs "string" .Values.migrations.serviceAccount }}{{ .Values.migrations.serviceAccount }}{{ else }}{{ .Values.migrations.serviceAccount.name | default "default" }}{{ end }}
       containers:
       - name: pre-upgrade-job
-        image: "{{ .Values.containerRegistry }}/{{ .Values.image.aragApi }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadb-agenticApi }}:{{ .Values.image.tag }}"
         command: ["/bin/sh", "-c"]
-        args: ["cd /app/arag && alembic upgrade head"]
+        args: ["cd /app/nucliadb-agentic && alembic upgrade head"]
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- with .Values.envFrom }}
         envFrom:

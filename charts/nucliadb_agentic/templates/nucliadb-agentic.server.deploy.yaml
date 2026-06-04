@@ -1,9 +1,9 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: arag-server
+  name: nucliadb-agentic-server
   labels:
-    app: arag-server
+    app: nucliadb-agentic-server
     metrics: enabled
     version: "{{ .Values.hash }}"
     chart: "{{ .Chart.Name }}"
@@ -13,18 +13,18 @@ spec:
   revisionHistoryLimit: {{ .Values.server.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app: arag-server
+      app: nucliadb-agentic-server
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"
   template:
     metadata:
-      name: arag-server
+      name: nucliadb-agentic-server
       {{- with .Values.server.annotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: arag-server
+        app: nucliadb-agentic-server
         metrics: enabled
         version: "{{ .Values.hash }}"
         chart: "{{ .Chart.Name }}"
@@ -69,8 +69,8 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-      - name: arag-server
-        image: "{{ .Values.containerRegistry }}/{{ .Values.image.aragServer }}:{{ .Values.image.tag }}"
+      - name: nucliadb-agentic-server
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadb-agenticServer }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- with .Values.server.securityContext }}
         securityContext:
@@ -92,7 +92,7 @@ spec:
           initialDelaySeconds: 2
           timeoutSeconds: 10
           periodSeconds: 20
-        command: ["arag-server"]
+        command: ["nucliadb-agentic-server"]
         {{- with .Values.envFrom }}
         envFrom:
           {{- toYaml . | nindent 10 }}
@@ -124,7 +124,7 @@ spec:
       {{- with .Values.server.sandbox }}
       {{- if .enabled }}
       - name: sandbox
-        image: "{{ $.Values.containerRegistry }}/{{ $.Values.image.aragServer }}:{{ $.Values.image.tag }}"
+        image: "{{ $.Values.containerRegistry }}/{{ $.Values.image.nucliadb-agenticServer }}:{{ $.Values.image.tag }}"
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         securityContext:
           runAsUser: {{ .uid }}
@@ -144,7 +144,7 @@ spec:
           initialDelaySeconds: 2
           timeoutSeconds: 10
           periodSeconds: 20
-        command: ["arag-sandbox"]
+        command: ["nucliadb-agentic-sandbox"]
         env:
         - name: "SANDBOX_VERIFY"
           value: "true"

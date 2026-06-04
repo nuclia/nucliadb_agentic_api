@@ -4,7 +4,7 @@ kind: ServiceAccount
 metadata:
   name: {{ .Values.server.serviceAccount.name }}
   labels:
-    app: arag-server
+    app: nucliadb-agentic-server
     version: "{{ .Values.hash }}"
     chart: "{{ .Chart.Name }}"
     release: "{{ .Release.Name }}"

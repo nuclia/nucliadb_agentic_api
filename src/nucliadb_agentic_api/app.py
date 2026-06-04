@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from typing import Tuple
 
 import prometheus_client  # type: ignore
@@ -71,7 +72,13 @@ class HTTPApplication(FastAPI):
         *args,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs)
+        @asynccontextmanager
+        async def lifespan(app: "HTTPApplication"):
+            await app.startup()
+            yield
+            await app.shutdown()
+
+        super().__init__(*args, lifespan=lifespan, **kwargs)
         self.settings = settings
         self.data_manager_settings = data_manager_settings
         for load_module in self.settings.load_modules:
@@ -88,8 +95,6 @@ class HTTPApplication(FastAPI):
             backend=RaoAuthenticationBackend(),
         )
         self.add_middleware(AuditMiddleware)
-        self.add_event_handler("startup", self.startup)
-        self.add_event_handler("shutdown", self.shutdown)
 
     async def startup(self) -> None:
         GLOBAL_REGISTRY.clear()

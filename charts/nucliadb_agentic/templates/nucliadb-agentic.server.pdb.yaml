@@ -1,9 +1,9 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: arag-api-pdb
+  name: nucliadb-agentic-server-pdb
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      app: arag-api
+      app: nucliadb-agentic-server

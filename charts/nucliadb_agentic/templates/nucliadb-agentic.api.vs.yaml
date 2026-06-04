@@ -1,9 +1,9 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: arag
+  name: nucliadb-agentic
   labels:
-    app: arag
+    app: nucliadb-agentic
     version: "{{ .Values.hash }}"
     chart: "{{ .Chart.Name }}"
     release: "{{ .Release.Name }}"
@@ -14,12 +14,8 @@ spec:
   hosts:
     - "{{ .Values.zone }}.{{ .Values.vs.host }}"
   http:
-    - name: arag_public_api_endpoints
+    - name: nucliadb-agentic_public_api_endpoints
       match:
-        - uri:
-            regex: ^/api/v\d+/agent/[^/]+/.*
-          method:
-            regex: "GET|PATCH|DELETE|OPTIONS|POST"
         - uri:
             regex: ^/api/v\d+/kb/[^/]+/agent/.*
           method:
@@ -29,20 +25,14 @@ spec:
           method:
             regex: "GET|PATCH|DELETE|OPTIONS|POST"
         - uri:
-            regex: ^/.well-known/oauth-protected-resource/api/v\d+/agent/.+
-          method:
-            regex: "GET|OPTIONS"
-        - uri:
             regex: ^/.well-known/oauth-protected-resource/api/v\d+/kb/.+
           method:
             regex: "GET|OPTIONS"
-        - uri:
-            regex: ^/api/auth/agent/.*
       route:
         - destination:
             port:
               number: 8080
-            host: "arag-api.{{ .Release.Namespace }}.svc.cluster.local"
+            host: " nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
       corsPolicy:
         allowOrigins:
           - exact: "*"
@@ -70,7 +60,7 @@ spec:
             regex: "POST|OPTIONS"
       route:
         - destination:
-            host: "arag-api.{{ .Release.Namespace }}.svc.cluster.local"
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
             port:
               number: 8080
       retries:

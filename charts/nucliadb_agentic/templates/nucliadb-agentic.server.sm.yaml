@@ -2,16 +2,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: arag-server
+  name: nucliadb-agentic-server
   labels:
-    app: arag-server
+    app: nucliadb-agentic-server
 spec:
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: arag-server
+      app: nucliadb-agentic-server
   endpoints:
     - targetPort: {{.Values.server.serviceMonitor.port }}
       interval: {{ ((.Values.server.serviceMonitor).interval) | default "60s" }}

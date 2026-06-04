@@ -12,7 +12,6 @@ from hyperforge.memory.memory import EphemeralSessionMemory
 from hyperforge.nua import AsyncInternalNuaClient
 from hyperforge.retrieval.agent import RetrievalAgent
 from hyperforge.retrieval.config import RetrievalAgentConfig
-from nuclia_models.common.consumption import ConsumptionGenerative
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
     GenerativeChunk,
