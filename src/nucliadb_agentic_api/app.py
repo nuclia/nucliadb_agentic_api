@@ -11,7 +11,6 @@ from hyperforge.broker.redis import RedisBroker
 from hyperforge.configure import GLOBAL_REGISTRY, load_all_configurations, scan
 from hyperforge.driver import Driver
 from hyperforge.feature_flag import get_flag_service
-from hyperforge_google.driver import GoogleDriver
 from lru import LRU
 from mcp.server.lowlevel.server import Server as MCPServer
 from mcp.server.streamable_http import (
@@ -37,7 +36,6 @@ from nucliadb_agentic_api.ask.predict import (
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
-from hyperforge_perplexity.driver import PerplexityDriver
 
 router = APIRouter()
 
@@ -138,23 +136,6 @@ class HTTPApplication(FastAPI):
             settings=self.data_manager_settings
         )
         await self.agent_manager.initialize()
-
-        self.hyperforge_drivers = {}
-        if self.settings.hyperforge_google_key:
-            self.hyperforge_drivers["google"] = GoogleDriver(
-                api_key=self.settings.hyperforge_google_key
-            )
-        if self.settings.hyperforge_perplexity_key:
-            self.hyperforge_drivers["perplexity"] = PerplexityDriver(
-                api_key=self.settings.hyperforge_perplexity_key
-            )
-
-        for load_module in self.settings.load_modules:
-            try:
-                scan(load_module)
-                load_all_configurations(load_module)
-            except ImportError:
-                logger.error(f"Module {load_module} could not be loaded")
 
     async def shutdown(self) -> None:
         await self.agent_manager.finalize()

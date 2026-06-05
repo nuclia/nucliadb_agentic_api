@@ -37,7 +37,6 @@ from pydantic import ValidationError
 from starlette.responses import StreamingResponse
 
 from nucliadb_agentic_api.agentic.transform import transform_agentic_config
-from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.ask.exceptions import (
     AnswerJsonSchemaTooLong,
 )
@@ -122,12 +121,6 @@ async def websocket_endpoint(
             detail = json.loads(e.json())
             return HTTPClientError(status_code=422, detail=detail)
 
-    if agentic_config_id is not None:
-        app: HTTPApplication = websocket.app
-        config = await app.agent_manager.get_agentic_config(
-            account=x_nucliadb_account, kbid=kbid, agentic_id=agentic_config_id
-        )  # raises if not found
-
     # Wait for questions
     first_question = True
     while True:
@@ -158,7 +151,7 @@ async def websocket_endpoint(
             kbid,
             "ephemeral",
             interaction,
-            workflow_id=workflow_id,
+            workflow_id=agentic_config_id,
         ):
             try:
                 await websocket.send_text(msg.model_dump_json())
@@ -172,18 +165,6 @@ async def websocket_endpoint(
     except RuntimeError:
         # WebSocket already closed
         pass
-
-    (TextGenerativeResponse,)
-    (ReasoningGenerativeResponse,)
-    (JSONGenerativeResponse,)
-    (MetaGenerativeResponse,)
-    (CitationsGenerativeResponse,)
-    (FootnoteCitationsGenerativeResponse,)
-    (StatusGenerativeResponse,)
-    (RerankGenerativeResponse,)
-    (ToolsGenerativeResponse,)
-    (ConsumptionGenerative,)
-    (ImageGenerativeResponse,)
 
 
 @handled_ask_exceptions
@@ -230,7 +211,9 @@ async def create_agentic_response(
             if answer.operation == AnswerOperation.ANSWER_CHUNK:
                 yield GenerativeChunk(
                     chunk=TextGenerativeResponse(
-                        text=answer.chunk.text if answer.chunk else ""
+                        text=answer.streaming_response_chunk.text
+                        if answer.streaming_response_chunk
+                        else ""
                     )
                 )
 

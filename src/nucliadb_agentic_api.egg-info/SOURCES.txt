@@ -6,6 +6,7 @@ src/nucliadb_agentic_api/commands.py
 src/nucliadb_agentic_api/exceptions.py
 src/nucliadb_agentic_api/logging.py
 src/nucliadb_agentic_api/models.py
+src/nucliadb_agentic_api/server.py
 src/nucliadb_agentic_api/settings.py
 src/nucliadb_agentic_api/utils.py
 src/nucliadb_agentic_api.egg-info/PKG-INFO

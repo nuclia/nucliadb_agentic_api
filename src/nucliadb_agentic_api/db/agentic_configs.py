@@ -9,8 +9,10 @@ from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
 from nucliadb_agentic_api import exceptions
+from nucliadb_agentic_api.agentic.transform import transform_agentic_config
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.models import AgenticConfigSchema, AgenticConfiguration
+from hyperforge.retrieval.config import RetrievalAgentConfig
 
 SERVICE_NAME = "AGENTIC_CONFIGS_DB"
 
@@ -153,3 +155,23 @@ class AgenticConfigs:
         )
         rows = await self.database.fetch_all(query)
         return {row["agentic_id"]: _config_from_row(row) for row in rows}
+
+    async def get_agent_config(
+        self,
+        account: str,
+        agent_id: str,
+        internal_nucliadb_url: str | None = None,
+        default_memory: bool = False,
+        workflow_id: str = "default",
+    ) -> RetrievalAgentConfig:
+        # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
+        # the right one based on these parameters
+        retrieval_config: RetrievalAgentConfig
+        agentic_config = await self.get_agentic_config(account, agent_id, agent_id)
+        global_drivers = {}
+        retrieval_config, drivers = await transform_agentic_config(
+            agentic_config,
+            global_drivers,
+            ask_request,
+            resource,
+        )

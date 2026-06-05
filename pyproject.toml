@@ -24,8 +24,8 @@ dependencies = [
     "nucliadb-models>=6.13.0.post6252",
     "nucliadb-protos",
     "nucliadb-sdk>=6.13.0.post6252",
-    "nucliadb-telemetry",
-    "nucliadb-utils[storages,fastapi]",
+    "nucliadb-telemetry[otel]",
+    "nucliadb-utils[storages,fastapi]>=6.14.0.post6507",
     "hyperforge",
     "hyperforge_mcp",
     "hyperforge_nucliadb",
@@ -71,6 +71,7 @@ asyncio_mode = "auto"
 
 [project.scripts]
 nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
+nucliadb-agentic-server = "nucliadb_agentic_api.server:run"
 nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
 
 

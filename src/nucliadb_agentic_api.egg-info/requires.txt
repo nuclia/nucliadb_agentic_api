@@ -6,7 +6,7 @@ nuclia-models>=0.52.1
 nucliadb-models>=6.13.0.post6252
 nucliadb-protos
 nucliadb-sdk>=6.13.0.post6252
-nucliadb-telemetry
+nucliadb-telemetry[otel]
 nucliadb-utils[fastapi,storages]
 hyperforge
 hyperforge_mcp
