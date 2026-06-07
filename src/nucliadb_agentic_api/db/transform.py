@@ -13,16 +13,15 @@ from hyperforge_nucliadb.driver_config import NucliaDBConfig, NucliaDBConnection
 from hyperforge_rephrase.config import RephraseAgentConfig
 from hyperforge_smart.config import SmartAgentConfig
 from hyperforge_summarize.config import SummarizeAgentConfig
-from nucliadb_models.search import AskRequest
 
+from nucliadb_agentic_api.ask.model import AskRequest
 from nucliadb_agentic_api.models import AgenticConfigSchema
 
 
 async def transform_agentic_config(
     agentic_config: AgenticConfigSchema,
     global_drivers: Dict[str, Driver],
-    ask_request: AskRequest,
-    resource: str | None = None,
+    ask_request: AskRequest | None = None,
 ) -> Tuple[RetrievalAgentConfig, Dict[str, Driver]]:
     drivers = {}
 

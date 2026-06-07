@@ -1,56 +1,23 @@
 import asyncio
 import json
-from typing import AsyncGenerator, Dict
-from uuid import UUID, uuid4
 
 from fastapi import Header, Query, Request, Response, WebSocket, WebSocketDisconnect
 from hyperforge.api.v1.interaction import WebsocketReceiver, stream_response
-from hyperforge.driver import Driver
-from hyperforge.engine import State
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
-from hyperforge.manager import Manager
-from hyperforge.memory.memory import EphemeralSessionMemory
-from hyperforge.nua import AsyncInternalNuaClient
-from hyperforge.retrieval.agent import RetrievalAgent
-from hyperforge.retrieval.config import RetrievalAgentConfig
-from nuclia_models.predict.generative_responses import (
-    GenerativeChunk,
-    ReasoningGenerativeResponse,
-    TextGenerativeResponse,
-)
 from nucliadb_models.configuration import AskConfig
 from nucliadb_models.resource import NucliaDBRoles
 from nucliadb_models.search import (
     AskRequest,
-    AugmentedContext,
-    KnowledgeboxFindResults,
     NucliaDBClientType,
-    PromptContext,
-    PromptContextOrder,
-    SyncAskResponse,
-    parse_max_tokens,
 )
 from nucliadb_models.security import RequestSecurity
-from nucliadb_sdk.v2.exceptions import PreconditionFailed, UnprocessableEntity
 from nucliadb_utils.authentication import NucliaUser, requires
 from pydantic import ValidationError
-from starlette.responses import StreamingResponse
 
-from nucliadb_agentic_api.agentic.transform import transform_agentic_config
-from nucliadb_agentic_api.ask.exceptions import (
-    AnswerJsonSchemaTooLong,
-)
 from nucliadb_agentic_api.ask.search import rpc
-from nucliadb_agentic_api.ask.search.ask import (
-    AskResult,
-    ask,
-    handled_ask_exceptions,
-)
-from nucliadb_agentic_api.ask.search.metrics import AskMetrics
 from nucliadb_agentic_api.ask.utils.responses import (
     HTTPClientError,
 )
-from nucliadb_agentic_api.models import AgenticConfigSchema
 from nucliadb_agentic_api.v1.router import router
 
 
@@ -144,6 +111,8 @@ async def websocket_endpoint(
         for header, header_value in websocket.headers.items():
             interaction.headers[header] = header_value
 
+        interaction.arguments["ask_request"] = item.model_dump_json()
+
         async for msg in stream_response(
             websocket.app,
             receiver,
@@ -165,167 +134,3 @@ async def websocket_endpoint(
     except RuntimeError:
         # WebSocket already closed
         pass
-
-
-@handled_ask_exceptions
-async def create_agentic_response(
-    kbid: str,
-    account: str,
-    internal_nua_api: str,
-    agentic_config: AgenticConfigSchema,
-    ask_request: AskRequest,
-    user_id: str,
-    client_type: NucliaDBClientType,
-    origin: str,
-    x_synchronous: bool,
-    global_drivers: dict[str, Driver],
-    resource: str | None = None,
-    extra_predict_headers: dict[str, str] | None = None,
-) -> Response:
-    ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
-
-    find_results = KnowledgeboxFindResults(resources={})
-
-    queue: asyncio.Queue[AragAnswer] = asyncio.Queue()
-
-    async def predict_answer_stream() -> AsyncGenerator[GenerativeChunk, None]:
-        while True:
-            answer = await queue.get()
-            if answer.operation == AnswerOperation.DONE:
-                break
-
-            if answer.operation == AnswerOperation.ERROR:
-                raise UnprocessableEntity(
-                    message=answer.exception.detail
-                    if answer.exception
-                    else "Unknown error in agent execution"
-                )
-
-            if answer.operation == AnswerOperation.REASONING:
-                yield GenerativeChunk(
-                    chunk=ReasoningGenerativeResponse(
-                        text=answer.reasoning.text if answer.reasoning else ""
-                    )
-                )
-
-            if answer.operation == AnswerOperation.ANSWER_CHUNK:
-                yield GenerativeChunk(
-                    chunk=TextGenerativeResponse(
-                        text=answer.streaming_response_chunk.text
-                        if answer.streaming_response_chunk
-                        else ""
-                    )
-                )
-
-            if answer.operation == AnswerOperation.ANSWER:
-                yield GenerativeChunk(
-                    chunk=TextGenerativeResponse(
-                        text=answer.answer if answer.answer else ""
-                    )
-                )
-
-            if answer.operation == AnswerOperation.AGENT_REQUEST:
-                # Not supported by Ask endpoint
-                pass
-
-            if answer.operation == AnswerOperation.START:
-                # Not supported by Ask endpoint
-                pass
-
-    ask_result = AskResult(
-        kbid=kbid,
-        ask_request=ask_request,
-        main_results=find_results,
-        nuclia_learning_id=None,
-        predict_answer_stream=predict_answer_stream(),
-        prequeries_results=None,
-        augmented_context=AugmentedContext(),
-        search_sdk=rpc.get_sdk("search"),
-        debug_chat_model=None,
-        best_matches=[],
-        metrics=AskMetrics(),
-        auditor=auditor,
-        prompt_context=PromptContext(),
-        prompt_context_order=PromptContextOrder(),
-    )
-
-    async def callback(obj: AragAnswer) -> None:
-        await queue.put(obj)
-
-    try:
-        drivers: Dict[str, Driver]
-        retrieval_config: RetrievalAgentConfig
-        retrieval_config, drivers = await transform_agentic_config(
-            agentic_config,
-            global_drivers,
-            ask_request,
-            resource,
-        )
-
-        agent = await RetrievalAgent.from_config_class(retrieval_config)
-
-        nua = AsyncInternalNuaClient(
-            kbid=kbid, account=account, url=internal_nua_api
-        )  # TODO: pass real URL if needed
-
-        manager = Manager()
-        manager.nua = nua  # type: ignore
-        manager.drivers = drivers
-
-        state = State(manager=manager, agent=agent)
-
-        session_memory = EphemeralSessionMemory.from_config(
-            retrieval_config.memory,
-            agent_id=kbid,
-            workflow_id="default",
-            rules=retrieval_config.rules,
-        )
-        session_memory.init(uuid4().hex)
-
-        question_memory = session_memory.start_question(
-            ask_request.query, streaming=x_synchronous
-        )
-        question_memory.set_callback_fn(callback)
-
-        question_memory.session.user_info.update(
-            {"user_id": user_id, "client_type": client_type, "origin": origin}
-        )
-
-        # if headers:
-        #     question_memory.headers.update(headers)
-
-        if state.agent is None:
-            raise ValueError("Agent could not be initialized")
-
-        await state.agent(
-            question_memory,
-            state.manager,
-        )
-
-    except AnswerJsonSchemaTooLong as err:
-        return HTTPClientError(status_code=400, detail=str(err))
-
-    # forward 412 and 422 from nucliadb to the client
-    except PreconditionFailed as err:
-        return HTTPClientError(status_code=412, detail=err.message)
-    except UnprocessableEntity as err:
-        return HTTPClientError(status_code=422, detail=err.message)
-
-    headers = {
-        "NUCLIA-LEARNING-ID": ask_result.nuclia_learning_id or "unknown",
-        "Access-Control-Expose-Headers": "NUCLIA-LEARNING-ID",
-    }
-    if x_synchronous:
-        return Response(
-            content=await ask_result.json(),
-            status_code=200,
-            headers=headers,
-            media_type="application/json",
-        )
-    else:
-        return StreamingResponse(
-            content=ask_result.ndjson_stream(),
-            status_code=200,
-            headers=headers,
-            media_type="application/x-ndjson",
-        )

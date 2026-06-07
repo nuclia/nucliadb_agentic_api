@@ -22,8 +22,7 @@ from nucliadb_models.retrieval import (
     RrfScore,
     SemanticScore,
 )
-from nucliadb_models.search import (
-    SCORE_TYPE,
+from nucliadb_agentic_api.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
     AskResponseItem,
@@ -40,15 +39,12 @@ from nucliadb_models.search import (
     ConsumptionResponseItem,
     DebugAskResponseItem,
     ErrorAskResponseItem,
-    FindOptions,
-    FindParagraph,
     FindRequest,
     FootnoteCitationsAskResponseItem,
     GraphStrategy,
     JSONAskResponseItem,
     KnowledgeboxFindResults,
     MetadataAskResponseItem,
-    NucliaDBClientType,
     PrequeriesAskResponseItem,
     PreQueriesStrategy,
     PreQuery,
@@ -68,6 +64,12 @@ from nucliadb_models.search import (
     UserPrompt,
     parse_custom_prompt,
     parse_rephrase_prompt,
+)
+from nucliadb_models.search import (
+    SCORE_TYPE,
+    FindOptions,
+    FindParagraph,
+    NucliaDBClientType,
 )
 from nucliadb_sdk.v2 import NucliaDBAsync
 from nucliadb_telemetry import errors

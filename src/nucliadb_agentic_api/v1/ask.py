@@ -1,31 +1,16 @@
-import asyncio
 import json
-from typing import AsyncGenerator, TYPE_CHECKING, Dict
 from uuid import UUID
 
 from fastapi import Header, Request, Response
-from hyperforge.driver import Driver
-from hyperforge.interaction import AnswerOperation, AragAnswer
-from nuclia_models.predict.generative_responses import (
-    CitationsGenerativeResponse,
-    GenerativeChunk,
-    MetaGenerativeResponse,
-    ReasoningGenerativeResponse,
-    StatusGenerativeResponse,
-    TextGenerativeResponse,
-)
 from nucliadb_models.configuration import AskConfig
 from nucliadb_models.resource import NucliaDBRoles
 from nucliadb_models.search import (
-    KnowledgeboxFindResults,
     NucliaDBClientType,
 )
 
+from nucliadb_agentic_api.agentic.ask_handler import create_agentic_response
 from nucliadb_agentic_api.ask.model import (
     AskRequest,
-    AugmentedContext,
-    PromptContext,
-    PromptContextOrder,
     SyncAskResponse,
     parse_max_tokens,
 )
@@ -45,14 +30,10 @@ from nucliadb_agentic_api.ask.search.ask import (
     ask,
     handled_ask_exceptions,
 )
-from nucliadb_agentic_api.ask.search.metrics import AskMetrics
 from nucliadb_agentic_api.ask.utils.responses import (
     HTTPClientError,
 )
 from nucliadb_agentic_api.v1.router import router
-
-if TYPE_CHECKING:
-    from nucliadb_agentic_api.app import HTTPApplication
 
 
 @router.post(
@@ -114,6 +95,8 @@ async def ask_knowledgebox_endpoint(
 
     if item.agentic_config_id is not None:
         return await create_agentic_response(
+            app=request.app,
+            agentic_config_id=item.agentic_config_id,
             kbid=kbid,
             ask_request=item,
             user_id=x_nucliadb_user,
@@ -173,6 +156,8 @@ async def resource_ask_endpoint_by_uuid(
 
     if item.agentic_config_id is not None:
         return await create_agentic_response(
+            app=request.app,
+            agentic_config_id=item.agentic_config_id,
             kbid=kbid,
             account=x_nucliadb_account,
             ask_request=item,
@@ -239,6 +224,8 @@ async def resource_ask_endpoint_by_slug(
 
     if item.agentic_config_id is not None:
         return await create_agentic_response(
+            app=request.app,
+            agentic_config_id=item.agentic_config_id,
             kbid=kbid,
             account=x_nucliadb_account,
             ask_request=item,
@@ -288,166 +275,6 @@ async def create_ask_response(
             resource=resource,
             extra_predict_headers=extra_predict_headers,
         )
-
-    except AnswerJsonSchemaTooLong as err:
-        return HTTPClientError(status_code=400, detail=str(err))
-
-    # forward 412 and 422 from nucliadb to the client
-    except PreconditionFailed as err:
-        return HTTPClientError(status_code=412, detail=err.message)
-    except UnprocessableEntity as err:
-        return HTTPClientError(status_code=422, detail=err.message)
-
-    headers = {
-        "NUCLIA-LEARNING-ID": ask_result.nuclia_learning_id or "unknown",
-        "Access-Control-Expose-Headers": "NUCLIA-LEARNING-ID",
-    }
-    if x_synchronous:
-        return Response(
-            content=await ask_result.json(),
-            status_code=200,
-            headers=headers,
-            media_type="application/json",
-        )
-    else:
-        return StreamingResponse(
-            content=ask_result.ndjson_stream(),
-            status_code=200,
-            headers=headers,
-            media_type="application/x-ndjson",
-        )
-
-
-@handled_ask_exceptions
-async def create_agentic_response(
-    kbid: str,
-    account: str,
-    ask_request: AskRequest,
-    user_id: str,
-    client_type: NucliaDBClientType,
-    origin: str,
-    x_synchronous: bool,
-    global_drivers: dict[str, Driver],
-    resource: str | None = None,
-    extra_predict_headers: dict[str, str] | None = None,
-) -> Response:
-    ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
-
-    find_results = KnowledgeboxFindResults(resources={})
-
-    queue: asyncio.Queue[AragAnswer] = asyncio.Queue()
-
-    async def predict_answer_stream() -> AsyncGenerator[GenerativeChunk, None]:
-
-        meta = MetaGenerativeResponse(
-            input_tokens=0,
-            output_tokens=0,
-            input_nuclia_tokens=0,
-            output_nuclia_tokens=0,
-            timings={},
-        )
-
-        while True:
-            answer = await queue.get()
-            if answer.operation == AnswerOperation.DONE:
-                break
-
-            if answer.operation == AnswerOperation.ERROR:
-                raise UnprocessableEntity(
-                    message=answer.exception.detail
-                    if answer.exception
-                    else "Unknown error in agent execution"
-                )
-
-            if answer.operation == AnswerOperation.REASONING:
-                yield GenerativeChunk(
-                    chunk=ReasoningGenerativeResponse(
-                        text=answer.reasoning.text if answer.reasoning else ""
-                    )
-                )
-
-            if answer.operation == AnswerOperation.ANSWER_CHUNK:
-                yield GenerativeChunk(
-                    chunk=TextGenerativeResponse(
-                        text=answer.streaming_response_chunk.text
-                        if answer.streaming_response_chunk
-                        else ""
-                    )
-                )
-
-            if answer.operation == AnswerOperation.ANSWER:
-                if answer.step:
-                    # We need to collect tokens
-                    pass
-
-                if answer.possible_answer:
-                    # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately
-                    pass
-
-                if answer.context:
-                    # To fill the find payload
-                    for chunk in answer.context.chunks:
-                        find_results.resources.setdefault(chunk.chunk_id, []).append(
-                            chunk
-                        )
-                    pass
-
-                if answer.generated_text:
-                    # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately
-                    pass
-
-                yield GenerativeChunk(
-                    chunk=TextGenerativeResponse(
-                        text=answer.answer if answer.answer else ""
-                    )
-                )
-                if answer.answer_citations:
-                    citations = {}
-                    for key, value in answer.answer_citations.metadata.items():
-                        citations[key] = {
-                            "context_id": value.context_id,
-                            "origin_urls": value.origin_urls,
-                            "chunk_index": value.chunk_index,
-                        }
-                    yield GenerativeChunk(
-                        chunk=CitationsGenerativeResponse(citations=citations)
-                    )
-
-            if answer.operation == AnswerOperation.AGENT_REQUEST:
-                # Not supported by Ask endpoint
-                pass
-
-            if answer.operation == AnswerOperation.START:
-                yield GenerativeChunk(
-                    chunk=StatusGenerativeResponse(
-                        code="", details="Agent execution started"
-                    )
-                )
-
-        yield GenerativeChunk(chunk=meta)
-
-    ask_result = AskResult(
-        kbid=kbid,
-        ask_request=ask_request,
-        main_results=find_results,
-        nuclia_learning_id=None,
-        predict_answer_stream=predict_answer_stream(),
-        prequeries_results=None,
-        augmented_context=AugmentedContext(),
-        search_sdk=rpc.get_sdk("search"),
-        debug_chat_model=None,
-        best_matches=[],
-        metrics=AskMetrics(),
-        auditor=auditor,
-        prompt_context=PromptContext(),
-        prompt_context_order=PromptContextOrder(),
-    )
-
-    async def callback(obj: AragAnswer) -> None:
-        await queue.put(obj)
-
-    try:
-        drivers: Dict[str, Driver]
 
     except AnswerJsonSchemaTooLong as err:
         return HTTPClientError(status_code=400, detail=str(err))

@@ -1344,3 +1344,12 @@ def parse_custom_prompt(item: AskRequest) -> CustomPrompt:
 def parse_rephrase_prompt(item: AskRequest) -> str | None:
     prompt = parse_custom_prompt(item)
     return prompt.rephrase
+
+
+def parse_max_tokens(max_tokens: int | MaxTokens | None) -> MaxTokens | None:
+    if isinstance(max_tokens, int):
+        # If the max_tokens is an integer, it is interpreted as the max_tokens value for the generated answer.
+        # The max tokens for the context is set to None to use the default value for the model (comes in the
+        # NUA's query endpoint response).
+        return MaxTokens(answer=max_tokens, context=None)
+    return max_tokens

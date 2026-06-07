@@ -9,10 +9,15 @@ from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
 from nucliadb_agentic_api import exceptions
-from nucliadb_agentic_api.agentic.transform import transform_agentic_config
+from nucliadb_agentic_api.ask.model import AskRequest
+from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.models import AgenticConfigSchema, AgenticConfiguration
 from hyperforge.retrieval.config import RetrievalAgentConfig
+from hyperforge_google import GoogleDriver
+from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
+from hyperforge_perplexity import PerplexityDriver
+from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 
 SERVICE_NAME = "AGENTIC_CONFIGS_DB"
 
@@ -163,15 +168,44 @@ class AgenticConfigs:
         internal_nucliadb_url: str | None = None,
         default_memory: bool = False,
         workflow_id: str = "default",
+        ask_request: AskRequest | None = None,
     ) -> RetrievalAgentConfig:
         # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
         # the right one based on these parameters
         retrieval_config: RetrievalAgentConfig
-        agentic_config = await self.get_agentic_config(account, agent_id, agent_id)
+        agentic_config = await self.get_agentic_config(account, agent_id, workflow_id)
         global_drivers = {}
         retrieval_config, drivers = await transform_agentic_config(
             agentic_config,
             global_drivers,
             ask_request,
-            resource,
         )
+
+        retrieval_config.drivers.append(
+            GoogleDriverConfig(
+                identifier="google",
+                name="google",
+                config=GoogleInnerConfig(
+                    api_key=self.settings.hyperforge_google_key, vertexai=False
+                ),
+            )
+        )
+
+        retrieval_config.drivers.append(
+            PerplexityDriverConfig(
+                identifier="perplexity",
+                name="perplexity",
+                provider="perplexity",
+                config=PerplexityInnerConfig(
+                    key=self.settings.hyperforge_perplexity_key
+                ),
+            )
+        )
+        return retrieval_config
+
+    async def ensure_workflow_active(
+        self, account: str, agent_id: str, workflow_id: str
+    ):
+        # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
+        # the right one based on these parameters
+        await self.get_agentic_config(account, agent_id, workflow_id)

@@ -17,13 +17,13 @@ class Settings(BaseSettings):
     zone: str = "stashify"
     grpc_port: int = 8030
 
-    valkey_url: str = "redis://arag-valkey-cluster"
+    valkey_url: str = "redis://ndb_agentic-valkey-cluster"
     valkey_cluster_mode: bool = False
     answers_subject: str = (
-        "arag.{account}.{agent_id}.{workflow_id}.{session}.{question}.answer"
+        "ndb_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}.answer"
     )
-    oauth_subject: str = "arag.{account}.{agent_id}.{workflow_id}.{session}.{question}.oauth.{oauth_uuid}"
-    activate_subject: str = "arag.activate"
+    oauth_subject: str = "ndb_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}.oauth.{oauth_uuid}"
+    activate_subject: str = "ndb_agentic.activate"
     pubsub_keepalive_seconds: float = 20
 
     load_modules: list[str] = [
