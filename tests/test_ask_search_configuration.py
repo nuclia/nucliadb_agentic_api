@@ -31,7 +31,7 @@ async def test_search_configuration_ask(
     assert resp.status_code == 201
 
     async def run_ask(params):
-        with patch("nucliadb_agentic_api.api.v1.ask.ask") as mock:
+        with patch("nucliadb_agentic_api.v1.ask.ask") as mock:
             mock.side_effect = HTTPException(status_code=500)
             await nucliadb_search.post(
                 f"/kb/{kbid}/ask",

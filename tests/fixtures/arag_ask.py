@@ -26,7 +26,6 @@ from .predict import DummyPredictEngine
 @pytest.fixture(scope="function")
 async def nucliadb_search(
     # shared storage with nucliadb
-    storage: Storage,
     storage_settings,
     # API client
     arag_ask_api: AsyncClient,

@@ -11,7 +11,6 @@ from nucliadb_models.search import (
 from starlette.responses import StreamingResponse
 
 from nucliadb_agentic_api.agentic.ask_requester import interaction
-from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.ask.audit import ChatAuditor
 from nucliadb_agentic_api.ask.model import (
     AskRequest,
@@ -28,9 +27,15 @@ from nucliadb_agentic_api.ask.search.metrics import AskMetrics
 from nucliadb_agentic_api.v1.utils import websocket_to_ask
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from nucliadb_agentic_api.app import HTTPApplication
+
+
 @handled_ask_exceptions
 async def create_agentic_response(
-    app: HTTPApplication,
+    app: "HTTPApplication",
     kbid: str,
     account: str,
     ask_request: AskRequest,

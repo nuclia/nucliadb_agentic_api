@@ -39,6 +39,7 @@ dependencies = [
     "prometheus_client",
     "mrflagly>=0.2.11",
     "aiodns",
+    "aiohttp<3.14",
     "httpx",
     "jinja2",
     "databases[asyncpg]",

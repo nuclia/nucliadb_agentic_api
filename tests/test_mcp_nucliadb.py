@@ -5,7 +5,8 @@ import pytest
 from hyperforge.configure import get_driver_config_instance
 from hyperforge.llm import NUAConnection
 from hyperforge.manager import Manager
-from hyperforge.memory.memory import EphemeralSessionMemory, MemoryConfig
+from hyperforge.memory.memory import EphemeralSessionMemory
+from hyperforge.models import MemoryConfig
 from hyperforge.models import Rule, Rules
 from hyperforge_mcp.agent import MCPAgent
 from hyperforge_mcp.config import MCPAgentConfig, Transport
@@ -346,7 +347,7 @@ async def test_mcp_nucliadb_two_steps(
 
 
 async def test_text_content_audience_includes_assistant():
-    from hyperforge.api.v1.mcp_nucliadb import call_tool, get_resource
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool, get_resource
 
     # --- test get_resource ---
     field = MagicMock()
@@ -390,7 +391,7 @@ async def test_text_content_audience_includes_assistant():
     ask_mock = AsyncMock(return_value=ask_result_mock)
 
     with patch(
-        "nucliadb_agentic_api.api.v1.mcp_nucliadb.ask",
+        "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
         new=ask_mock,
     ):
         results = await call_tool(
@@ -427,7 +428,7 @@ async def test_text_content_audience_includes_assistant():
     # --- test call_tool search_documents without search_configuration ---
     ask_mock_no_config = AsyncMock(return_value=ask_result_mock)
     with patch(
-        "nucliadb_agentic_api.api.v1.mcp_nucliadb.ask",
+        "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
         new=ask_mock_no_config,
     ):
         await call_tool(
@@ -449,7 +450,7 @@ async def test_text_content_audience_includes_assistant():
     # An unrecognised exception from `ask` is wrapped into a ResourceError.
     ask_mock_invalid = AsyncMock(side_effect=Exception("Invalid configuration"))
     with (
-        patch("nucliadb_agentic_api.api.v1.mcp_nucliadb.ask", new=ask_mock_invalid),
+        patch("nucliadb_agentic_api.v1.mcp_nucliadb.ask", new=ask_mock_invalid),
         pytest.raises(
             ResourceError,
             match="Search failed: Invalid configuration",
@@ -470,9 +471,9 @@ async def test_text_content_audience_includes_assistant():
 
 async def test_call_tool_search_documents_known_exceptions():
     """Known ask() exceptions are converted to descriptive ResourceErrors."""
-    from hyperforge.api.v1.mcp_nucliadb import call_tool
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
-    from nucliadb_agentic_api.src.nucliadb_agentic_api.ask.exceptions import (
+    from nucliadb_agentic_api.ask.exceptions import (
         InvalidQueryError,
         KnowledgeBoxNotFound,
         NoRetrievalResultsError,
@@ -501,7 +502,7 @@ async def test_call_tool_search_documents_known_exceptions():
     for exc, expected_fragment in cases:
         with (
             patch(
-                "nucliadb_agentic_api.api.v1.mcp_nucliadb.ask",
+                "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
                 new=AsyncMock(side_effect=exc),
             ),
             pytest.raises(ResourceError, match=expected_fragment),
@@ -511,7 +512,7 @@ async def test_call_tool_search_documents_known_exceptions():
 
 async def test_call_tool_invalid_arguments():
     """Pydantic validation errors are wrapped into ResourceError with a descriptive message."""
-    from hyperforge.api.v1.mcp_nucliadb import call_tool
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     with pytest.raises(ResourceError, match="Invalid arguments for 'search_documents'"):
         await call_tool(
@@ -529,7 +530,7 @@ async def test_call_tool_invalid_arguments():
 
 async def test_call_tool_batch_get_documents_partial_failure():
     """A single failing document does not abort the whole batch; the error is reported inline."""
-    from hyperforge.api.v1.mcp_nucliadb import call_tool
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     good_field = MagicMock()
     good_field.extracted.text.text = "good content"
@@ -570,7 +571,7 @@ async def test_call_tool_batch_get_documents_partial_failure():
 
 async def test_get_resource_not_found():
     """NotFoundError from NucliaDB becomes a descriptive ResourceError."""
-    from hyperforge.api.v1.mcp_nucliadb import get_resource
+    from nucliadb_agentic_api.v1.mcp_nucliadb import get_resource
 
     ndb = AsyncMock()
     ndb.get_resource_by_id.side_effect = NotFoundError("not found")
@@ -581,7 +582,7 @@ async def test_get_resource_not_found():
 
 async def test_call_tool_unknown_tool():
     """Requesting an unknown tool raises ResourceError, not a bare Exception."""
-    from hyperforge.api.v1.mcp_nucliadb import call_tool
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     with pytest.raises(ResourceError, match="Unknown tool"):
         await call_tool(
@@ -599,7 +600,7 @@ async def test_call_tool_unknown_tool():
 
 async def test_read_resource_malformed_uri():
     """A URI without the right structure raises a descriptive ResourceError."""
-    from hyperforge.api.v1.mcp_nucliadb import read_resource
+    from nucliadb_agentic_api.v1.mcp_nucliadb import read_resource
 
     ndb = AsyncMock()
 
