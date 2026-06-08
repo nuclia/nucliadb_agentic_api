@@ -9,6 +9,10 @@ from nucliadb_models import (
     SearchParamDefaults,
 )
 from nucliadb_models.resource import ExtractedDataTypeName
+from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
+from pydantic.json_schema import SkipJsonSchema
+
+from nuclia_models.common.consumption import Consumption
 from nucliadb_models.search import (
     ANSWER_JSON_SCHEMA_EXAMPLE,
     AuditMetadataBase,
@@ -25,8 +29,6 @@ from nucliadb_models.search import (
     TextPosition,
     _validate_resource_filter,
 )
-from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
-from pydantic.json_schema import SkipJsonSchema
 
 
 class RerankerName(str, Enum):
@@ -679,15 +681,6 @@ class TokensDetail(BaseModel):
     input: float
     output: float
     image: float
-
-
-class Consumption(BaseModel):
-    normalized_tokens: TokensDetail
-    customer_key_tokens: TokensDetail
-
-
-class ConsumptionGenerative(Consumption):
-    type: Literal["consumption"] = "consumption"
 
 
 class AskRequest(AuditMetadataBase):

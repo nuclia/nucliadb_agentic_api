@@ -30,3 +30,9 @@ class Settings(BaseSettings):
     hyperforge_google_key: Optional[str] = None
     hyperforge_perplexity_key: Optional[str] = None
     internal_nua_api: str = "http://predict.learning.svc.cluster.local:8080"
+
+    internal_nucliadb: bool = False
+    internal_nucliadb_url: Optional[str] = None
+
+    external_nucliadb_key: Optional[str] = None
+    external_nucliadb_url: Optional[str] = None

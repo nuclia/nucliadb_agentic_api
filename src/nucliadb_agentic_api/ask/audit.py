@@ -11,11 +11,7 @@ from fastapi import Request
 from hyperforge.feature_flag import Features, has_feature
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
 from nucliadb_models.search import (
-    AskRequest,
-    ChatContextMessage,
     NucliaDBClientType,
-    PromptContext,
-    PromptContextOrder,
 )
 from nucliadb_protos import audit_pb2, utils_pb2
 from nucliadb_protos.audit_pb2 import (
@@ -32,6 +28,12 @@ from starlette.background import BackgroundTask
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
+from nucliadb_agentic_api.ask.model import (
+    AskRequest,
+    ChatContextMessage,
+    PromptContext,
+    PromptContextOrder,
+)
 from nucliadb_agentic_api.ask.predict import AnswerStatusCode
 from nucliadb_agentic_api.ask.utils.proto import client_type
 

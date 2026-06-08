@@ -1,31 +1,31 @@
 import pathlib
 
-import pytest
-
-from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
-from nucliadb_agentic_api.db.settings import DataManagerSettings
 import alembic.command
 import alembic.config
+import pytest
 from sqlalchemy_utils import (  # type: ignore
     create_database,
     database_exists,
     drop_database,
 )
 
+from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
+from nucliadb_agentic_api.db.settings import DataManagerSettings
+
 _package_path = pathlib.Path(__file__).parent.parent.parent.absolute()
 
 
 @pytest.fixture(scope="session")
-def agentic_pg_dsn(pg_dsn):
-    new_pg_dsn = pg_dsn.replace("/test_db", "/agentic_test_db")
-
-    if database_exists(new_pg_dsn):
-        drop_database(new_pg_dsn)
-    create_database(new_pg_dsn)
+def agentic_pg_dsn(pg):
+    host, port = pg
+    dsn = f"postgresql://postgres:postgres@{host}:{port}/agentic_test_db"
+    if database_exists(dsn):
+        drop_database(dsn)
+    create_database(dsn)
     config = alembic.config.Config(str(_package_path) + "/alembic.ini")
-    config.set_main_option("sqlalchemy.url", new_pg_dsn)
+    config.set_main_option("sqlalchemy.url", dsn)
     alembic.command.upgrade(config, "head")
-    yield new_pg_dsn
+    yield dsn
 
 
 @pytest.fixture

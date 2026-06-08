@@ -2,9 +2,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 from httpx import AsyncClient
-from nucliadb_models.search import SyncAskResponse
 from nucliadb_protos.utils_pb2 import RelationNode
 
+from nucliadb_agentic_api.ask.model import SyncAskResponse
 from nucliadb_agentic_api.ask.search import graph_strategy, rpc
 
 

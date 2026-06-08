@@ -4,9 +4,9 @@ from fastapi import Query
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
-from hyperforge.api.settings import Settings
-from hyperforge.api.v1.router import router
-from hyperforge.api.v1.utils import tracer
+from nucliadb_agentic_api.settings import Settings
+from nucliadb_agentic_api.v1.router import router
+from nucliadb_agentic_api.v1.utils import tracer
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ RENDER = "<html><body><h1>OAuth Completed</h1><p>You can close this window and r
 @router.get(
     "/api/auth/kb/{kbid}/workflow/{workflow_id}/session/{session}/oauth/{oauth_uuid}/callback",
     status_code=200,
-    description="Get Agent Schema",
+    description="OAuth callback endpoint for retrieval agent workflows. This endpoint is called by the RAO after the user completes the OAuth flow, and it sends the obtained credentials to the corresponding websocket.",
     tags=["Retrieval Agent"],
     include_in_schema=False,
 )

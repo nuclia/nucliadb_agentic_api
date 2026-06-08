@@ -18,13 +18,17 @@ from nucliadb_models.augment import (
 )
 from nucliadb_models.common import FieldTypeName
 from nucliadb_models.labels import translate_alias_to_system_label
-from nucliadb_models.search import (
-    SCORE_TYPE,
+from nucliadb_models.search import SCORE_TYPE, FindParagraph
+from nucliadb_protos.resources_pb2 import FieldComputedMetadata
+from nucliadb_sdk import NucliaDBAsync
+from pydantic import BaseModel
+
+from nucliadb_agentic_api.ask import logger
+from nucliadb_agentic_api.ask.model import (
     AugmentedContext,
     AugmentedTextBlock,
     ConversationalStrategy,
     FieldExtensionStrategy,
-    FindParagraph,
     FullResourceStrategy,
     HierarchyResourceStrategy,
     Image,
@@ -44,11 +48,6 @@ from nucliadb_models.search import (
     TextBlockAugmentationType,
     TextPosition,
 )
-from nucliadb_protos.resources_pb2 import FieldComputedMetadata
-from nucliadb_sdk import NucliaDBAsync
-from pydantic import BaseModel
-
-from nucliadb_agentic_api.ask import logger
 from nucliadb_agentic_api.ask.search import rpc
 from nucliadb_agentic_api.ask.search.metrics import Metrics
 from nucliadb_agentic_api.ask.utils.ids import (

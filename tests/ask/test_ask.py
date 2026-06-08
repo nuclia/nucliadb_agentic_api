@@ -12,12 +12,16 @@ from nuclia_models.predict.generative_responses import (
     JSONGenerativeResponse,
     StatusGenerativeResponse,
 )
-from nucliadb_models.search import (
+from nucliadb_models.search import FindParagraph
+from nucliadb_protos import resources_pb2 as rpb2
+from nucliadb_protos import writer_pb2 as wpb2
+from nucliadb_protos.writer_pb2_grpc import WriterStub
+
+from nucliadb_agentic_api.ask.model import (
     AskRequest,
     AskResponseItem,
     AugmentedTextBlock,
     FieldExtensionStrategy,
-    FindParagraph,
     FindRequest,
     FullResourceStrategy,
     HierarchyResourceStrategy,
@@ -28,10 +32,6 @@ from nucliadb_models.search import (
     RagStrategies,
     SyncAskResponse,
 )
-from nucliadb_protos import resources_pb2 as rpb2
-from nucliadb_protos import writer_pb2 as wpb2
-from nucliadb_protos.writer_pb2_grpc import WriterStub
-
 from nucliadb_agentic_api.ask.predict import (
     AnswerStatusCode,
     get_predict,

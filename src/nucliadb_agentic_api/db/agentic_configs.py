@@ -1,11 +1,11 @@
 import datetime
+import json
 from time import time
 
 import databases
 import sqlalchemy as sa
 from hyperforge.database import metadata
 from hyperforge.retrieval.config import RetrievalAgentConfig
-
 from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
 from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
@@ -17,6 +17,15 @@ from nucliadb_agentic_api.ask.model import AskRequest
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import AgenticConfigSchema, AgenticConfiguration
+
+
+# Imported lazily in methods to avoid any load-order sensitivity between the two
+# table modules (both share the same `hyperforge.database.metadata`).
+def _get_sources_table():  # pragma: no cover
+    from nucliadb_agentic_api.db.sources import sources_table  # noqa: PLC0415
+
+    return sources_table
+
 
 SERVICE_NAME = "AGENTIC_CONFIGS_DB"
 
@@ -43,6 +52,17 @@ CACHE = LRU(size=1024)
 
 def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
     return f"{account}:{kbid}:{agentic_id}:{int(time()) // 5}"
+
+
+def _collect_source_ids(config: AgenticConfigSchema) -> list[str]:
+    """Return all non-None source_id values declared in smart_agent sources."""
+    if not config.config.smart_agent:
+        return []
+    return [
+        source.source_id
+        for source in config.config.smart_agent.sources
+        if source.source_id is not None
+    ]
 
 
 def _serialize_config(config: AgenticConfigSchema) -> dict:
@@ -89,6 +109,10 @@ class AgenticConfigs:
     async def patch_agentic_config(
         self, account: str, kbid: str, agentic_id: str, config: AgenticConfigSchema
     ):
+        source_ids = _collect_source_ids(config)
+        if source_ids:
+            await self._validate_sources_exist(account, kbid, source_ids)
+
         query = (
             sa.update(agentic_config_table)
             .values(
@@ -110,6 +134,10 @@ class AgenticConfigs:
     async def create_agentic_config(
         self, account: str, kbid: str, agentic_id: str, config: AgenticConfigSchema
     ):
+        source_ids = _collect_source_ids(config)
+        if source_ids:
+            await self._validate_sources_exist(account, kbid, source_ids)
+
         query = sa.select(agentic_config_table.c.agentic_id).where(
             agentic_config_table.c.account == account,
             agentic_config_table.c.kbid == kbid,
@@ -128,6 +156,54 @@ class AgenticConfigs:
         )
         await self.database.execute(query)
         CACHE[_cache_key(account, kbid, agentic_id)] = config
+
+    async def _validate_sources_exist(
+        self, account: str, kbid: str, source_ids: list[str]
+    ) -> None:
+        """Raise InvalidReference if any source_id is not present in sources_table."""
+        sources_table = _get_sources_table()
+        query = sa.select(sources_table.c.source_id).where(
+            sources_table.c.account == account,
+            sources_table.c.kbid == kbid,
+            sources_table.c.source_id.in_(source_ids),
+        )
+        rows = await self.database.fetch_all(query)
+        found = {row["source_id"] for row in rows}
+        missing = sorted(set(source_ids) - found)
+        if missing:
+            raise exceptions.InvalidReference(
+                f"Source(s) not found: {', '.join(missing)}"
+            )
+
+    async def delete_configs_referencing_source(
+        self, account: str, kbid: str, source_id: str
+    ) -> int:
+        """Delete every agentic config that references source_id in its smart_agent
+        sources list.  Returns the number of deleted configs.
+
+        Uses the JSONB containment operator (@>) to find matching rows:
+            config->'smart_agent'->'sources' @> '[{"source_id": "<id>"}]'
+        """
+        query = (
+            sa.delete(agentic_config_table)
+            .where(
+                agentic_config_table.c.account == account,
+                agentic_config_table.c.kbid == kbid,
+                agentic_config_table.c.config["smart_agent"]["sources"].op("@>")(
+                    sa.cast(
+                        json.dumps([{"source_id": source_id}]),
+                        JSONB,
+                    )
+                ),
+            )
+            .returning(agentic_config_table.c.agentic_id)
+        )
+        deleted_rows = await self.database.fetch_all(query)
+        for row in deleted_rows:
+            key = _cache_key(account, kbid, row["agentic_id"])
+            if key in CACHE:
+                del CACHE[key]
+        return len(deleted_rows)
 
     async def get_agentic_config(
         self, account: str, kbid: str, agentic_id: str

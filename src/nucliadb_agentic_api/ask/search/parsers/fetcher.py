@@ -1,6 +1,5 @@
 from google.protobuf.json_format import ParseDict
 from nucliadb_models.internal.predict import QueryInfo
-from nucliadb_models.search import Image, MaxTokens
 from nucliadb_protos import knowledgebox_pb2, utils_pb2
 from nucliadb_sdk import NucliaDBAsync
 
@@ -8,6 +7,7 @@ from nucliadb_agentic_api.ask import logger
 from nucliadb_agentic_api.ask.exceptions import (
     InvalidQueryError,
 )
+from nucliadb_agentic_api.ask.model import Image, MaxTokens
 from nucliadb_agentic_api.ask.predict import (
     SendToPredictError,
     convert_relations,

@@ -4,15 +4,15 @@ import socket
 import pytest
 import uvicorn
 from httpx import ASGITransport, AsyncClient
+from nucliadb_sdk.tests.fixtures import NucliaFixture
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api.app import HTTPApplication
+from nucliadb_agentic_api.ask.settings import settings as ask_settings
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
-from nucliadb_sdk.tests.fixtures import NucliaFixture
-from nucliadb_agentic_api.ask.settings import settings as ask_settings
 
 
 def free_port() -> int:
@@ -48,6 +48,9 @@ async def nucliadb_agentic_api_app(
     nucliadb_agentic_audit_settings: AuditSettings,
     nucliadb: NucliaFixture,
 ):
+
+    nucliadb_agentic_settings.internal_nucliadb = True
+    nucliadb_agentic_settings.internal_nucliadb_url = nucliadb.url
 
     # Configure ask to connect to a real NucliaDB
     ask_settings.nucliadb_reader_address = nucliadb.url

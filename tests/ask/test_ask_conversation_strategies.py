@@ -14,13 +14,13 @@ from nucliadb_models.retrieval import (
     ScoreType,
     SemanticScore,
 )
-from nucliadb_models.search import (
-    Image,
-    SyncAskResponse,
-)
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 from pytest_mock import MockerFixture
 
+from nucliadb_agentic_api.ask.model import (
+    Image,
+    SyncAskResponse,
+)
 from nucliadb_agentic_api.ask.search import ask, rpc
 from nucliadb_agentic_api.ask.search.rpc import augment
 

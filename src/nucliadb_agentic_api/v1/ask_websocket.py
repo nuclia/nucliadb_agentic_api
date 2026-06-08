@@ -7,13 +7,15 @@ from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
 from nucliadb_models.configuration import AskConfig
 from nucliadb_models.resource import NucliaDBRoles
 from nucliadb_models.search import (
-    AskRequest,
     NucliaDBClientType,
 )
 from nucliadb_models.security import RequestSecurity
 from nucliadb_utils.authentication import NucliaUser, requires
 from pydantic import ValidationError
 
+from nucliadb_agentic_api.ask.model import (
+    AskRequest,
+)
 from nucliadb_agentic_api.ask.search import rpc
 from nucliadb_agentic_api.ask.utils.responses import (
     HTTPClientError,

@@ -14,10 +14,10 @@ from nucliadb_models.internal.predict import (
     SentenceSearch,
     TokenSearch,
 )
-from nucliadb_models.search import ChatModel, RephraseModel
 from nucliadb_protos.utils_pb2 import RelationNode
 from nucliadb_utils.utilities import Utility
 
+from nucliadb_agentic_api.ask.model import ChatModel, RephraseModel
 from nucliadb_agentic_api.ask.predict import (
     NUCLIA_LEARNING_ID_HEADER,
     PredictEngine,

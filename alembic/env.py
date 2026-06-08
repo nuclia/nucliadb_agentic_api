@@ -21,6 +21,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from hyperforge.database import metadata
 from nucliadb_agentic_api.db import agentic_configs  # noqa: F401
+from nucliadb_agentic_api.db import sources  # noqa: F401
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))

@@ -1,7 +1,8 @@
 from enum import Enum
 
-from nucliadb_models.search import Image
 from pydantic import BaseModel, Field
+
+from nucliadb_agentic_api.ask.model import Image
 
 
 class FieldInfo(BaseModel):

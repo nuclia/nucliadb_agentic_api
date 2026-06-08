@@ -70,9 +70,6 @@ async def test_mcp_nucliadb_generation_client(
         f"http://{nucliadb_agentic_api_http}/api/v1/kb/{article_dataset}/mcp"
     )
 
-    print(DRIVERS)
-    await asyncio.sleep(1000)
-
     nua_driver = await NUAConnection.model_validate(ROUTER).connect()
 
     manager = await Manager.from_config(

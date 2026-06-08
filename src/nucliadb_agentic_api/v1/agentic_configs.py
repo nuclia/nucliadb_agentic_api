@@ -36,6 +36,8 @@ async def create_agentic_config_endpoint(
         )
     except exceptions.Conflict as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except exceptions.InvalidReference as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     return Response(status_code=201)
 
 
@@ -110,4 +112,6 @@ async def patch_agentic_config_endpoint(
         )
     except exceptions.NotFound as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except exceptions.InvalidReference as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     return Response(status_code=204)

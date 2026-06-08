@@ -12,7 +12,6 @@ from nucliadb_models.internal.predict import (
     RerankModel,
     RerankResponse,
 )
-from nucliadb_models.search import ChatModel, RephraseModel
 from nucliadb_protos.utils_pb2 import RelationNode
 from nucliadb_telemetry import errors, metrics
 from nucliadb_utils.exceptions import LimitsExceededError
@@ -21,6 +20,7 @@ from nucliadb_utils.utilities import Utility, clean_utility, get_utility, set_ut
 from pydantic import ValidationError
 
 from nucliadb_agentic_api.ask import logger
+from nucliadb_agentic_api.ask.model import ChatModel, RephraseModel
 from nucliadb_agentic_api.ask.predict_models import QueryModel
 
 

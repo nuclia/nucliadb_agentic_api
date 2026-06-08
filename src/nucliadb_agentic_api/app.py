@@ -13,6 +13,7 @@ from mcp.server.lowlevel.server import Server as MCPServer
 from mcp.server.streamable_http import (
     StreamableHTTPServerTransport,
 )
+from nucliadb_sdk import NucliaDBAsync
 from nucliadb_telemetry.utils import clean_telemetry
 from nucliadb_utils.settings import AuditSettings
 from prometheus_client import CONTENT_TYPE_LATEST  # type: ignore
@@ -31,6 +32,7 @@ from nucliadb_agentic_api.ask.predict import (
 )
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
+from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.settings import Settings
 
 router = APIRouter()
@@ -56,6 +58,7 @@ async def health_alive():
 
 class HTTPApplication(FastAPI):
     agent_manager: AgenticConfigs
+    source_manager: Sources
     broker: Broker
     hyperforge_drivers: dict[str, "Driver"]
 
@@ -102,6 +105,25 @@ class HTTPApplication(FastAPI):
             keepalive_ms=int(self.settings.pubsub_keepalive_seconds * 1000),
             cluster_mode=self.settings.valkey_cluster_mode,
         )
+        if self.settings.internal_nucliadb:
+            headers = {"X-NUCLIADB-ROLES": "READER"}
+            api_key = None
+            nucliadb_url = self.settings.internal_nucliadb_url
+        else:
+            nucliadb_url = self.settings.external_nucliadb_url
+            api_key = self.settings.external_nucliadb_key
+            headers = {}
+
+        self.arag_reader = NucliaDBAsync(
+            url=nucliadb_url,
+            api_key=api_key,
+            headers=headers,
+        )
+        self.arag_search = NucliaDBAsync(
+            url=nucliadb_url,
+            api_key=api_key,
+            headers=headers,
+        )
 
         self.sses: LRU[Tuple[str, str], StreamableHTTPServerTransport] = LRU(size=100)
         self.mcp_servers: LRU[str, MCPServer] = LRU(size=100)
@@ -111,8 +133,14 @@ class HTTPApplication(FastAPI):
         )
         await self.agent_manager.initialize()
 
+        self.source_manager = await Sources.from_settings(
+            settings=self.data_manager_settings
+        )
+        await self.source_manager.initialize()
+
     async def shutdown(self) -> None:
         await self.agent_manager.finalize()
+        await self.source_manager.finalize()
         await self.broker.finalize()
         await stop_audit_utility()
         await stop_predict_engine()

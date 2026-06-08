@@ -9,8 +9,12 @@ from nucliadb_agentic_api.settings import Settings
 
 
 class FakeAgenticConfigs:
-    def __init__(self):
+    def __init__(self, valid_source_ids: set | None = None):
         self.configs = {}
+        # Set of source_ids that are considered to exist for validation purposes.
+        self.valid_source_ids: set = (
+            valid_source_ids if valid_source_ids is not None else set()
+        )
 
     async def initialize(self):
         pass
@@ -18,7 +22,19 @@ class FakeAgenticConfigs:
     async def finalize(self):
         pass
 
+    async def _check_sources(self, config):
+        from nucliadb_agentic_api import exceptions
+        from nucliadb_agentic_api.db.agentic_configs import _collect_source_ids
+
+        source_ids = _collect_source_ids(config)
+        missing = sorted(set(source_ids) - self.valid_source_ids)
+        if missing:
+            raise exceptions.InvalidReference(
+                f"Source(s) not found: {', '.join(missing)}"
+            )
+
     async def create_agentic_config(self, account, kbid, agentic_id, config):
+        await self._check_sources(config)
         key = (account, kbid, agentic_id)
         if key in self.configs:
             from nucliadb_agentic_api import exceptions
@@ -46,12 +62,27 @@ class FakeAgenticConfigs:
         }
 
     async def patch_agentic_config(self, account, kbid, agentic_id, config):
+        await self._check_sources(config)
         key = (account, kbid, agentic_id)
         if key not in self.configs:
             from nucliadb_agentic_api import exceptions
 
             raise exceptions.NotFound("Agentic configuration not found")
         self.configs[key] = config
+
+    async def delete_configs_referencing_source(self, account, kbid, source_id) -> int:
+        from nucliadb_agentic_api.db.agentic_configs import _collect_source_ids
+
+        to_delete = [
+            key
+            for key, cfg in self.configs.items()
+            if key[0] == account
+            and key[1] == kbid
+            and source_id in _collect_source_ids(cfg)
+        ]
+        for key in to_delete:
+            del self.configs[key]
+        return len(to_delete)
 
 
 def create_api_client(application, roles: list[NucliaDBRoles]) -> AsyncClient:
@@ -63,8 +94,10 @@ def create_api_client(application, roles: list[NucliaDBRoles]) -> AsyncClient:
     return client
 
 
-async def create_app(monkeypatch) -> HTTPApplication:
-    fake_configs = FakeAgenticConfigs()
+async def create_app(
+    monkeypatch, valid_source_ids: set | None = None
+) -> HTTPApplication:
+    fake_configs = FakeAgenticConfigs(valid_source_ids=valid_source_ids)
 
     async def from_settings(cls, settings):
         return fake_configs
@@ -89,6 +122,11 @@ async def create_app(monkeypatch) -> HTTPApplication:
     )
     await app.startup()
     return app
+
+
+# ---------------------------------------------------------------------------
+# Existing CRUD tests (unchanged)
+# ---------------------------------------------------------------------------
 
 
 async def test_agentic_config_crud(monkeypatch):
@@ -147,3 +185,99 @@ async def test_agentic_config_requires_manager(monkeypatch):
             json={"title": "Support agent", "config": {"summarize": {}}},
         )
         assert resp.status_code == 403
+
+
+# ---------------------------------------------------------------------------
+# Source-reference validation tests
+# ---------------------------------------------------------------------------
+
+
+async def test_agentic_config_create_rejects_unknown_source_id(monkeypatch):
+    """Creating a config that references a non-existent source_id returns 422."""
+    app = await create_app(monkeypatch, valid_source_ids=set())
+    async with create_api_client(app, [NucliaDBRoles.MANAGER]) as client:
+        payload = {
+            "title": "Agent",
+            "config": {
+                "smart_agent": {
+                    "sources": [
+                        {"type": "nucliadb", "source_id": "nonexistent-source"}
+                    ],
+                }
+            },
+        }
+        resp = await client.post("/kb/kb/agentic_configs/agent1", json=payload)
+        assert resp.status_code == 422, resp.text
+        assert "nonexistent-source" in resp.json()["detail"]
+
+
+async def test_agentic_config_create_accepts_known_source_id(monkeypatch):
+    """Creating a config with a valid source_id succeeds."""
+    app = await create_app(monkeypatch, valid_source_ids={"my-source"})
+    async with create_api_client(
+        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+    ) as client:
+        payload = {
+            "title": "Agent",
+            "config": {
+                "smart_agent": {
+                    "mode": "reactive",
+                    "sources": [{"type": "nucliadb", "source_id": "my-source"}],
+                }
+            },
+        }
+        resp = await client.post("/kb/kb/agentic_configs/agent1", json=payload)
+        assert resp.status_code == 201, resp.text
+
+        resp = await client.get("/kb/kb/agentic_configs/agent1")
+        assert resp.status_code == 200, resp.text
+        assert resp.json() == payload
+
+
+async def test_agentic_config_patch_rejects_unknown_source_id(monkeypatch):
+    """Patching a config to reference a non-existent source_id returns 422."""
+    app = await create_app(monkeypatch, valid_source_ids={"good-source"})
+    async with create_api_client(app, [NucliaDBRoles.MANAGER]) as client:
+        # Create with a valid source_id
+        payload = {
+            "title": "Agent",
+            "config": {
+                "smart_agent": {
+                    "mode": "reactive",
+                    "sources": [{"type": "nucliadb", "source_id": "good-source"}],
+                }
+            },
+        }
+        await client.post("/kb/kb/agentic_configs/agent1", json=payload)
+
+        # Patch to an invalid source_id
+        bad_patch = {
+            "title": "Agent",
+            "config": {
+                "smart_agent": {
+                    "mode": "reactive",
+                    "sources": [{"type": "nucliadb", "source_id": "bad-source"}],
+                }
+            },
+        }
+        resp = await client.patch("/kb/kb/agentic_configs/agent1", json=bad_patch)
+        assert resp.status_code == 422, resp.text
+
+
+async def test_agentic_config_no_source_id_skips_validation(monkeypatch):
+    """Configs without source_id fields bypass validation entirely."""
+    app = await create_app(monkeypatch, valid_source_ids=set())
+    async with create_api_client(app, [NucliaDBRoles.MANAGER]) as client:
+        payload = {
+            "title": "Agent",
+            "config": {
+                "smart_agent": {
+                    "sources": [
+                        # Inline nucliadb source, no source_id
+                        {"type": "nucliadb", "filter_expression": "label=foo"}
+                    ],
+                }
+            },
+        }
+        resp = await client.post("/kb/kb/agentic_configs/agent1", json=payload)
+        assert resp.status_code == 201, resp.text

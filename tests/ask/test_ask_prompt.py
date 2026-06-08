@@ -8,10 +8,14 @@ from httpx import AsyncClient
 from nucliadb_models.augment import AugmentedParagraph, AugmentRequest, AugmentResponse
 from nucliadb_models.search import (
     SCORE_TYPE,
-    AugmentedContext,
     FindField,
     FindParagraph,
     FindResource,
+)
+from nucliadb_protos import resources_pb2 as rpb2
+
+from nucliadb_agentic_api.ask.model import (
+    AugmentedContext,
     HierarchyResourceStrategy,
     Image,
     KnowledgeboxFindResults,
@@ -20,8 +24,6 @@ from nucliadb_models.search import (
     ParagraphImageStrategy,
     TableImageStrategy,
 )
-from nucliadb_protos import resources_pb2 as rpb2
-
 from nucliadb_agentic_api.ask.search import (
     prompt as chat_prompt,
 )

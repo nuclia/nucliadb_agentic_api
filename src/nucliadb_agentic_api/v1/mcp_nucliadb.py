@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Any, Iterable, Sequence
 import anyio
 import pydantic_core
 from fastapi import Header
-from hyperforge.api import logger
 from hyperforge.api.authentication import requires_one
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.server.fastmcp.utilities.types import Image
@@ -33,13 +32,11 @@ from pydantic import AnyUrl, BaseModel, ConfigDict, Field, ValidationError
 from starlette.requests import Request
 from starlette.responses import Response
 
+from nucliadb_agentic_api import logger
+
 if TYPE_CHECKING:
     from hyperforge.api.app import HTTPApplication
 from anyio.abc import TaskStatus
-from hyperforge.api.models import (
-    NucliaDBRoles,
-)
-from hyperforge.api.v1.router import router
 from mcp.server.streamable_http import (
     StreamableHTTPServerTransport,
 )
@@ -70,6 +67,10 @@ from nucliadb_agentic_api.ask.model import (
     NeighbouringParagraphsStrategy,
 )
 from nucliadb_agentic_api.ask.search.ask import AskResult, ask
+from nucliadb_agentic_api.models import (
+    NucliaDBRoles,
+)
+from nucliadb_agentic_api.v1.router import router
 
 BATCH_GET_DOCUMENTS_MAX = 20
 
@@ -653,7 +654,6 @@ async def mcp_handler(
 ):
     app: HTTPApplication = request.app
 
-    breakpoint()
     logger.debug("Stateless mode: Creating new transport for this request")
     # No session ID needed in stateless mode
     security_settings: TransportSecuritySettings | None = None

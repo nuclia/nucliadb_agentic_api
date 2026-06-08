@@ -6,7 +6,6 @@ from hyperforge.interaction import AragAnswer
 from nucliadb_models.search import (
     KnowledgeboxFindResults,
     NucliaDBClientType,
-    PromptContextOrder,
 )
 from starlette.responses import StreamingResponse
 
@@ -16,6 +15,7 @@ from nucliadb_agentic_api.ask.model import (
     AskRequest,
     AugmentedContext,
     PromptContext,
+    PromptContextOrder,
     parse_max_tokens,
 )
 from nucliadb_agentic_api.ask.search import rpc

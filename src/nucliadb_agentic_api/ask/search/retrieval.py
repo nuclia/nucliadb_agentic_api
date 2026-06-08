@@ -20,26 +20,11 @@ from nucliadb_models.retrieval import (
 )
 from nucliadb_models.search import (
     SCORE_TYPE,
-    AskRequest,
-    ChatContextMessage,
-    ChatModel,
-    ChatOptions,
     FindField,
     FindOptions,
     FindParagraph,
-    FindRequest,
     FindResource,
-    KnowledgeboxFindResults,
     NucliaDBClientType,
-    PreQueriesStrategy,
-    PreQuery,
-    PreQueryResult,
-    PromptContext,
-    PromptContextOrder,
-    Relations,
-    RephraseModel,
-    TextPosition,
-    parse_rephrase_prompt,
 )
 from nucliadb_sdk.v2 import NucliaDBAsync
 from nucliadb_telemetry.errors import capture_exception
@@ -49,6 +34,23 @@ from nucliadb_agentic_api.ask.audit import get_audit
 from nucliadb_agentic_api.ask.exceptions import (
     IncompleteFindResultsError,
     NoRetrievalResultsError,
+)
+from nucliadb_agentic_api.ask.model import (
+    AskRequest,
+    ChatContextMessage,
+    ChatModel,
+    ChatOptions,
+    FindRequest,
+    KnowledgeboxFindResults,
+    PreQueriesStrategy,
+    PreQuery,
+    PreQueryResult,
+    PromptContext,
+    PromptContextOrder,
+    Relations,
+    RephraseModel,
+    TextPosition,
+    parse_rephrase_prompt,
 )
 from nucliadb_agentic_api.ask.predict import (
     RephraseResponse,

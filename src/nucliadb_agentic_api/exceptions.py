@@ -4,3 +4,7 @@ class Conflict(Exception):
 
 class NotFound(Exception):
     """Raised when a resource is not found."""
+
+
+class InvalidReference(Exception):
+    """Raised when a referenced resource does not exist."""

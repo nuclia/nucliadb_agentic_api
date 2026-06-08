@@ -12,7 +12,6 @@ from nucliadb_models.labels import KnowledgeBoxLabels
 from nucliadb_models.retrieval import RetrievalRequest, RetrievalResponse
 from nucliadb_models.search import (
     FindRequest,
-    Image,
     KnowledgeboxFindResults,
     NucliaDBClientType,
 )
@@ -26,6 +25,7 @@ from nucliadb_agentic_api.ask.exceptions import (
     KnowledgeBoxNotFound,
     NucliaDBError,
 )
+from nucliadb_agentic_api.ask.model import Image
 from nucliadb_agentic_api.ask.settings import settings
 from nucliadb_agentic_api.ask.utils.ids import FieldId
 

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from hyperforge.driver import DriverConfig
 from hyperforge.models import Rules
@@ -148,6 +148,10 @@ class AgenticSmartAgentModels(BaseModel):
 
 class NucliaDBAgenticSource(BaseModel):
     type: Literal["nucliadb"] = "nucliadb"
+    source_id: Optional[str] = Field(
+        default=None,
+        description="ID of an existing source in the sources table",
+    )
     description: Optional[str] = None
     filter_expression: Optional[str] = None
     connection: Optional[str] = None
@@ -156,18 +160,30 @@ class NucliaDBAgenticSource(BaseModel):
 
 class GoogleAgenticSource(BaseModel):
     type: Literal["google"] = "google"
+    source_id: Optional[str] = Field(
+        default=None,
+        description="ID of an existing source in the sources table",
+    )
     description: Optional[str] = None
     params: Optional[Dict[str, Any]] = None
 
 
 class PerplexityAgenticSource(BaseModel):
     type: Literal["perplexity"] = "perplexity"
+    source_id: Optional[str] = Field(
+        default=None,
+        description="ID of an existing source in the sources table",
+    )
     description: Optional[str] = None
     params: Optional[Dict[str, Any]] = None
 
 
 class MCPAgenticSource(BaseModel):
     type: Literal["mcp"] = "mcp"
+    source_id: Optional[str] = Field(
+        default=None,
+        description="ID of an existing source in the sources table",
+    )
     description: Optional[str] = None
     uri: str
     headers: Optional[Dict[str, Any]] = None
@@ -177,6 +193,10 @@ class MCPAgenticSource(BaseModel):
 
 class SyncAgenticSource(BaseModel):
     type: Literal["sync"] = "sync"
+    source_id: Optional[str] = Field(
+        default=None,
+        description="ID of an existing source in the sources table",
+    )
     description: Optional[str] = None
     connection: Optional[str] = None
     params: Optional[Dict[str, Any]] = None
@@ -215,3 +235,107 @@ class AgenticConfiguration(BaseModel):
 class AgenticConfigSchema(BaseModel):
     title: Optional[str] = None
     config: AgenticConfiguration
+
+
+# ---------------------------------------------------------------------------
+# Source models
+# ---------------------------------------------------------------------------
+
+
+class NucliaDBSourceConfig(BaseModel):
+    """Filters applied when searching a NucliaDB knowledge box."""
+
+    filter_expression: Optional[str] = Field(
+        default=None,
+        description="Filter expression to narrow NucliaDB search results",
+    )
+    labels: Optional[List[str]] = Field(
+        default=None,
+        description="Label filters to restrict which resources are searched",
+    )
+    resource_filters: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Additional resource-level filters passed to the NucliaDB search API",
+    )
+
+
+class PerplexitySourceConfig(BaseModel):
+    """Configuration for a Perplexity source."""
+
+    enabled_domains: Optional[List[str]] = Field(
+        default=None,
+        description="List of domains that Perplexity is allowed to search",
+    )
+
+
+class MCPSourceConfig(BaseModel):
+    """Full MCP server configuration."""
+
+    uri: str = Field(description="URI of the MCP server endpoint")
+    headers: Optional[Dict[str, str]] = Field(
+        default=None,
+        description="HTTP headers forwarded with every MCP request",
+    )
+    tool_choice_model: Optional[str] = Field(
+        default=None,
+        description="Model used for MCP tool selection",
+    )
+    valid_headers: Optional[List[str]] = Field(
+        default=None,
+        description="Allowlist of header names that may be forwarded",
+    )
+
+
+class GoogleTimeRange(str, Enum):
+    PAST_DAY = "past_day"
+    PAST_WEEK = "past_week"
+    PAST_MONTH = "past_month"
+    PAST_YEAR = "past_year"
+
+
+class GoogleSourceConfig(BaseModel):
+    """Configuration for a Google search source."""
+
+    time_range: Optional[GoogleTimeRange] = Field(
+        default=None,
+        description="Restrict Google results to a recent time window",
+    )
+    exclude_domains: Optional[List[str]] = Field(
+        default=None,
+        description="Domains to exclude from Google search results",
+    )
+
+
+class NucliaDBSourceSchema(BaseModel):
+    type: Literal["nucliadb"] = "nucliadb"
+    title: Optional[str] = None
+    config: NucliaDBSourceConfig
+
+
+class PerplexitySourceSchema(BaseModel):
+    type: Literal["perplexity"] = "perplexity"
+    title: Optional[str] = None
+    config: PerplexitySourceConfig
+
+
+class MCPSourceSchema(BaseModel):
+    type: Literal["mcp"] = "mcp"
+    title: Optional[str] = None
+    config: MCPSourceConfig
+
+
+class GoogleSourceSchema(BaseModel):
+    type: Literal["google"] = "google"
+    title: Optional[str] = None
+    config: GoogleSourceConfig
+
+
+SourceSchema = Annotated[
+    Union[
+        NucliaDBSourceSchema,
+        PerplexitySourceSchema,
+        MCPSourceSchema,
+        GoogleSourceSchema,
+    ],
+    Field(discriminator="type"),
+]

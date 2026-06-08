@@ -35,23 +35,12 @@ from nucliadb_models.resource import ExtractedDataTypeName
 from nucliadb_models.retrieval import GraphScore
 from nucliadb_models.search import (
     SCORE_TYPE,
-    AskRequest,
-    ChatModel,
     DirectionalRelation,
     EntitySubgraph,
-    FindRequest,
-    GraphStrategy,
-    KnowledgeboxFindResults,
     NucliaDBClientType,
-    QueryEntityDetection,
     RelatedEntities,
     RelatedEntity,
     RelationDirection,
-    RelationRanking,
-    Relations,
-    ResourceProperties,
-    TextPosition,
-    UserPrompt,
 )
 from nucliadb_protos import utils_pb2
 from nucliadb_protos.utils_pb2 import RelationNode
@@ -60,6 +49,19 @@ from pydantic import BaseModel
 from sentry_sdk import capture_exception
 
 from nucliadb_agentic_api.ask import logger
+from nucliadb_agentic_api.ask.model import (
+    AskRequest,
+    ChatModel,
+    FindRequest,
+    GraphStrategy,
+    KnowledgeboxFindResults,
+    QueryEntityDetection,
+    RelationRanking,
+    Relations,
+    ResourceProperties,
+    TextPosition,
+    UserPrompt,
+)
 from nucliadb_agentic_api.ask.predict import get_predict
 from nucliadb_agentic_api.ask.search import rpc
 from nucliadb_agentic_api.ask.search.hydrator import (
