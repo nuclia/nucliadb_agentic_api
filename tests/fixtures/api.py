@@ -47,6 +47,7 @@ async def nucliadb_agentic_api_app(
     nucliadb_agentic_data_manager_settings: DataManagerSettings,
     nucliadb_agentic_audit_settings: AuditSettings,
     nucliadb: NucliaFixture,
+    ask_predict_configure,
 ):
 
     nucliadb_agentic_settings.internal_nucliadb = True

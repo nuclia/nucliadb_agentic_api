@@ -1,9 +1,8 @@
 [build-system]
-requires = ["setuptools >= 64"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.11.19,<0.12"]
+build-backend = "uv_build"
 
 [project]
-
 name = "nucliadb_agentic_api"
 version = "1.0.0"
 authors = [{ name = "AI Data Team", email = "learning@nuclia.com" }]
@@ -15,13 +14,43 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 license = "Apache-2.0"
-dependencies = [
-    "pydantic",
+
+[tool.uv.build-backend]
+# Include additional non-Python asset files
+source-include = [
+    "alembic/**/*",
+    "alembic.ini",
+    "VERSION",
+    "frontend/dist/**/*",
+]
+source-exclude = ["tests/**/*"]
+
+[tool.setuptools.packages.find]
+where = ["src/"]
+
+[tool.uv]
+default-groups = "all"
+
+
+[project.urls]
+"Progress" = "https://progress.com"
+"Github" = "https://github.com/nuclia/forge"
+"API Reference" = "https://docs.rag.progress.cloud"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+
+[project.scripts]
+nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
+nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
+
+[dependency-groups]
+
+server = [
     "backoff",
     "nats-py",
     "nuclia>=4.9.25",
-    "nuclia-models>=0.52.1",
-    "nucliadb-models>=6.13.0.post6252",
     "nucliadb-protos",
     "nucliadb-sdk>=6.13.0.post6252",
     "nucliadb-telemetry[otel]",
@@ -50,33 +79,16 @@ dependencies = [
     "tenacity",
     "websockets",
     "redis[hiredis]>=6.4.0",
-    "types-redis>=4.6.0.20241004",
-    "ruff>=0.15.10",
     "alembic>=1.18.4",
     "fastapi",
 ]
 
+models = [
+    "nucliadb-models>=6.13.0.post6252",
+    "nuclia-models>=0.52.1",
+    "pydantic",
+]
 
-[tool.setuptools.packages.find]
-where = ["src/"]
-
-
-[project.urls]
-"Progress" = "https://progress.com"
-"Github" = "https://github.com/nuclia/forge"
-"API Reference" = "https://docs.rag.progress.cloud"
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-
-
-[project.scripts]
-nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
-nucliadb-agentic-server = "nucliadb_agentic_api.server:run"
-nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
-
-
-[dependency-groups]
 dev = [
     # Linting
     "mypy-protobuf>=3.6.0",
@@ -105,4 +117,6 @@ dev = [
     "ty>=0.0.34",
     "sqlalchemy_utils",
     "inline_snapshot",
+    "types-redis>=4.6.0.20241004",
+    "ruff>=0.15.10",
 ]

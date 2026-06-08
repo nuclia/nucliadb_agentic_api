@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 import os
 
 import pytest
@@ -18,7 +19,7 @@ async def nucliadb_agentic_api_server(
     valkey: str,
     agentic_configs_db_server: AgenticConfigs,
     nucliadb: NucliaFixture,
-):
+) -> AsyncGenerator[NucliaDBAgenticSessionManager, None]:
 
     valkey_host, valkey_port = valkey
     valkey_url = f"redis://{valkey_host}:{valkey_port}"
