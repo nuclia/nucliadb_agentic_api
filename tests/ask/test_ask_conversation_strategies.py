@@ -2,8 +2,6 @@ from contextlib import contextmanager
 from unittest.mock import patch
 
 from httpx import AsyncClient
-from nucliadb_agentic_api.ask.search import ask, rpc
-from nucliadb_agentic_api.ask.search.rpc import augment
 from nucliadb_models.augment import AugmentedFileField, AugmentRequest, AugmentResponse
 from nucliadb_models.retrieval import (
     KeywordScore,
@@ -23,7 +21,10 @@ from nucliadb_models.search import (
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 from pytest_mock import MockerFixture
 
-from .fixtures.resources.lambs import lambs_resource
+from nucliadb_agentic_api.ask.search import ask, rpc
+from nucliadb_agentic_api.ask.search.rpc import augment
+
+from .resources.lambs import lambs_resource
 
 
 async def test__validate_mocked_text_block_search(

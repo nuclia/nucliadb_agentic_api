@@ -4,8 +4,8 @@ from nucliadb_protos.resources_pb2 import FieldType
 from nucliadb_protos.utils_pb2 import Relation, RelationMetadata, RelationNode
 from nucliadb_protos.writer_pb2 import BrokerMessage, FieldComputedMetadataWrapper
 
-from tests.utils import inject_message
-from tests.utils.dirty_index import wait_for_sync
+from tests.ask.utils import inject_message
+from tests.ask.utils.dirty_index import wait_for_sync
 
 
 @pytest.fixture(scope="function")

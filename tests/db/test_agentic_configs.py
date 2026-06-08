@@ -1,9 +1,11 @@
 from httpx import ASGITransport, AsyncClient
+from nucliadb_models.resource import NucliaDBRoles
+from nucliadb_utils.settings import AuditSettings
+
 from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
-from nucliadb_models.resource import NucliaDBRoles
 
 
 class FakeAgenticConfigs:
@@ -83,6 +85,7 @@ async def create_app(monkeypatch) -> HTTPApplication:
     app = HTTPApplication(
         settings=Settings(running_environment="test", valkey_cluster_mode=False),
         data_manager_settings=DataManagerSettings(postgresql_dsn="postgresql://test"),
+        audit_settings=AuditSettings(),
     )
     await app.startup()
     return app

@@ -3,7 +3,7 @@ from collections.abc import AsyncIterator
 import pytest
 from httpx import AsyncClient
 
-from tests.utils.dirty_index import mark_dirty, wait_for_sync
+from tests.ask.utils.dirty_index import mark_dirty, wait_for_sync
 
 
 @pytest.fixture(scope="function")

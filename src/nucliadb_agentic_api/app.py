@@ -3,22 +3,18 @@ from typing import Tuple
 
 import prometheus_client  # type: ignore
 from fastapi import APIRouter, FastAPI
-from hyperforge.api import internal, logger
+from fastapi.middleware.cors import CORSMiddleware
 from hyperforge.api.authentication import RaoAuthenticationBackend
-from hyperforge.api.logging import set_sentry
 from hyperforge.broker import Broker
 from hyperforge.broker.redis import RedisBroker
-from hyperforge.configure import GLOBAL_REGISTRY, load_all_configurations, scan
 from hyperforge.driver import Driver
-from hyperforge.feature_flag import get_flag_service
 from lru import LRU
 from mcp.server.lowlevel.server import Server as MCPServer
 from mcp.server.streamable_http import (
     StreamableHTTPServerTransport,
 )
-from nucliadb_telemetry.logs import setup_logging
-from nucliadb_telemetry.settings import LogLevel, LogSettings
-from nucliadb_telemetry.utils import clean_telemetry, setup_telemetry
+from nucliadb_telemetry.utils import clean_telemetry
+from nucliadb_utils.settings import AuditSettings
 from prometheus_client import CONTENT_TYPE_LATEST  # type: ignore
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
@@ -67,6 +63,7 @@ class HTTPApplication(FastAPI):
         self,
         settings: Settings,
         data_manager_settings: DataManagerSettings,
+        audit_settings: AuditSettings,
         *args,
         **kwargs,
     ):
@@ -79,48 +76,25 @@ class HTTPApplication(FastAPI):
         super().__init__(*args, lifespan=lifespan, **kwargs)
         self.settings = settings
         self.data_manager_settings = data_manager_settings
-        for load_module in self.settings.load_modules:
-            try:
-                scan(load_module)
-                load_all_configurations(load_module)
-            except ImportError:
-                logger.error(f"Module {load_module} could not be loaded")
-        self.include_router(internal.router)
+        self.audit_settings = audit_settings
         self.include_router(v1.router)
         self.include_router(router)
         self.add_middleware(
             AuthenticationMiddleware,
             backend=RaoAuthenticationBackend(),
         )
+        self.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
         self.add_middleware(AuditMiddleware)
 
     async def startup(self) -> None:
-        GLOBAL_REGISTRY.clear()
-        setup_logging(
-            settings=LogSettings(
-                debug=self.settings.debug,
-                log_level=LogLevel(self.settings.log_level),
-                logger_levels={
-                    "uvicorn.error": LogLevel.ERROR,
-                    "nucliadb_telemetry": LogLevel.ERROR,
-                    "mcp.client.streamable_http": LogLevel.WARNING,
-                    "mcp.server.lowlevel.server": LogLevel.WARNING,
-                    "hyperforge.configure": LogLevel.WARNING,
-                },
-            )
-        )
-        setup_telemetry(SERVICE_NAME)  # type: ignore
-        if self.settings.sentry_url is not None:
-            set_sentry(
-                self.settings.zone,
-                self.settings.running_environment,
-                self.settings.sentry_url,
-            )
-
-        get_flag_service()  # precache the flag service
 
         await start_predict_engine()
-        await start_audit_utility(SERVICE_NAME)
+        await start_audit_utility(SERVICE_NAME, self.audit_settings)
 
         self.broker = RedisBroker.from_url(
             url=self.settings.valkey_url,
@@ -143,4 +117,3 @@ class HTTPApplication(FastAPI):
         await stop_audit_utility()
         await stop_predict_engine()
         await clean_telemetry(SERVICE_NAME)
-        GLOBAL_REGISTRY.clear()

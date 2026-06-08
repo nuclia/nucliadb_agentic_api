@@ -14,8 +14,13 @@ pytest_plugins = [
     # our own fixtures
     "hyperforge.fixtures",
     "tests.fixtures.standalone",
+    "tests.fixtures.api",
     "tests.fixtures.arag_ask",
-    "tests.fixtures.resources",
     "tests.fixtures.audit",
     "tests.fixtures.predict",
+    "tests.fixtures.db",
+    "tests.fixtures.service",
+    "tests.fixtures.knowledge_graph",
+    "tests.fixtures.knowledgebox",
+    "tests.fixtures.ask_predict",
 ]

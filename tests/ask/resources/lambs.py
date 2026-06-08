@@ -10,7 +10,7 @@ from nucliadb_protos.resources_pb2 import FieldType, Paragraph
 from nucliadb_protos.writer_pb2 import BrokerMessage
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
-from tests.fixtures.resources._vectors import (
+from tests.ask.resources._vectors import (
     adjust_kb_vectorsets,
     lambs_split_2_vector,
     lambs_split_3_vector,
@@ -25,9 +25,9 @@ from tests.fixtures.resources._vectors import (
     lambs_summary_vector,
     lambs_title_vector,
 )
-from tests.utils import inject_message
-from tests.utils.broker_messages import BrokerMessageBuilder
-from tests.utils.dirty_index import wait_for_sync
+from tests.ask.utils import inject_message
+from tests.ask.utils.broker_messages import BrokerMessageBuilder
+from tests.ask.utils.dirty_index import wait_for_sync
 
 
 async def lambs_resource(

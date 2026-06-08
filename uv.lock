@@ -1561,7 +1561,7 @@ wheels = [
 
 [[package]]
 name = "hyperforge"
-version = "1.0.0.post39"
+version = "1.0.0.post48"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiodns" },
@@ -1588,13 +1588,14 @@ dependencies = [
     { name = "ruff" },
     { name = "sentry-sdk" },
     { name = "sqlalchemy" },
+    { name = "starlette" },
     { name = "tenacity" },
     { name = "types-redis" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/e5/369615d1e16209f82cdc625663b169f4e02cb7dbedfd912200016aa40200/hyperforge-1.0.0.post39.tar.gz", hash = "sha256:98d2f0202b9673034131d54364dfc9713a567ac2bc7aa9122774f8f3859189c9", size = 106248, upload-time = "2026-06-04T10:21:52.181Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/ae/600e37c471d07f417c0689301524331b00f992c45fc75e6068f04bfea9e7/hyperforge-1.0.0.post48.tar.gz", hash = "sha256:8e7b880a79487b00ff3f051cdb6df6fd54de4915b679411e37a8222ced750f00", size = 242257, upload-time = "2026-06-08T07:46:24.839Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/1a/2def4f8dce2d8582f6822d95410125bc9f16da30e4012a5746ca792346b1/hyperforge-1.0.0.post39-py3-none-any.whl", hash = "sha256:3a65abf7c90186392449c94e68e10631574c426e7ec20be8a2ce129cc52822c1", size = 124024, upload-time = "2026-06-04T10:21:50.815Z" },
+    { url = "https://files.pythonhosted.org/packages/64/38/334e56c7008452f5a7a8e169a4939cabe9252ec96ce0d7ebc7c78dc10d51/hyperforge-1.0.0.post48-py3-none-any.whl", hash = "sha256:fb95fe4a911163d42593aedcbca15920ba0a9f5054309909201246482955ec9e", size = 278274, upload-time = "2026-06-08T07:46:22.782Z" },
 ]
 
 [[package]]
@@ -2737,7 +2738,7 @@ requires-dist = [
     { name = "databases", extras = ["asyncpg"] },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "hyperforge" },
+    { name = "hyperforge", specifier = ">=1.0.0.post48" },
     { name = "hyperforge-google" },
     { name = "hyperforge-mcp" },
     { name = "hyperforge-nucliadb" },

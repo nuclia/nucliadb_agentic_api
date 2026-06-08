@@ -1,14 +1,11 @@
 from enum import Enum
-from typing import Any, AsyncGenerator, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from hyperforge.driver import DriverConfig
-from hyperforge.interaction import AragAnswer
 from hyperforge.models import Rules
 from nucliadb_models import TextFormat
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
-
-from nucliadb_agentic_api.ask.search.ask import AskResult
 
 
 class StashRoles(str, Enum):

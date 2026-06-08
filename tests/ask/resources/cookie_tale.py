@@ -12,9 +12,9 @@ from nucliadb_protos.writer_pb2_grpc import WriterStub
 from nucliadb_utils.utilities import get_storage
 
 from nucliadb_agentic_api.ask.utils.ids import ParagraphId
-from tests.utils import inject_message
-from tests.utils.broker_messages import BrokerMessageBuilder
-from tests.utils.dirty_index import wait_for_sync
+from tests.ask.utils import inject_message
+from tests.ask.utils.broker_messages import BrokerMessageBuilder
+from tests.ask.utils.dirty_index import wait_for_sync
 
 
 async def cookie_tale_resource(

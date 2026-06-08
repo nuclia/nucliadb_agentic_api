@@ -1,12 +1,7 @@
-from asyncio import Queue
 import asyncio
+from asyncio import Queue
 from collections.abc import AsyncGenerator
 
-from nucliadb_models.search import KnowledgeboxFindResults
-from nucliadb_telemetry.utils import get_telemetry
-from opentelemetry import trace
-
-from nucliadb_agentic_api import SERVICE_NAME
 from hyperforge.interaction import AnswerOperation, AragAnswer
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
@@ -16,7 +11,12 @@ from nuclia_models.predict.generative_responses import (
     StatusGenerativeResponse,
     TextGenerativeResponse,
 )
+from nucliadb_models.search import KnowledgeboxFindResults
 from nucliadb_sdk.v2.exceptions import UnprocessableEntity
+from nucliadb_telemetry.utils import get_telemetry
+from opentelemetry import trace
+
+from nucliadb_agentic_api import SERVICE_NAME
 
 
 def tracer():

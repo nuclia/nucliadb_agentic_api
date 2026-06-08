@@ -1,14 +1,13 @@
 import asyncio
+from typing import TYPE_CHECKING
 
-from hyperforge.interaction import AragAnswer
 from hyperforge.api.v1.interaction import stream_response
+from hyperforge.interaction import AragAnswer
 
 from nucliadb_agentic_api.agentic.ask_transform_to_interaction import (
     interaction_from_ask_request,
 )
 from nucliadb_agentic_api.ask.model import AskRequest
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from nucliadb_agentic_api.app import HTTPApplication

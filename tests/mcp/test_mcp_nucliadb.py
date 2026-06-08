@@ -1,24 +1,22 @@
+import asyncio
 import os
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from hyperforge.configure import get_driver_config_instance
+from hyperforge.configure import (
+    get_driver_config_instance,
+)
 from hyperforge.llm import NUAConnection
 from hyperforge.manager import Manager
 from hyperforge.memory.memory import EphemeralSessionMemory
-from hyperforge.models import MemoryConfig
-from hyperforge.models import Rule, Rules
+from hyperforge.models import MemoryConfig, Rule, Rules
 from hyperforge_mcp.agent import MCPAgent
 from hyperforge_mcp.config import MCPAgentConfig, Transport
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.types import TextContent
-from nuclia import REGIONAL
-from nucliadb_agentic_api.ask.predict import (
-    start_predict_engine,
-    stop_predict_engine,
-)
 from nucliadb_sdk.v2.exceptions import NotFoundError, RateLimitError
-from nucliadb_utils.settings import nuclia_settings
+
+from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
 NUA_KEY = os.environ.get("NUA_KEY", "DUMMY")
 
@@ -62,26 +60,21 @@ RULES: Rules = Rules(
 
 
 async def test_mcp_nucliadb_generation_client(
-    arag_api_http: str,
+    ask_predict_configure,
+    nucliadb_agentic_api_server: NucliaDBAgenticSessionManager,
+    nucliadb_agentic_api_http: str,
     article_dataset: str,
     disable_safe_transport,
 ):
     DRIVERS[0]["config"]["uri"] = (  # type: ignore
-        f"http://{arag_api_http}/api/v1/kb/{article_dataset}/mcp"
+        f"http://{nucliadb_agentic_api_http}/api/v1/kb/{article_dataset}/mcp"
     )
+
+    print(DRIVERS)
+    await asyncio.sleep(1000)
 
     nua_driver = await NUAConnection.model_validate(ROUTER).connect()
 
-    if "http" in nua_driver.region:
-        url = nua_driver.region.strip("/")
-    else:
-        url = REGIONAL.format(region=nua_driver.region).strip("/")
-
-    nuclia_settings.onprem = True
-    nuclia_settings.nuclia_public_url = url
-    nuclia_settings.nuclia_service_account = ROUTER["key"]
-    nuclia_settings.nuclia_zone = nua_driver.region
-    await start_predict_engine()
     manager = await Manager.from_config(
         drivers=[get_driver_config_instance(driver) for driver in DRIVERS],
         nua=nua_driver,
@@ -136,28 +129,20 @@ async def test_mcp_nucliadb_generation_client(
     )
     assert len(question_memory.contexts) == 0
 
-    await stop_predict_engine()
-
 
 async def test_mcp_nucliadb_get_document(
-    arag_api_http: str, article_dataset: str, disable_safe_transport
+    ask_predict_configure,
+    nucliadb_agentic_api_server: NucliaDBAgenticSessionManager,
+    nucliadb_agentic_api_http: str,
+    article_dataset: str,
+    disable_safe_transport,
 ):
     DRIVERS[0]["config"]["uri"] = (  # type: ignore
-        f"http://{arag_api_http}/api/v1/kb/{article_dataset}/mcp"
+        f"http://{nucliadb_agentic_api_http}/api/v1/kb/{article_dataset}/mcp"
     )
 
     nua_driver = await NUAConnection.model_validate(ROUTER).connect()
 
-    if "http" in nua_driver.region:
-        url = nua_driver.region.strip("/")
-    else:
-        url = REGIONAL.format(region=nua_driver.region).strip("/")
-
-    nuclia_settings.onprem = True
-    nuclia_settings.nuclia_public_url = url
-    nuclia_settings.nuclia_service_account = ROUTER["key"]
-    nuclia_settings.nuclia_zone = nua_driver.region
-    await start_predict_engine()
     manager = await Manager.from_config(
         drivers=[get_driver_config_instance(driver) for driver in DRIVERS],
         nua=nua_driver,
@@ -202,28 +187,20 @@ async def test_mcp_nucliadb_get_document(
         expected_text in chunk.text for chunk in question_memory.contexts[0].chunks
     ), "Expected text content from documents not found in retrieved chunks"
 
-    await stop_predict_engine()
-
 
 async def test_mcp_nucliadb_batch_get_documents(
-    arag_api_http: str, article_dataset: str, disable_safe_transport
+    ask_predict_configure,
+    nucliadb_agentic_api_server: NucliaDBAgenticSessionManager,
+    nucliadb_agentic_api_http: str,
+    article_dataset: str,
+    disable_safe_transport,
 ):
     DRIVERS[0]["config"]["uri"] = (  # type: ignore
-        f"http://{arag_api_http}/api/v1/kb/{article_dataset}/mcp"
+        f"http://{nucliadb_agentic_api_http}/api/v1/kb/{article_dataset}/mcp"
     )
 
     nua_driver = await NUAConnection.model_validate(ROUTER).connect()
 
-    if "http" in nua_driver.region:
-        url = nua_driver.region.strip("/")
-    else:
-        url = REGIONAL.format(region=nua_driver.region).strip("/")
-
-    nuclia_settings.onprem = True
-    nuclia_settings.nuclia_public_url = url
-    nuclia_settings.nuclia_service_account = ROUTER["key"]
-    nuclia_settings.nuclia_zone = nua_driver.region
-    await start_predict_engine()
     manager = await Manager.from_config(
         drivers=[get_driver_config_instance(driver) for driver in DRIVERS],
         nua=nua_driver,
@@ -270,28 +247,20 @@ async def test_mcp_nucliadb_batch_get_documents(
         any(expected_text in chunk.text for expected_text in expected_texts)
         for chunk in question_memory.contexts[0].chunks
     ), "Expected text content from documents not found in retrieved chunks"
-    await stop_predict_engine()
 
 
 async def test_mcp_nucliadb_two_steps(
-    arag_api_http: str, article_dataset: str, disable_safe_transport
+    nucliadb_agentic_api_server: NucliaDBAgenticSessionManager,
+    nucliadb_agentic_api_http: str,
+    article_dataset: str,
+    disable_safe_transport,
 ):
     DRIVERS[0]["config"]["uri"] = (  # type: ignore
-        f"http://{arag_api_http}/api/v1/kb/{article_dataset}/mcp"
+        f"http://{nucliadb_agentic_api_http}/api/v1/kb/{article_dataset}/mcp"
     )
 
     nua_driver = await NUAConnection.model_validate(ROUTER).connect()
 
-    if "http" in nua_driver.region:
-        url = nua_driver.region.strip("/")
-    else:
-        url = REGIONAL.format(region=nua_driver.region).strip("/")
-
-    nuclia_settings.onprem = True
-    nuclia_settings.nuclia_public_url = url
-    nuclia_settings.nuclia_service_account = ROUTER["key"]
-    nuclia_settings.nuclia_zone = nua_driver.region
-    await start_predict_engine()
     manager = await Manager.from_config(
         drivers=[get_driver_config_instance(driver) for driver in DRIVERS],
         nua=nua_driver,
@@ -471,13 +440,12 @@ async def test_text_content_audience_includes_assistant():
 
 async def test_call_tool_search_documents_known_exceptions():
     """Known ask() exceptions are converted to descriptive ResourceErrors."""
-    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
-
     from nucliadb_agentic_api.ask.exceptions import (
         InvalidQueryError,
         KnowledgeBoxNotFound,
         NoRetrievalResultsError,
     )
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     base_args = dict(
         x_stf_account="account",

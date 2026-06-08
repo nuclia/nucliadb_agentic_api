@@ -1,7 +1,10 @@
 from logging.config import fileConfig
+import os
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from nucliadb_agentic_api.db.settings import DataManagerSettings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -18,6 +21,18 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from hyperforge.database import metadata
 from nucliadb_agentic_api.db import agentic_configs  # noqa: F401
+
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+migrations_dir = os.path.dirname(current_dir)
+
+config.set_main_option("script_location", migrations_dir)
+
+# Configure Alembic to use our DATABASE_URL and our table definitions...
+if os.environ.get("POSTGRESQL_DSN") or os.environ.get("postgresql_dsn"):
+    url = DataManagerSettings().postgresql_dsn.split("?")[0]
+    config.set_main_option("sqlalchemy.url", url)
+
 
 target_metadata = metadata
 

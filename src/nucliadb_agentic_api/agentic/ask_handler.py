@@ -1,8 +1,8 @@
 import asyncio
+from typing import TYPE_CHECKING
 
 from fastapi import Response
 from hyperforge.interaction import AragAnswer
-
 from nucliadb_models.search import (
     KnowledgeboxFindResults,
     NucliaDBClientType,
@@ -25,9 +25,6 @@ from nucliadb_agentic_api.ask.search.ask import (
 )
 from nucliadb_agentic_api.ask.search.metrics import AskMetrics
 from nucliadb_agentic_api.v1.utils import websocket_to_ask
-
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from nucliadb_agentic_api.app import HTTPApplication

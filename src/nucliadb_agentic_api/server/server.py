@@ -1,25 +1,23 @@
 import asyncio
+from importlib.metadata import version
 from typing import Optional
 
-from importlib.metadata import version
-
-from hyperforge.configure import load_all_configurations, scan
+import sentry_sdk
+from hyperforge.broker.redis import RedisBroker
+from hyperforge.feature_flag import get_flag_service
+from hyperforge.server.cache import ValkeyCache
+from hyperforge.server.run import run_metrics_server
+from nucliadb_telemetry.logs import setup_logging
+from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
+from nucliadb_telemetry.tracerprovider import AsyncTracerProvider
+from nucliadb_telemetry.utils import setup_telemetry
+from sentry_sdk.integrations.excepthook import ExcepthookIntegration
 
 from nucliadb_agentic_api import SERVICE_NAME
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
-from hyperforge.server.cache import ValkeyCache
-from hyperforge.broker.redis import RedisBroker
-from hyperforge.server.settings import Settings
-from hyperforge.server.run import run_metrics_server
-import sentry_sdk
-from hyperforge.db.settings import DataManagerSettings
-from nucliadb_telemetry.logs import setup_logging
-from nucliadb_telemetry.settings import LogLevel, LogSettings
-from nucliadb_telemetry.tracerprovider import AsyncTracerProvider
-from nucliadb_telemetry.utils import get_telemetry, setup_telemetry
-from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-from nucliadb_agentic_api import logger
+from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
+from nucliadb_agentic_api.server.settings import Settings
 
 
 def set_sentry(zone: str, environment: str, sentry_url: str):
@@ -53,13 +51,6 @@ async def run_server(
     )
     await agent_manager.initialize()
 
-    for load_module in settings.load_modules:
-        try:
-            scan(load_module)
-            load_all_configurations(load_module)
-        except ImportError:
-            logger.error(f"Module {load_module} could not be loaded")
-
     session = NucliaDBAgenticSessionManager(
         settings=settings,
         broker=broker,
@@ -74,6 +65,9 @@ def run():  # pragma: no cover
     settings = Settings()
     setup_logging(
         settings=LogSettings(
+            log_format_type=LogFormatType.STRUCTURED
+            if not settings.debug
+            else LogFormatType.PLAIN,
             debug=settings.debug,
             log_level=LogLevel(settings.log_level),
             logger_levels={
@@ -85,14 +79,17 @@ def run():  # pragma: no cover
             },
         )
     )
-    data_manager_settings = DataManagerSettings()
-    tracer = get_telemetry("nuclia-arag-server")
+    tracer = setup_telemetry(SERVICE_NAME)  # type: ignore
     if settings.sentry_url is not None:
         set_sentry(
             settings.zone,
             settings.running_environment,
             settings.sentry_url,
         )
+
+    get_flag_service()  # precache the flag service
+
+    data_manager_settings = DataManagerSettings()
     loop = asyncio.get_event_loop()
 
     loop.create_task(run_metrics_server(settings.metrics_port))

@@ -3,9 +3,10 @@ import json
 
 import pytest
 from httpx import AsyncClient
-from nucliadb_agentic_api.v1 import ask
 from nucliadb_models.search import AskRequest
 from pytest_mock import MockerFixture
+
+from nucliadb_agentic_api.v1 import ask
 
 
 async def test_ask_receives_injected_security_groups__ask(

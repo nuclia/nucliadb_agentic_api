@@ -4,20 +4,19 @@ from time import time
 import databases
 import sqlalchemy as sa
 from hyperforge.database import metadata
+from hyperforge.retrieval.config import RetrievalAgentConfig
+
+from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
+from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
 from nucliadb_agentic_api import exceptions
 from nucliadb_agentic_api.ask.model import AskRequest
-from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.db.settings import DataManagerSettings
+from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import AgenticConfigSchema, AgenticConfiguration
-from hyperforge.retrieval.config import RetrievalAgentConfig
-from hyperforge_google import GoogleDriver
-from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
-from hyperforge_perplexity import PerplexityDriver
-from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 
 SERVICE_NAME = "AGENTIC_CONFIGS_DB"
 
@@ -176,9 +175,7 @@ class AgenticConfigs:
         agentic_config = await self.get_agentic_config(account, agent_id, workflow_id)
         global_drivers = {}
         retrieval_config, drivers = await transform_agentic_config(
-            agentic_config,
-            global_drivers,
-            ask_request,
+            agentic_config, global_drivers, ask_request, agent_id
         )
 
         retrieval_config.drivers.append(

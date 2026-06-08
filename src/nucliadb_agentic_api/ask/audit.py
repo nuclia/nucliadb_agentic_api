@@ -25,7 +25,7 @@ from nucliadb_protos.audit_pb2 import (
 )
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
-from nucliadb_utils.settings import audit_settings
+from nucliadb_utils.settings import AuditSettings
 from nucliadb_utils.utilities import Utility, clean_utility, get_utility, set_utility
 from opentelemetry.trace import INVALID_SPAN, format_trace_id, get_current_span
 from starlette.background import BackgroundTask
@@ -325,7 +325,9 @@ def get_audit() -> StreamAuditStorage | None:
     return get_utility(Utility.AUDIT)
 
 
-async def start_audit_utility(service: str):
+async def start_audit_utility(
+    service: str, audit_settings: AuditSettings
+) -> StreamAuditStorage:
     audit_utility = StreamAuditStorage(
         nats_creds=audit_settings.audit_jetstream_auth,
         nats_servers=audit_settings.audit_jetstream_servers,

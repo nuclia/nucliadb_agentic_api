@@ -1,7 +1,7 @@
 import asyncio
 import json
 
-from fastapi import Header, Query, Request, Response, WebSocket, WebSocketDisconnect
+from fastapi import Header, Query, WebSocket, WebSocketDisconnect
 from hyperforge.api.v1.interaction import WebsocketReceiver, stream_response
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
 from nucliadb_models.configuration import AskConfig

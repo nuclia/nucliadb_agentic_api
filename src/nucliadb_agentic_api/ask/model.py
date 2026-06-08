@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Annotated, Any, Literal, Self
 
 from nucliadb_models import (
@@ -24,7 +25,6 @@ from nucliadb_models.search import (
     TextPosition,
     _validate_resource_filter,
 )
-from enum import Enum
 from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -99,15 +99,6 @@ class MaxTokens(BaseModel):
         title="Maximum answer tokens",
         description="Use to limit the amount of tokens used in the LLM answer",
     )
-
-
-def parse_max_tokens(max_tokens: int | MaxTokens | None) -> MaxTokens | None:
-    if isinstance(max_tokens, int):
-        # If the max_tokens is an integer, it is interpreted as the max_tokens value for the generated answer.
-        # The max tokens for the context is set to None to use the default value for the model (comes in the
-        # NUA's query endpoint response).
-        return MaxTokens(answer=max_tokens, context=None)
-    return max_tokens
 
 
 class Reasoning(BaseModel):

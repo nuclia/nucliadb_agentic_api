@@ -52,13 +52,6 @@ from nucliadb_models.resource import (
     TextFieldData,
 )
 from nucliadb_models.search import (
-    AskRequest,
-    CitationsType,
-    FieldExtensionStrategy,
-    Filter,
-    MetadataExtensionStrategy,
-    MetadataExtensionType,
-    NeighbouringParagraphsStrategy,
     NucliaDBClientType,
 )
 
@@ -66,6 +59,15 @@ from nucliadb_agentic_api.ask.exceptions import (
     InvalidQueryError,
     KnowledgeBoxNotFound,
     NoRetrievalResultsError,
+)
+from nucliadb_agentic_api.ask.model import (
+    AskRequest,
+    CitationsType,
+    FieldExtensionStrategy,
+    Filter,
+    MetadataExtensionStrategy,
+    MetadataExtensionType,
+    NeighbouringParagraphsStrategy,
 )
 from nucliadb_agentic_api.ask.search.ask import AskResult, ask
 
@@ -651,6 +653,7 @@ async def mcp_handler(
 ):
     app: HTTPApplication = request.app
 
+    breakpoint()
     logger.debug("Stateless mode: Creating new transport for this request")
     # No session ID needed in stateless mode
     security_settings: TransportSecuritySettings | None = None

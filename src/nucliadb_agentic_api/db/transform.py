@@ -6,10 +6,16 @@ from hyperforge.driver import Driver
 from hyperforge.models import MemoryConfig, Rules
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge.workflows import WorkflowData
+from hyperforge_google.config import GoogleAgentConfig
 from hyperforge_mcp.config import MCPAgentConfig, Transport
 from hyperforge_mcp.config_driver import MCPHTTPDriverConfig, MCPHTTPInnerConfig
 from hyperforge_nucliadb.basic_ask_config import BasicAskAgentConfig
-from hyperforge_nucliadb.driver_config import NucliaDBConfig, NucliaDBConnection
+from hyperforge_nucliadb.driver_config import (
+    FilterExpression,
+    NucliaDBConfig,
+    NucliaDBConnection,
+)
+from hyperforge_perplexity.config import PerplexityAgentConfig
 from hyperforge_rephrase.config import RephraseAgentConfig
 from hyperforge_smart.config import SmartAgentConfig
 from hyperforge_summarize.config import SummarizeAgentConfig
@@ -22,6 +28,7 @@ async def transform_agentic_config(
     agentic_config: AgenticConfigSchema,
     global_drivers: Dict[str, Driver],
     ask_request: AskRequest | None = None,
+    agent_id: str = "",
 ) -> Tuple[RetrievalAgentConfig, Dict[str, Driver]]:
     drivers = {}
 
@@ -80,7 +87,12 @@ async def transform_agentic_config(
                         url="",  # TODO: pass real URL if needed
                         manager="",
                         description="",
-                        kbid=kbid,
+                        kbid=agent_id,
+                        filter_expression=FilterExpression(
+                            source.filter_expression
+                        )  # TODO
+                        if source.filter_expression
+                        else None,
                     ),
                 )  # TODO: pass real config if needed
                 driver_class = get_driver_klass(

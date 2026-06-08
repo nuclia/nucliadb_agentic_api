@@ -1,19 +1,48 @@
 import asyncio
+import os
+from functools import partial
 
-from hyperforge import api
+import nucliadb_telemetry.context
+import nucliadb_telemetry.metrics
+import prometheus_client
 from hyperforge.broker import Broker
-from hyperforge.engine import get_state
-from hyperforge.interaction import ARAGException, AnswerOperation, AragAnswer
+from hyperforge.configure import load_all_configurations, scan
+from hyperforge.engine import State, get_state
+from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
+from hyperforge.memory import QuestionMemory
 from hyperforge.pubsub import AgentDone, StartInteraction
-from hyperforge.server.session import SessionManager
 from hyperforge.server.cache import Cache
-
+from hyperforge.server.session import SessionManager
+from hyperforge.server.utils import get_memory
 from lru import LRU
+from nucliadb_telemetry import errors
+from nucliadb_telemetry.utils import get_telemetry
+from opentelemetry import trace
 
+from nucliadb_agentic_api import logger
 from nucliadb_agentic_api.ask.model import AskRequest
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
-from hyperforge.server.settings import Settings as ServerSettings
-from nucliadb_agentic_api import logger
+from nucliadb_agentic_api.server import SERVICE_NAME
+from nucliadb_agentic_api.server.settings import Settings as ServerSettings
+
+HOSTNAME = os.environ.get("HOSTNAME", "nucliadb-agentic-api-server").encode()
+
+answer_observer = nucliadb_telemetry.metrics.Observer("nucliadb_agentic_api_answer")
+activation_observer = nucliadb_telemetry.metrics.Observer(
+    "nucliadb_agentic_api_activation"
+)
+answer_running = prometheus_client.Gauge(
+    "nucliadb_agentic_api_running_answers_count",
+    "Number of answering processess currently running",
+)
+
+
+def tracer():
+    provider = get_telemetry(SERVICE_NAME)
+    if provider:
+        return provider.get_tracer(__name__)
+    else:
+        return trace.NoOpTracer()
 
 
 class NucliaDBAgenticSessionManager(SessionManager):
@@ -34,6 +63,13 @@ class NucliaDBAgenticSessionManager(SessionManager):
 
     async def initialize(self, health_check: bool = True):
         await super().initialize(health_check)
+
+        for load_module in self.settings.load_modules:
+            try:
+                scan(load_module)
+                load_all_configurations(load_module)
+            except ImportError:
+                logger.error(f"Module {load_module} could not be loaded")
 
     async def activate(self, message: StartInteraction):
         topic = None
@@ -135,5 +171,86 @@ class NucliaDBAgenticSessionManager(SessionManager):
 
         observation.end()
 
+    async def answer(
+        self,
+        account_id: str,
+        agent_id: str,
+        workflow_id: str,
+        topic: str,
+        state: State,
+        question_memory: QuestionMemory,
+    ):
+        error = None
 
-ask_request
+        keepalive = asyncio.create_task(self.keep_alive(topic))
+        observation = answer_observer()
+        observation.start()
+        answer_running.inc()
+
+        try:
+            callback = partial(self.callback, topic)
+            question_memory.set_callback_fn(callback)
+
+            feedback = partial(self.feedback, topic)
+            question_memory.set_feedback_fn(feedback)
+
+            oauth = partial(self.oauth, topic)
+            question_memory.set_oauth_fn(oauth)
+
+            oauth_callback = partial(
+                self.get_oauth_callback,
+                account_id,
+                agent_id,
+                question_memory.session.id,
+                workflow_id,
+            )
+            question_memory.set_oauth_callback_fn(oauth_callback)
+
+            await self.callback(
+                topic,
+                AragAnswer(operation=AnswerOperation.START),
+            )
+
+            async with asyncio.timeout(self.settings.question_timeout_seconds):
+                await state.agent(question_memory, state.manager)
+
+        except Exception as e:
+            logger.exception("Answering exception")
+            errors.capture_exception(e)
+            error = ARAGException(detail=str(e))
+            observation.set_status("error")
+
+        observation.end()
+        answer_running.dec()
+        keepalive.cancel()
+
+        await self.callback(
+            topic,
+            AragAnswer(
+                exception=error,
+                answer=question_memory.final_answer,
+                answer_citations=question_memory.final_answer_citations,
+                answer_urls=question_memory.final_answer_urls,
+                operation=AnswerOperation.ERROR
+                if error is not None
+                else AnswerOperation.ANSWER,
+                data_visualizations=question_memory.data_visualizations
+                if question_memory.data_visualizations
+                else None,
+            ),
+        )
+        await self.send_message(
+            topic,
+            AgentDone(),
+        )
+
+        try:
+            await question_memory.save()
+            self.process_event(
+                "memory_saved",
+                {"account_id": account_id, "question_memory": question_memory},
+            )
+        except Exception as e:
+            # Log memory errors but don't report them to the user
+            logger.exception("Error saving memory")
+            errors.capture_exception(e)

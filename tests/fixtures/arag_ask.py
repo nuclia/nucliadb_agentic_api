@@ -5,18 +5,18 @@ from unittest.mock import patch
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from hyperforge.api.app import HTTPApplication
-from hyperforge.api.settings import Settings
+from nucliadb_models.resource import NucliaDBRoles
+from nucliadb_sdk.tests.fixtures import NucliaFixture
+from nucliadb_utils.settings import AuditSettings, nuclia_settings
+
+from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.ask.audit import StreamAuditStorage
 from nucliadb_agentic_api.ask.search.rpc import __SDK
 from nucliadb_agentic_api.ask.settings import (
     settings as ask_settings,
 )
 from nucliadb_agentic_api.db.settings import DataManagerSettings
-from nucliadb_models.resource import NucliaDBRoles
-from nucliadb_sdk.tests.fixtures import NucliaFixture
-from nucliadb_utils.settings import nuclia_settings
-from nucliadb_utils.storages.storage import Storage
+from nucliadb_agentic_api.settings import Settings
 
 from .predict import DummyPredictEngine
 
@@ -37,11 +37,11 @@ async def nucliadb_search(
 
 
 @pytest.fixture(scope="function")
-async def arag_ask_api_server(
+async def nucliadb_agentic_ask_api_server(
     standalone_nucliadb: NucliaFixture,
     audit: StreamAuditStorage,
     dummy_predict: DummyPredictEngine,
-    data_manager_settings: DataManagerSettings,
+    nucliadb_agentic_data_manager_settings: DataManagerSettings,
     valkey_url: str,
 ) -> AsyncIterator[FastAPI]:
     nucliadb_address = (
@@ -61,12 +61,9 @@ async def arag_ask_api_server(
                 running_environment="test",
                 valkey_url=valkey_url,
                 valkey_cluster_mode=False,
-                memory_reader_nucliadb=nucliadb_address,
-                memory_writer_nucliadb=nucliadb_address,
-                memory_search_nucliadb=nucliadb_address,
-                dummy_idp=True,
             ),
-            data_manager_settings=data_manager_settings,
+            data_manager_settings=nucliadb_agentic_data_manager_settings,
+            audit_settings=AuditSettings(),
         )
         await app.startup()
         yield app

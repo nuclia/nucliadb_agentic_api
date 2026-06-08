@@ -1,28 +1,18 @@
-from hyperforge.api.v1 import (
-    agents,
-    interaction,
-    mcp_interaction,
+from nucliadb_agentic_api.v1 import (
+    agentic_configs,
+    ask_websocket,
+    ask,
+    mcp_nucliadb,
     oauth,
-    prompt,
-    schema,
-    session,
-    workflows,
 )
+from nucliadb_agentic_api.v1.router import router
 
-from . import agentic_configs, ask, mcp_nucliadb
-from .router import router
 
 __all__ = [
-    "agents",
     "agentic_configs",
+    "ask_websocket",
     "ask",
-    "interaction",
-    "mcp_interaction",
     "mcp_nucliadb",
     "oauth",
-    "prompt",
-    "workflows",
     "router",
-    "session",
-    "schema",
 ]
