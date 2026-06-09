@@ -54,7 +54,7 @@ server = [
     "nucliadb-protos",
     "nucliadb-sdk>=6.13.0.post6252",
     "nucliadb-telemetry[otel]",
-    "nucliadb-utils[storages,fastapi]>=6.14.0.post6507",
+    "nucliadb-utils[storages,fastapi]>=6.14.0.post6518",
     "hyperforge>=1.0.0.post48",
     "hyperforge_mcp",
     "hyperforge_nucliadb",
