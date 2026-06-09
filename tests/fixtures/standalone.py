@@ -168,6 +168,15 @@ def shared_storage(
         mode="json", exclude_defaults=True, exclude_unset=True
     )
 
+    # Replace docker IPs for the bridge IP for inter-container networking
+    for k in env.keys():
+        if isinstance(env[k], str):
+            env[k] = (
+                env[k]
+                .replace("127.0.0.1", "172.17.0.1")
+                .replace("localhost", "172.17.0.1")
+            )
+
     with patch.dict(
         environ,
         env,
