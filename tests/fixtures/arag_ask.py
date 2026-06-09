@@ -28,9 +28,9 @@ async def nucliadb_search(
     # shared storage with nucliadb
     storage_settings,
     # API client
-    arag_ask_api: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
 ) -> AsyncIterator[AsyncClient]:
-    yield arag_ask_api
+    yield nucliadb_agentic_ask_api
 
 
 # Nuclia ARAG Ask
@@ -71,8 +71,10 @@ async def nucliadb_agentic_ask_api_server(
 
 
 @pytest.fixture(scope="function")
-async def arag_ask_api(arag_ask_api_server: FastAPI) -> AsyncIterator[AsyncClient]:
-    client_factory = create_api_client_factory(arag_ask_api_server)
+async def nucliadb_agentic_ask_api(
+    nucliadb_agentic_ask_api_server: FastAPI,
+) -> AsyncIterator[AsyncClient]:
+    client_factory = create_api_client_factory(nucliadb_agentic_ask_api_server)
     async with client_factory(roles=[NucliaDBRoles.READER]) as client:
         yield client
 
