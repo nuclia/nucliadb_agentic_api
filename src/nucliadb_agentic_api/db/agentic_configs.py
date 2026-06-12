@@ -16,7 +16,8 @@ from nucliadb_agentic_api import exceptions
 from nucliadb_agentic_api.ask.model import AskRequest
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.transform import transform_agentic_config
-from nucliadb_agentic_api.models import AgenticConfigSchema, AgenticConfiguration
+from nucliadb_agentic_api.models import AgenticConfigSchema
+from nucliadb_agentic_api.db.sources import Sources
 
 
 # Imported lazily in methods to avoid any load-order sensitivity between the two
@@ -56,13 +57,9 @@ def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
 
 def _collect_source_ids(config: AgenticConfigSchema) -> list[str]:
     """Return all non-None source_id values declared in smart_agent sources."""
-    if not config.config.smart_agent:
+    if not config.smart_agent:
         return []
-    return [
-        source.source_id
-        for source in config.config.smart_agent.sources
-        if source.source_id is not None
-    ]
+    return [source for source in config.smart_agent.sources if source is not None]
 
 
 def _serialize_config(config: AgenticConfigSchema) -> dict:
@@ -70,10 +67,7 @@ def _serialize_config(config: AgenticConfigSchema) -> dict:
 
 
 def _config_from_row(row) -> AgenticConfigSchema:
-    return AgenticConfigSchema(
-        title=row["title"],
-        config=AgenticConfiguration.model_validate(row["config"]),
-    )
+    return AgenticConfigSchema.model_validate(row)
 
 
 class AgenticConfigs:
@@ -117,7 +111,7 @@ class AgenticConfigs:
             sa.update(agentic_config_table)
             .values(
                 title=config.title,
-                config=_serialize_config(config)["config"],
+                config=_serialize_config(config),
             )
             .where(
                 agentic_config_table.c.account == account,
@@ -152,7 +146,7 @@ class AgenticConfigs:
             kbid=kbid,
             agentic_id=agentic_id,
             title=config.title,
-            config=_serialize_config(config)["config"],
+            config=_serialize_config(config),
         )
         await self.database.execute(query)
         CACHE[_cache_key(account, kbid, agentic_id)] = config
@@ -250,30 +244,42 @@ class AgenticConfigs:
         retrieval_config: RetrievalAgentConfig
         agentic_config = await self.get_agentic_config(account, agent_id, workflow_id)
         global_drivers = {}
-        retrieval_config, drivers = await transform_agentic_config(
-            agentic_config, global_drivers, ask_request, agent_id
+
+        source_manager = Sources(self.database, self.settings)
+        retrieval_config, drivers, global_drivers = await transform_agentic_config(
+            agentic_config,
+            global_drivers,
+            source_manager,
+            account,
+            ask_request,
+            agent_id,
         )
 
-        retrieval_config.drivers.append(
-            GoogleDriverConfig(
-                identifier="google",
-                name="google",
-                config=GoogleInnerConfig(
-                    api_key=self.settings.hyperforge_google_key, vertexai=False
-                ),
-            )
-        )
+        for driver_config in drivers.values():
+            retrieval_config.drivers.append(driver_config)
 
-        retrieval_config.drivers.append(
-            PerplexityDriverConfig(
-                identifier="perplexity",
-                name="perplexity",
-                provider="perplexity",
-                config=PerplexityInnerConfig(
-                    key=self.settings.hyperforge_perplexity_key
-                ),
+        if "google" in global_drivers:
+            retrieval_config.drivers.append(
+                GoogleDriverConfig(
+                    identifier="google",
+                    name="google",
+                    config=GoogleInnerConfig(
+                        api_key=self.settings.hyperforge_google_key, vertexai=False
+                    ),
+                )
             )
-        )
+
+        if "perplexity" in global_drivers:
+            retrieval_config.drivers.append(
+                PerplexityDriverConfig(
+                    identifier="perplexity",
+                    name="perplexity",
+                    provider="perplexity",
+                    config=PerplexityInnerConfig(
+                        key=self.settings.hyperforge_perplexity_key
+                    ),
+                )
+            )
         return retrieval_config
 
     async def ensure_workflow_active(

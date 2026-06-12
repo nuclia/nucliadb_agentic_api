@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 from hyperforge.driver import DriverConfig
 from hyperforge.models import Rules
-from nucliadb_models import TextFormat
+from nucliadb_models import FilterExpression, ParamDefault, TextFormat
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
@@ -216,7 +216,7 @@ class AgenticSmartAgentConfiguration(BaseModel):
     mode: AgenticSmartAgentMode = AgenticSmartAgentMode.REACTIVE
     extra_prompt: Optional[str] = None
     models: Optional[AgenticSmartAgentModels] = None
-    sources: List[AgenticSource] = Field(default_factory=list)
+    sources: List[str] = Field(default_factory=list)
 
 
 class AgenticSummarizeConfiguration(BaseModel):
@@ -226,15 +226,11 @@ class AgenticSummarizeConfiguration(BaseModel):
     model: Optional[str] = None
 
 
-class AgenticConfiguration(BaseModel):
+class AgenticConfigSchema(BaseModel):
+    title: Optional[str] = None
     rephrase: Optional[AgenticRephraseConfiguration] = None
     smart_agent: Optional[AgenticSmartAgentConfiguration] = None
     summarize: Optional[AgenticSummarizeConfiguration] = None
-
-
-class AgenticConfigSchema(BaseModel):
-    title: Optional[str] = None
-    config: AgenticConfiguration
 
 
 # ---------------------------------------------------------------------------
@@ -242,25 +238,36 @@ class AgenticConfigSchema(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-class NucliaDBSourceConfig(BaseModel):
-    """Filters applied when searching a NucliaDB knowledge box."""
+class GoogleTimeRange(str, Enum):
+    PAST_DAY = "past_day"
+    PAST_WEEK = "past_week"
+    PAST_MONTH = "past_month"
+    PAST_YEAR = "past_year"
 
-    filter_expression: Optional[str] = Field(
+
+class NucliaDBSourceSchema(BaseModel):
+    type: Literal["nucliadb"] = "nucliadb"
+    description: Optional[str] = None
+
+    filter_expression: FilterExpression | None = Field(
         default=None,
+        title="Filter expression",
         description="Filter expression to narrow NucliaDB search results",
     )
-    labels: Optional[List[str]] = Field(
+    labels: List[str] | None = Field(
         default=None,
         description="Label filters to restrict which resources are searched",
     )
-    resource_filters: Optional[Dict[str, Any]] = Field(
+    resource_filters: List[str] | None = Field(
         default=None,
+        title="Resource filters",
         description="Additional resource-level filters passed to the NucliaDB search API",
     )
 
 
-class PerplexitySourceConfig(BaseModel):
-    """Configuration for a Perplexity source."""
+class PerplexitySourceSchema(BaseModel):
+    type: Literal["perplexity"] = "perplexity"
+    description: Optional[str] = None
 
     enabled_domains: Optional[List[str]] = Field(
         default=None,
@@ -268,8 +275,9 @@ class PerplexitySourceConfig(BaseModel):
     )
 
 
-class MCPSourceConfig(BaseModel):
-    """Full MCP server configuration."""
+class MCPSourceSchema(BaseModel):
+    type: Literal["mcp"] = "mcp"
+    description: Optional[str] = None
 
     uri: str = Field(description="URI of the MCP server endpoint")
     headers: Optional[Dict[str, str]] = Field(
@@ -286,16 +294,9 @@ class MCPSourceConfig(BaseModel):
     )
 
 
-class GoogleTimeRange(str, Enum):
-    PAST_DAY = "past_day"
-    PAST_WEEK = "past_week"
-    PAST_MONTH = "past_month"
-    PAST_YEAR = "past_year"
-
-
-class GoogleSourceConfig(BaseModel):
-    """Configuration for a Google search source."""
-
+class GoogleSourceSchema(BaseModel):
+    type: Literal["google"] = "google"
+    description: Optional[str] = None
     time_range: Optional[GoogleTimeRange] = Field(
         default=None,
         description="Restrict Google results to a recent time window",
@@ -304,30 +305,6 @@ class GoogleSourceConfig(BaseModel):
         default=None,
         description="Domains to exclude from Google search results",
     )
-
-
-class NucliaDBSourceSchema(BaseModel):
-    type: Literal["nucliadb"] = "nucliadb"
-    title: Optional[str] = None
-    config: NucliaDBSourceConfig
-
-
-class PerplexitySourceSchema(BaseModel):
-    type: Literal["perplexity"] = "perplexity"
-    title: Optional[str] = None
-    config: PerplexitySourceConfig
-
-
-class MCPSourceSchema(BaseModel):
-    type: Literal["mcp"] = "mcp"
-    title: Optional[str] = None
-    config: MCPSourceConfig
-
-
-class GoogleSourceSchema(BaseModel):
-    type: Literal["google"] = "google"
-    title: Optional[str] = None
-    config: GoogleSourceConfig
 
 
 SourceSchema = Annotated[

@@ -77,7 +77,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
         ask_request_json = message.arguments.get("ask_request")
         ask_request = None
         if ask_request_json:
-            ask_request = AskRequest.model_validate(ask_request_json)
+            ask_request = AskRequest.model_validate_json(ask_request_json)
 
         logger.info("Activation message received: %s", message)
         observation = activation_observer()

@@ -6,6 +6,7 @@ class Settings(HyperforgeServerSettings):
         "hyperforge_rephrase",
         "hyperforge_nucliadb",
         "hyperforge_summarize",
+        "hyperforge_smart",
         "hyperforge_mcp",
         "hyperforge_google",
         "hyperforge_perplexity",

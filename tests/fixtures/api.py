@@ -29,6 +29,9 @@ async def nucliadb_agentic_settings(valkey_url: str):
         running_environment="test",
         valkey_url=valkey_url,
         valkey_cluster_mode=False,
+        activate_subject="test_activate",
+        answers_subject="test_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
+        oauth_subject="test_oauth_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
     )
 
 
@@ -99,7 +102,7 @@ async def nucliadb_agentic_api_http(
     """Serve the already-started arag_api_app over real HTTP/WebSocket.
 
     Reuses the same HTTPApplication instance as arag_api_app so that only one
-    PredictEngine (and one aiohttp session) is created per test. Uvicorn is
+    PredictEngine (and one session) is created per test. Uvicorn is
     started with lifespan="off" to avoid calling startup/shutdown a second time.
     """
     http_port = free_port()

@@ -25,51 +25,12 @@ from nucliadb_models.search import (
     RankFusion,
     RankFusionName,
     Relations,
+    Reranker,
+    RerankerName,
     ResourceProperties,
     TextPosition,
     _validate_resource_filter,
 )
-
-
-class RerankerName(str, Enum):
-    """Rerankers
-
-    - Predict reranker: after retrieval, send the results to Predict API to
-      rerank it. This method uses a reranker model, so one can expect better
-      results at the expense of more latency.
-
-      This will be the new default
-
-    - No-operation (noop) reranker: maintain order and do not rerank the results
-      after retrieval
-
-    """
-
-    PREDICT_RERANKER = "predict"
-    NOOP = "noop"
-
-
-class _BaseReranker(BaseModel):
-    name: str
-
-    @model_validator(mode="after")
-    def set_discriminator(self) -> Self:
-        # Ensure discriminator is explicitly set so it's always serialized
-        self.name = self.name
-        return self
-
-
-class PredictReranker(_BaseReranker):
-    name: Literal[RerankerName.PREDICT_RERANKER] = RerankerName.PREDICT_RERANKER
-    window: int | None = Field(
-        default=None,
-        le=200,
-        title="Reranker window",
-        description="Number of elements reranker will use. Window must be greater or equal to top_k. Greater values will improve results at cost of retrieval and reranking time. By default, this reranker uses a default of 2 times top_k",
-    )
-
-
-Reranker = Annotated[PredictReranker, Field(discriminator="name")]
 
 
 class Author(str, Enum):

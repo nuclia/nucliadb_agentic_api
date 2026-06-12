@@ -28,11 +28,21 @@ sources_table = sa.Table(
     sa.Column("account", sa.String, primary_key=True, nullable=False, index=True),
     sa.Column("kbid", sa.String, primary_key=True, nullable=False, index=True),
     sa.Column("source_id", sa.String, primary_key=True, nullable=False),
+    sa.Column("agentic_config_id", sa.String, nullable=True, index=True),
     sa.Column("created", sa.DateTime, default=sa.func.now()),
     sa.Column("modified", sa.DateTime, onupdate=sa.func.now()),
-    sa.Column("title", sa.String, nullable=True),
+    sa.Column("description", sa.String, nullable=True),
     sa.Column("type", sa.String, nullable=False),
     sa.Column("config", JSONB, nullable=False),
+    sa.ForeignKeyConstraint(
+        ["account", "kbid", "agentic_config_id"],
+        [
+            "agentic_config_table.account",
+            "agentic_config_table.kbid",
+            "agentic_config_table.agentic_id",
+        ],
+        ondelete="CASCADE",
+    ),
 )
 
 
@@ -48,12 +58,7 @@ def _serialize_source(source: SourceSchema) -> dict:  # type: ignore[valid-type]
 
 
 def _source_from_row(row) -> SourceSchema:  # type: ignore[valid-type]
-    data = {
-        "type": row["type"],
-        "title": row["title"],
-        "config": row["config"],
-    }
-    return _source_adapter.validate_python(data)
+    return _source_adapter.validate_python(row["config"])
 
 
 class Sources:
@@ -107,9 +112,9 @@ class Sources:
             account=account,
             kbid=kbid,
             source_id=source_id,
-            title=serialized.get("title"),
+            description=serialized.get("description"),
             type=serialized["type"],
-            config=serialized["config"],
+            config=serialized,
         )
         await self.database.execute(query)
         CACHE[_cache_key(account, kbid, source_id)] = source
@@ -148,9 +153,9 @@ class Sources:
         query = (
             sa.update(sources_table)
             .values(
-                title=serialized.get("title"),
+                description=serialized.get("description"),
                 type=serialized["type"],
-                config=serialized["config"],
+                config=serialized,
             )
             .where(
                 sources_table.c.account == account,

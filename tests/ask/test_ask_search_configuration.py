@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from fastapi import HTTPException
 from httpx import AsyncClient
-from nucliadb_models.search import FullResourceStrategy
+from nucliadb_agentic_api.ask.model import FullResourceStrategy
 
 
 async def test_search_configuration_ask(

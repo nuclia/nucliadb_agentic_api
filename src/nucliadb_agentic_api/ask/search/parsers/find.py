@@ -373,11 +373,11 @@ class FindParser:
         reranker: Reranker
         top_k = self.item.top_k
 
-        if isinstance(self.item.reranker, agentic_models.RerankerName):
-            if self.item.reranker == agentic_models.RerankerName.NOOP:
+        if isinstance(self.item.reranker, search_models.RerankerName):
+            if self.item.reranker == search_models.RerankerName.NOOP:
                 reranker = NoopReranker()
 
-            elif self.item.reranker == agentic_models.RerankerName.PREDICT_RERANKER:
+            elif self.item.reranker == search_models.RerankerName.PREDICT_RERANKER:
                 # for predict rearnker, by default, we want a x2 factor with a
                 # top of 200 results
                 reranker = PredictReranker(window=min(top_k * 2, 200))
@@ -387,7 +387,7 @@ class FindParser:
                     f"Unknown reranker algorithm: {self.item.reranker}"
                 )
 
-        elif isinstance(self.item.reranker, agentic_models.PredictReranker):
+        elif isinstance(self.item.reranker, search_models.PredictReranker):
             user_window = self.item.reranker.window
             reranker = PredictReranker(window=min(max(user_window or 0, top_k), 200))
 

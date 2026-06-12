@@ -25,11 +25,21 @@ def upgrade() -> None:
         sa.Column("account", sa.String(), nullable=False),
         sa.Column("kbid", sa.String(), nullable=False),
         sa.Column("source_id", sa.String(), nullable=False),
+        sa.Column("agentic_config_id", sa.String(), nullable=True),
         sa.Column("created", sa.DateTime(), server_default=sa.func.now()),
         sa.Column("modified", sa.DateTime(), nullable=True),
-        sa.Column("title", sa.String(), nullable=True),
+        sa.Column("description", sa.String(), nullable=True),
         sa.Column("type", sa.String(), nullable=False),
         sa.Column("config", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["account", "kbid", "agentic_config_id"],
+            [
+                "agentic_config_table.account",
+                "agentic_config_table.kbid",
+                "agentic_config_table.agentic_id",
+            ],
+            ondelete="CASCADE",
+        ),
         sa.PrimaryKeyConstraint("account", "kbid", "source_id"),
     )
     op.create_index(
@@ -44,9 +54,18 @@ def upgrade() -> None:
         ["kbid"],
         unique=False,
     )
+    op.create_index(
+        op.f("ix_sources_table_agentic_config_id"),
+        "sources_table",
+        ["agentic_config_id"],
+        unique=False,
+    )
 
 
 def downgrade() -> None:
+    op.drop_index(
+        op.f("ix_sources_table_agentic_config_id"), table_name="sources_table"
+    )
     op.drop_index(op.f("ix_sources_table_kbid"), table_name="sources_table")
     op.drop_index(op.f("ix_sources_table_account"), table_name="sources_table")
     op.drop_table("sources_table")

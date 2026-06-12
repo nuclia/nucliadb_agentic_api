@@ -31,6 +31,9 @@ async def nucliadb_agentic_api_server(
         internal_nua=False,
         local_openai=None,
         external_nua_api_key=NUA,
+        activate_subject="test_activate",
+        answers_subject="test_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
+        oauth_subject="test_oauth_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
     )
     broker = RedisBroker.from_url(
         url=valkey_url,
@@ -42,9 +45,7 @@ async def nucliadb_agentic_api_server(
         settings=settings,
         broker=broker,
         agent_manager=agentic_configs_db_server,
-        cache=ValkeyCache(
-            Redis(host=valkey_host, port=valkey_port, decode_responses=True)
-        ),
+        cache=ValkeyCache(Redis(host=valkey_host, port=int(valkey_port))),
     )
     await session.initialize()
     yield session

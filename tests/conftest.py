@@ -23,4 +23,5 @@ pytest_plugins = [
     "tests.fixtures.knowledge_graph",
     "tests.fixtures.knowledgebox",
     "tests.fixtures.ask_predict",
+    "tests.fixtures.kbs",
 ]
