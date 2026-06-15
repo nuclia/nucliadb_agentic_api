@@ -104,6 +104,9 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 account=message.account,
                 agent_id=message.agent_id,
                 internal_nucliadb_url=self.settings.internal_nucliadb_url,
+                internal_nucliadb=self.settings.internal_nucliadb,
+                external_nucliadb_url=self.settings.external_nucliadb_url,
+                external_nucliadb_key=self.settings.external_nucliadb_key,
                 workflow_id=message.workflow_id,
                 ask_request=ask_request,
             )

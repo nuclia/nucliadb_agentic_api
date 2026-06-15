@@ -235,6 +235,9 @@ class AgenticConfigs:
         account: str,
         agent_id: str,
         internal_nucliadb_url: str | None = None,
+        internal_nucliadb: bool = True,
+        external_nucliadb_key: str | None = None,
+        external_nucliadb_url: str | None = None,
         default_memory: bool = False,
         workflow_id: str = "default",
         ask_request: AskRequest | None = None,
@@ -251,8 +254,12 @@ class AgenticConfigs:
             global_drivers,
             source_manager,
             account,
-            ask_request,
-            agent_id,
+            internal_nucliadb=internal_nucliadb,
+            internal_nucliadb_url=internal_nucliadb_url,
+            external_nucliadb_url=external_nucliadb_url,
+            external_nucliadb_key=external_nucliadb_key,
+            ask_request=ask_request,
+            agent_id=agent_id,
         )
 
         for driver_config in drivers.values():

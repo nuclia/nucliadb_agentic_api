@@ -83,7 +83,12 @@ async def test_agentic_ask_perplexity(
 
     # Create
     resp = await nucliadb_agentic_api_http_client.post(
-        f"/api/v1/kb/{eric_dataset}/sources/recipes-kb", json=payload
+        f"/api/v1/kb/{eric_dataset}/sources/recipes-kb",
+        json=payload,
+        headers={
+            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ACCOUNT": "eric",
+        },
     )
     assert resp.status_code == 201, resp.text
 
@@ -94,7 +99,12 @@ async def test_agentic_ask_perplexity(
     }
 
     resp = await nucliadb_agentic_api_http_client.post(
-        f"/api/v1/kb/{eric_dataset}/sources/perplexity", json=payload
+        f"/api/v1/kb/{eric_dataset}/sources/perplexity",
+        json=payload,
+        headers={
+            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ACCOUNT": "eric",
+        },
     )
     assert resp.status_code == 201, resp.text
 
@@ -108,7 +118,12 @@ async def test_agentic_ask_perplexity(
         "summarize": {},
     }
     resp = await nucliadb_agentic_api_http_client.post(
-        f"/api/v1/kb/{eric_dataset}/agentic_configs/default", json=payload
+        f"/api/v1/kb/{eric_dataset}/agentic_configs/default",
+        json=payload,
+        headers={
+            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ACCOUNT": "eric",
+        },
     )
     assert resp.status_code == 201, resp.text
 
@@ -119,7 +134,10 @@ async def test_agentic_ask_perplexity(
 
     client = AsyncClient(
         base_url=f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{eric_dataset}",
-        headers={"X-NUCLIADB-ROLES": "MANAGER;READER;WRITER"},
+        headers={
+            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ACCOUNT": "eric",
+        },
     )
     response = await client.post("/ask", json=ask_request.model_dump())
     assert response.status_code == 200, response.text

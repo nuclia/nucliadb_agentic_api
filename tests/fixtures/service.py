@@ -19,6 +19,7 @@ async def nucliadb_agentic_api_server(
     valkey: str,
     agentic_configs_db_server: AgenticConfigs,
     nucliadb: NucliaFixture,
+    disable_safe_transport,
 ) -> AsyncGenerator[NucliaDBAgenticSessionManager, None]:
 
     valkey_host, valkey_port = valkey
@@ -27,7 +28,7 @@ async def nucliadb_agentic_api_server(
         valkey_url=valkey_url,
         valkey_cluster_mode=False,
         internal_nucliadb=True,
-        internal_nucliadb_url=nucliadb.url,
+        internal_nucliadb_url=nucliadb.url.replace("127.0.0.1", "localhost"),
         internal_nua=False,
         local_openai=None,
         external_nua_api_key=NUA,

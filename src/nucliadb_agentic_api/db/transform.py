@@ -22,6 +22,10 @@ async def transform_agentic_config(
     global_drivers: Dict[str, Driver],
     source_manager: Sources,
     account: str,
+    internal_nucliadb: bool = True,
+    internal_nucliadb_url: str | None = None,
+    external_nucliadb_url: str | None = None,
+    external_nucliadb_key: str | None = None,
     ask_request: AskRequest | None = None,
     agent_id: str = "",
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
@@ -73,14 +77,27 @@ async def transform_agentic_config(
             if source_obj.type == "nucliadb":
                 # Same KB different
                 uid = uuid4().hex
+
                 source_config["sources"] = [uid]
                 source_config["module"] = "basic_ask"
+
+                if internal_nucliadb and internal_nucliadb_url:
+                    url = internal_nucliadb_url
+                    key = None
+                elif external_nucliadb_url:
+                    url = external_nucliadb_url
+                    key = external_nucliadb_key
+                else:
+                    raise ValueError(
+                        "No NucliaDB URL configured for internal or external access"
+                    )
                 ndb_driver_config = NucliaDBConfig(
                     identifier=uid,
                     name="NucliaDB",
                     provider="nucliadb",
                     config=NucliaDBConnection(
-                        url="",  # TODO: pass real URL if needed
+                        url=url,
+                        key=key,
                         manager="",
                         description="",
                         kbid=agent_id,

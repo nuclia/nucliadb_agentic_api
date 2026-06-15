@@ -95,7 +95,6 @@ class AgenticAskResult(AskResult):
                 pass
 
     async def start(self) -> str:
-
         self.task = create_task(self.loop())
 
         await self.event_learning_id.wait()
