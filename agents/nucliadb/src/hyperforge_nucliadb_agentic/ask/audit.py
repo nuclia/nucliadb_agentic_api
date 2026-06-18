@@ -28,14 +28,14 @@ from starlette.background import BackgroundTask
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     ChatContextMessage,
     PromptContext,
     PromptContextOrder,
 )
-from nucliadb_agentic_api.ask.predict import AnswerStatusCode
-from nucliadb_agentic_api.ask.utils.proto import client_type
+from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
+from hyperforge_nucliadb_agentic.ask.utils.proto import client_type
 
 
 class RequestContext:

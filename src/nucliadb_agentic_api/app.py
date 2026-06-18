@@ -21,12 +21,12 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
 
 from nucliadb_agentic_api import SERVICE_NAME, v1
-from nucliadb_agentic_api.ask.audit import (
+from hyperforge_nucliadb_agentic.ask.audit import (
     AuditMiddleware,
     start_audit_utility,
     stop_audit_utility,
 )
-from nucliadb_agentic_api.ask.predict import (
+from hyperforge_nucliadb_agentic.ask.predict import (
     start_predict_engine,
     stop_predict_engine,
 )

@@ -3,7 +3,7 @@ import base64
 from httpx import AsyncClient
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     SyncAskResponse,
 )
 

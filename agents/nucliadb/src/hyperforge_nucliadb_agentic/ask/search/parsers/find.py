@@ -34,17 +34,17 @@ from nucliadb_models.search import Filter, FindRequest
 from nucliadb_protos import knowledgebox_pb2
 from nucliadb_sdk import NucliaDBAsync
 from pydantic import ValidationError
-from nucliadb_agentic_api.ask import model as agentic_models
+from hyperforge_nucliadb_agentic.ask import model as agentic_models
 
-from nucliadb_agentic_api.ask import logger
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     InternalParserError,
     InvalidQueryError,
 )
-from nucliadb_agentic_api.ask.search.parsers.fetcher import (
+from hyperforge_nucliadb_agentic.ask.search.parsers.fetcher import (
     Fetcher,
 )
-from nucliadb_agentic_api.ask.search.rerankers import (
+from hyperforge_nucliadb_agentic.ask.search.rerankers import (
     NoopReranker,
     PredictReranker,
     Reranker,

@@ -31,6 +31,12 @@ where = ["src/"]
 [tool.uv]
 default-groups = "all"
 
+[tool.uv.sources]
+nucliadb_agentic_api = { workspace = true }
+hyperforge_nucliadb_agentic = { workspace = true }
+
+[tool.uv.workspace]
+members = [".", "agents/nucliadb"]
 
 [project.urls]
 "Progress" = "https://progress.com"
@@ -48,6 +54,7 @@ nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_op
 [dependency-groups]
 
 server = [
+    "hyperforge_nucliadb_agentic",
     "aiohttp<3.14.0",
     "backoff",
     "nats-py",

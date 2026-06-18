@@ -2,9 +2,9 @@ from httpx import AsyncClient
 from nuclia.sdk import AsyncNucliaSearch
 import pytest
 
-from nucliadb_agentic_api.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 
-from nucliadb_agentic_api.ask.search.ask import AskResult
+from hyperforge_nucliadb_agentic.ask.search.ask import AskResult
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
 pytestmark = [
@@ -139,6 +139,6 @@ async def test_agentic_ask_perplexity(
             "X-NUCLIADB-ACCOUNT": "eric",
         },
     )
-    response = await client.post("/ask", json=ask_request.model_dump())
+    response = await client.post("/ask", json=ask_request.model_dump(), timeout=1000)
     assert response.status_code == 200, response.text
     assert b"Agents" in response.content

@@ -5,7 +5,7 @@ import pytest
 from httpx import AsyncClient
 from pytest_mock import MockerFixture
 
-from nucliadb_agentic_api.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nucliadb_agentic_api.v1 import ask
 
 

@@ -17,12 +17,13 @@ from nucliadb_models.retrieval import (
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 from pytest_mock import MockerFixture
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     Image,
     SyncAskResponse,
 )
-from nucliadb_agentic_api.ask.search import ask, rpc
-from nucliadb_agentic_api.ask.search.rpc import augment
+from hyperforge_nucliadb_agentic.ask.search import ask
+from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.search.rpc import augment
 
 from .resources.lambs import lambs_resource
 

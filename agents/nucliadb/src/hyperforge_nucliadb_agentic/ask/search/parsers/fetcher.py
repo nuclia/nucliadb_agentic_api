@@ -3,18 +3,18 @@ from nucliadb_models.internal.predict import QueryInfo
 from nucliadb_protos import knowledgebox_pb2, utils_pb2
 from nucliadb_sdk import NucliaDBAsync
 
-from nucliadb_agentic_api.ask import logger
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     InvalidQueryError,
 )
-from nucliadb_agentic_api.ask.model import Image, MaxTokens
-from nucliadb_agentic_api.ask.predict import (
+from hyperforge_nucliadb_agentic.ask.model import Image, MaxTokens
+from hyperforge_nucliadb_agentic.ask.predict import (
     SendToPredictError,
     convert_relations,
     get_predict,
 )
-from nucliadb_agentic_api.ask.predict_models import QueryModel
-from nucliadb_agentic_api.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.predict_models import QueryModel
+from hyperforge_nucliadb_agentic.ask.search import rpc
 
 
 class Fetcher:

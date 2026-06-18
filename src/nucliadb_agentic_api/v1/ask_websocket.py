@@ -13,11 +13,11 @@ from nucliadb_models.security import RequestSecurity
 from nucliadb_utils.authentication import NucliaUser, requires
 from pydantic import ValidationError
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
 )
-from nucliadb_agentic_api.ask.search import rpc
-from nucliadb_agentic_api.ask.utils.responses import (
+from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.utils.responses import (
     HTTPClientError,
 )
 from nucliadb_agentic_api.v1.router import router

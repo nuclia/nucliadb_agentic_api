@@ -10,7 +10,7 @@ from nucliadb_utils.storages.local import LocalStorage
 from nucliadb_utils.storages.s3 import S3Storage
 from nucliadb_utils.utilities import get_storage
 
-from nucliadb_agentic_api.ask.utils.ids import (
+from hyperforge_nucliadb_agentic.ask.utils.ids import (
     FIELD_TYPE_PB_TO_STR,
     FieldId,
     ParagraphId,

@@ -1,6 +1,6 @@
 version = 1
 revision = 3
-requires-python = ">=3.10"
+requires-python = ">=3.10, <4"
 resolution-markers = [
     "python_full_version >= '3.15'",
     "python_full_version == '3.14.*'",
@@ -8,6 +8,12 @@ resolution-markers = [
     "python_full_version == '3.12.*'",
     "python_full_version == '3.11.*'",
     "python_full_version < '3.11'",
+]
+
+[manifest]
+members = [
+    "hyperforge-nucliadb-agentic",
+    "nucliadb-agentic-api",
 ]
 
 [[package]]
@@ -1645,6 +1651,42 @@ wheels = [
 ]
 
 [[package]]
+name = "hyperforge-nucliadb-agentic"
+version = "1.0.0"
+source = { editable = "agents/nucliadb" }
+dependencies = [
+    { name = "hyperforge" },
+    { name = "lingua-language-detector", version = "2.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "lingua-language-detector", version = "2.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "nucliadb-sdk" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "hyperforge-rephrase" },
+    { name = "pytest" },
+    { name = "pytest-benchmark" },
+    { name = "pytest-docker-fixtures" },
+    { name = "pytest-lazy-fixtures" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "hyperforge" },
+    { name = "lingua-language-detector" },
+    { name = "nucliadb-sdk" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "hyperforge-rephrase" },
+    { name = "pytest" },
+    { name = "pytest-benchmark" },
+    { name = "pytest-docker-fixtures", specifier = ">=1.4.2" },
+    { name = "pytest-lazy-fixtures" },
+]
+
+[[package]]
 name = "hyperforge-perplexity"
 version = "1.0.0.post27"
 source = { registry = "https://pypi.org/simple" }
@@ -2712,6 +2754,7 @@ server = [
     { name = "hyperforge-google" },
     { name = "hyperforge-mcp" },
     { name = "hyperforge-nucliadb" },
+    { name = "hyperforge-nucliadb-agentic" },
     { name = "hyperforge-perplexity" },
     { name = "hyperforge-rephrase" },
     { name = "hyperforge-smart" },
@@ -2785,6 +2828,7 @@ server = [
     { name = "hyperforge-google" },
     { name = "hyperforge-mcp" },
     { name = "hyperforge-nucliadb" },
+    { name = "hyperforge-nucliadb-agentic", editable = "agents/nucliadb" },
     { name = "hyperforge-perplexity" },
     { name = "hyperforge-rephrase" },
     { name = "hyperforge-smart", specifier = ">=1.0.0.post30" },

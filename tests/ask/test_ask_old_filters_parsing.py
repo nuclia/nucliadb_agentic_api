@@ -42,13 +42,13 @@ from nucliadb_models.filters import (
 from nucliadb_models.labels import KnowledgeBoxLabels, LabelSet, LabelSetKind
 from nucliadb_models.search import FindRequest
 
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     InvalidQueryError,
 )
-from nucliadb_agentic_api.ask.search.parsers.fetcher import (
+from hyperforge_nucliadb_agentic.ask.search.parsers.fetcher import (
     Fetcher,
 )
-from nucliadb_agentic_api.ask.search.parsers.find import (
+from hyperforge_nucliadb_agentic.ask.search.parsers.find import (
     FindParser,
 )
 

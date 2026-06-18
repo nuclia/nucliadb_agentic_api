@@ -6,7 +6,7 @@ from nucliadb_agentic_api.agentic.ask_transform_to_interaction import (
     interaction_from_ask_request,
 )
 from typing_extensions import assert_never
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
     AskResponseItemType,
@@ -27,8 +27,8 @@ from nucliadb_agentic_api.ask.model import (
     StatusAskResponseItem,
     TokensDetail,
 )
-from nucliadb_agentic_api.ask.predict import AnswerStatusCode
-from nucliadb_agentic_api.ask.search.ask import AskResult
+from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
+from hyperforge_nucliadb_agentic.ask.search.ask import AskResult
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
     GenerativeChunk,
@@ -45,8 +45,12 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from hyperforge.api.v1.interaction import stream_response
-from nucliadb_agentic_api.ask.search.metrics import AskMetrics
-from nucliadb_agentic_api.ask.search.retrieval import sorted_prompt_context_list
+from hyperforge_nucliadb_agentic.ask.search.metrics import (
+    AskMetrics,
+)
+from hyperforge_nucliadb_agentic.ask.search.retrieval import (
+    sorted_prompt_context_list,
+)
 
 if TYPE_CHECKING:
     from nucliadb_agentic_api.app import HTTPApplication
@@ -79,6 +83,7 @@ class AgenticAskResult(AskResult):
     async def loop(self):
 
         interaction = interaction_from_ask_request(self.ask_request)
+        msg: AragAnswer
         async for msg in stream_response(
             self.app,  # type: ignore
             None,
@@ -89,7 +94,9 @@ class AgenticAskResult(AskResult):
             workflow_id=self.agentic_config_id,
         ):
             try:
+                print("Putting message in queue:", msg)
                 await self.queue.put(msg)
+                self.event_learning_id.set()
             except (RuntimeError, asyncio.QueueFull):
                 # WebSocket already closed
                 pass
@@ -252,14 +259,20 @@ class AgenticAskResult(AskResult):
             input_nuclia_tokens=0,
             output_nuclia_tokens=0,
             timings={},
+            learning_id=self.nuclia_learning_id,
+            model_name=None,
+            trace_id=None,
         )
 
         while True:
             answer: AragAnswer = await self.queue.get()
+            breakpoint()
             if answer.operation == AnswerOperation.DONE:
+                breakpoint()
                 break
 
             if answer.operation == AnswerOperation.ERROR:
+                breakpoint()
                 raise UnprocessableEntity(
                     message=answer.exception.detail
                     if answer.exception
@@ -267,6 +280,7 @@ class AgenticAskResult(AskResult):
                 )
 
             if answer.operation == AnswerOperation.REASONING and answer.reasoning:
+                breakpoint()
                 if self._reasoning_text is None:
                     self._reasoning_text = answer.reasoning.text
                 else:
@@ -286,11 +300,10 @@ class AgenticAskResult(AskResult):
                 )
 
             if answer.operation == AnswerOperation.ANSWER:
+                breakpoint()
                 if answer.step:
                     # We need to collect tokens
-                    if answer.step.module == "basic_ask":
-                        self.nuclia_learning_id = "answer.step.learning_id"  # TODO
-                        self.event_learning_id.set()
+                    pass
 
                 if answer.possible_answer:
                     # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately

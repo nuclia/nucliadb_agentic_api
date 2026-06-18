@@ -14,7 +14,7 @@ from nucliadb_models.search import (
 )
 from nucliadb_protos import resources_pb2 as rpb2
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AugmentedContext,
     HierarchyResourceStrategy,
     Image,
@@ -24,12 +24,12 @@ from nucliadb_agentic_api.ask.model import (
     ParagraphImageStrategy,
     TableImageStrategy,
 )
-from nucliadb_agentic_api.ask.search import (
+from hyperforge_nucliadb_agentic.ask.search import (
     prompt as chat_prompt,
 )
-from nucliadb_agentic_api.ask.search import rpc
-from nucliadb_agentic_api.ask.search.metrics import Metrics
-from nucliadb_agentic_api.ask.utils.ids import ParagraphId
+from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.search.metrics import Metrics
+from hyperforge_nucliadb_agentic.ask.utils.ids import ParagraphId
 
 
 @pytest.fixture()

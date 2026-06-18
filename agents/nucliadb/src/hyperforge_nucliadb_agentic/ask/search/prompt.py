@@ -23,8 +23,8 @@ from nucliadb_protos.resources_pb2 import FieldComputedMetadata
 from nucliadb_sdk import NucliaDBAsync
 from pydantic import BaseModel
 
-from nucliadb_agentic_api.ask import logger
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.model import (
     AugmentedContext,
     AugmentedTextBlock,
     ConversationalStrategy,
@@ -48,9 +48,9 @@ from nucliadb_agentic_api.ask.model import (
     TextBlockAugmentationType,
     TextPosition,
 )
-from nucliadb_agentic_api.ask.search import rpc
-from nucliadb_agentic_api.ask.search.metrics import Metrics
-from nucliadb_agentic_api.ask.utils.ids import (
+from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.search.metrics import Metrics
+from hyperforge_nucliadb_agentic.ask.utils.ids import (
     FIELD_TYPE_STR_TO_NAME,
     FieldId,
     ParagraphId,

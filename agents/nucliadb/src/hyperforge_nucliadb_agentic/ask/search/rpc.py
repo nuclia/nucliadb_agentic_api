@@ -20,14 +20,14 @@ from nucliadb_sdk.v2.exceptions import NotFoundError, UnknownError
 from pydantic import TypeAdapter
 from typing_extensions import assert_never
 
-from nucliadb_agentic_api.ask import logger
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     KnowledgeBoxNotFound,
     NucliaDBError,
 )
-from nucliadb_agentic_api.ask.model import Image
-from nucliadb_agentic_api.ask.settings import settings
-from nucliadb_agentic_api.ask.utils.ids import FieldId
+from hyperforge_nucliadb_agentic.ask.model import Image
+from hyperforge_nucliadb_agentic.ask.settings import settings
+from hyperforge_nucliadb_agentic.ask.utils.ids import FieldId
 
 
 async def get_resource_uuid_from_slug(

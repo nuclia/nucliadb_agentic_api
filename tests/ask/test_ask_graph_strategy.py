@@ -4,8 +4,9 @@ import pytest
 from httpx import AsyncClient
 from nucliadb_protos.utils_pb2 import RelationNode
 
-from nucliadb_agentic_api.ask.model import SyncAskResponse
-from nucliadb_agentic_api.ask.search import graph_strategy, rpc
+from hyperforge_nucliadb_agentic.ask.model import SyncAskResponse
+from hyperforge_nucliadb_agentic.ask.search import graph_strategy
+from hyperforge_nucliadb_agentic.ask.search import rpc
 
 
 @pytest.mark.parametrize("relation_ranking", ["generative", "reranker"])

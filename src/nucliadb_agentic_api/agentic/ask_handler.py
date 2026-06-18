@@ -7,11 +7,11 @@ from nucliadb_models.search import (
 from starlette.responses import StreamingResponse
 
 from nucliadb_agentic_api.agentic.ask_result import AgenticAskResult
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     parse_max_tokens,
 )
-from nucliadb_agentic_api.ask.search.ask import (
+from hyperforge_nucliadb_agentic.ask.search.ask import (
     handled_ask_exceptions,
 )
 

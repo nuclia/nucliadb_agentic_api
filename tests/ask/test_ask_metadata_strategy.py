@@ -4,7 +4,7 @@ from nucliadb_protos import resources_pb2
 from nucliadb_protos.writer_pb2 import BrokerMessage
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     SyncAskResponse,
 )
 

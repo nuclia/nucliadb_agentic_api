@@ -31,6 +31,7 @@ async def nucliadb_agentic_api_server(
         internal_nucliadb_url=nucliadb.url.replace("127.0.0.1", "localhost"),
         internal_nua=False,
         local_openai=None,
+        pubsub_keepalive_seconds=40,
         external_nua_api_key=NUA,
         activate_subject="test_activate",
         answers_subject="test_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",

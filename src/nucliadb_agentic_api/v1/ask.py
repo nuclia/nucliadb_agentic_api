@@ -14,21 +14,21 @@ from pydantic import ValidationError
 from starlette.responses import StreamingResponse
 
 from nucliadb_agentic_api.agentic.ask_handler import create_agentic_response
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     AnswerJsonSchemaTooLong,
 )
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     SyncAskResponse,
     parse_max_tokens,
 )
-from nucliadb_agentic_api.ask.search import rpc
-from nucliadb_agentic_api.ask.search.ask import (
+from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.search.ask import (
     AskResult,
     ask,
     handled_ask_exceptions,
 )
-from nucliadb_agentic_api.ask.utils.responses import (
+from hyperforge_nucliadb_agentic.ask.utils.responses import (
     HTTPClientError,
 )
 from nucliadb_agentic_api.v1.router import router

@@ -52,12 +52,12 @@ from nucliadb_models.search import (
     NucliaDBClientType,
 )
 
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     InvalidQueryError,
     KnowledgeBoxNotFound,
     NoRetrievalResultsError,
 )
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     CitationsType,
     FieldExtensionStrategy,
@@ -66,7 +66,10 @@ from nucliadb_agentic_api.ask.model import (
     MetadataExtensionType,
     NeighbouringParagraphsStrategy,
 )
-from nucliadb_agentic_api.ask.search.ask import AskResult, ask
+from hyperforge_nucliadb_agentic.ask.search.ask import (
+    AskResult,
+    ask,
+)
 from nucliadb_agentic_api.models import (
     NucliaDBRoles,
 )

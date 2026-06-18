@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing_extensions import assert_never
 
-from nucliadb_agentic_api.ask.model import AskRequest, MaxTokens
-from nucliadb_agentic_api.ask.search.parsers.fetcher import (
+from hyperforge_nucliadb_agentic.ask.model import AskRequest, MaxTokens
+from hyperforge_nucliadb_agentic.ask.search.parsers.fetcher import (
     Fetcher,
 )
 

@@ -17,14 +17,16 @@ from nucliadb_models.internal.predict import (
 from nucliadb_protos.utils_pb2 import RelationNode
 from nucliadb_utils.utilities import Utility
 
-from nucliadb_agentic_api.ask.model import ChatModel, RephraseModel
-from nucliadb_agentic_api.ask.predict import (
+from hyperforge_nucliadb_agentic.ask.model import ChatModel, RephraseModel
+from hyperforge_nucliadb_agentic.ask.predict import (
     NUCLIA_LEARNING_ID_HEADER,
     PredictEngine,
     RephraseResponse,
     convert_relations,
 )
-from nucliadb_agentic_api.ask.predict_models import QueryModel
+from hyperforge_nucliadb_agentic.ask.predict_models import (
+    QueryModel,
+)
 from tests.fixtures.utils import global_utility
 
 DUMMY_RELATION_NODE = [

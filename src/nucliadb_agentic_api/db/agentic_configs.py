@@ -13,7 +13,7 @@ from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
 from nucliadb_agentic_api import exceptions
-from nucliadb_agentic_api.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import AgenticConfigSchema

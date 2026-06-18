@@ -437,7 +437,7 @@ async def test_text_content_audience_includes_assistant():
 
 async def test_call_tool_search_documents_known_exceptions():
     """Known ask() exceptions are converted to descriptive ResourceErrors."""
-    from nucliadb_agentic_api.ask.exceptions import (
+    from agents.nucliadb.src.hyperforge_nucliadb_agentic.ask.exceptions import (
         InvalidQueryError,
         KnowledgeBoxNotFound,
         NoRetrievalResultsError,

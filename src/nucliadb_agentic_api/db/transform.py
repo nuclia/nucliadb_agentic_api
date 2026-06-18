@@ -12,7 +12,7 @@ from hyperforge_nucliadb.driver_config import (
     NucliaDBConnection,
 )
 
-from nucliadb_agentic_api.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.models import AgenticConfigSchema
 

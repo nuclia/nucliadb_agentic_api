@@ -10,7 +10,7 @@ from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api.app import HTTPApplication
-from nucliadb_agentic_api.ask.settings import settings as ask_settings
+from hyperforge_nucliadb_agentic.ask.settings import settings as ask_settings
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
 
@@ -32,6 +32,7 @@ async def nucliadb_agentic_settings(valkey_url: str):
         activate_subject="test_activate",
         answers_subject="test_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
         oauth_subject="test_oauth_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
+        pubsub_keepalive_seconds=60 * 10,
     )
 
 

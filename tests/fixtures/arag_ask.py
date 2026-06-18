@@ -10,9 +10,9 @@ from nucliadb_sdk.tests.fixtures import NucliaFixture
 from nucliadb_utils.settings import AuditSettings, nuclia_settings
 
 from nucliadb_agentic_api.app import HTTPApplication
-from nucliadb_agentic_api.ask.audit import StreamAuditStorage
-from nucliadb_agentic_api.ask.search.rpc import __SDK
-from nucliadb_agentic_api.ask.settings import (
+from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
+from hyperforge_nucliadb_agentic.ask.search.rpc import __SDK
+from hyperforge_nucliadb_agentic.ask.settings import (
     settings as ask_settings,
 )
 from nucliadb_agentic_api.db.settings import DataManagerSettings

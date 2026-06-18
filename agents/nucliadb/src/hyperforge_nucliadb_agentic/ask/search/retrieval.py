@@ -29,13 +29,13 @@ from nucliadb_models.search import (
 from nucliadb_sdk.v2 import NucliaDBAsync
 from nucliadb_telemetry.errors import capture_exception
 
-from nucliadb_agentic_api.ask import logger
-from nucliadb_agentic_api.ask.audit import get_audit
-from nucliadb_agentic_api.ask.exceptions import (
+from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.audit import get_audit
+from hyperforge_nucliadb_agentic.ask.exceptions import (
     IncompleteFindResultsError,
     NoRetrievalResultsError,
 )
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     ChatContextMessage,
     ChatModel,
@@ -52,33 +52,33 @@ from nucliadb_agentic_api.ask.model import (
     TextPosition,
     parse_rephrase_prompt,
 )
-from nucliadb_agentic_api.ask.predict import (
+from hyperforge_nucliadb_agentic.ask.predict import (
     RephraseResponse,
     SendToPredictError,
     get_predict,
 )
-from nucliadb_agentic_api.ask.search import rpc
-from nucliadb_agentic_api.ask.search.highlight import (
+from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.search.highlight import (
     highlight_paragraph,
 )
-from nucliadb_agentic_api.ask.search.hydrator import (
+from hyperforge_nucliadb_agentic.ask.search.hydrator import (
     ResourceHydrationOptions,
     TextBlockHydrationOptions,
 )
-from nucliadb_agentic_api.ask.search.metrics import Metrics
-from nucliadb_agentic_api.ask.search.parsers.fetcher import (
+from hyperforge_nucliadb_agentic.ask.search.metrics import Metrics
+from hyperforge_nucliadb_agentic.ask.search.parsers.fetcher import (
     Fetcher,
 )
-from nucliadb_agentic_api.ask.search.parsers.find import (
+from hyperforge_nucliadb_agentic.ask.search.parsers.find import (
     parse_find,
 )
-from nucliadb_agentic_api.ask.search.rerankers import (
+from hyperforge_nucliadb_agentic.ask.search.rerankers import (
     RerankableItem,
     Reranker,
     RerankingOptions,
 )
-from nucliadb_agentic_api.ask.utils.ids import ParagraphId
-from nucliadb_agentic_api.ask.utils.text_blocks import (
+from hyperforge_nucliadb_agentic.ask.utils.ids import ParagraphId
+from hyperforge_nucliadb_agentic.ask.utils.text_blocks import (
     TextBlockMatch,
 )
 

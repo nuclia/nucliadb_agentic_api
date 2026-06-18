@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from nucliadb_agentic_api.ask.model import Image
+from hyperforge_nucliadb_agentic.ask.model import Image
 
 
 class FieldInfo(BaseModel):

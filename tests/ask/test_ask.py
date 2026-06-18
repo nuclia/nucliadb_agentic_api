@@ -17,7 +17,7 @@ from nucliadb_protos import resources_pb2 as rpb2
 from nucliadb_protos import writer_pb2 as wpb2
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
-from nucliadb_agentic_api.ask.model import (
+from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     AskResponseItem,
     AugmentedTextBlock,
@@ -32,7 +32,7 @@ from nucliadb_agentic_api.ask.model import (
     RagStrategies,
     SyncAskResponse,
 )
-from nucliadb_agentic_api.ask.predict import (
+from hyperforge_nucliadb_agentic.ask.predict import (
     AnswerStatusCode,
     get_predict,
 )

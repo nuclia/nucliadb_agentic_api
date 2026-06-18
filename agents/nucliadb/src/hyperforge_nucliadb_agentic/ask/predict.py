@@ -19,9 +19,9 @@ from nucliadb_utils.settings import nuclia_settings
 from nucliadb_utils.utilities import Utility, clean_utility, get_utility, set_utility
 from pydantic import ValidationError
 
-from nucliadb_agentic_api.ask import logger
-from nucliadb_agentic_api.ask.model import ChatModel, RephraseModel
-from nucliadb_agentic_api.ask.predict_models import QueryModel
+from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.model import ChatModel, RephraseModel
+from hyperforge_nucliadb_agentic.ask.predict_models import QueryModel
 
 
 class SendToPredictError(Exception):
