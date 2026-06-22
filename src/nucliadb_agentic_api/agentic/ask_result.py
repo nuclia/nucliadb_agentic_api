@@ -109,7 +109,6 @@ class AgenticAskResult(AskResult):
             workflow_id=self.agentic_config_id,
         ):
             try:
-                print("Putting message in queue:", msg)
                 await self.queue.put(msg)
                 self.event_learning_id.set()
             except (RuntimeError, asyncio.QueueFull):
@@ -247,7 +246,6 @@ class AgenticAskResult(AskResult):
                 )
 
             if answer.operation == AnswerOperation.REASONING and answer.reasoning:
-                breakpoint()
                 if self._reasoning_text is None:
                     self._reasoning_text = answer.reasoning.text
                 else:
@@ -366,7 +364,7 @@ class AgenticAskResult(AskResult):
             trace_id=None,
         )
 
-        self._answer_text = StatusGenerativeResponse(
+        self._status = StatusGenerativeResponse(
             code=AnswerStatusCode.SUCCESS.value,
             details=None,
         )

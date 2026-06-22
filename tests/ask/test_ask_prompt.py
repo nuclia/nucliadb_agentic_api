@@ -219,7 +219,7 @@ async def test_hierarchy_prompt_context(nucliadb_search: AsyncClient, kb):
 
     with (
         mock.patch(
-            "nucliadb_agentic_api.ask.search.prompt.rpc.augment",
+            "hyperforge_nucliadb_agentic.ask.search.prompt.rpc.augment",
             side_effect=mocked_augment,
         ) as augment,
     ):
@@ -366,11 +366,11 @@ async def test_prompt_context_image_context_builder() -> None:
     )
     with (
         mock.patch(
-            "nucliadb_agentic_api.ask.search.prompt.get_paragraph_page_number",
+            "hyperforge_nucliadb_agentic.ask.search.prompt.get_paragraph_page_number",
             return_value=1,
         ),
         mock.patch(
-            "nucliadb_agentic_api.ask.search.prompt.rpc.download_image",
+            "hyperforge_nucliadb_agentic.ask.search.prompt.rpc.download_image",
             return_value=Image(b64encoded="an-image", content_type="image/png"),
         ),
     ):
@@ -401,7 +401,7 @@ async def test_prompt_context_builder_with_extra_image_context() -> None:
         ordered_paragraphs=[],
         user_image_context=[user_image],
     )
-    with patch("nucliadb_agentic_api.ask.search.prompt.default_prompt_context"):
+    with patch("hyperforge_nucliadb_agentic.ask.search.prompt.default_prompt_context"):
         # context = chat_prompt.CappedPromptContext(max_size=int(1e6))
         _, _, context_images, _ = await builder.build()
 
@@ -424,7 +424,7 @@ async def test_prompt_context_builder_with_query_image() -> None:
         query_image=query_image,
     )
 
-    with patch("nucliadb_agentic_api.ask.search.prompt.default_prompt_context"):
+    with patch("hyperforge_nucliadb_agentic.ask.search.prompt.default_prompt_context"):
         # context = chat_prompt.CappedPromptContext(max_size=int(1e6))
         _, _, context_images, _ = await builder.build()
 

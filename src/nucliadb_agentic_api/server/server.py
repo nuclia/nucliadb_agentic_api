@@ -2,6 +2,7 @@ import asyncio
 from importlib.metadata import version
 from typing import Optional
 
+from hyperforge_nucliadb_agentic.ask.audit import start_audit_utility
 import sentry_sdk
 from hyperforge.broker.redis import RedisBroker
 from hyperforge.feature_flag import get_flag_service
@@ -18,6 +19,7 @@ from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 from nucliadb_agentic_api.server.settings import Settings
+from nucliadb_utils.settings import AuditSettings
 
 
 def set_sentry(zone: str, environment: str, sentry_url: str):
@@ -38,6 +40,8 @@ async def run_server(
 ) -> NucliaDBAgenticSessionManager:
     if tracer:
         await setup_telemetry(SERVICE_NAME)
+
+    audit_settings: AuditSettings = AuditSettings()
     # Connect to Valkey
     broker = RedisBroker.from_url(
         url=settings.valkey_url,
@@ -56,6 +60,7 @@ async def run_server(
         broker=broker,
         agent_manager=agent_manager,  # type: ignore
         cache=ValkeyCache(broker._client),
+        audit_settings=audit_settings,
     )
 
     return session

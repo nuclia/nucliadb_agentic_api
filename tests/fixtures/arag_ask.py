@@ -41,6 +41,7 @@ async def nucliadb_agentic_ask_api_server(
     standalone_nucliadb: NucliaFixture,
     audit: StreamAuditStorage,
     dummy_predict: DummyPredictEngine,
+    nucliadb_agentic_audit_settings: AuditSettings,
     nucliadb_agentic_data_manager_settings: DataManagerSettings,
     valkey_url: str,
 ) -> AsyncIterator[FastAPI]:
@@ -63,7 +64,7 @@ async def nucliadb_agentic_ask_api_server(
                 valkey_cluster_mode=False,
             ),
             data_manager_settings=nucliadb_agentic_data_manager_settings,
-            audit_settings=AuditSettings(),
+            audit_settings=nucliadb_agentic_audit_settings,
         )
         await app.startup()
         yield app

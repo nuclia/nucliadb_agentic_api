@@ -10,6 +10,7 @@ from redis.asyncio import Redis
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 from nucliadb_agentic_api.server.settings import Settings as ServerSettings
+from nucliadb_utils.settings import AuditSettings
 
 NUA = os.environ.get("NUA_KEY", "DUMMY")
 
@@ -19,6 +20,7 @@ async def nucliadb_agentic_api_server(
     valkey: str,
     agentic_configs_db_server: AgenticConfigs,
     nucliadb: NucliaFixture,
+    nucliadb_agentic_audit_settings: AuditSettings,
     disable_safe_transport,
 ) -> AsyncGenerator[NucliaDBAgenticSessionManager, None]:
 
@@ -48,6 +50,7 @@ async def nucliadb_agentic_api_server(
         broker=broker,
         agent_manager=agentic_configs_db_server,
         cache=ValkeyCache(Redis(host=valkey_host, port=int(valkey_port))),
+        audit_settings=nucliadb_agentic_audit_settings,
     )
     await session.initialize()
     yield session

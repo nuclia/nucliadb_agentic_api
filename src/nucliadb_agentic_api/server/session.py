@@ -2,6 +2,10 @@ import asyncio
 import os
 from functools import partial
 
+from hyperforge_nucliadb_agentic.ask.audit import (
+    start_audit_utility,
+    stop_audit_utility,
+)
 import nucliadb_telemetry.context
 import nucliadb_telemetry.metrics
 import prometheus_client
@@ -24,6 +28,8 @@ from nucliadb_agentic_api import logger
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.server import SERVICE_NAME
 from nucliadb_agentic_api.server.settings import Settings as ServerSettings
+from nucliadb_utils.settings import AuditSettings
+from hyperforge.configure import GLOBAL_REGISTRY
 
 HOSTNAME = os.environ.get("HOSTNAME", "nucliadb-agentic-api-server").encode()
 
@@ -49,11 +55,13 @@ class NucliaDBAgenticSessionManager(SessionManager):
     def __init__(
         self,
         settings: ServerSettings,
+        audit_settings: AuditSettings,
         broker: Broker,
         agent_manager: AgenticConfigs,
         cache: Cache,
     ):
         self.settings = settings
+        self.audit_settings = audit_settings
         self.agent_manager = agent_manager
         self.broker = broker
         self.memory: LRU = LRU(800)
@@ -64,12 +72,19 @@ class NucliaDBAgenticSessionManager(SessionManager):
     async def initialize(self, health_check: bool = True):
         await super().initialize(health_check)
 
+        await start_audit_utility(SERVICE_NAME, self.audit_settings)
+
         for load_module in self.settings.load_modules:
             try:
                 scan(load_module)
                 load_all_configurations(load_module)
             except ImportError:
                 logger.error(f"Module {load_module} could not be loaded")
+
+    async def finalize(self):
+        await super().finalize()
+        await stop_audit_utility()
+        GLOBAL_REGISTRY.clear()
 
     async def activate(self, message: StartInteraction):
         topic = None
@@ -102,7 +117,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
             # Get or load session
             config = await self.agent_manager.get_agent_config(
                 account=message.account,
-                agent_id=message.agent_id,
+                kbid=message.agent_id,
                 internal_nucliadb_url=self.settings.internal_nucliadb_url,
                 internal_nucliadb=self.settings.internal_nucliadb,
                 external_nucliadb_url=self.settings.external_nucliadb_url,

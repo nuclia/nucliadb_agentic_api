@@ -27,11 +27,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 22 Jun 2026 21:08:16 GMT
+      - Mon, 22 Jun 2026 22:09:07 GMT
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '5'
+      - '4'
     status:
       code: 200
       message: OK
@@ -85,7 +85,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e047e98b01a5429482e4362ba574aaf1
+      - f97132b427c14b82ad8139160a4defc8
       x-origin:
       - RAO
       x-session:
@@ -98,24 +98,26 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"object","object":{"rephrased_question":"Provide healthy
-        and tasty dessert options.","rules":["Focus on desserts that are both nutritious
-        and appealing.","Consider common dietary restrictions or preferences if applicable,
-        but prioritize general health and taste."],"reason":"The original question
-        was a statement of desire. Rephrasing it as a direct request (''Provide...'')
-        makes it more actionable for the agent. Adding ''options'' implies that multiple
-        suggestions are welcome, which is generally more helpful than a single suggestion."}}}
+      string: '{"chunk":{"type":"object","object":{"rephrased_question":"Provide dessert
+        options that are both healthy and delicious.","rules":["Focus on desserts
+        that meet both the health and taste criteria.","Consider a variety of dessert
+        types if possible."],"reason":"The original question ''I want a desert that
+        is healthy and tasty'' uses ''desert'' instead of ''dessert'', which is a
+        common typo. Rephrasing to ''dessert'' ensures the search is for the correct
+        item. Additionally, rephrasing to ''Provide dessert options that are both
+        healthy and delicious'' makes the request more actionable for a retrieval
+        system."}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":13,"output_tokens":9,"timings":{"generative":0.98566229903372},"input_nuclia_tokens":0.013,"output_nuclia_tokens":0.009}}
+        {"chunk":{"type":"meta","input_tokens":13,"output_tokens":11,"timings":{"generative":1.0092042500000389},"input_nuclia_tokens":0.013,"output_nuclia_tokens":0.011}}
 
-        {"chunk":{"normalized_tokens":{"input":0.01334,"output":0.00944,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.01334,"output":0.01136,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      - h3=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -123,17 +125,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:16 GMT
+      - Mon, 22 Jun 2026 22:09:07 GMT
       nuclia-learning-id:
-      - 08e05ab31eb3465993219e2d5379c9ed
+      - 0c7d5da0c85946248db8934df12ff664
       nuclia-learning-model:
       - gemini-2.5-flash-lite
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '992'
+      - '1014'
       x-nuclia-trace-id:
-      - 84dffd81b791e5b2c50fb24ecda99012
+      - 62372a8f2096e1028a3cecf5fb91e67f
     status:
       code: 200
       message: OK
@@ -146,571 +148,8 @@ interactions:
       a recipe, always recommend the most relevant one from our favorite recipes,
       but if asked about a very specific recipe that is not in our favorites, check
       the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "You are a smart assistant that
-      selects tools to gather information needed to answer a user''s question.\nChoose
-      the best tool or tools for the task. You may call multiple tools in one turn.\nCall
-      task_complete when you have enough information to answer the question.\n\nExtra
-      instructions: When asked about a recipe, always recommend the most relevant
-      one from our favorite recipes, but if asked about a very specific recipe that
-      is not in our favorites, check the recipes from internet.\n\n\nChoose the best
-      tool or tools for the task. Call task_complete when you have enough information."},
-      "citations": null, "citation_threshold": null, "generative_model": "chatgpt-4.1",
-      "max_tokens": null, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      null, "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
-      {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Ask a question in the Knowledge Box filtered by a specific title.
-      Useful when the user wants information about a known document.", "parameters":
-      {"type": "object", "properties": {"title": {"type": "string", "description":
-      "The title to filter the ask operation in the Knowledge Box."}, "question":
-      {"type": "string", "description": "The question to ask in the Knowledge Box."}},
-      "additionalProperties": false}}, {"name": "ask_agent__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Perform a faceted search in the Knowledge Box. Useful to get
-      counts of different categories or facets within the data.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__dc86e77a-5f9e-4952-858e-81ea23e67f17",
-      "description": "Search for images in a resource in the Knowledge Box filtered
-      by a specific title and relevant image information. Useful when the user wants
-      to retrieve selected images from known documents.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to filter
-      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
-      "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__36553045-dcd7-4a6e-81e9-f8837687b9bd",
-      "description": "Performs an internet search using Perplexity Search to get context
-      to answer questions.", "parameters": {"type": "object", "properties": {"question":
-      {"type": "string", "description": "The question to search for on the internet."}},
-      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
-      this tool when you have gathered enough information to answer the question and
-      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '6119'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e047e98b01a5429482e4362ba574aaf1
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17":[{"function":{"name":"catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17","arguments":{"question":"healthy
-        and tasty dessert recipes"}}}]}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":436,"output_tokens":70,"timings":{"generative_first_chunk":1.3570575420017121,"generative":1.3586747520021163},"input_nuclia_tokens":0.436,"output_nuclia_tokens":0.07}}
-
-        {"chunk":{"normalized_tokens":{"input":0.436,"output":0.0704,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Mon, 22 Jun 2026 21:08:17 GMT
-      nuclia-learning-id:
-      - 7041d0e5ea174fb597cb75b9d4bcf4c5
-      nuclia-learning-model:
-      - chatgpt-4.1
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1365'
-      x-nuclia-trace-id:
-      - 167383a8219ed0e5ce8550deffa6c464
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-label-selection",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nThe user wants to perform
-      a catalog search in the Knowledge Box based on a question.\n\nYou need to identify
-      the most relevant labels and provide a filter expression to perform the catalog
-      search. The filter expression should be in the format used by NucliaDB.\n\nThe
-      nucliadb format for filter expressions is as follows:\n- Use \"any\" to indicate
-      that any of the properties can match (logical OR).\n- Use \"all\" to indicate
-      that all of the listed labels must match (logical AND).\n- Use \"none\" to indicate
-      that the listed labels should not match (logical NOT).\n\nSequential filters
-      are treated as AND conditions.\n\nFor filtering by labels, use the format \"/l/{labelset}/{label}\".\n\nFor
-      filtering by label sets without specifying a label, use the format \"/l/{labelset}/\".\n\nFor
-      filtering by file types, use the media type prefixed by \"/icon/\".\n\n**Example
-      1:**\nQuestion: ''Find all documents related to technology and health.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''any'': [''/l/topic/technology'',
-      ''/l/topic/health'']}], \"reasoning\": \"The question is about documents related
-      to technology and health, so we create a filter expresion to match any of the
-      labels technology or health in the topic label set.\"}\n\n**Example 2:**\nQuestion:
-      ''Get all PDFs that are research articles.''\nAvailable Labels:\n{\"topic\":
-      [\"technology\", \"health\", \"sports\"], \"category\": [\"research\", \"news\",
-      \"blog\"]}\nAnswer:\n{\"filters\": [{''all'': [''/l/category/research'', ''/icon/application/pdf'']}],
-      \"reasoning\": \"The question specifies research articles in PDF format, so
-      we create a filter expression that requires both the category to be research
-      and the media type to be PDF.\"}\n\n**Example 3:**\nQuestion: ''Show me all
-      documents without a set topic, that are either PDFs or Word format.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''none'': [''/l/topic'']},
-      {''any'': [''/icon/application/pdf'', ''/icon/application/vnd.openxmlformats-officedocument.wordprocessingml.document'']}],
-      \"reasoning\": \"The question asks for documents excluding sports, so we use
-      a ''not'' filter for the topic sports, and an ''any'' filter for the media types
-      PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
-      provide a filter expression to perform the catalog search. The question is:
-      ''healthy and tasty dessert recipes''.\nHere are the available labels in the
-      Knowledge Box:\n- bla: one\n- bli: one\n- category: yoga, one\n- sections16022026:
-      AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss,
-      S_ChangesInEquity, S_CashFlows, N_GenInfo, N_PolicyInfo, N_Cash, N_TradeReceivables,
-      N_Inventories, N_PropertyRightOfUse, N_IntangibleAssets, N_InvestmentProp, N_JointVentures,
-      N_FinancialAssets, N_TradePayables, N_Borrowings, N_Equity, N_Revenue, N_CostOfSales,
-      N_GenAdminExpens, N_OtherIncomeExpenses, N_FinIncomeExpenses, N_Employee, N_Taxation,
-      N_EarningsPerShare, N_SegmentInfo, N_RelatedParty, N_ContingentLiabil, N_Events,
-      N_OtherNotes, NR_CoverPage, NR_TableOfContents, NR_CorpInfo, NR_FinHighlights,
-      NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis, NR_DirectorsRep, NR_CorpGov,
-      NR_Schedules, NR_StatDeclarations, NR_Glossary, NR_NonRelevant, NR_Form_EstTax,
-      NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344, NR_Form_1323, O_unknown,
-      NR_DepreciationForm, NR_TaxAssmntComp\n"}, "citations": false, "citation_threshold":
-      null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
-      {}, "prefer_markdown": null, "json_schema": {"type": "object", "title": "Catalog
-      Filter Expression Selection", "description": "Response schema for selected filter
-      expression.", "properties": {"reasoning": {"type": "string", "description":
-      "Reasoning behind the selection of the filter expression."}, "filters": {"type":
-      "string", "description": "The filter expression to perform the catalog search
-      as a JSON array."}}, "required": ["filters"]}, "format_prompt": false, "rerank_context":
-      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
-      "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '4421'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e047e98b01a5429482e4362ba574aaf1
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy and tasty dessert recipes, but the available labels do not include
-        specific dessert or recipe categories. However, we can filter for the category
-        ''yoga'' as it may relate to healthy living, and we can assume that ''one''
-        could represent a general category for recipes. Therefore, we create a filter
-        expression that includes the category ''yoga'' and the general label ''one''.","filters":"[{\"any\":[\"/l/category/yoga\",\"/l/bli/one\"]}]"}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":13,"timings":{"generative":2.006028008006979},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.013}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02931,"output":0.0132,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Mon, 22 Jun 2026 21:08:19 GMT
-      nuclia-learning-id:
-      - c040d221e38241efacc07bb92518f27a
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '2013'
-      x-nuclia-trace-id:
-      - 7215f12179c7c27a8601be2d4507fff1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-search-answer",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
-      search results, please answer the following user question: ''healthy and tasty
-      dessert recipes''\n\nCatalog search results for filters [{''any'': [''/l/category/yoga'',
-      ''/l/bli/one'']}] in 3df65a5d3816420083a9d4963d22627f Knowledge Box. The results
-      contain titles, formats, languages, and labels assigned to the resources for
-      each label set. If a result does not have a label for a specific label set,
-      it means no label was assigned for that label set. The Knowledge Box contains
-      the following label sets (with some example labels): - bla: one\n- bli: one\n-
-      category: yoga, one\n- sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation,
-      S_FinancialPosition, S_ProfitLoss, ...\n.\n:\n\nCatalog Results\n\n- Title:
-      Zucchini-bread-A4.pdf\n  Format: application/pdf\n  Language: en\n  User defined
-      Labels: category:\"yoga\"\n\n"}, "citations": null, "citation_threshold": null,
-      "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
-      {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
-      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
-      "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1354'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e047e98b01a5429482e4362ba574aaf1
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"text","text":"It"}}
-
-        {"chunk":{"type":"text","text":" seems"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" catalog"}}
-
-        {"chunk":{"type":"text","text":" search"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":" do"}}
-
-        {"chunk":{"type":"text","text":" not"}}
-
-        {"chunk":{"type":"text","text":" directly"}}
-
-        {"chunk":{"type":"text","text":" provide"}}
-
-        {"chunk":{"type":"text","text":" any"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" tasty"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" The"}}
-
-        {"chunk":{"type":"text","text":" only"}}
-
-        {"chunk":{"type":"text","text":" result"}}
-
-        {"chunk":{"type":"text","text":" is"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":" titled"}}
-
-        {"chunk":{"type":"text","text":" \""}}
-
-        {"chunk":{"type":"text","text":"Z"}}
-
-        {"chunk":{"type":"text","text":"uc"}}
-
-        {"chunk":{"type":"text","text":"chini"}}
-
-        {"chunk":{"type":"text","text":"-b"}}
-
-        {"chunk":{"type":"text","text":"read"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":",\""}}
-
-        {"chunk":{"type":"text","text":" which"}}
-
-        {"chunk":{"type":"text","text":" may"}}
-
-        {"chunk":{"type":"text","text":" contain"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" recipe"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" zucchini"}}
-
-        {"chunk":{"type":"text","text":" bread"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" potentially"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" option"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" \n\n"}}
-
-        {"chunk":{"type":"text","text":"If"}}
-
-        {"chunk":{"type":"text","text":" you''re"}}
-
-        {"chunk":{"type":"text","text":" looking"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" tasty"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" might"}}
-
-        {"chunk":{"type":"text","text":" consider"}}
-
-        {"chunk":{"type":"text","text":" searching"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" cook"}}
-
-        {"chunk":{"type":"text","text":"books"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" focus"}}
-
-        {"chunk":{"type":"text","text":" on"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" desserts"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" such"}}
-
-        {"chunk":{"type":"text","text":" as"}}
-
-        {"chunk":{"type":"text","text":" those"}}
-
-        {"chunk":{"type":"text","text":" using"}}
-
-        {"chunk":{"type":"text","text":" fruits"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" whole"}}
-
-        {"chunk":{"type":"text","text":" grains"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" natural"}}
-
-        {"chunk":{"type":"text","text":" sweet"}}
-
-        {"chunk":{"type":"text","text":"eners"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" Would"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" like"}}
-
-        {"chunk":{"type":"text","text":" more"}}
-
-        {"chunk":{"type":"text","text":" suggestions"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" ideas"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" desserts"}}
-
-        {"chunk":{"type":"text","text":"?"}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":7,"output_tokens":12,"timings":{"generative_first_chunk":0.4909554459991341,"generative":2.1830318399988755},"input_nuclia_tokens":0.007,"output_nuclia_tokens":0.012}}
-
-        {"chunk":{"normalized_tokens":{"input":0.0069,"output":0.01236,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Mon, 22 Jun 2026 21:08:22 GMT
-      nuclia-learning-id:
-      - 5d1a56760f8f4511bdbcfd791f6f875e
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '497'
-      x-nuclia-trace-id:
-      - 78482d85c24840f519f249b2d3ed91b6
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
-      "You are a smart assistant that selects tools to gather information needed to
-      answer a user''s question.\nChoose the best tool or tools for the task. You
-      may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results do not directly provide any healthy and tasty dessert
-      recipes. The only result is a PDF titled \"Zucchini-bread-A4.pdf,\" which may
-      contain a recipe for zucchini bread, a potentially healthy dessert option. \n\nIf
-      you''re looking for healthy and tasty dessert recipes, you might consider searching
-      for specific recipes or cookbooks that focus on healthy desserts, such as those
-      using fruits, whole grains, or natural sweeteners. Would you like more suggestions
-      or ideas for healthy desserts? ```\n\n"}], "context": [], "query_context": {},
-      "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "You
+      dessert options that are both healthy and delicious."}], "context": [], "query_context":
+      {}, "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "You
       are a smart assistant that selects tools to gather information needed to answer
       a user''s question.\nChoose the best tool or tools for the task. You may call
       multiple tools in one turn.\nCall task_complete when you have enough information
@@ -721,56 +160,56 @@ interactions:
       when you have enough information."}, "citations": null, "citation_threshold":
       null, "generative_model": "chatgpt-4.1", "max_tokens": null, "query_context_images":
       {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
-      false, "tools": [{"name": "search_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      false, "tools": [{"name": "search_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box by title. Useful for
       specific queries where the title is known.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to search
       for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
       "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get the labels available in the Knowledge Box as a list of strings.
       Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Ask a question in the Knowledge Box filtered by a specific title.
       Useful when the user wants information about a known document.", "parameters":
       {"type": "object", "properties": {"title": {"type": "string", "description":
       "The title to filter the ask operation in the Knowledge Box."}, "question":
       {"type": "string", "description": "The question to ask in the Knowledge Box."}},
-      "additionalProperties": false}}, {"name": "ask_agent__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "additionalProperties": false}}, {"name": "ask_agent__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "ask_labels__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Get the labels available in the Knowledge Box. Useful to filter searches by
       labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      false}}, {"name": "facets_count__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a faceted count in the Knowledge Box. Useful to get counts of different
       categories or facets within the data.", "parameters": {"type": "object", "properties":
       {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "catalog_search__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a catalog search in the Knowledge Box. Useful to find items based on
       specific criteria or attributes, including labels, file types, or other metadata.",
       "parameters": {"type": "object", "properties": {"question": {"type": "string",
       "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      false}}, {"name": "all_images_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get all image URLs from a resource in the Knowledge Box filtered
       by a specific title. Useful when the user wants to retrieve images from known
       documents.", "parameters": {"type": "object", "properties": {"title": {"type":
       "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__36553045-dcd7-4a6e-81e9-f8837687b9bd",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__26e340ed-8b42-4675-a41a-08f414f302ee",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
@@ -786,7 +225,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '6999'
+      - '6137'
       Content-Type:
       - application/json
       Host:
@@ -796,7 +235,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e047e98b01a5429482e4362ba574aaf1
+      - f97132b427c14b82ad8139160a4defc8
       x-origin:
       - RAO
       x-session:
@@ -809,14 +248,14 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17":[{"function":{"name":"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17","arguments":{"title":"Zucchini-bread-A4.pdf","question":"Is
-        this zucchini bread recipe healthy and tasty? Can you provide the recipe details?"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"catalog_search__13754043-e569-4030-9d47-f652ccbfde82":[{"function":{"name":"catalog_search__13754043-e569-4030-9d47-f652ccbfde82","arguments":{"question":"healthy
+        and delicious dessert recipes"}}}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":517,"output_tokens":107,"timings":{"generative_first_chunk":3.2914303520228714,"generative":3.2932718400261365},"input_nuclia_tokens":0.517,"output_nuclia_tokens":0.107}}
+        {"chunk":{"type":"meta","input_tokens":413,"output_tokens":61,"timings":{"generative_first_chunk":1.3977905590436421,"generative":1.3993022490176372},"input_nuclia_tokens":0.413,"output_nuclia_tokens":0.061}}
 
-        {"chunk":{"normalized_tokens":{"input":0.5172,"output":0.1072,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.4128,"output":0.0608,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -829,17 +268,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:24 GMT
+      - Mon, 22 Jun 2026 22:09:09 GMT
       nuclia-learning-id:
-      - e6a1fde5965a46b280937e02c3d93b4b
+      - 99ce7d198fbf475bba0d66f4488397ae
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '3299'
+      - '1406'
       x-nuclia-trace-id:
-      - 1418d7f3ea50fad0055b9ea0b80edc5f
+      - 94a0e5fd31c979472a1cfc56bfd37c52
     status:
       code: 200
       message: OK
@@ -852,20 +291,30 @@ interactions:
       a recipe, always recommend the most relevant one from our favorite recipes,
       but if asked about a very specific recipe that is not in our favorites, check
       the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results do not directly provide any healthy and tasty dessert
-      recipes. The only result is a PDF titled \"Zucchini-bread-A4.pdf,\" which may
-      contain a recipe for zucchini bread, a potentially healthy dessert option. \n\nIf
-      you''re looking for healthy and tasty dessert recipes, you might consider searching
-      for specific recipes or cookbooks that focus on healthy desserts, such as those
-      using fruits, whole grains, or natural sweeteners. Would you like more suggestions
-      or ideas for healthy desserts? ```\n\n"}, {"author": "NUCLIA", "text": "[ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17]:\nBinding
-      error executing tool ''ask_by_title'' of agent ''dc86e77a-5f9e-4952-858e-81ea23e67f17'':
-      Expected <class ''nucliadb_models.search.AskRequest''>, got <class ''hyperforge_nucliadb_agentic.ask.model.AskRequest''>"}],
+      dessert options that are both healthy and delicious."}, {"author": "NUCLIA",
+      "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError executing
+      tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'': 10
+      validation errors for StoredLearningConfiguration\nsemantic_model\n  Field required
+      [type=missing, input_value={''detail'': ''Dummy client ...ot supposed to be
+      used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"}],
       "context": [], "query_context": {}, "query_context_order": {}, "truncate": true,
       "user_prompt": {"prompt": "You are a smart assistant that selects tools to gather
       information needed to answer a user''s question.\nChoose the best tool or tools
@@ -877,56 +326,56 @@ interactions:
       task. Call task_complete when you have enough information."}, "citations": null,
       "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
       null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box by title. Useful for
       specific queries where the title is known.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to search
       for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
       "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get the labels available in the Knowledge Box as a list of strings.
       Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Ask a question in the Knowledge Box filtered by a specific title.
       Useful when the user wants information about a known document.", "parameters":
       {"type": "object", "properties": {"title": {"type": "string", "description":
       "The title to filter the ask operation in the Knowledge Box."}, "question":
       {"type": "string", "description": "The question to ask in the Knowledge Box."}},
-      "additionalProperties": false}}, {"name": "ask_agent__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "additionalProperties": false}}, {"name": "ask_agent__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "ask_labels__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Get the labels available in the Knowledge Box. Useful to filter searches by
       labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      false}}, {"name": "facets_count__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a faceted count in the Knowledge Box. Useful to get counts of different
       categories or facets within the data.", "parameters": {"type": "object", "properties":
       {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "catalog_search__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a catalog search in the Knowledge Box. Useful to find items based on
       specific criteria or attributes, including labels, file types, or other metadata.",
       "parameters": {"type": "object", "properties": {"question": {"type": "string",
       "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      false}}, {"name": "all_images_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get all image URLs from a resource in the Knowledge Box filtered
       by a specific title. Useful when the user wants to retrieve images from known
       documents.", "parameters": {"type": "object", "properties": {"title": {"type":
       "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__36553045-dcd7-4a6e-81e9-f8837687b9bd",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__26e340ed-8b42-4675-a41a-08f414f302ee",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
@@ -942,7 +391,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '7293'
+      - '8479'
       Content-Type:
       - application/json
       Host:
@@ -952,7 +401,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e047e98b01a5429482e4362ba574aaf1
+      - f97132b427c14b82ad8139160a4defc8
       x-origin:
       - RAO
       x-session:
@@ -965,20 +414,19 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17":[{"function":{"name":"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17","arguments":{"title":"Zucchini-bread-A4.pdf","question":"Is
-        this zucchini bread recipe healthy and suitable as a tasty dessert option?
-        What are its main ingredients?"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"ask_agent__13754043-e569-4030-9d47-f652ccbfde82":[{"function":{"name":"ask_agent__13754043-e569-4030-9d47-f652ccbfde82","arguments":{"question":"healthy
+        and delicious dessert options"}}}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":559,"output_tokens":114,"timings":{"generative_first_chunk":1.6376750190393068,"generative":1.6392032279982232},"input_nuclia_tokens":0.559,"output_nuclia_tokens":0.114}}
+        {"chunk":{"type":"meta","input_tokens":640,"output_tokens":61,"timings":{"generative_first_chunk":1.1400582089554518,"generative":1.1417666689958423},"input_nuclia_tokens":0.64,"output_nuclia_tokens":0.061}}
 
-        {"chunk":{"normalized_tokens":{"input":0.5588,"output":0.1136,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.64,"output":0.0608,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -986,17 +434,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:28 GMT
+      - Mon, 22 Jun 2026 22:09:11 GMT
       nuclia-learning-id:
-      - f3d7045db1c4438d89187a1ab306b128
+      - 5a304d88df534cdfb45f74adc5f1d3c2
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1645'
+      - '1148'
       x-nuclia-trace-id:
-      - d502e8f25eb76e078df58dca8fa61de8
+      - 2efd4d6e74508994237530bb5603c7ad
     status:
       code: 200
       message: OK
@@ -1009,23 +457,53 @@ interactions:
       a recipe, always recommend the most relevant one from our favorite recipes,
       but if asked about a very specific recipe that is not in our favorites, check
       the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results do not directly provide any healthy and tasty dessert
-      recipes. The only result is a PDF titled \"Zucchini-bread-A4.pdf,\" which may
-      contain a recipe for zucchini bread, a potentially healthy dessert option. \n\nIf
-      you''re looking for healthy and tasty dessert recipes, you might consider searching
-      for specific recipes or cookbooks that focus on healthy desserts, such as those
-      using fruits, whole grains, or natural sweeteners. Would you like more suggestions
-      or ideas for healthy desserts? ```\n\n"}, {"author": "NUCLIA", "text": "[ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17]:\nBinding
-      error executing tool ''ask_by_title'' of agent ''dc86e77a-5f9e-4952-858e-81ea23e67f17'':
-      Expected <class ''nucliadb_models.search.AskRequest''>, got <class ''hyperforge_nucliadb_agentic.ask.model.AskRequest''>"},
-      {"author": "NUCLIA", "text": "[ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17]:\nBinding
-      error executing tool ''ask_by_title'' of agent ''dc86e77a-5f9e-4952-858e-81ea23e67f17'':
-      Expected <class ''nucliadb_models.search.AskRequest''>, got <class ''hyperforge_nucliadb_agentic.ask.model.AskRequest''>"}],
+      dessert options that are both healthy and delicious."}, {"author": "NUCLIA",
+      "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError executing
+      tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'': 10
+      validation errors for StoredLearningConfiguration\nsemantic_model\n  Field required
+      [type=missing, input_value={''detail'': ''Dummy client ...ot supposed to be
+      used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"},
+      {"author": "NUCLIA", "text": "[ask_agent__13754043-e569-4030-9d47-f652ccbfde82]:\nError
+      executing tool ''ask_agent'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'':
+      10 validation errors for StoredLearningConfiguration\nsemantic_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"}],
       "context": [], "query_context": {}, "query_context_order": {}, "truncate": true,
       "user_prompt": {"prompt": "You are a smart assistant that selects tools to gather
       information needed to answer a user''s question.\nChoose the best tool or tools
@@ -1037,56 +515,56 @@ interactions:
       task. Call task_complete when you have enough information."}, "citations": null,
       "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
       null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box by title. Useful for
       specific queries where the title is known.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to search
       for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
       "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get the labels available in the Knowledge Box as a list of strings.
       Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Ask a question in the Knowledge Box filtered by a specific title.
       Useful when the user wants information about a known document.", "parameters":
       {"type": "object", "properties": {"title": {"type": "string", "description":
       "The title to filter the ask operation in the Knowledge Box."}, "question":
       {"type": "string", "description": "The question to ask in the Knowledge Box."}},
-      "additionalProperties": false}}, {"name": "ask_agent__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "additionalProperties": false}}, {"name": "ask_agent__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "ask_labels__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Get the labels available in the Knowledge Box. Useful to filter searches by
       labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      false}}, {"name": "facets_count__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a faceted count in the Knowledge Box. Useful to get counts of different
       categories or facets within the data.", "parameters": {"type": "object", "properties":
       {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "catalog_search__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a catalog search in the Knowledge Box. Useful to find items based on
       specific criteria or attributes, including labels, file types, or other metadata.",
       "parameters": {"type": "object", "properties": {"question": {"type": "string",
       "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      false}}, {"name": "all_images_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get all image URLs from a resource in the Knowledge Box filtered
       by a specific title. Useful when the user wants to retrieve images from known
       documents.", "parameters": {"type": "object", "properties": {"title": {"type":
       "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__36553045-dcd7-4a6e-81e9-f8837687b9bd",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__26e340ed-8b42-4675-a41a-08f414f302ee",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
@@ -1102,7 +580,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '7587'
+      - '10811'
       Content-Type:
       - application/json
       Host:
@@ -1112,7 +590,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e047e98b01a5429482e4362ba574aaf1
+      - f97132b427c14b82ad8139160a4defc8
       x-origin:
       - RAO
       x-session:
@@ -1125,14 +603,14 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17":[{"function":{"name":"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17","arguments":{"title":"Zucchini-bread-A4.pdf","question":"Is
-        this zucchini bread recipe healthy and tasty? Can you provide the recipe details?"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"catalog_search__13754043-e569-4030-9d47-f652ccbfde82":[{"function":{"name":"catalog_search__13754043-e569-4030-9d47-f652ccbfde82","arguments":{"question":"healthy
+        and delicious dessert recipes"}}}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":600,"output_tokens":107,"timings":{"generative_first_chunk":1.4625844529946335,"generative":1.4640449730213732},"input_nuclia_tokens":0.6,"output_nuclia_tokens":0.107}}
+        {"chunk":{"type":"meta","input_tokens":867,"output_tokens":61,"timings":{"generative_first_chunk":0.736879920004867,"generative":0.7385610690107569},"input_nuclia_tokens":0.867,"output_nuclia_tokens":0.061}}
 
-        {"chunk":{"normalized_tokens":{"input":0.6004,"output":0.1072,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.8672,"output":0.0608,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -1145,17 +623,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:29 GMT
+      - Mon, 22 Jun 2026 22:09:12 GMT
       nuclia-learning-id:
-      - c32331e20bf64947bb52b741de44e012
+      - ce4fbbbc30f9416592d8cc217507434c
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1470'
+      - '745'
       x-nuclia-trace-id:
-      - 37c91db66e08d94199d7812e65625991
+      - 98aedef27492724a5a6349248da5aff5
     status:
       code: 200
       message: OK
@@ -1168,26 +646,76 @@ interactions:
       a recipe, always recommend the most relevant one from our favorite recipes,
       but if asked about a very specific recipe that is not in our favorites, check
       the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of dc86e77a-5f9e-4952-858e-81ea23e67f17 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results do not directly provide any healthy and tasty dessert
-      recipes. The only result is a PDF titled \"Zucchini-bread-A4.pdf,\" which may
-      contain a recipe for zucchini bread, a potentially healthy dessert option. \n\nIf
-      you''re looking for healthy and tasty dessert recipes, you might consider searching
-      for specific recipes or cookbooks that focus on healthy desserts, such as those
-      using fruits, whole grains, or natural sweeteners. Would you like more suggestions
-      or ideas for healthy desserts? ```\n\n"}, {"author": "NUCLIA", "text": "[ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17]:\nBinding
-      error executing tool ''ask_by_title'' of agent ''dc86e77a-5f9e-4952-858e-81ea23e67f17'':
-      Expected <class ''nucliadb_models.search.AskRequest''>, got <class ''hyperforge_nucliadb_agentic.ask.model.AskRequest''>"},
-      {"author": "NUCLIA", "text": "[ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17]:\nBinding
-      error executing tool ''ask_by_title'' of agent ''dc86e77a-5f9e-4952-858e-81ea23e67f17'':
-      Expected <class ''nucliadb_models.search.AskRequest''>, got <class ''hyperforge_nucliadb_agentic.ask.model.AskRequest''>"},
-      {"author": "NUCLIA", "text": "[ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17]:\nBinding
-      error executing tool ''ask_by_title'' of agent ''dc86e77a-5f9e-4952-858e-81ea23e67f17'':
-      Expected <class ''nucliadb_models.search.AskRequest''>, got <class ''hyperforge_nucliadb_agentic.ask.model.AskRequest''>"}],
+      dessert options that are both healthy and delicious."}, {"author": "NUCLIA",
+      "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError executing
+      tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'': 10
+      validation errors for StoredLearningConfiguration\nsemantic_model\n  Field required
+      [type=missing, input_value={''detail'': ''Dummy client ...ot supposed to be
+      used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"},
+      {"author": "NUCLIA", "text": "[ask_agent__13754043-e569-4030-9d47-f652ccbfde82]:\nError
+      executing tool ''ask_agent'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'':
+      10 validation errors for StoredLearningConfiguration\nsemantic_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"},
+      {"author": "NUCLIA", "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError
+      executing tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'':
+      10 validation errors for StoredLearningConfiguration\nsemantic_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"}],
       "context": [], "query_context": {}, "query_context_order": {}, "truncate": true,
       "user_prompt": {"prompt": "You are a smart assistant that selects tools to gather
       information needed to answer a user''s question.\nChoose the best tool or tools
@@ -1199,56 +727,56 @@ interactions:
       task. Call task_complete when you have enough information."}, "citations": null,
       "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
       null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box by title. Useful for
       specific queries where the title is known.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to search
       for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
       "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get the labels available in the Knowledge Box as a list of strings.
       Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Ask a question in the Knowledge Box filtered by a specific title.
       Useful when the user wants information about a known document.", "parameters":
       {"type": "object", "properties": {"title": {"type": "string", "description":
       "The title to filter the ask operation in the Knowledge Box."}, "question":
       {"type": "string", "description": "The question to ask in the Knowledge Box."}},
-      "additionalProperties": false}}, {"name": "ask_agent__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      "additionalProperties": false}}, {"name": "ask_agent__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "ask_labels__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Get the labels available in the Knowledge Box. Useful to filter searches by
       labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      false}}, {"name": "facets_count__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a faceted count in the Knowledge Box. Useful to get counts of different
       categories or facets within the data.", "parameters": {"type": "object", "properties":
       {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__dc86e77a-5f9e-4952-858e-81ea23e67f17", "description":
+      {"name": "catalog_search__13754043-e569-4030-9d47-f652ccbfde82", "description":
       "Perform a catalog search in the Knowledge Box. Useful to find items based on
       specific criteria or attributes, including labels, file types, or other metadata.",
       "parameters": {"type": "object", "properties": {"question": {"type": "string",
       "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      false}}, {"name": "all_images_by_title__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Get all image URLs from a resource in the Knowledge Box filtered
       by a specific title. Useful when the user wants to retrieve images from known
       documents.", "parameters": {"type": "object", "properties": {"title": {"type":
       "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__dc86e77a-5f9e-4952-858e-81ea23e67f17",
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__13754043-e569-4030-9d47-f652ccbfde82",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__36553045-dcd7-4a6e-81e9-f8837687b9bd",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__26e340ed-8b42-4675-a41a-08f414f302ee",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
@@ -1264,7 +792,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '7881'
+      - '13153'
       Content-Type:
       - application/json
       Host:
@@ -1274,7 +802,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e047e98b01a5429482e4362ba574aaf1
+      - f97132b427c14b82ad8139160a4defc8
       x-origin:
       - RAO
       x-session:
@@ -1287,14 +815,14 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17":[{"function":{"name":"ask_by_title__dc86e77a-5f9e-4952-858e-81ea23e67f17","arguments":{"title":"Zucchini-bread-A4.pdf","question":"Is
-        this zucchini bread recipe healthy and tasty? Can you provide the recipe details?"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"catalog_search__13754043-e569-4030-9d47-f652ccbfde82":[{"function":{"name":"catalog_search__13754043-e569-4030-9d47-f652ccbfde82","arguments":{"question":"healthy
+        and delicious dessert recipes"}}}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":642,"output_tokens":107,"timings":{"generative_first_chunk":1.4058118819993979,"generative":1.407277251000778},"input_nuclia_tokens":0.642,"output_nuclia_tokens":0.107}}
+        {"chunk":{"type":"meta","input_tokens":1094,"output_tokens":61,"timings":{"generative_first_chunk":0.7776592299924232,"generative":0.7792238100082614},"input_nuclia_tokens":1.094,"output_nuclia_tokens":0.061}}
 
-        {"chunk":{"normalized_tokens":{"input":0.642,"output":0.1072,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":1.0944,"output":0.0608,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -1307,17 +835,251 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:31 GMT
+      - Mon, 22 Jun 2026 22:09:13 GMT
       nuclia-learning-id:
-      - 6abf09a242c1430e9ed736ceba3441f2
+      - 0dacaebb994841efa25982e5f2f27253
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1412'
+      - '783'
       x-nuclia-trace-id:
-      - 6a6369faa37f90e47d964a7fbd2feda4
+      - aec37c3a87af3d0658bd6bec3e967eb0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
+      "You are a smart assistant that selects tools to gather information needed to
+      answer a user''s question.\nChoose the best tool or tools for the task. You
+      may call multiple tools in one turn.\nCall task_complete when you have enough
+      information to answer the question.\n\nExtra instructions: When asked about
+      a recipe, always recommend the most relevant one from our favorite recipes,
+      but if asked about a very specific recipe that is not in our favorites, check
+      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
+      dessert options that are both healthy and delicious."}, {"author": "NUCLIA",
+      "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError executing
+      tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'': 10
+      validation errors for StoredLearningConfiguration\nsemantic_model\n  Field required
+      [type=missing, input_value={''detail'': ''Dummy client ...ot supposed to be
+      used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"},
+      {"author": "NUCLIA", "text": "[ask_agent__13754043-e569-4030-9d47-f652ccbfde82]:\nError
+      executing tool ''ask_agent'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'':
+      10 validation errors for StoredLearningConfiguration\nsemantic_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"},
+      {"author": "NUCLIA", "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError
+      executing tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'':
+      10 validation errors for StoredLearningConfiguration\nsemantic_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"},
+      {"author": "NUCLIA", "text": "[catalog_search__13754043-e569-4030-9d47-f652ccbfde82]:\nError
+      executing tool ''catalog_search'' of agent ''13754043-e569-4030-9d47-f652ccbfde82'':
+      10 validation errors for StoredLearningConfiguration\nsemantic_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nanonymization_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ngenerative_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nner_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrelation_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_similarity\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_vector_size\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsemantic_threshold\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nsummary_model\n  Field
+      required [type=missing, input_value={''detail'': ''Dummy client ...ot supposed
+      to be used''}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"}],
+      "context": [], "query_context": {}, "query_context_order": {}, "truncate": true,
+      "user_prompt": {"prompt": "You are a smart assistant that selects tools to gather
+      information needed to answer a user''s question.\nChoose the best tool or tools
+      for the task. You may call multiple tools in one turn.\nCall task_complete when
+      you have enough information to answer the question.\n\nExtra instructions: When
+      asked about a recipe, always recommend the most relevant one from our favorite
+      recipes, but if asked about a very specific recipe that is not in our favorites,
+      check the recipes from internet.\n\n\nChoose the best tool or tools for the
+      task. Call task_complete when you have enough information."}, "citations": null,
+      "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
+      null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
+      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Search for context in the Knowledge Box by title. Useful for
+      specific queries where the title is known.", "parameters": {"type": "object",
+      "properties": {"title": {"type": "string", "description": "The title to search
+      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
+      "string"}, "description": "Filters to apply when searching in the Knowledge
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Get the labels available in the Knowledge Box as a list of strings.
+      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
+      {"labelset": {"type": "string", "description": "The label set to get the labels
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_by_title__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Ask a question in the Knowledge Box filtered by a specific title.
+      Useful when the user wants information about a known document.", "parameters":
+      {"type": "object", "properties": {"title": {"type": "string", "description":
+      "The title to filter the ask operation in the Knowledge Box."}, "question":
+      {"type": "string", "description": "The question to ask in the Knowledge Box."}},
+      "additionalProperties": false}}, {"name": "ask_agent__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
+      "object", "properties": {"question": {"type": "string", "description": "The
+      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
+      {"name": "ask_labels__13754043-e569-4030-9d47-f652ccbfde82", "description":
+      "Get the labels available in the Knowledge Box. Useful to filter searches by
+      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
+      false}}, {"name": "facets_count__13754043-e569-4030-9d47-f652ccbfde82", "description":
+      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
+      categories or facets within the data.", "parameters": {"type": "object", "properties":
+      {"question": {"type": "string", "description": "The question to perform the
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Perform a faceted search in the Knowledge Box. Useful to get
+      counts of different categories or facets within the data.", "parameters": {"type":
+      "object", "properties": {"question": {"type": "string", "description": "The
+      question to perform the faceted search for."}}, "additionalProperties": false}},
+      {"name": "catalog_search__13754043-e569-4030-9d47-f652ccbfde82", "description":
+      "Perform a catalog search in the Knowledge Box. Useful to find items based on
+      specific criteria or attributes, including labels, file types, or other metadata.",
+      "parameters": {"type": "object", "properties": {"question": {"type": "string",
+      "description": "The question to perform the catalog search for."}}, "additionalProperties":
+      false}}, {"name": "all_images_by_title__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Get all image URLs from a resource in the Knowledge Box filtered
+      by a specific title. Useful when the user wants to retrieve images from known
+      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
+      "string", "description": "The title to filter the image extraction operation
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__13754043-e569-4030-9d47-f652ccbfde82",
+      "description": "Search for images in a resource in the Knowledge Box filtered
+      by a specific title and relevant image information. Useful when the user wants
+      to retrieve selected images from known documents.", "parameters": {"type": "object",
+      "properties": {"title": {"type": "string", "description": "The title to filter
+      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
+      "items": {"type": "string"}, "description": "Relevant info to query images from
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__26e340ed-8b42-4675-a41a-08f414f302ee",
+      "description": "Performs an internet search using Perplexity Search to get context
+      to answer questions.", "parameters": {"type": "object", "properties": {"question":
+      {"type": "string", "description": "The question to search for on the internet."}},
+      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
+      this tool when you have gathered enough information to answer the question and
+      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
+      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '15495'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.11.5
+      x-client-ident:
+      - 00000000-0000-0000-0000-000000000002
+      x-message:
+      - f97132b427c14b82ad8139160a4defc8
+      x-origin:
+      - RAO
+      x-session:
+      - default_ephemeral
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"tools","tools":{"ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82":[{"function":{"name":"ask_labels_list__13754043-e569-4030-9d47-f652ccbfde82","arguments":{"labelset":"recipes"}}}]}}}
+
+        {"chunk":{"type":"status","code":"0"}}
+
+        {"chunk":{"type":"meta","input_tokens":1322,"output_tokens":58,"timings":{"generative_first_chunk":1.4103029280013288,"generative":1.4116812880020007},"input_nuclia_tokens":1.322,"output_nuclia_tokens":0.058}}
+
+        {"chunk":{"normalized_tokens":{"input":1.3216,"output":0.0576,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Mon, 22 Jun 2026 22:09:14 GMT
+      nuclia-learning-id:
+      - cc995ea070964657a21fb5d07020b1cd
+      nuclia-learning-model:
+      - chatgpt-4.1
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '1490'
+      x-nuclia-trace-id:
+      - 98e4baa38b773e6544906a5b05f55fda
     status:
       code: 200
       message: OK
@@ -1356,16 +1118,7 @@ interactions:
       \"block-CD\"]).\n11. **IMPORTANT** If any extra instructions are provided, you
       MUST follow them carefully when generating the answer field. These instructions
       may specify the format, style, tools to use, or other requirements for the answer.\n\n<QUESTION>\nProvide
-      healthy and tasty dessert options.\n\n<START OF CONTEXT>\n\nContext:\n\n**block-AA**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of dc86e77a-5f9e-4952-858e-81ea23e67f17
-      with parameters {''question'': ''healthy and tasty dessert recipes''}\n``` It
-      seems that the catalog search results do not directly provide any healthy and
-      tasty dessert recipes. The only result is a PDF titled \"Zucchini-bread-A4.pdf,\"
-      which may contain a recipe for zucchini bread, a potentially healthy dessert
-      option. \n\nIf you''re looking for healthy and tasty dessert recipes, you might
-      consider searching for specific recipes or cookbooks that focus on healthy desserts,
-      such as those using fruits, whole grains, or natural sweeteners. Would you like
-      more suggestions or ideas for healthy desserts? ```\n\n\n---\"\n\n\n\n\n<END
+      dessert options that are both healthy and delicious.\n\n<START OF CONTEXT>\n\n\n<END
       OF CONTEXT>\n\n"}, "citations": false, "citation_threshold": null, "generative_model":
       "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images": {}, "prefer_markdown":
       null, "json_schema": {"title": "validate_or_answer", "description": "Validate
@@ -1390,7 +1143,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4756'
+      - '4012'
       Content-Type:
       - application/json
       Host:
@@ -1407,23 +1160,15 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"object","object":{"reason":"The context mentions
-        that the catalog search results do not provide specific healthy and tasty
-        dessert recipes. It only references a PDF about zucchini bread, which is a
-        potentially healthy dessert option. Additionally, it suggests looking for
-        recipes or cookbooks that focus on healthy desserts using fruits, whole grains,
-        or natural sweeteners. Therefore, the context partially answers the question
-        by providing one option and suggesting further exploration.","answer":"A potentially
-        healthy dessert option is zucchini bread, which may be found in the PDF titled
-        \"Zucchini-bread-A4.pdf.\" Additionally, consider searching for specific recipes
-        or cookbooks that focus on healthy desserts using fruits, whole grains, or
-        natural sweeteners.","missing_info_query":"","useful":"yes","citations":["block-AA"]}}}
+      string: '{"chunk":{"type":"object","object":{"reason":"The context does not
+        provide any information regarding healthy and delicious dessert options.","answer":"","missing_info_query":"What
+        are some healthy and delicious dessert options?","useful":"no","citations":[]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":27,"output_tokens":18,"timings":{"generative":1.5694561670024996},"input_nuclia_tokens":0.027,"output_nuclia_tokens":0.018}}
+        {"chunk":{"type":"meta","input_tokens":22,"output_tokens":5,"timings":{"generative":1.2021021450018452},"input_nuclia_tokens":0.022,"output_nuclia_tokens":0.005}}
 
-        {"chunk":{"normalized_tokens":{"input":0.02652,"output":0.01836,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.02163,"output":0.00516,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -1436,17 +1181,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:33 GMT
+      - Mon, 22 Jun 2026 22:09:16 GMT
       nuclia-learning-id:
-      - 1213d89fdb2e4589928530b4af6038e7
+      - 73f107bfdb134ce48443ce2938bc0a6f
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1574'
+      - '1206'
       x-nuclia-trace-id:
-      - abb1a30867c31448602d1d018c370c84
+      - c675f453a5cf8512773945d0de2845e4
     status:
       code: 200
       message: OK
@@ -1460,17 +1205,13 @@ interactions:
       this clearly\n\nAlways follow any additional instructions provided about format,
       style, or domain-specific behavior.", "chat_history": [], "context": [], "query_context":
       {}, "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "\n##
-      Question\nProvide healthy and tasty dessert options.\n\n## Provided Context\n[START
-      OF CONTEXT]\n## Default Agentic Config - Smart Agent\n\n# Provide healthy and
-      tasty dessert options.\n\n A potentially healthy dessert option is zucchini
-      bread, which may be found in the PDF titled \"Zucchini-bread-A4.pdf.\" Additionally,
-      consider searching for specific recipes or cookbooks that focus on healthy desserts
-      using fruits, whole grains, or natural sweeteners.\n[END OF CONTEXT]\n\n## Answering
-      Guidelines\n- Carefully read all context; it may be lengthy or detailed\n- Do
-      not omit or overlook any relevant information\n- If the context is incomplete
-      or insufficient, state: \"Not enough data to answer this.\"\n- Read carefully
-      any extra instructions below if provided and use them to answer\n\nNow provide
-      your answer to the question: Provide healthy and tasty dessert options."}, "citations":
+      Question\nProvide dessert options that are both healthy and delicious.\n\n##
+      Provided Context\n[START OF CONTEXT]\n\n[END OF CONTEXT]\n\n## Answering Guidelines\n-
+      Carefully read all context; it may be lengthy or detailed\n- Do not omit or
+      overlook any relevant information\n- If the context is incomplete or insufficient,
+      state: \"Not enough data to answer this.\"\n- Read carefully any extra instructions
+      below if provided and use them to answer\n\nNow provide your answer to the question:
+      Provide dessert options that are both healthy and delicious."}, "citations":
       null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
       "max_tokens": 5000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
       null, "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
@@ -1483,7 +1224,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1889'
+      - '1565'
       Content-Type:
       - application/json
       Host:
@@ -1500,113 +1241,7 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"text","text":"A"}}
-
-        {"chunk":{"type":"text","text":" potentially"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" option"}}
-
-        {"chunk":{"type":"text","text":" is"}}
-
-        {"chunk":{"type":"text","text":" zucchini"}}
-
-        {"chunk":{"type":"text","text":" bread"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" which"}}
-
-        {"chunk":{"type":"text","text":" may"}}
-
-        {"chunk":{"type":"text","text":" be"}}
-
-        {"chunk":{"type":"text","text":" found"}}
-
-        {"chunk":{"type":"text","text":" in"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":" titled"}}
-
-        {"chunk":{"type":"text","text":" \""}}
-
-        {"chunk":{"type":"text","text":"Z"}}
-
-        {"chunk":{"type":"text","text":"uc"}}
-
-        {"chunk":{"type":"text","text":"chini"}}
-
-        {"chunk":{"type":"text","text":"-b"}}
-
-        {"chunk":{"type":"text","text":"read"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":".\""}}
-
-        {"chunk":{"type":"text","text":" Additionally"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" consider"}}
-
-        {"chunk":{"type":"text","text":" exploring"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" cook"}}
-
-        {"chunk":{"type":"text","text":"books"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" focus"}}
-
-        {"chunk":{"type":"text","text":" on"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" desserts"}}
-
-        {"chunk":{"type":"text","text":" using"}}
-
-        {"chunk":{"type":"text","text":" fruits"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" whole"}}
-
-        {"chunk":{"type":"text","text":" grains"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" natural"}}
-
-        {"chunk":{"type":"text","text":" sweet"}}
-
-        {"chunk":{"type":"text","text":"eners"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" \n\n"}}
-
-        {"chunk":{"type":"text","text":"Not"}}
+      string: '{"chunk":{"type":"text","text":"Not"}}
 
         {"chunk":{"type":"text","text":" enough"}}
 
@@ -1614,26 +1249,22 @@ interactions:
 
         {"chunk":{"type":"text","text":" to"}}
 
-        {"chunk":{"type":"text","text":" provide"}}
+        {"chunk":{"type":"text","text":" answer"}}
 
-        {"chunk":{"type":"text","text":" more"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" options"}}
+        {"chunk":{"type":"text","text":" this"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"status","code":"0"}}
+        {"chunk":{"type":"status","code":"-2"}}
 
-        {"chunk":{"type":"meta","input_tokens":8,"output_tokens":8,"timings":{"generative_first_chunk":0.435723788003088,"generative":1.3157818540021253},"input_nuclia_tokens":0.008,"output_nuclia_tokens":0.008}}
+        {"chunk":{"type":"meta","input_tokens":7,"output_tokens":1,"timings":{"generative_first_chunk":0.4511303200270049,"generative":0.6161731799948029},"input_nuclia_tokens":0.007,"output_nuclia_tokens":0.001}}
 
-        {"chunk":{"normalized_tokens":{"input":0.00846,"output":0.00756,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.00654,"output":0.00096,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      - h3=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -1641,17 +1272,115 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Mon, 22 Jun 2026 21:08:35 GMT
+      - Mon, 22 Jun 2026 22:09:17 GMT
       nuclia-learning-id:
-      - 75adc360430f45c281ea417bbf73904a
+      - a8a7d3c8011c4bfc9818631f4ba0446e
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '442'
+      - '458'
       x-nuclia-trace-id:
-      - 840fcf1b978075b0ad383cc71b1a4bae
+      - e6d36fefc0f3d4093e54ade42f8dbf14
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "summarize", "system": "You
+      are a helpful AI assistant. Your role is to provide accurate, clear, and well-structured
+      answers based strictly on the information provided to you.\nKey principles:\n-
+      Answer only using the information in the provided context\n- Do not use external
+      knowledge, assumptions, or prior experience\n- Maintain a professional and informative
+      tone\n- Be concise yet thorough\n- If information is insufficient, acknowledge
+      this clearly\n\nAlways follow any additional instructions provided about format,
+      style, or domain-specific behavior.", "chat_history": [], "context": [], "query_context":
+      {}, "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "\n##
+      Question\nI want a desert that is healthy and tasty.\n\n## Provided Context\n[START
+      OF CONTEXT]\n\n[END OF CONTEXT]\n\n## Answering Guidelines\n- Carefully read
+      all context; it may be lengthy or detailed\n- Do not omit or overlook any relevant
+      information\n- If the context is incomplete or insufficient, state: \"Not enough
+      data to answer this.\"\n- Read carefully any extra instructions below if provided
+      and use them to answer\n\n## Additional Instructions for answering\n- \n## Question\nProvide
+      dessert options that are both healthy and delicious.\n\n## Provided Context\n[START
+      OF CONTEXT]\n\n[END OF CONTEXT]\n\n## Answering Guidelines\n- Carefully read
+      all context; it may be lengthy or detailed\n- Do not omit or overlook any relevant
+      information\n- If the context is incomplete or insufficient, state: \"Not enough
+      data to answer this.\"\n- Read carefully any extra instructions below if provided
+      and use them to answer\n\nNow provide your answer to the question: Provide dessert
+      options that are both healthy and delicious.\nNow provide your answer to the
+      question: I want a desert that is healthy and tasty."}, "citations": null, "citation_threshold":
+      null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 5000, "query_context_images":
+      {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
+      false, "tools": [], "tool_choice": {"type": "auto"}, "reasoning": false, "seed":
+      null}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2132'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.11.5
+      x-origin:
+      - RAO
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"text","text":"Not"}}
+
+        {"chunk":{"type":"text","text":" enough"}}
+
+        {"chunk":{"type":"text","text":" data"}}
+
+        {"chunk":{"type":"text","text":" to"}}
+
+        {"chunk":{"type":"text","text":" answer"}}
+
+        {"chunk":{"type":"text","text":" this"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"status","code":"-2"}}
+
+        {"chunk":{"type":"meta","input_tokens":10,"output_tokens":1,"timings":{"generative_first_chunk":0.7705358569510281,"generative":0.9904415969504043},"input_nuclia_tokens":0.01,"output_nuclia_tokens":0.001}}
+
+        {"chunk":{"normalized_tokens":{"input":0.01005,"output":0.00096,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Mon, 22 Jun 2026 22:09:18 GMT
+      nuclia-learning-id:
+      - 01f49c2cfc594704955b5847f97be56e
+      nuclia-learning-model:
+      - chatgpt-azure-4o-mini
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '777'
+      x-nuclia-trace-id:
+      - ed77cfd67f5b6cc54e0e5eaddb2cd8ff
     status:
       code: 200
       message: OK

@@ -48,7 +48,7 @@ agentic_config_table = sa.Table(
 )
 
 
-CACHE: LRU[str, AgenticConfigSchema] = LRU(size=1024)
+CACHE = LRU(size=1024)
 
 
 def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
@@ -233,7 +233,7 @@ class AgenticConfigs:
     async def get_agent_config(
         self,
         account: str,
-        agent_id: str,
+        kbid: str,
         internal_nucliadb_url: str | None = None,
         internal_nucliadb: bool = True,
         external_nucliadb_key: str | None = None,
@@ -245,7 +245,7 @@ class AgenticConfigs:
         # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
         # the right one based on these parameters
         retrieval_config: RetrievalAgentConfig
-        agentic_config = await self.get_agentic_config(account, agent_id, workflow_id)
+        agentic_config = await self.get_agentic_config(account, kbid, workflow_id)
         global_drivers = {}
 
         source_manager = Sources(self.database, self.settings)
@@ -259,7 +259,7 @@ class AgenticConfigs:
             external_nucliadb_url=external_nucliadb_url,
             external_nucliadb_key=external_nucliadb_key,
             ask_request=ask_request,
-            agent_id=agent_id,
+            kbid=kbid,
         )
 
         for driver_config in drivers.values():
@@ -289,9 +289,7 @@ class AgenticConfigs:
             )
         return retrieval_config
 
-    async def ensure_workflow_active(
-        self, account: str, agent_id: str, workflow_id: str
-    ):
+    async def ensure_workflow_active(self, account: str, kbid: str, workflow_id: str):
         # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
         # the right one based on these parameters
-        await self.get_agentic_config(account, agent_id, workflow_id)
+        await self.get_agentic_config(account, kbid, workflow_id)

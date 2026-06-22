@@ -27,7 +27,7 @@ async def transform_agentic_config(
     external_nucliadb_url: str | None = None,
     external_nucliadb_key: str | None = None,
     ask_request: AskRequest | None = None,
-    agent_id: str = "",
+    kbid: str = "",
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
     drivers = {}
     global_driver = []
@@ -69,7 +69,7 @@ async def transform_agentic_config(
                 config["executor_model"] = agentic_config.smart_agent.models.executor
         registered_agents = []
         for source in agentic_config.smart_agent.sources:
-            source_obj = await source_manager.get_source(account, agent_id, source)
+            source_obj = await source_manager.get_source(account, kbid, source)
             source_config: Dict[str, Any] = {
                 "title": f"{title} - Smart Agent - {source_obj.type.capitalize()} Source",
             }
@@ -100,7 +100,7 @@ async def transform_agentic_config(
                         key=key,
                         manager="",
                         description="",
-                        kbid=agent_id,
+                        kbid=kbid,
                         filter_expression=source_obj.filter_expression,
                         filters=source_obj.resource_filters
                         if source_obj.resource_filters
@@ -154,8 +154,6 @@ async def transform_agentic_config(
             config["system_prompt"] = agentic_config.summarize.system_prompt
         if agentic_config.summarize.conversational:
             config["conversational"] = agentic_config.summarize.conversational
-        if agentic_config.summarize.model:
-            config["model"] = agentic_config.summarize.model
 
         config["module"] = "summarize"
 
