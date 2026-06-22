@@ -1,12 +1,6 @@
 from typing import TYPE_CHECKING
 
 from fastapi import Response
-from nucliadb_models.search import (
-    NucliaDBClientType,
-)
-from starlette.responses import StreamingResponse
-
-from nucliadb_agentic_api.agentic.ask_result import AgenticAskResult
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     parse_max_tokens,
@@ -14,6 +8,12 @@ from hyperforge_nucliadb_agentic.ask.model import (
 from hyperforge_nucliadb_agentic.ask.search.ask import (
     handled_ask_exceptions,
 )
+from nucliadb_models.search import (
+    NucliaDBClientType,
+)
+from starlette.responses import StreamingResponse
+
+from nucliadb_agentic_api.agentic.ask_result import AgenticAskResult
 
 if TYPE_CHECKING:
     from nucliadb_agentic_api.app import HTTPApplication

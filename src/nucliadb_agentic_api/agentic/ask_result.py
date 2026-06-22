@@ -1,11 +1,11 @@
+import asyncio
+import json
 from asyncio import Event, Queue, Task, create_task
 from collections.abc import AsyncGenerator
-import json
+from typing import TYPE_CHECKING
 
-from nucliadb_agentic_api.agentic.ask_transform_to_interaction import (
-    interaction_from_ask_request,
-)
-from typing_extensions import assert_never
+from hyperforge.api.v1.interaction import stream_response
+from hyperforge.interaction import AnswerOperation, AragAnswer
 from hyperforge_nucliadb_agentic.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
@@ -13,14 +13,11 @@ from hyperforge_nucliadb_agentic.ask.model import (
     AskRetrievalMatch,
     AskTimings,
     AskTokens,
-    AugmentedContextResponseItem,
     CitationsAskResponseItem,
     ConsumptionResponseItem,
-    DebugAskResponseItem,
     FootnoteCitationsAskResponseItem,
     JSONAskResponseItem,
     MetadataAskResponseItem,
-    PrequeriesAskResponseItem,
     ReasoningAskResponseItem,
     RelationsAskResponseItem,
     RetrievalAskResponseItem,
@@ -28,28 +25,32 @@ from hyperforge_nucliadb_agentic.ask.model import (
     TokensDetail,
 )
 from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
-from hyperforge_nucliadb_agentic.ask.search.ask import AskResult
-from nuclia_models.predict.generative_responses import (
-    CitationsGenerativeResponse,
-    GenerativeChunk,
-    MetaGenerativeResponse,
-    StatusGenerativeResponse,
-)
-from hyperforge.interaction import AnswerOperation, AragAnswer
-from nucliadb_sdk.v2.exceptions import UnprocessableEntity
-from nuclia_models.predict.generative_responses import (
-    ReasoningGenerativeResponse,
-    TextGenerativeResponse,
-)
-import asyncio
-from typing import TYPE_CHECKING
-
-from hyperforge.api.v1.interaction import stream_response
+from hyperforge_nucliadb_agentic.ask.search.ask import AskResult, RetrievalMatch
 from hyperforge_nucliadb_agentic.ask.search.metrics import (
     AskMetrics,
 )
-from hyperforge_nucliadb_agentic.ask.search.retrieval import (
-    sorted_prompt_context_list,
+from nuclia_models.common.consumption import (
+    Consumption,
+)
+from nuclia_models.common.consumption import (
+    TokensDetail as ConsumptionTokensDetail,
+)
+from nuclia_models.predict.generative_responses import (
+    CitationsGenerativeResponse,
+    FootnoteCitationsGenerativeResponse,
+    JSONGenerativeResponse,
+    MetaGenerativeResponse,
+    ReasoningGenerativeResponse,
+    StatusGenerativeResponse,
+    TextGenerativeResponse,
+)
+from nucliadb_models.search import KnowledgeboxFindResults, Relations
+from nucliadb_sdk.v2.exceptions import UnprocessableEntity
+from typing_extensions import assert_never
+
+from nucliadb_agentic_api import logger
+from nucliadb_agentic_api.agentic.ask_transform_to_interaction import (
+    interaction_from_ask_request,
 )
 
 if TYPE_CHECKING:
@@ -79,6 +80,20 @@ class AgenticAskResult(AskResult):
         self.event_learning_id = Event()
         self.queue = Queue()
         self.task: Task | None = None
+        self.main_results = KnowledgeboxFindResults(resources={})
+
+        self._answer_text = ""
+        self._reasoning_text: str | None = None
+
+        self._object: JSONGenerativeResponse | None = None
+        self._status: StatusGenerativeResponse | None = None
+        self._citations: CitationsGenerativeResponse | None = None
+        self._footnote_citations: FootnoteCitationsGenerativeResponse | None = None
+        self._metadata: MetaGenerativeResponse | None = None
+        self._relations: Relations | None = None
+        self._consumption: Consumption | None = None
+
+        self.best_matches: list[RetrievalMatch] = []
 
     async def loop(self):
 
@@ -144,13 +159,6 @@ class AgenticAskResult(AskResult):
             ],
         )
 
-        if len(self.prequeries_results) > 0:
-            item = PrequeriesAskResponseItem()
-            for index, (prequery, result) in enumerate(self.prequeries_results):
-                prequery_id = prequery.id or f"prequery_{index}"
-                item.results[prequery_id] = result
-            yield item
-
         # Then the status
         if self.status_code == AnswerStatusCode.ERROR:
             # If predict yielded an error status, we yield it too and halt the stream immediately
@@ -165,23 +173,6 @@ class AgenticAskResult(AskResult):
             code=self.status_code.value,
             status=self.status_code.prettify(),
         )
-
-        # Audit the answer
-        if self._object is None:
-            audit_answer = self._answer_text.encode("utf-8")
-        else:
-            audit_answer = json.dumps(self._object.object).encode("utf-8")
-        self.auditor.audit(
-            text_answer=audit_answer,
-            text_reasoning=self._reasoning_text,
-            generative_answer_time=self.metrics["stream_predict_answer"],
-            generative_answer_first_chunk_time=self.metrics.get_first_chunk_time() or 0,
-            generative_reasoning_first_chunk_time=self.metrics.get_first_reasoning_chunk_time(),
-            rephrase_time=self.metrics.get("rephrase"),
-            status_code=self.status_code,
-        )
-
-        yield AugmentedContextResponseItem(augmented=self.augmented_context)
 
         # Stream out the citations
         if self._citations is not None:
@@ -234,45 +225,21 @@ class AgenticAskResult(AskResult):
             relations = await self.get_relations_results()
             yield RelationsAskResponseItem(relations=relations)
 
-        # Stream out debug information
-        if self.ask_request_with_debug_flag:
-            predict_request = None
-            if self.debug_chat_model:
-                predict_request = self.debug_chat_model.model_dump(mode="json")
-            yield DebugAskResponseItem(
-                metadata={
-                    "prompt_context": sorted_prompt_context_list(
-                        self.prompt_context, self.prompt_context_order
-                    ),
-                    "predict_request": predict_request,
-                },
-                metrics=self.metrics.dump(),
-            )
-
     async def websocket_to_ask(
         self,
     ) -> AsyncGenerator[TextGenerativeResponse | ReasoningGenerativeResponse, None]:
 
-        meta = MetaGenerativeResponse(
-            input_tokens=0,
-            output_tokens=0,
-            input_nuclia_tokens=0,
-            output_nuclia_tokens=0,
-            timings={},
-            learning_id=self.nuclia_learning_id,
-            model_name=None,
-            trace_id=None,
-        )
+        output_nuclia_tokens = 0.0
+        input_nuclia_tokens = 0.0
+        timings = {}
+        self._answer_text = ""
 
         while True:
             answer: AragAnswer = await self.queue.get()
-            breakpoint()
             if answer.operation == AnswerOperation.DONE:
-                breakpoint()
                 break
 
             if answer.operation == AnswerOperation.ERROR:
-                breakpoint()
                 raise UnprocessableEntity(
                     message=answer.exception.detail
                     if answer.exception
@@ -291,7 +258,6 @@ class AgenticAskResult(AskResult):
                 answer.operation == AnswerOperation.ANSWER_CHUNK
                 and answer.streaming_response_chunk
             ):
-                breakpoint()
                 self._answer_text += answer.streaming_response_chunk.text
                 yield TextGenerativeResponse(
                     text=answer.streaming_response_chunk.text
@@ -300,24 +266,46 @@ class AgenticAskResult(AskResult):
                 )
 
             if answer.operation == AnswerOperation.ANSWER:
-                breakpoint()
                 if answer.step:
-                    # We need to collect tokens
-                    pass
+                    if answer.step.module == "rephrase":
+                        logger.debug("Received rephrase step, recording rephrase")
+
+                    if answer.step.module == "smart":
+                        logger.debug(
+                            "Received smart step, recording: %s", answer.step.value
+                        )
+                    if answer.step.module == "basic_ask":
+                        logger.debug(
+                            "Received Basic Ask step %s with value %s",
+                            answer.step.agent_path,
+                            answer.step.value,
+                        )
+                    input_nuclia_tokens += (
+                        answer.step.input_nuclia_tokens
+                        if answer.step.input_nuclia_tokens is not None
+                        else 0.0
+                    )
+                    output_nuclia_tokens += (
+                        answer.step.output_nuclia_tokens
+                        if answer.step.output_nuclia_tokens is not None
+                        else 0.0
+                    )
+                    timings[answer.step.module] = answer.step.timeit
 
                 if answer.possible_answer:
                     # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately
                     pass
 
+                # Context(id='100d70a657884c2c8fdc80738dda71b9', original_question_uuid='201701ca9cd7412ba3153bcbdeb1f07e', actual_question_uuid='201701ca9cd7412ba3153bcbdeb1f07e', question='Provide dessert options that are both healthy and delicious.', chunks=[Chunk(chunk_id='catalog_search_result-0', title=None, source=None, text='Here are some healthy and delicious dessert recipes from the catalog search results:\n\n1. **Carrot Cake** - A classic dessert that can be made healthier by using whole grain flour and reducing sugar.\n   - [Download Carrot Cake Recipe](carrot-cake-A4.pdf)\n\n2. **Chocolate Chip Cookies** - You can make these healthier by using dark chocolate and whole grain flour.\n   - [Download Chocolate Chip Cookies Recipe](chocolate-chip-cookies-A4.pdf)\n\n3. **Zucchini Bread** - A great way to incorporate vegetables into a sweet treat, often made with whole grains and less sugar.\n   - [Download Zucchini Bread Recipe](Zucchini-bread-A4.pdf)\n\n4. **Banana Bread** - A delicious option that can be made healthier by using ripe bananas for sweetness and whole grain flour.\n   - [Download Banana Bread Recipe](banana-bread-A4.pdf)\n\n5. **Gingerbread Cake** - A spiced cake that can be made with healthier ingredients like whole wheat flour and less sugar.\n   - [Download Gingerbread Cake Recipe](Gingerbread-Cake-A4.pdf)\n\n6. **Sugar Cookies** - These can be made healthier by using natural sweeteners and whole grain flour.\n   - [Download Sugar Cookies Recipe](Sugar-Cookies-A4.pdf)\n\nFeel free to explore these recipes for a healthier dessert option!', labels=[], url=[], metadata=None, action="catalog_search of 4c9b0b15-de46-4a15-849b-82fe502fa5cb with parameters {'question': 'healthy and delicious dessert recipes'}", origin_url=None, origin_agent='basic_ask')], images={}, prompts=[], structured=[], source='smart_agent', agent='smart_agent', summary='Here are some healthy and delicious dessert recipes:\n\n1. **Carrot Cake** - Made healthier by using whole grain flour and reducing sugar.\n2. **Chocolate Chip Cookies** - Made healthier by using dark chocolate and whole grain flour.\n3. **Zucchini Bread** - Incorporates vegetables, often made with whole grains and less sugar.\n4. **Banana Bread** - Made healthier by using ripe bananas for sweetness and whole grain flour.\n5. **Gingerbread Cake** - Made with healthier ingredients like whole wheat flour and less sugar.\n6. **Sugar Cookies** - Made healthier by using natural sweeteners and whole grain flour.', agent_id='b6d72f8c-2e09-4ee1-bba0-b0ec711894a1', title='Default Agentic Config - Smart Agent', missing=None, citations=['catalog_search_result-0'], citations_id=None, image_urls=[])
                 if answer.context:
-                    # To fill the find payload
-                    for chunk in answer.context.chunks:
-                        # TODO Transform to find results
-                        KnowledgeboxFindResults(resources={})
-                        find_results.resources.setdefault(chunk.chunk_id, []).append(
-                            chunk
-                        )
-                    pass
+                    # TODO: This is a bit of a hack, but we need to parse the structured data as KnowledgeboxFindResults and store it in the main_results attribute. This is because the AskResult class expects a KnowledgeboxFindResults object to be returned from the websocket_to_ask method, but we don't have that yet. Once we have a proper KnowledgeboxFindResults object, we can remove this hack.
+                    try:
+                        for structured in answer.context.structured:
+                            self.main_results = (
+                                KnowledgeboxFindResults.model_validate_json(structured)
+                            )
+                    except Exception as e:
+                        logger.error("Error validating structured data: %s", e)
 
                 if answer.generated_text:
                     # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately
@@ -335,30 +323,53 @@ class AgenticAskResult(AskResult):
                             "chunk_index": value.chunk_index,
                         }
                     self._citations = CitationsGenerativeResponse(citations=citations)
-                # self._footnote_citations = item
-                # elif isinstance(item, JSONGenerativeResponse):
-                #     self._object = item
-                # elif isinstance(item, StatusGenerativeResponse):
-                #     self._status = item
-                # elif isinstance(item, CitationsGenerativeResponse):
-                #     self._citations = item
+
+                if answer.generated_text:
+                    # TODO: This is a bit of a hack, but we need to parse the generated text as JSON and store it in the _object attribute. This is because the AskResult class expects a JSONGenerativeResponse object to be returned from the websocket_to_ask method, but we don't have that yet. Once we have a proper JSONGenerativeResponse object, we can remove this hack.
+                    try:
+                        self._object = JSONGenerativeResponse(
+                            object=json.loads(answer.generated_text)
+                        )
+                    except Exception as e:
+                        logger.error(f"Error processing generated text: {e}")
                 # elif isinstance(item, FootnoteCitationsGenerativeResponse):
                 #     self._footnote_citations = item
-                # elif isinstance(item, MetaGenerativeResponse):
-                #     self._metadata = item
-                # elif isinstance(item, Consumption):
-                #     self._consumption = item
 
             if answer.operation == AnswerOperation.AGENT_REQUEST:
                 # Not supported by Ask endpoint
                 pass
 
             if answer.operation == AnswerOperation.START:
-                yield GenerativeChunk(
-                    chunk=StatusGenerativeResponse(
-                        code="", details="Agent execution started"
-                    )
-                )
+                logger.debug("Received start message")
+
+        self._consumption = Consumption(
+            normalized_tokens=ConsumptionTokensDetail(
+                input=input_nuclia_tokens,
+                output=output_nuclia_tokens,
+                image=self.metrics.get("normalized_image_tokens") or 0,
+            ),
+            customer_key_tokens=ConsumptionTokensDetail(
+                input=self.metrics.get("customer_key_input_tokens") or 0,
+                output=self.metrics.get("customer_key_output_tokens") or 0,
+                image=self.metrics.get("customer_key_image_tokens") or 0,
+            ),
+        )
+
+        self._metadata = MetaGenerativeResponse(
+            input_tokens=0,
+            output_tokens=0,
+            input_nuclia_tokens=input_nuclia_tokens,
+            output_nuclia_tokens=output_nuclia_tokens,
+            timings=timings,
+            learning_id=self.nuclia_learning_id,
+            model_name=None,
+            trace_id=None,
+        )
+
+        self._answer_text = StatusGenerativeResponse(
+            code=AnswerStatusCode.SUCCESS.value,
+            details=None,
+        )
 
         if self.task:
             self.task.cancel()

@@ -5,16 +5,16 @@ from unittest.mock import patch
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from nucliadb_models.resource import NucliaDBRoles
-from nucliadb_sdk.tests.fixtures import NucliaFixture
-from nucliadb_utils.settings import AuditSettings, nuclia_settings
-
-from nucliadb_agentic_api.app import HTTPApplication
 from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
 from hyperforge_nucliadb_agentic.ask.search.rpc import __SDK
 from hyperforge_nucliadb_agentic.ask.settings import (
     settings as ask_settings,
 )
+from nucliadb_models.resource import NucliaDBRoles
+from nucliadb_sdk.tests.fixtures import NucliaFixture
+from nucliadb_utils.settings import AuditSettings, nuclia_settings
+
+from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
 

@@ -5,18 +5,6 @@ from unittest.mock import patch
 
 import pytest
 from httpx import AsyncClient
-from nuclia_models.predict.generative_responses import (
-    CitationsGenerativeResponse,
-    FootnoteCitationsGenerativeResponse,
-    GenerativeChunk,
-    JSONGenerativeResponse,
-    StatusGenerativeResponse,
-)
-from nucliadb_models.search import FindParagraph
-from nucliadb_protos import resources_pb2 as rpb2
-from nucliadb_protos import writer_pb2 as wpb2
-from nucliadb_protos.writer_pb2_grpc import WriterStub
-
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     AskResponseItem,
@@ -36,6 +24,17 @@ from hyperforge_nucliadb_agentic.ask.predict import (
     AnswerStatusCode,
     get_predict,
 )
+from nuclia_models.predict.generative_responses import (
+    CitationsGenerativeResponse,
+    FootnoteCitationsGenerativeResponse,
+    GenerativeChunk,
+    JSONGenerativeResponse,
+    StatusGenerativeResponse,
+)
+from nucliadb_models.search import FindParagraph
+from nucliadb_protos import resources_pb2 as rpb2
+from nucliadb_protos import writer_pb2 as wpb2
+from nucliadb_protos.writer_pb2_grpc import WriterStub
 
 from ..fixtures.predict import DummyPredictEngine
 from .resources import cookie_tale_resource

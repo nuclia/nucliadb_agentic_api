@@ -2,6 +2,11 @@ import dataclasses
 from collections.abc import Iterator
 from datetime import datetime
 
+from hyperforge_nucliadb_agentic.ask.utils.ids import (
+    FIELD_TYPE_PB_TO_STR,
+    FieldId,
+    ParagraphId,
+)
 from nucliadb_protos import resources_pb2 as rpb
 from nucliadb_protos import utils_pb2
 from nucliadb_utils.storages.azure import AzureStorage
@@ -9,12 +14,6 @@ from nucliadb_utils.storages.gcs import GCSStorage
 from nucliadb_utils.storages.local import LocalStorage
 from nucliadb_utils.storages.s3 import S3Storage
 from nucliadb_utils.utilities import get_storage
-
-from hyperforge_nucliadb_agentic.ask.utils.ids import (
-    FIELD_TYPE_PB_TO_STR,
-    FieldId,
-    ParagraphId,
-)
 
 from .helpers import labels_to_classifications
 

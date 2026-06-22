@@ -1,5 +1,5 @@
-from collections.abc import AsyncGenerator
 import os
+from collections.abc import AsyncGenerator
 
 import pytest
 from hyperforge.broker.redis import RedisBroker

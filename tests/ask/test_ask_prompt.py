@@ -5,15 +5,6 @@ from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
-from nucliadb_models.augment import AugmentedParagraph, AugmentRequest, AugmentResponse
-from nucliadb_models.search import (
-    SCORE_TYPE,
-    FindField,
-    FindParagraph,
-    FindResource,
-)
-from nucliadb_protos import resources_pb2 as rpb2
-
 from hyperforge_nucliadb_agentic.ask.model import (
     AugmentedContext,
     HierarchyResourceStrategy,
@@ -30,6 +21,14 @@ from hyperforge_nucliadb_agentic.ask.search import (
 from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.search.metrics import Metrics
 from hyperforge_nucliadb_agentic.ask.utils.ids import ParagraphId
+from nucliadb_models.augment import AugmentedParagraph, AugmentRequest, AugmentResponse
+from nucliadb_models.search import (
+    SCORE_TYPE,
+    FindField,
+    FindParagraph,
+    FindResource,
+)
+from nucliadb_protos import resources_pb2 as rpb2
 
 
 @pytest.fixture()

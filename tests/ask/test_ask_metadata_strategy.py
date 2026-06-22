@@ -1,12 +1,11 @@
 import pytest
 from httpx import AsyncClient
-from nucliadb_protos import resources_pb2
-from nucliadb_protos.writer_pb2 import BrokerMessage
-from nucliadb_protos.writer_pb2_grpc import WriterStub
-
 from hyperforge_nucliadb_agentic.ask.model import (
     SyncAskResponse,
 )
+from nucliadb_protos import resources_pb2
+from nucliadb_protos.writer_pb2 import BrokerMessage
+from nucliadb_protos.writer_pb2_grpc import WriterStub
 
 from .utils import inject_message
 from .utils.broker_messages import BrokerMessageBuilder

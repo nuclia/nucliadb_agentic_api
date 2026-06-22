@@ -1,5 +1,4 @@
 from hyperforge.api.models import InteractionRequest
-
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 
 

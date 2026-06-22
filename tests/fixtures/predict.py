@@ -5,6 +5,16 @@ from collections.abc import AsyncGenerator, AsyncIterator
 from unittest.mock import Mock, patch
 
 import pytest
+from hyperforge_nucliadb_agentic.ask.model import ChatModel, RephraseModel
+from hyperforge_nucliadb_agentic.ask.predict import (
+    NUCLIA_LEARNING_ID_HEADER,
+    PredictEngine,
+    RephraseResponse,
+    convert_relations,
+)
+from hyperforge_nucliadb_agentic.ask.predict_models import (
+    QueryModel,
+)
 from nuclia_models.predict.generative_responses import GenerativeChunk
 from nucliadb_models.internal.predict import (
     Ner,
@@ -17,16 +27,6 @@ from nucliadb_models.internal.predict import (
 from nucliadb_protos.utils_pb2 import RelationNode
 from nucliadb_utils.utilities import Utility
 
-from hyperforge_nucliadb_agentic.ask.model import ChatModel, RephraseModel
-from hyperforge_nucliadb_agentic.ask.predict import (
-    NUCLIA_LEARNING_ID_HEADER,
-    PredictEngine,
-    RephraseResponse,
-    convert_relations,
-)
-from hyperforge_nucliadb_agentic.ask.predict_models import (
-    QueryModel,
-)
 from tests.fixtures.utils import global_utility
 
 DUMMY_RELATION_NODE = [

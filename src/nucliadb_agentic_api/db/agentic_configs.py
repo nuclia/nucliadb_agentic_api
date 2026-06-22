@@ -7,17 +7,17 @@ import sqlalchemy as sa
 from hyperforge.database import metadata
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
 from nucliadb_agentic_api import exceptions
-from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nucliadb_agentic_api.db.settings import DataManagerSettings
+from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import AgenticConfigSchema
-from nucliadb_agentic_api.db.sources import Sources
 
 
 # Imported lazily in methods to avoid any load-order sensitivity between the two

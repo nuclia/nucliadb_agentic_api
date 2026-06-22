@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 
 import jwt
 from httpx import AsyncClient
+from hyperforge_nucliadb_agentic.ask.utils.ids import ParagraphId
 from nucliadb_protos import resources_pb2
 from nucliadb_protos.resources_pb2 import CloudFile, FieldType
 from nucliadb_protos.writer_pb2 import BrokerMessage
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 from nucliadb_utils.utilities import get_storage
 
-from hyperforge_nucliadb_agentic.ask.utils.ids import ParagraphId
 from tests.ask.utils import inject_message
 from tests.ask.utils.broker_messages import BrokerMessageBuilder
 from tests.ask.utils.dirty_index import wait_for_sync

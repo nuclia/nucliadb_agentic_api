@@ -14,13 +14,13 @@ from hyperforge.pubsub import AgentDone, StartInteraction
 from hyperforge.server.cache import Cache
 from hyperforge.server.session import SessionManager
 from hyperforge.server.utils import get_memory
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from lru import LRU
 from nucliadb_telemetry import errors
 from nucliadb_telemetry.utils import get_telemetry
 from opentelemetry import trace
 
 from nucliadb_agentic_api import logger
-from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.server import SERVICE_NAME
 from nucliadb_agentic_api.server.settings import Settings as ServerSettings

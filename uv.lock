@@ -1573,7 +1573,7 @@ wheels = [
 
 [[package]]
 name = "hyperforge"
-version = "1.0.0.post48"
+version = "1.0.0.post55"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiodns" },
@@ -1605,9 +1605,9 @@ dependencies = [
     { name = "types-redis" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/ae/600e37c471d07f417c0689301524331b00f992c45fc75e6068f04bfea9e7/hyperforge-1.0.0.post48.tar.gz", hash = "sha256:8e7b880a79487b00ff3f051cdb6df6fd54de4915b679411e37a8222ced750f00", size = 242257, upload-time = "2026-06-08T07:46:24.839Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c7/9f/767b9fd4dfea8c0ff296947d896fc16c7b83012b999ef871b70b1a5e7b3f/hyperforge-1.0.0.post55.tar.gz", hash = "sha256:497993e5636237a3611c1420e37e7aa6ce4e81f7c2ca3c09f78f9aa59ca6fc9f", size = 242267, upload-time = "2026-06-22T13:55:31.596Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/64/38/334e56c7008452f5a7a8e169a4939cabe9252ec96ce0d7ebc7c78dc10d51/hyperforge-1.0.0.post48-py3-none-any.whl", hash = "sha256:fb95fe4a911163d42593aedcbca15920ba0a9f5054309909201246482955ec9e", size = 278274, upload-time = "2026-06-08T07:46:22.782Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/72/4a651debd4e2eabfdd8d0e62da05d6f5ce210c6c319e7afa506c98dfc0f6/hyperforge-1.0.0.post55-py3-none-any.whl", hash = "sha256:709d50c969cfb274b667da08212473d03a9c695ea267214548811bd79ddf6459", size = 278273, upload-time = "2026-06-22T13:55:29.755Z" },
 ]
 
 [[package]]
@@ -2664,7 +2664,7 @@ wheels = [
 
 [[package]]
 name = "nuclia"
-version = "4.11.2"
+version = "4.11.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -2685,21 +2685,21 @@ dependencies = [
     { name = "tqdm" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/75/7089144d770bb80f132e0928d315f057a2afdb7ff46e8159aabb4e6b9c43/nuclia-4.11.2.tar.gz", hash = "sha256:620ae416cc74cee9db3fc2a1ed347410662a0bc334090e208585c4ba1bd26742", size = 280325, upload-time = "2026-06-09T10:49:15.049Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/14/d274a3c4b964458f1fadca12bd87d329607d22c4b24eb7f6650692276732/nuclia-4.11.5.tar.gz", hash = "sha256:a0987100b2b6186399321de1be1ced9d0ee654cdd5abd344611fe977d2f01aba", size = 286122, upload-time = "2026-06-22T09:53:56.632Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/fd/c84bfc6aa41ea274682070cdce707d60d562d251e31354f3a738eb9230a5/nuclia-4.11.2-py3-none-any.whl", hash = "sha256:da1b3373cc63860cef8535b59ba1159f8697c16bf8ba800e72f8268d923f561f", size = 117547, upload-time = "2026-06-09T10:49:13.321Z" },
+    { url = "https://files.pythonhosted.org/packages/c6/f0/4cce7d66568c081ee27b320e2c5f469db71040014315dcca1c6ad1a2612a/nuclia-4.11.5-py3-none-any.whl", hash = "sha256:c84973675d84c9d6db48806a28a69c8313ce4b3e336f27cc4b8e86ed4b1637ae", size = 117622, upload-time = "2026-06-22T09:53:54.87Z" },
 ]
 
 [[package]]
 name = "nuclia-models"
-version = "0.56.0"
+version = "0.59.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic", extra = ["email"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/41/45e00c5ee2c2bc05b65f30feff7738bf86720c5ff619d05113976b440ba2/nuclia_models-0.56.0.tar.gz", hash = "sha256:d9cb2ea0199dd1db28703adbf04e2f72519362dea31324e79525308a07d24fce", size = 24965, upload-time = "2026-03-27T12:47:23.921Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/02/8b59bd33b568e8931d7b033ea4186b22a4e03a2a032bbb02179514ceb38c/nuclia_models-0.59.0.tar.gz", hash = "sha256:378f10172ba75319b98839c4a96f8e1590a2f8278196e620ad03badc6fe9dc77", size = 25374, upload-time = "2026-06-21T21:19:44.586Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/a7/fc5b20b8d407ab9a20b3702b4b94a368edfc5b03bdcd7249a28d5330b4ff/nuclia_models-0.56.0-py3-none-any.whl", hash = "sha256:1f4358afde7a579f05ac75777e3c8973f4b43b8cb615e38900a4eaeebf60cb33", size = 29464, upload-time = "2026-03-27T12:47:24.593Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/9b/497803b29faa5b1e90950a245dd316100c00e67ad3136090b8448a27f39e/nuclia_models-0.59.0-py3-none-any.whl", hash = "sha256:b64de9f07c072a6677982b1a938177f7b5d1c6b0f1f686a36dd6e3310af797dc", size = 29890, upload-time = "2026-06-21T21:19:43.41Z" },
 ]
 
 [[package]]
@@ -2765,6 +2765,7 @@ server = [
     { name = "mrflagly" },
     { name = "nats-py" },
     { name = "nuclia" },
+    { name = "nuclia-models" },
     { name = "nucliadb-protos" },
     { name = "nucliadb-sdk" },
     { name = "nucliadb-telemetry", extra = ["otel"] },
@@ -2824,7 +2825,7 @@ server = [
     { name = "databases", extras = ["asyncpg"] },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "hyperforge", specifier = ">=1.0.0.post48" },
+    { name = "hyperforge", specifier = ">=1.0.0.post55" },
     { name = "hyperforge-google" },
     { name = "hyperforge-mcp" },
     { name = "hyperforge-nucliadb" },
@@ -2838,7 +2839,8 @@ server = [
     { name = "mmh3" },
     { name = "mrflagly", specifier = ">=0.2.11" },
     { name = "nats-py" },
-    { name = "nuclia", specifier = ">=4.9.25" },
+    { name = "nuclia", specifier = ">=4.11.5" },
+    { name = "nuclia-models", specifier = ">=0.59.0" },
     { name = "nucliadb-protos" },
     { name = "nucliadb-sdk", specifier = ">=6.14.0.post6532" },
     { name = "nucliadb-telemetry", extras = ["otel"], specifier = ">=6.14.0.post6534" },

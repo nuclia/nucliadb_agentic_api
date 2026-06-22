@@ -8,12 +8,18 @@ from pydantic.config import ConfigDict
 
 class NucliaDBAgentConfig(ContextAgentConfig):
     model_config = ConfigDict(title="Knowledge Box Agent")
-    module: Literal["nucliadb"] = "nucliadb"
+    module: Literal["nucliadb_agent"] = "nucliadb_agent"
     sources: List[str] = Field(
         default_factory=list,
         json_schema_extra={
             "show_in_node": True,
         },
+    )
+    generative_model: str = Field(
+        default="chatgpt-azure-4o-mini",
+        title="Generative model",
+        description="Model used to generate answers",
+        json_schema_extra={"widget": WidgetType.MODEL_SELECT},
     )
     published_functions: Optional[Tuple[str, ...]] = Field(
         default=(

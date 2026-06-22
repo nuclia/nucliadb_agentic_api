@@ -10,6 +10,7 @@ from hyperforge.context.agent import ContextAgent
 from hyperforge.definition import FunctionDefinition
 from hyperforge.manager import Manager
 from hyperforge.memory import Chunk, Context, QuestionMemory, Source
+from hyperforge_nucliadb_agentic.ask.search.ask import ask
 from nucliadb_models.filters import (
     And,
     CatalogFilterExpression,
@@ -22,18 +23,21 @@ from nucliadb_models.filters import (
 )
 from nucliadb_models.resource import Resource as ResourceResponse
 from nucliadb_models.search import (
-    AskRequest,
     CatalogRequest,
-    CitationsType,
     FieldExtensionStrategy,
     Filter,
     FindRequest,
-    FullResourceStrategy,
     KnowledgeboxFindResults,
+    NucliaDBClientType,
+    ResourceProperties,
+)
+from hyperforge_nucliadb_agentic.ask.model import (
+    AskRequest,
+    FullResourceStrategy,
     MetadataExtensionStrategy,
     NeighbouringParagraphsStrategy,
-    ResourceProperties,
     SyncAskResponse,
+    CitationsType,
 )
 
 from hyperforge import PROMPT_ENVIRONMENT, logger
@@ -44,9 +48,6 @@ from hyperforge_nucliadb.ask_utils import (
     get_chunk_text,
     to_field_filter_expression,
     to_resource_filter_expression,
-)
-from hyperforge_nucliadb.basic_ask_config import (
-    BasicAskAgentConfig,
 )
 from hyperforge_nucliadb.driver import (
     NucliaDBDriver,
@@ -1151,18 +1152,21 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             step_agent_path=f"/context/{self.agent_id}",
         )
         paragraphs_result = await ask(
-            search_sdk=search_sdk,
-            reader_sdk=reader_sdk,
-            kbid=kbid,
+            search_sdk=nucliadb_driver.driver,
+            reader_sdk=nucliadb_driver.driver,
+            kbid=nucliadb_driver.config.kbid,
             ask_request=ask_request,
-            user_id=user_id,
-            client_type=client_type,
-            origin=origin,
-            resource=resource,
-            extra_predict_headers=extra_predict_headers,
+            user_id=memory.original_question_uuid,
+            client_type=NucliaDBClientType.API,
+            origin=memory.arguments.get("origin", ""),
+            resource=None,
+            extra_predict_headers={},
         )
 
-        paragraphs = await paragraphs_result.json()
+        # Hack to send the find results on the agent context
+        context.structured.append(paragraphs_result.main_results.model_dump_json())
+
+        paragraphs = await paragraphs_result.model_dump()
         answer = None
         input_tokens = (
             paragraphs.consumption.normalized_tokens.input
@@ -1216,124 +1220,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             step_agent_path=f"/context/{self.agent_id}",
         )
         return context
-
-    async def rag(
-        self,
-        source_obj: Source,
-        question_uuid: str,
-        question: str,
-        memory: QuestionMemory,
-        manager: Manager,
-        flow_id: str,
-    ) -> tuple[str, str] | None:
-        # TODO: Use _inner_rag to avoid code duplication once we validate that the changes compared to this legacy method are correct
-        # For now, we keep it separate to avoid changing the behavior
-        # context = await self.inner_rag(
-        #     source_obj=source_obj,
-        #     manager=manager,
-        #     memory=memory,
-        #     question=question,
-        #     question_uuid=question_uuid,
-        # )
-
-        # START OF LEGACY BLOCK
-        source = source_obj.id
-
-        nucliadb_driver = get_ndb_driver(manager, source)
-
-        context = Context(
-            agent_id=self.agent_id,
-            original_question_uuid=memory.original_question_uuid,
-            actual_question_uuid=question_uuid,
-            question=question,
-            source=source,
-            agent="basic_ask",
-            title=self.config.title
-            if self.config.title
-            else f"Retrieval on {source} Knowledge Box",
-        )
-        t0 = time()
-        ask_request = AskRequest(
-            query=question,
-            citations=True,
-            generative_model=self.config.generative_model,
-            filters=nucliadb_driver.config.filters,
-        )
-        paragraphs = await nucliadb_driver.ask(
-            ask_request,
-        )
-        answer = None
-        if paragraphs is not None:
-            input_tokens = (
-                paragraphs.metadata.tokens.input_nuclia
-                if paragraphs.metadata and paragraphs.metadata.tokens
-                else 0
-            )
-            output_tokens = (
-                paragraphs.metadata.tokens.output_nuclia
-                if paragraphs.metadata and paragraphs.metadata.tokens
-                else 0
-            )
-            context.chunks = []
-            answer = paragraphs.answer if paragraphs.status == "success" else ""
-            if paragraphs.citations != {}:
-                result_chunks = list(paragraphs.citations.keys())
-            else:
-                result_chunks = paragraphs.retrieval_results.best_matches
-            for chunk_id in result_chunks:
-                resource_id = chunk_id.split("/")[0]
-                resource = paragraphs.retrieval_results.resources[resource_id]
-                text = get_chunk_text(paragraphs, chunk_id)
-                context.chunks.append(
-                    Chunk(
-                        chunk_id=chunk_id,
-                        title=resource.title,
-                        text=text,
-                        source=source,
-                        origin_agent=self.config.module,
-                    )
-                )
-                # TODO: Save citations properly
-
-        # XXX: This answer will be overriden by any call to save_ctx_and_return_missing below
-        if answer:
-            context.summary = answer
-        # END OF LEGACY BLOCK
-        if self.fallback is None:
-            if context.summary is not None and context.summary != "":
-                missing = await self.save_ctx_and_return_missing(
-                    context=context,
-                    question=question,
-                    memory=memory,
-                    manager=manager,
-                    flow_id=flow_id,
-                )
-            else:
-                missing = (question_uuid, question)
-                logger.info(
-                    f"No context found for question {question} in source {source_obj.id}, skipping"
-                )
-            # START OF LEGACY BLOCK (remove this if we switch to inner_rag)
-            await memory.add_step(
-                step_module=self.config.module,
-                step_title=self.step_title("RAG retrieval"),
-                step_reason="Got answer" if answer else "No answer",
-                step_value=answer if answer else "No answer",
-                timeit=time() - t0,
-                input_nuclia_tokens=input_tokens if input_tokens else 0,
-                output_nuclia_tokens=output_tokens if output_tokens else 0,
-                step_agent_path=f"/context/{self.agent_id}",
-            )
-            # END OF LEGACY BLOCK
-            return missing
-        missing = await self.save_ctx_and_return_missing(
-            context=context,
-            question=question,
-            memory=memory,
-            manager=manager,
-            flow_id=flow_id,
-        )
-        return missing
 
     async def facets_search(
         self,

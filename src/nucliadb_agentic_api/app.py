@@ -8,6 +8,15 @@ from hyperforge.api.authentication import RaoAuthenticationBackend
 from hyperforge.broker import Broker
 from hyperforge.broker.redis import RedisBroker
 from hyperforge.driver import Driver
+from hyperforge_nucliadb_agentic.ask.audit import (
+    AuditMiddleware,
+    start_audit_utility,
+    stop_audit_utility,
+)
+from hyperforge_nucliadb_agentic.ask.predict import (
+    start_predict_engine,
+    stop_predict_engine,
+)
 from lru import LRU
 from mcp.server.lowlevel.server import Server as MCPServer
 from mcp.server.streamable_http import (
@@ -21,15 +30,6 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
 
 from nucliadb_agentic_api import SERVICE_NAME, v1
-from hyperforge_nucliadb_agentic.ask.audit import (
-    AuditMiddleware,
-    start_audit_utility,
-    stop_audit_utility,
-)
-from hyperforge_nucliadb_agentic.ask.predict import (
-    start_predict_engine,
-    stop_predict_engine,
-)
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.sources import Sources

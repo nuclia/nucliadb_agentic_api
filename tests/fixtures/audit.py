@@ -2,11 +2,11 @@ from collections.abc import AsyncIterator
 from unittest.mock import patch
 
 import pytest
+from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
 from nucliadb_utils.settings import audit_settings
 from nucliadb_utils.utilities import Utility
 from pytest_mock import MockerFixture
 
-from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
 from tests.fixtures.utils import global_utility
 
 

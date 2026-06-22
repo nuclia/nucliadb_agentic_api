@@ -2,11 +2,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 from httpx import AsyncClient
-from nucliadb_protos.utils_pb2 import RelationNode
-
 from hyperforge_nucliadb_agentic.ask.model import SyncAskResponse
-from hyperforge_nucliadb_agentic.ask.search import graph_strategy
-from hyperforge_nucliadb_agentic.ask.search import rpc
+from hyperforge_nucliadb_agentic.ask.search import graph_strategy, rpc
+from nucliadb_protos.utils_pb2 import RelationNode
 
 
 @pytest.mark.parametrize("relation_ranking", ["generative", "reranker"])

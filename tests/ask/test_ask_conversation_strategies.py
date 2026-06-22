@@ -2,6 +2,12 @@ from contextlib import contextmanager
 from unittest.mock import patch
 
 from httpx import AsyncClient
+from hyperforge_nucliadb_agentic.ask.model import (
+    Image,
+    SyncAskResponse,
+)
+from hyperforge_nucliadb_agentic.ask.search import ask, rpc
+from hyperforge_nucliadb_agentic.ask.search.rpc import augment
 from nucliadb_models.augment import AugmentedFileField, AugmentRequest, AugmentResponse
 from nucliadb_models.retrieval import (
     KeywordScore,
@@ -16,14 +22,6 @@ from nucliadb_models.retrieval import (
 )
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 from pytest_mock import MockerFixture
-
-from hyperforge_nucliadb_agentic.ask.model import (
-    Image,
-    SyncAskResponse,
-)
-from hyperforge_nucliadb_agentic.ask.search import ask
-from hyperforge_nucliadb_agentic.ask.search import rpc
-from hyperforge_nucliadb_agentic.ask.search.rpc import augment
 
 from .resources.lambs import lambs_resource
 

@@ -11,8 +11,8 @@ from hyperforge_nucliadb.driver_config import (
     NucliaDBConfig,
     NucliaDBConnection,
 )
-
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
+
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.models import AgenticConfigSchema
 
@@ -79,7 +79,7 @@ async def transform_agentic_config(
                 uid = uuid4().hex
 
                 source_config["sources"] = [uid]
-                source_config["module"] = "basic_ask"
+                source_config["module"] = "nucliadb_agent"
 
                 if internal_nucliadb and internal_nucliadb_url:
                     url = internal_nucliadb_url

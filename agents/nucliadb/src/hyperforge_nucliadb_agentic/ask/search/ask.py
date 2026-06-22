@@ -214,7 +214,6 @@ class AskResult:
 
     async def ndjson_stream(self) -> AsyncGenerator[str, None]:
         try:
-            breakpoint()
             async for item in self._stream():
                 yield self._ndjson_encode(item)
         except Exception as exc:

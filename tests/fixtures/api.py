@@ -4,13 +4,13 @@ import socket
 import pytest
 import uvicorn
 from httpx import ASGITransport, AsyncClient
+from hyperforge_nucliadb_agentic.ask.settings import settings as ask_settings
 from nucliadb_sdk.tests.fixtures import NucliaFixture
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api.app import HTTPApplication
-from hyperforge_nucliadb_agentic.ask.settings import settings as ask_settings
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
 
