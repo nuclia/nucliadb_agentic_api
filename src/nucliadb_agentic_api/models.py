@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 from hyperforge.driver import DriverConfig
 from hyperforge.models import Rules
-from nucliadb_models import FilterExpression, ParamDefault, TextFormat
+from nucliadb_models import FilterExpression, TextFormat
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 

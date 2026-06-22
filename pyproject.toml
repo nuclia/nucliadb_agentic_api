@@ -127,4 +127,5 @@ dev = [
     "inline_snapshot",
     "types-redis>=4.6.0.20241004",
     "ruff>=0.15.10",
+    "types-grpcio",
 ]

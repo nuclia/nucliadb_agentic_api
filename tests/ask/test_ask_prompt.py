@@ -105,7 +105,6 @@ async def test_default_prompt_context(kb) -> None:
 @pytest.fixture(scope="function")
 def find_results():
     return KnowledgeboxFindResults(
-        facets={},
         resources={
             "resource1": _create_find_result(
                 FindParagraph(
@@ -299,7 +298,6 @@ async def test_hierarchy_prompt_context(nucliadb_search: AsyncClient, kb):
 async def test_prompt_context_image_context_builder() -> None:
     result_text = " ".join(["text"] * 10)
     find_results = KnowledgeboxFindResults(
-        facets={},
         resources={
             "bmid": _create_find_result(
                 FindParagraph(

@@ -1,8 +1,6 @@
 import pytest
 from httpx import AsyncClient
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
-from hyperforge_nucliadb_agentic.ask.search.ask import AskResult
-from nuclia.sdk import AsyncNucliaSearch
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 

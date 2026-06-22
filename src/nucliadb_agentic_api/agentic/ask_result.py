@@ -78,7 +78,7 @@ class AgenticAskResult(AskResult):
         self.app = app
         self.nuclia_learning_id: str = ""
         self.event_learning_id = Event()
-        self.queue = Queue()
+        self.queue: Queue[AragAnswer] = Queue()
         self.task: Task | None = None
         self.main_results = KnowledgeboxFindResults(resources={})
 

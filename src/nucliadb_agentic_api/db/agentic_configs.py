@@ -48,7 +48,7 @@ agentic_config_table = sa.Table(
 )
 
 
-CACHE = LRU(size=1024)
+CACHE: LRU[str, AgenticConfigSchema] = LRU(size=1024)
 
 
 def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
