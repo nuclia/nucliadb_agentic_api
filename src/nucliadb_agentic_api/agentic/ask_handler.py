@@ -34,7 +34,7 @@ async def create_agentic_response(
     extra_predict_headers: dict[str, str] | None = None,
 ) -> Response:
     ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
-
+    breakpoint()  # Debugging breakpoint
     ask_result = AgenticAskResult(
         app=app,
         kbid=kbid,

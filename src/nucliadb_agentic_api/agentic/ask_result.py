@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from hyperforge.api.v1.interaction import stream_response
 from hyperforge.interaction import AnswerOperation, AragAnswer
+from hyperforge_nucliadb_agentic.agent import JSON_OBJECT_ID
 from hyperforge_nucliadb_agentic.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
@@ -67,6 +68,7 @@ class AgenticAskResult(AskResult):
         account: str,
         app: "HTTPApplication",
         origin: str | None = None,
+        generate_inner_answer: bool = True,
     ):
         # Initial attributes
         self.kbid = kbid
@@ -81,6 +83,7 @@ class AgenticAskResult(AskResult):
         self.queue: Queue[AragAnswer] = Queue()
         self.task: Task | None = None
         self.main_results = KnowledgeboxFindResults(resources={})
+        self.generate_inner_answer = generate_inner_answer
 
         self._answer_text = ""
         self._reasoning_text: str | None = None
@@ -109,8 +112,8 @@ class AgenticAskResult(AskResult):
             workflow_id=self.agentic_config_id,
         ):
             try:
+                if msg.
                 await self.queue.put(msg)
-                self.event_learning_id.set()
             except (RuntimeError, asyncio.QueueFull):
                 # WebSocket already closed
                 pass
@@ -289,6 +292,7 @@ class AgenticAskResult(AskResult):
                         else 0.0
                     )
                     timings[answer.step.module] = answer.step.timeit
+                    self.event_learning_id.set()
 
                 if answer.possible_answer:
                     # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately
@@ -296,12 +300,14 @@ class AgenticAskResult(AskResult):
 
                 # Context(id='100d70a657884c2c8fdc80738dda71b9', original_question_uuid='201701ca9cd7412ba3153bcbdeb1f07e', actual_question_uuid='201701ca9cd7412ba3153bcbdeb1f07e', question='Provide dessert options that are both healthy and delicious.', chunks=[Chunk(chunk_id='catalog_search_result-0', title=None, source=None, text='Here are some healthy and delicious dessert recipes from the catalog search results:\n\n1. **Carrot Cake** - A classic dessert that can be made healthier by using whole grain flour and reducing sugar.\n   - [Download Carrot Cake Recipe](carrot-cake-A4.pdf)\n\n2. **Chocolate Chip Cookies** - You can make these healthier by using dark chocolate and whole grain flour.\n   - [Download Chocolate Chip Cookies Recipe](chocolate-chip-cookies-A4.pdf)\n\n3. **Zucchini Bread** - A great way to incorporate vegetables into a sweet treat, often made with whole grains and less sugar.\n   - [Download Zucchini Bread Recipe](Zucchini-bread-A4.pdf)\n\n4. **Banana Bread** - A delicious option that can be made healthier by using ripe bananas for sweetness and whole grain flour.\n   - [Download Banana Bread Recipe](banana-bread-A4.pdf)\n\n5. **Gingerbread Cake** - A spiced cake that can be made with healthier ingredients like whole wheat flour and less sugar.\n   - [Download Gingerbread Cake Recipe](Gingerbread-Cake-A4.pdf)\n\n6. **Sugar Cookies** - These can be made healthier by using natural sweeteners and whole grain flour.\n   - [Download Sugar Cookies Recipe](Sugar-Cookies-A4.pdf)\n\nFeel free to explore these recipes for a healthier dessert option!', labels=[], url=[], metadata=None, action="catalog_search of 4c9b0b15-de46-4a15-849b-82fe502fa5cb with parameters {'question': 'healthy and delicious dessert recipes'}", origin_url=None, origin_agent='basic_ask')], images={}, prompts=[], structured=[], source='smart_agent', agent='smart_agent', summary='Here are some healthy and delicious dessert recipes:\n\n1. **Carrot Cake** - Made healthier by using whole grain flour and reducing sugar.\n2. **Chocolate Chip Cookies** - Made healthier by using dark chocolate and whole grain flour.\n3. **Zucchini Bread** - Incorporates vegetables, often made with whole grains and less sugar.\n4. **Banana Bread** - Made healthier by using ripe bananas for sweetness and whole grain flour.\n5. **Gingerbread Cake** - Made with healthier ingredients like whole wheat flour and less sugar.\n6. **Sugar Cookies** - Made healthier by using natural sweeteners and whole grain flour.', agent_id='b6d72f8c-2e09-4ee1-bba0-b0ec711894a1', title='Default Agentic Config - Smart Agent', missing=None, citations=['catalog_search_result-0'], citations_id=None, image_urls=[])
                 if answer.context:
-                    # TODO: This is a bit of a hack, but we need to parse the structured data as KnowledgeboxFindResults and store it in the main_results attribute. This is because the AskResult class expects a KnowledgeboxFindResults object to be returned from the websocket_to_ask method, but we don't have that yet. Once we have a proper KnowledgeboxFindResults object, we can remove this hack.
                     try:
-                        for structured in answer.context.structured:
-                            self.main_results = (
-                                KnowledgeboxFindResults.model_validate_json(structured)
-                            )
+                        for structured in answer.context.json_objects:
+                            if structured.id == JSON_OBJECT_ID:
+                                self.main_results = (
+                                    KnowledgeboxFindResults.model_validate(
+                                        structured.json_object
+                                    )
+                                )
                     except Exception as e:
                         logger.error("Error validating structured data: %s", e)
 

@@ -2,15 +2,11 @@ import asyncio
 import os
 from functools import partial
 
-from hyperforge_nucliadb_agentic.ask.audit import (
-    start_audit_utility,
-    stop_audit_utility,
-)
 import nucliadb_telemetry.context
 import nucliadb_telemetry.metrics
 import prometheus_client
 from hyperforge.broker import Broker
-from hyperforge.configure import load_all_configurations, scan
+from hyperforge.configure import GLOBAL_REGISTRY, load_all_configurations, scan
 from hyperforge.engine import State, get_state
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
 from hyperforge.memory import QuestionMemory
@@ -18,18 +14,21 @@ from hyperforge.pubsub import AgentDone, StartInteraction
 from hyperforge.server.cache import Cache
 from hyperforge.server.session import SessionManager
 from hyperforge.server.utils import get_memory
+from hyperforge_nucliadb_agentic.ask.audit import (
+    start_audit_utility,
+    stop_audit_utility,
+)
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from lru import LRU
 from nucliadb_telemetry import errors
 from nucliadb_telemetry.utils import get_telemetry
+from nucliadb_utils.settings import AuditSettings
 from opentelemetry import trace
 
 from nucliadb_agentic_api import logger
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.server import SERVICE_NAME
 from nucliadb_agentic_api.server.settings import Settings as ServerSettings
-from nucliadb_utils.settings import AuditSettings
-from hyperforge.configure import GLOBAL_REGISTRY
 
 HOSTNAME = os.environ.get("HOSTNAME", "nucliadb-agentic-api-server").encode()
 

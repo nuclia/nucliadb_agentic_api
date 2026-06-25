@@ -40,3 +40,8 @@ class NucliaDBAgentConfig(ContextAgentConfig):
             "widget": WidgetType.NOT_SHOWN,
         },
     )
+    generate_inner_answer: bool = Field(
+        default=True,
+        title="Generate inner answer",
+        description="If true, the agent will generate an inner answer to be used by other agents in the chain. If false, the agent will only generate a reasoning and a list of resources.",
+    )

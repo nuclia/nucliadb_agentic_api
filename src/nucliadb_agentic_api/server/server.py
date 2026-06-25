@@ -2,16 +2,17 @@ import asyncio
 from importlib.metadata import version
 from typing import Optional
 
-from hyperforge_nucliadb_agentic.ask.audit import start_audit_utility
 import sentry_sdk
 from hyperforge.broker.redis import RedisBroker
 from hyperforge.feature_flag import get_flag_service
 from hyperforge.server.cache import ValkeyCache
 from hyperforge.server.run import run_metrics_server
+from hyperforge_nucliadb_agentic.ask.audit import start_audit_utility
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_telemetry.tracerprovider import AsyncTracerProvider
 from nucliadb_telemetry.utils import setup_telemetry
+from nucliadb_utils.settings import AuditSettings
 from sentry_sdk.integrations.excepthook import ExcepthookIntegration
 
 from nucliadb_agentic_api import SERVICE_NAME
@@ -19,7 +20,6 @@ from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 from nucliadb_agentic_api.server.settings import Settings
-from nucliadb_utils.settings import AuditSettings
 
 
 def set_sentry(zone: str, environment: str, sentry_url: str):

@@ -39,6 +39,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
     SyncAskResponse,
     CitationsType,
 )
+from hyperforge.models import JSONObject
 
 from hyperforge import PROMPT_ENVIRONMENT, logger
 from hyperforge_nucliadb.ask.multi import choose_source
@@ -87,6 +88,9 @@ EXAMPLE_FILTER_EXP3 = [
         ],
     },
 ]
+
+KBFindResultsSchema = KnowledgeboxFindResults.model_json_schema()
+JSON_OBJECT_ID = "nucliadb_find_results"
 
 
 FACETS_LABEL_SEARCH_TEMPLATE = """
@@ -587,7 +591,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
 
                 if len(images_urls) > 0:
                     context = Context(
-                        agent_id=self.config.id,
+                        agent_id=self.agent_id,
                         original_question_uuid=memory.original_question_uuid,
                         actual_question_uuid=None,
                         question="Search images by title. Title: "
@@ -640,7 +644,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 images_urls = await self.get_all_images(resource=resource)
                 if len(images_urls) > 0:
                     context = Context(
-                        agent_id=self.config.id,
+                        agent_id=self.agent_id,
                         original_question_uuid=memory.original_question_uuid,
                         actual_question_uuid=None,
                         question="All images by title. Title: " + title,
@@ -932,7 +936,14 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
 
         missing: list[tuple[str, str] | None] = await asyncio.gather(
             *[
-                self.rag(source, question_uuid, question, memory, manager, flow_id)
+                self.rag(
+                    source_obj=source,
+                    question_uuid=question_uuid,
+                    question=question,
+                    memory=memory,
+                    manager=manager,
+                    flow_id=flow_id,
+                )
                 for source in chosen_sources
             ]
         )
@@ -1138,19 +1149,9 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             generative_model=self.config.generative_model,
             filter_expression=filter_expression,
             rag_strategies=rag_strategies,
+            generate_answer=self.config.generate_inner_answer,
         )
-        await memory.add_step(
-            step_module="basic_ask",
-            step_title=self.step_title("Preparing RAG"),
-            step_reason="",
-            step_value=ask_request.model_dump_json(
-                exclude_none=True, exclude_unset=True
-            ),
-            timeit=0.0,
-            input_nuclia_tokens=0.0,
-            output_nuclia_tokens=0.0,
-            step_agent_path=f"/context/{self.agent_id}",
-        )
+
         paragraphs_result = await ask(
             search_sdk=nucliadb_driver.driver,
             reader_sdk=nucliadb_driver.driver,
@@ -1163,8 +1164,28 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             extra_predict_headers={},
         )
 
+        await memory.add_step(
+            step_module="basic_ask",
+            step_title=self.step_title("Preparing RAG"),
+            step_reason="",
+            step_value=ask_request.model_dump_json(
+                exclude_none=True, exclude_unset=True
+            ),
+            timeit=0.0,
+            input_nuclia_tokens=0.0,
+            output_nuclia_tokens=0.0,
+            step_agent_path=f"/context/{self.agent_id}",
+            metadata={"learning_id": paragraphs_result.nuclia_learning_id},
+        )
+
         # Hack to send the find results on the agent context
-        context.structured.append(paragraphs_result.main_results.model_dump_json())
+        context.json_objects.append(
+            JSONObject(
+                json_schema=KBFindResultsSchema,
+                json_object=paragraphs_result.main_results.model_dump(),
+                id=JSON_OBJECT_ID,
+            )
+        )
 
         paragraphs = await paragraphs_result.model_dump()
         answer = None
@@ -1220,6 +1241,48 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             step_agent_path=f"/context/{self.agent_id}",
         )
         return context
+
+    async def rag(
+        self,
+        source_obj: Source,
+        question_uuid: str,
+        question: str,
+        memory: QuestionMemory,
+        manager: Manager,
+        flow_id: str,
+    ):
+        context = await self.inner_rag(
+            source_obj=source_obj,
+            question_uuid=question_uuid,
+            question=question,
+            memory=memory,
+            manager=manager,
+        )
+
+        if self.fallback is None:
+            if context.summary is not None and context.summary != "":
+                missing = await self.save_ctx_and_return_missing(
+                    context=context,
+                    question=question,
+                    memory=memory,
+                    manager=manager,
+                    flow_id=flow_id,
+                )
+            else:
+                missing = (question_uuid, question)
+                logger.info(
+                    f"No context found for question {question} in source {source_obj.id}, skipping"
+                )
+
+            return missing
+        missing = await self.save_ctx_and_return_missing(
+            context=context,
+            question=question,
+            memory=memory,
+            manager=manager,
+            flow_id=flow_id,
+        )
+        return missing
 
     async def facets_search(
         self,

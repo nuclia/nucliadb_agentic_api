@@ -441,6 +441,7 @@ async def test_call_tool_search_documents_known_exceptions():
         KnowledgeBoxNotFound,
         NoRetrievalResultsError,
     )
+
     from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     base_args = dict(
