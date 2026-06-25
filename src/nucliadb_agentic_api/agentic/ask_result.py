@@ -69,6 +69,7 @@ class AgenticAskResult(AskResult):
         app: "HTTPApplication",
         origin: str | None = None,
         generate_inner_answer: bool = True,
+        resource: str | None = None,
     ):
         # Initial attributes
         self.kbid = kbid
@@ -84,6 +85,7 @@ class AgenticAskResult(AskResult):
         self.task: Task | None = None
         self.main_results = KnowledgeboxFindResults(resources={})
         self.generate_inner_answer = generate_inner_answer
+        self.resource = resource
 
         self._answer_text = ""
         self._reasoning_text: str | None = None
@@ -111,8 +113,15 @@ class AgenticAskResult(AskResult):
             interaction,
             workflow_id=self.agentic_config_id,
         ):
+            breakpoint()  # Debugging breakpoint
             try:
-                if msg.
+                if (
+                    msg.step
+                    and msg.step.metadata
+                    and "learning_id" in msg.step.metadata
+                ):
+                    self.nuclia_learning_id = msg.step.metadata["learning_id"]
+                    self.event_learning_id.set()
                 await self.queue.put(msg)
             except (RuntimeError, asyncio.QueueFull):
                 # WebSocket already closed
@@ -292,7 +301,6 @@ class AgenticAskResult(AskResult):
                         else 0.0
                     )
                     timings[answer.step.module] = answer.step.timeit
-                    self.event_learning_id.set()
 
                 if answer.possible_answer:
                     # Not usefull for ask endpoint, more for a agent playground where we want to show the final answer separately

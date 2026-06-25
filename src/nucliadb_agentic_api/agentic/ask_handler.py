@@ -34,7 +34,6 @@ async def create_agentic_response(
     extra_predict_headers: dict[str, str] | None = None,
 ) -> Response:
     ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
-    breakpoint()  # Debugging breakpoint
     ask_result = AgenticAskResult(
         app=app,
         kbid=kbid,
@@ -42,6 +41,7 @@ async def create_agentic_response(
         agentic_config_id=agentic_config_id,
         account=account,
         origin=origin,
+        resource=resource,
     )
 
     nuclia_learning_id = await ask_result.start()

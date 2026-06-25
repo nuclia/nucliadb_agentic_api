@@ -46,7 +46,6 @@ from hyperforge_nucliadb.ask.multi import choose_source
 from hyperforge_nucliadb.ask_utils import (
     combine_catalog_filter_expressions,
     combine_filter_expressions,
-    get_chunk_text,
     to_field_filter_expression,
     to_resource_filter_expression,
 )
@@ -230,6 +229,25 @@ CATALOG_ANSWER_GENERATION_AGENT_TEMPLATE = PROMPT_ENVIRONMENT.from_string(
 )
 
 
+def get_chunk_text(ask_response: SyncAskResponse, chunk_id: str) -> str:
+    ids = chunk_id.split("/")
+    resource_id = ids[0]
+    resource = ask_response.retrieval_results.resources[resource_id]
+    field_id = f"/{ids[1]}/{ids[2]}" if len(ids) > 2 else ""
+    try:
+        # Try to get the text from the main retrieval results first
+        return resource.fields[field_id].paragraphs[chunk_id].text
+    except KeyError:
+        # If not found, try to get it from the augmented context, as it may be a chunk that was augmented as part of the RAG strategies.
+        if ask_response.augmented_context is not None:
+            try:
+                return ask_response.augmented_context.paragraphs[chunk_id].text
+            except KeyError:
+                # If still not found, return an empty string
+                pass
+        return ""
+
+
 @agent(
     id="nucliadb_agent",
     agent_type="context",
@@ -265,20 +283,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 "labelset": {
                     "type": "string",
                     "description": "The label set to get the labels from the Knowledge Box.",
-                },
-            },
-        ),
-        "ask_by_title": FunctionDefinition(
-            name="ask_by_title",
-            description="Ask a question in the Knowledge Box filtered by a specific title. Useful when the user wants information about a known document.",
-            parameters={
-                "title": {
-                    "type": "string",
-                    "description": "The title to filter the ask operation in the Knowledge Box.",
-                },
-                "question": {
-                    "type": "string",
-                    "description": "The question to ask in the Knowledge Box.",
                 },
             },
         ),
@@ -445,36 +449,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             )
             resources[source] = list(response.resources.keys())
         return resources
-
-    async def ask_by_title(
-        self,
-        memory: QuestionMemory,
-        manager: Manager,
-        title: str,
-        question: str,
-        **kwargs,
-    ) -> List[Context]:
-        # First, search by title to get specific matching resource IDs
-        resources_by_source = await self.search_by_title(
-            memory=memory,
-            manager=manager,
-            title=title,
-        )
-        # Then perform ask operation filtered by those resource IDs
-        contexts: list[Context] = await asyncio.gather(
-            *[
-                self.inner_ask_by_title(
-                    source_id=source_id,
-                    resource_ids=resource_ids,
-                    question=question,
-                    memory=memory,
-                    manager=manager,
-                )
-                for source_id, resource_ids in resources_by_source.items()
-                if len(resource_ids) > 0
-            ]
-        )
-        return contexts
 
     async def get_all_images(
         self,
@@ -661,87 +635,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
 
         return contexts
 
-    async def search_images_by_title(
-        self,
-        memory: QuestionMemory,
-        manager: Manager,
-        title: str,
-        question: str,
-        **kwargs,
-    ) -> List[Context]:
-        # First, search by title to get specific matching resource IDs
-        resources_by_source = await self.search_by_title(
-            memory=memory,
-            manager=manager,
-            title=title,
-        )
-
-        # Then perform ask operation filtered by those resource IDs
-        contexts: list[Context] = await asyncio.gather(
-            *[
-                self.inner_ask_by_title(
-                    source_id=source_id,
-                    resource_ids=resource_ids,
-                    question=question,
-                    memory=memory,
-                    manager=manager,
-                )
-                for source_id, resource_ids in resources_by_source.items()
-                if len(resource_ids) > 0
-            ]
-        )
-        return contexts
-
-    async def do_nucliadb_query(
-        self,
-        memory: QuestionMemory,
-        manager: Manager,
-        source_id: str,
-        question: str,
-        resource_id: Optional[str] = None,
-    ) -> SyncAskResponse:
-        t0 = time()
-        nucliadb_driver = get_ndb_driver(manager, source_id)
-
-        if resource_id:
-            filter_expression = FilterExpression(field=Resource(id=resource_id))
-        else:
-            filter_expression = None
-        filter_expression = await self.build_filter_expression(
-            nucliadb_driver,
-            source_id,
-            filter_expression=filter_expression,
-        )
-
-        # Use full resource strategy by requesting title and summary fields
-        ask_request = AskRequest(
-            query=question,
-            generative_model=self.config.generative_model,
-            # TODO: Consider what to do when multiple resources match
-            filter_expression=filter_expression,
-            rag_strategies=[
-                FullResourceStrategy(count=1),
-            ],
-        )
-
-        response = await nucliadb_driver.ask(
-            ask_request, headers={"X-SHOW-CONSUMPTION": "true"}
-        )
-
-        await memory.add_step(
-            step_module="basic_ask_title",
-            step_title=self.step_title("Preparing RAG by title"),
-            step_reason="",
-            step_value=ask_request.model_dump_json(
-                exclude_none=True, exclude_unset=True
-            ),
-            timeit=time() - t0,
-            input_nuclia_tokens=0.0,
-            output_nuclia_tokens=0.0,
-            step_agent_path=f"/context/{self.agent_id}",
-        )
-        return response
-
     async def create_context_from_nucliadb_response(
         self,
         response: SyncAskResponse,
@@ -831,31 +724,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             output_nuclia_tokens=output_tokens,
             step_agent_path=f"/context/{self.agent_id}",
         )
-        return context
-
-    async def inner_ask_by_title(
-        self,
-        source_id: str,
-        manager: Manager,
-        memory: QuestionMemory,
-        question: str,
-        resource_ids: List[str],
-    ) -> Context:
-        response = await self.do_nucliadb_query(
-            memory=memory,
-            manager=manager,
-            source_id=source_id,
-            question=question,
-            resource_id=resource_ids[0] if len(resource_ids) == 1 else None,
-        )
-
-        context = await self.create_context_from_nucliadb_response(
-            response=response,
-            source_id=source_id,
-            memory=memory,
-            question=question,
-        )
-
         return context
 
     async def ask_agent(
