@@ -1,4 +1,5 @@
 from collections.abc import AsyncIterator
+from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
@@ -7,7 +8,9 @@ from tests.ask.utils.dirty_index import mark_dirty, wait_for_sync
 
 
 @pytest.fixture(scope="function")
-async def knowledgebox(nucliadb_writer_manager: AsyncClient) -> AsyncIterator[str]:
+async def knowledgebox(
+    s3_storage, nucliadb_writer_manager: AsyncClient
+) -> AsyncIterator[str]:
     """Test knowledge box with 2 vectorsets.
 
     As we test against a standalone nucliadb, the knowledgebox is created
@@ -18,11 +21,13 @@ async def knowledgebox(nucliadb_writer_manager: AsyncClient) -> AsyncIterator[st
     those. Be careful to change those values.
 
     """
+    slug = uuid4().hex
+
     resp = await nucliadb_writer_manager.post(
         "/kbs",
         json={
             "title": "Test KB",
-            "slug": "knowledgebox",
+            "slug": slug,
             "learning_configuration": {
                 "semantic_models": [
                     "en-2024-04-24",
@@ -42,13 +47,13 @@ async def knowledgebox(nucliadb_writer_manager: AsyncClient) -> AsyncIterator[st
                         "matryoshka_dims": [],
                     },
                 },
-                # legacy fields
-                # "semantic_model": "en-2024-04-24",
                 "semantic_vector_similarity": "DOT",
             },
         },
     )
     assert resp.status_code == 201
+
+    assert resp
     body = resp.json()
     kbid = body["uuid"]
 

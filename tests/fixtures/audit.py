@@ -16,8 +16,10 @@ async def audit(
     mocker: MockerFixture,
 ) -> AsyncIterator[StreamAuditStorage]:
     with (
-        patch("hyperforge_nucliadb_agentic.ask.audit.start_audit_utility"),
-        patch("hyperforge_nucliadb_agentic.ask.audit.stop_audit_utility"),
+        patch("nucliadb_agentic_api.app.start_audit_utility"),
+        patch("nucliadb_agentic_api.app.stop_audit_utility"),
+        patch("nucliadb_agentic_api.server.session.start_audit_utility"),
+        patch("nucliadb_agentic_api.server.session.stop_audit_utility"),
         patch.object(audit_settings, "audit_driver", "stream"),
         patch.object(audit_settings, "audit_jetstream_servers", [nats_server]),
     ):

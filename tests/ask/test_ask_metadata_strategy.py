@@ -16,13 +16,13 @@ async def test_ask_rag_strategy_metadata_extension(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
     nucliadb_reader: AsyncClient,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     metadata_resource: str,
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -84,7 +84,7 @@ async def test_ask_rag_strategy_metadata_extension(
         {"name": "hierarchy", "count": 40},
         {"name": "field_extension", "fields": ["a/title", "a/summary"]},
     ]:
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json={
                 "query": "title",

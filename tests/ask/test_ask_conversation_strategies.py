@@ -29,7 +29,7 @@ from .resources.lambs import lambs_resource
 async def test__validate_mocked_text_block_search(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     mocker: MockerFixture,
 ):
@@ -42,7 +42,7 @@ async def test__validate_mocked_text_block_search(
     data: SyncAskResponse
     with mocked_retrieve(result_paragraph_id=mock_paragraph_id):
         # make sure we are enforcing the mock
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -69,7 +69,7 @@ async def test__validate_mocked_text_block_search(
 async def test_ask_default_prompt_context_for_conversations(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     mocker: MockerFixture,
 ):
@@ -85,7 +85,7 @@ async def test_ask_default_prompt_context_for_conversations(
         #
         # TEST: Matching a QUESTION (lambs/4) we'll search an answer and find lambs/5
         #
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -117,7 +117,7 @@ async def test_ask_default_prompt_context_for_conversations(
         # TEST: Matching a non-QUESTION (lambs/6) we'll return a bunch of
         # messages following the message
         #
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -152,7 +152,7 @@ async def test_ask_default_prompt_context_for_conversations(
 async def test_ask_conversational_strategy__full_conversation(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     mocker: MockerFixture,
 ):
@@ -165,7 +165,7 @@ async def test_ask_conversational_strategy__full_conversation(
 
     mock_paragraph_id = f"{rid}/c/lambs/10/0-35"
     with mocked_retrieve(result_paragraph_id=mock_paragraph_id):
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -209,7 +209,7 @@ async def test_ask_conversational_strategy__full_conversation(
 async def test_ask_conversational_strategy__max_messages(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     mocker: MockerFixture,
 ):
@@ -226,7 +226,7 @@ async def test_ask_conversational_strategy__max_messages(
         # TEST: max_messages=1 will return the first conversation message (that
         # nobody asked for) and the matched split and
         #
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -255,7 +255,7 @@ async def test_ask_conversational_strategy__max_messages(
         # TEST: max_messages=3 will return the first conversation message (that
         # nobody asked for), the matched split and a window surrounding it
         #
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -287,7 +287,7 @@ async def test_ask_conversational_strategy__max_messages(
         #
         # TEST: with max_messages exceeding, we'll get an window with an offset
         #
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={
@@ -324,7 +324,7 @@ async def test_ask_conversational_strategy__max_messages(
 async def test_ask_conversational_strategy__attachments(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     mocker: MockerFixture,
 ):
@@ -368,7 +368,7 @@ async def test_ask_conversational_strategy__attachments(
     ):
         spy = mocker.spy(ask, "get_answer_stream")
 
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"x-synchronous": "true"},
             json={

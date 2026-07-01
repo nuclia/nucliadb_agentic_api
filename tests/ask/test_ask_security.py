@@ -10,18 +10,18 @@ from nucliadb_agentic_api.v1 import ask
 
 
 async def test_ask_receives_injected_security_groups__ask(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     mocker: MockerFixture,
 ) -> None:
     kbid = knowledgebox
     await _test_ask_receives_injected_security_groups(
-        nucliadb_search, mocker, f"/kb/{kbid}/ask"
+        nucliadb_agentic_ask_api, mocker, f"/kb/{kbid}/ask"
     )
 
 
 async def test_ask_receives_injected_security_groups__ask_resource_by_id(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resource: str,
     mocker: MockerFixture,
@@ -29,12 +29,12 @@ async def test_ask_receives_injected_security_groups__ask_resource_by_id(
     kbid = knowledgebox
     rid = resource
     await _test_ask_receives_injected_security_groups(
-        nucliadb_search, mocker, f"/kb/{kbid}/resource/{rid}/ask"
+        nucliadb_agentic_ask_api, mocker, f"/kb/{kbid}/resource/{rid}/ask"
     )
 
 
 async def test_ask_receives_injected_security_groups__ask_resource_by_slug(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resource: str,
     mocker: MockerFixture,
@@ -42,19 +42,19 @@ async def test_ask_receives_injected_security_groups__ask_resource_by_slug(
     kbid = knowledgebox
     rslug = "my-resource"  # slug hardcoded in `resource` fixture
     await _test_ask_receives_injected_security_groups(
-        nucliadb_search, mocker, f"/kb/{kbid}/slug/{rslug}/ask"
+        nucliadb_agentic_ask_api, mocker, f"/kb/{kbid}/slug/{rslug}/ask"
     )
 
 
 async def _test_ask_receives_injected_security_groups(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     mocker: MockerFixture,
     url: str,
 ) -> None:
     spy = mocker.spy(ask, "create_ask_response")
 
     # Test security groups only on authorizer headers
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         url,
         json={"query": "title"},
         headers={"x-nucliadb-security-groups": "group1;group2"},
@@ -68,7 +68,7 @@ async def _test_ask_receives_injected_security_groups(
     spy.reset_mock()
 
     # Test security groups only on payload
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         url,
         json={"query": "title", "security": {"groups": ["group1", "group2"]}},
     )
@@ -81,7 +81,7 @@ async def _test_ask_receives_injected_security_groups(
     spy.reset_mock()
 
     # Test security groups on headers override payload
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         url,
         headers={"x-nucliadb-security-groups": "group1;group2"},
         json={"query": "title", "security": {"groups": ["group3", "group4"]}},
@@ -95,7 +95,7 @@ async def _test_ask_receives_injected_security_groups(
     spy.reset_mock()
 
     # Test no security groups
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         url,
         json={"query": "title"},
     )
@@ -132,7 +132,7 @@ async def resource_with_security(nucliadb_writer: AsyncClient, knowledgebox: str
 
 @pytest.mark.parametrize("ask_endpoint", ("ask_post",))
 async def test_resource_security_ask(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     nucliadb_writer: AsyncClient,
     knowledgebox: str,
     resource_with_security,
@@ -155,7 +155,7 @@ async def test_resource_security_ask(
     # Querying without security should return the resource
     await _test_ask_request_with_security(
         ask_endpoint,
-        nucliadb_search,
+        nucliadb_agentic_ask_api,
         kbid,
         query="resource",
         security_groups=None,
@@ -174,7 +174,7 @@ async def test_resource_security_ask(
     ):
         await _test_ask_request_with_security(
             ask_endpoint,
-            nucliadb_search,
+            nucliadb_agentic_ask_api,
             kbid,
             query="resource",
             security_groups=access_groups,
@@ -184,7 +184,7 @@ async def test_resource_security_ask(
     # Querying with an unknown security group should not return the resource
     await _test_ask_request_with_security(
         ask_endpoint,
-        nucliadb_search,
+        nucliadb_agentic_ask_api,
         kbid,
         query="resource",
         security_groups=["some-unknown-group"],
@@ -209,7 +209,7 @@ async def test_resource_security_ask(
     # Querying with an unknown security group should return the resource now, as it is public
     await _test_ask_request_with_security(
         ask_endpoint,
-        nucliadb_search,
+        nucliadb_agentic_ask_api,
         kbid,
         query="resource",
         security_groups=["blah-blah"],
@@ -219,7 +219,7 @@ async def test_resource_security_ask(
 
 async def _test_ask_request_with_security(
     ask_endpoint: str,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     kbid: str,
     query: str,
     security_groups: list[str] | None,
@@ -233,7 +233,7 @@ async def _test_ask_request_with_security(
         payload["security"] = {"groups": security_groups}  # type: ignore
 
     if ask_endpoint == "ask_post":
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask", json=payload, headers=headers
         )
         assert resp.status_code == 200, resp.text

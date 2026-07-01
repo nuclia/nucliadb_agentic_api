@@ -44,16 +44,18 @@ from .utils.dirty_index import mark_dirty, wait_for_sync
 
 
 async def test_ask(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(f"/kb/{kbid}/ask", json={"query": "query"})
+    resp = await nucliadb_agentic_ask_api.post(
+        f"/kb/{kbid}/ask", json={"query": "query"}
+    )
     assert resp.status_code == 200
 
     chat_history = [{"author": "USER", "text": "query"}]
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "query",
@@ -64,14 +66,14 @@ async def test_ask(
 
 
 async def test_ask_reasoning(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
 
     predict = get_predict()
     predict.calls.clear()  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -96,14 +98,16 @@ async def test_ask_reasoning(
 
 
 async def test_ask_handles_predict_errors_while_parsing(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     kbid = knowledgebox
 
     predict = get_predict()
     with patch.object(predict, "query", side_effect=TimeoutError("my timeout")):
-        resp = await nucliadb_search.post(f"/kb/{kbid}/ask", json={"query": "query"})
+        resp = await nucliadb_agentic_ask_api.post(
+            f"/kb/{kbid}/ask", json={"query": "query"}
+        )
         assert resp.status_code == 530
         assert resp.json() == {
             "detail": "Temporary error on information retrieval. Please try again."
@@ -111,11 +115,11 @@ async def test_ask_handles_predict_errors_while_parsing(
 
 
 async def test_ask_synchronous(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title"},
         headers={"X-Synchronous": "True"},
@@ -128,7 +132,7 @@ async def test_ask_synchronous(
 
 
 async def test_ask_status_code_no_retrieval_data(
-    nucliadb_search: AsyncClient, knowledgebox: str
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str
 ):
     kbid = knowledgebox
 
@@ -148,7 +152,7 @@ async def test_ask_status_code_no_retrieval_data(
     }
 
     # Sync ask
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json=ask_payload,
         headers={"X-Synchronous": "True"},
@@ -162,7 +166,7 @@ async def test_ask_status_code_no_retrieval_data(
     assert resp_data.status == AnswerStatusCode.NO_RETRIEVAL_DATA.prettify()
 
     # Stream ask
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json=ask_payload,
     )
@@ -183,7 +187,7 @@ async def test_ask_status_code_no_retrieval_data(
 
 
 async def test_ask_with_citations(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
@@ -194,7 +198,7 @@ async def test_ask_with_citations(
     predict = get_predict()
     predict.ndjson_answer.append(citations_chunk.model_dump_json() + "\n")  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "citations": True, "citation_threshold": 0.5},
         headers={"X-Synchronous": "true"},
@@ -207,7 +211,7 @@ async def test_ask_with_citations(
 
 
 async def test_ask_with_footnote_citations_sync(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     """Ensure synchronous ask returns footnote citations mapping when citations=llm_footnotes."""
     kbid = knowledgebox
@@ -224,7 +228,7 @@ async def test_ask_with_footnote_citations_sync(
     )
     predict.ndjson_answer.append(footnotes_chunk.model_dump_json() + "\n")  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "citations": "llm_footnotes"},
         headers={"X-Synchronous": "true"},
@@ -235,7 +239,7 @@ async def test_ask_with_footnote_citations_sync(
 
 
 async def test_ask_with_footnote_citations_stream(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     """Ensure streaming ask yields a footnote_citations item when citations=llm_footnotes."""
     kbid = knowledgebox
@@ -252,7 +256,7 @@ async def test_ask_with_footnote_citations_stream(
     )
     predict.ndjson_answer.append(footnotes_chunk.model_dump_json() + "\n")  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "citations": "llm_footnotes"},
     )
@@ -265,12 +269,12 @@ async def test_ask_with_footnote_citations_stream(
 
 @pytest.mark.parametrize("debug", (True, False))
 async def test_sync_ask_returns_debug_mode(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource, debug
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource, debug
 ):
     kbid = knowledgebox
 
     # Make sure prompt context is returned if debug is True
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "debug": debug},
         headers={"X-Synchronous": "True"},
@@ -327,7 +331,7 @@ def parse_ask_response(resp):
 
 
 async def test_ask_rag_options_full_resource(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
     resource1, resource2 = resources
@@ -335,7 +339,7 @@ async def test_ask_rag_options_full_resource(
     predict = get_predict()
     predict.calls.clear()  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -361,7 +365,7 @@ async def test_ask_rag_options_full_resource(
 
 
 async def test_ask_full_resource_rag_strategy_with_exclude(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
     resource1, resource2 = resources
@@ -369,7 +373,7 @@ async def test_ask_full_resource_rag_strategy_with_exclude(
     predict = get_predict()
     predict.calls.clear()  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -416,7 +420,7 @@ async def test_ask_full_resource_rag_strategy_with_exclude(
 async def test_ask_rag_options_extend_with_fields(
     nucliadb_ingest_grpc: WriterStub,
     nucliadb_writer: AsyncClient,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resources,
 ):
@@ -451,7 +455,7 @@ async def test_ask_rag_options_extend_with_fields(
     predict = get_predict()
     predict.calls.clear()  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -560,10 +564,10 @@ async def test_ask_rag_options_extend_with_fields(
     ],
 )
 async def test_ask_rag_strategies_validation(
-    nucliadb_search: AsyncClient, invalid_payload, expected_error_msg
+    nucliadb_agentic_ask_api: AsyncClient, invalid_payload, expected_error_msg
 ):
     # Invalid strategy as a string
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         "/kb/kbid/ask",
         json=invalid_payload,
     )
@@ -574,12 +578,12 @@ async def test_ask_rag_strategies_validation(
 
 
 async def test_ask_capped_context(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
 
     # By default, max size is big enough to fit all the prompt context
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -597,7 +601,7 @@ async def test_ask_capped_context(
     max_size = 28
     assert total_size > max_size * 3
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -615,12 +619,12 @@ async def test_ask_capped_context(
 
 
 async def test_ask_max_tokens(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
 
     # As an integer
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -630,7 +634,7 @@ async def test_ask_max_tokens(
     assert resp.status_code == 200
 
     # Same but with the max tokens in a dict
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -643,7 +647,7 @@ async def test_ask_max_tokens(
     predict = get_predict()
     assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -654,11 +658,11 @@ async def test_ask_max_tokens(
 
 
 async def test_ask_on_resource(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/resource/{resource}/ask",
         json={"query": "title"},
         headers={"X-Synchronous": "True"},
@@ -666,7 +670,7 @@ async def test_ask_on_resource(
     assert resp.status_code == 200
     SyncAskResponse.model_validate_json(resp.content)
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/resource/{resource}/ask",
         json={"query": "title", "fields": ["t"]},
         headers={"X-Synchronous": "True"},
@@ -674,7 +678,7 @@ async def test_ask_on_resource(
     assert resp.status_code == 200
     SyncAskResponse.model_validate_json(resp.content)
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/resource/{resource}/ask",
         json={
             "query": "title",
@@ -689,7 +693,7 @@ async def test_ask_on_resource(
 async def test_ask_with_old_filters(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     # Simple test trying to filter by a label using old filters. This tests the
@@ -698,7 +702,7 @@ async def test_ask_with_old_filters(
     kbid = knowledgebox
     await cookie_tale_resource(kbid, nucliadb_writer, nucliadb_ingest_grpc)
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "cookies",
@@ -711,7 +715,7 @@ async def test_ask_with_old_filters(
     ask_resp = SyncAskResponse.model_validate_json(resp.content)
     assert len(ask_resp.retrieval_best_matches) == 6
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "cookies",
@@ -726,12 +730,12 @@ async def test_ask_with_old_filters(
 
 
 async def test_ask_with_filter_expression(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
     # Search filtering in the field where we know there should be data
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -747,7 +751,7 @@ async def test_ask_with_filter_expression(
     assert len(ask_resp.retrieval_best_matches) > 0
 
     # Search filtering in the field where we know there should be no data
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -763,7 +767,7 @@ async def test_ask_with_filter_expression(
 
 
 async def test_ask_handles_stream_errors_on_predict(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
@@ -777,7 +781,7 @@ async def test_ask_handles_stream_errors_on_predict(
     predict.ndjson_answer.append(status_chunk.model_dump_json() + "\n")
 
     # Sync ask
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title"},
         headers={"X-Synchronous": "True"},
@@ -788,7 +792,7 @@ async def test_ask_handles_stream_errors_on_predict(
     assert ask_resp.error_details == "unexpected LLM error"
 
     # Stream ask
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title"},
     )
@@ -803,7 +807,7 @@ async def test_ask_handles_stream_errors_on_predict(
 
 
 async def test_ask_handles_stream_unexpected_errors_sync(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
@@ -818,7 +822,7 @@ async def test_ask_handles_stream_unexpected_errors_sync(
         #
         # As we setup the client without an actual HTTP server, starlette
         # raises the exception too and we don't actually see the 500
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json={"query": "title"},
             headers={"X-Synchronous": "True"},
@@ -827,7 +831,7 @@ async def test_ask_handles_stream_unexpected_errors_sync(
 
 
 async def test_ask_handles_stream_unexpected_errors_stream(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
@@ -836,7 +840,7 @@ async def test_ask_handles_stream_unexpected_errors_stream(
         side_effect=ValueError("foobar"),
     ):
         # Stream ask -- should handle by yielding the error item
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json={"query": "title"},
         )
@@ -851,13 +855,15 @@ async def test_ask_handles_stream_unexpected_errors_stream(
 
 
 async def test_ask_with_json_schema_output(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resource,
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(f"/kb/{kbid}/ask", json={"query": "query"})
+    resp = await nucliadb_agentic_ask_api.post(
+        f"/kb/{kbid}/ask", json={"query": "query"}
+    )
     assert resp.status_code == 200
 
     predict = get_predict()
@@ -870,7 +876,7 @@ async def test_ask_with_json_schema_output(
         GenerativeChunk(chunk=predict_answer).model_dump_json() + "\n"
     ]  # type: ignore
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -894,11 +900,11 @@ async def test_ask_with_json_schema_output(
 
 
 async def test_ask_assert_audit_retrieval_contexts(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources, audit
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources, audit
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask", json={"query": "title", "debug": True}
     )
     assert resp.status_code == 200
@@ -910,11 +916,11 @@ async def test_ask_assert_audit_retrieval_contexts(
 
 
 async def test_ask_rag_strategy_neighbouring_paragraphs(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -930,10 +936,12 @@ async def test_ask_rag_strategy_neighbouring_paragraphs(
     assert ask_response.prompt_context is not None
 
 
-async def test_ask_top_k(nucliadb_search: AsyncClient, knowledgebox: str, resources):
+async def test_ask_top_k(
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
+):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -946,7 +954,7 @@ async def test_ask_top_k(nucliadb_search: AsyncClient, knowledgebox: str, resour
     prev_best_matches = ask_response.retrieval_results.best_matches
 
     # Check that the top_k is respected
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "title",
@@ -961,11 +969,11 @@ async def test_ask_top_k(nucliadb_search: AsyncClient, knowledgebox: str, resour
 
 
 async def test_ask_rag_strategy_prequeries(
-    nucliadb_search: AsyncClient, knowledgebox: str, resources
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "",
@@ -999,12 +1007,12 @@ async def test_ask_rag_strategy_prequeries(
 
 
 async def test_ask_rag_strategy_prequeries_with_full_resource(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "",
@@ -1035,13 +1043,13 @@ async def test_ask_rag_strategy_prequeries_with_full_resource(
 
 
 async def test_ask_rag_strategy_prequeries_with_prefilter(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resources,
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"X-Synchronous": "True"},
         json={
@@ -1090,13 +1098,13 @@ async def test_ask_rag_strategy_prequeries_with_prefilter(
 
 
 async def test_ask_rag_strategy_prequeries_with_prefilter_and_expression(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resources,
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"X-Synchronous": "True"},
         json={
@@ -1152,7 +1160,7 @@ async def test_ask_rag_strategy_prequeries_with_prefilter_and_expression(
 
 
 async def test_ask_on_resource_with_json_schema_automatic_prequeries(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resource,
 ):
@@ -1172,7 +1180,7 @@ async def test_ask_on_resource_with_json_schema_automatic_prequeries(
             "required": ["title", "author", "ref_num", "price"],
         },
     }
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/resource/{rid}/ask",
         headers={"X-Synchronous": "True"},
         json={
@@ -1188,7 +1196,7 @@ async def test_ask_on_resource_with_json_schema_automatic_prequeries(
 
 
 async def test_all_rag_strategies_combinations(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resources,
 ):
@@ -1218,7 +1226,7 @@ async def test_all_rag_strategies_combinations(
 
     assert len(valid_combinations) == 19
     for combination in valid_combinations:  # type: ignore
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"X-Synchronous": "True"},
             json={
@@ -1230,14 +1238,14 @@ async def test_all_rag_strategies_combinations(
 
 
 async def test_ask_fails_with_answer_json_schema_too_big(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resources: list[str],
 ):
     kbid = knowledgebox
     rid = resources[0]
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/resource/{rid}/ask",
         json=AskRequest(
             query="",
@@ -1267,12 +1275,12 @@ async def test_ask_fails_with_answer_json_schema_too_big(
 
 
 async def test_ask_skip_answer_generation(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
     # Synchronous
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "generate_answer": False, "debug": True},
         headers={"X-Synchronous": "True"},
@@ -1286,7 +1294,7 @@ async def test_ask_skip_answer_generation(
     assert resp_data.predict_request is not None
 
     # Streaming
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "generate_answer": False, "debug": True},
     )
@@ -1303,7 +1311,7 @@ async def test_ask_skip_answer_generation(
 
 
 async def test_ask_calls_predict_query_once(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
 
@@ -1311,7 +1319,7 @@ async def test_ask_calls_predict_query_once(
     assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
     assert len(predict.calls) == 0
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "title", "reranker": "noop"},
         headers={"X-Synchronous": "true"},
@@ -1324,13 +1332,13 @@ async def test_ask_calls_predict_query_once(
 
 
 async def test_ask_chat_history_relevance_threshold(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resources: list[str],
 ):
     kbid = knowledgebox
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"X-Synchronous": "True"},
         json=AskRequest(
@@ -1342,7 +1350,7 @@ async def test_ask_chat_history_relevance_threshold(
 
 
 async def test_ask_neighbouring_paragraphs_rag_strategy(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
     knowledgebox: str,
@@ -1393,7 +1401,7 @@ async def test_ask_neighbouring_paragraphs_rag_strategy(
 
     # Now check that neighbouring paragraphs rag strategy works
     # First off, fetch only one of the paragraphs
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "Nuria",  # To match the middle paragraph
@@ -1418,7 +1426,7 @@ async def test_ask_neighbouring_paragraphs_rag_strategy(
     assert len(augmented) == 0
 
     # Now fetch all neighbouring paragraphs
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "Nuria",  # To match the middle paragraph
@@ -1454,7 +1462,7 @@ async def test_ask_neighbouring_paragraphs_rag_strategy(
     assert augmented[1].position.index == 2
 
     # Check that combined with hierarchy rag strategy works well
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "Nuria",  # To match the middle paragraph
@@ -1511,14 +1519,16 @@ def _fetch_paragraphs(
     return retrieval, augmented
 
 
-async def test_ask_rephrase(nucliadb_search: AsyncClient, knowledgebox: str, resources):
+async def test_ask_rephrase(
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resources
+):
     kbid = knowledgebox
 
     # we rely on dummy predict to return a rephrased query
     predict = get_predict()
     assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"x-synchronous": "true"},
         json={
@@ -1531,7 +1541,7 @@ async def test_ask_rephrase(nucliadb_search: AsyncClient, knowledgebox: str, res
     body = SyncAskResponse.model_validate_json(resp.content)
     assert body.retrieval_results.rephrased_query is None
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"x-synchronous": "true"},
         json={
@@ -1546,7 +1556,7 @@ async def test_ask_rephrase(nucliadb_search: AsyncClient, knowledgebox: str, res
 
 
 async def test_ask_query_image(
-    nucliadb_search: AsyncClient, knowledgebox: str, resource
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str, resource
 ):
     kbid = knowledgebox
     predict = get_predict()
@@ -1561,7 +1571,7 @@ async def test_ask_query_image(
         return resp
 
     with patch.object(predict, "query", side_effect=mock_query):
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json={
                 "query": "whatever",

@@ -12,13 +12,13 @@ from .resources import cookie_tale_resource
 async def test_ask_paragraph_image_rag_strategy(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     kbid = knowledgebox
     rid = await cookie_tale_resource(kbid, nucliadb_writer, nucliadb_ingest_grpc)
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"x-synchronous": "true"},
         json={
@@ -58,13 +58,13 @@ async def test_ask_paragraph_image_rag_strategy(
 async def test_ask_page_image_rag_strategy(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     kbid = knowledgebox
     rid = await cookie_tale_resource(kbid, nucliadb_writer, nucliadb_ingest_grpc)
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"x-synchronous": "true"},
         json={
@@ -103,13 +103,13 @@ async def test_ask_page_image_rag_strategy(
 async def test_ask_table_image_rag_strategy(
     nucliadb_writer: AsyncClient,
     nucliadb_ingest_grpc: WriterStub,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
 ):
     kbid = knowledgebox
     rid = await cookie_tale_resource(kbid, nucliadb_writer, nucliadb_ingest_grpc)
 
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         headers={"x-synchronous": "true"},
         json={

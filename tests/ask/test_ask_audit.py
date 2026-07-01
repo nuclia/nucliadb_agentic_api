@@ -41,10 +41,10 @@ async def get_audit_messages(sub):
 
 @pytest.mark.deploy_modes("standalone")
 async def test_ask_sends_only_one_audit(
-    nucliadb_search: AsyncClient,
+    audit: StreamAuditStorage,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     resource: str,
-    audit: StreamAuditStorage,
 ) -> None:
     kbid = knowledgebox
 
@@ -69,7 +69,7 @@ async def test_ask_sends_only_one_audit(
 
         psub = await jetstream.pull_subscribe(subject, "psub")
 
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json={"query": "title"},
         )

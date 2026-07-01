@@ -7,7 +7,6 @@ from hyperforge.broker.redis import RedisBroker
 from hyperforge.feature_flag import get_flag_service
 from hyperforge.server.cache import ValkeyCache
 from hyperforge.server.run import run_metrics_server
-from hyperforge_nucliadb_agentic.ask.audit import start_audit_utility
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_telemetry.tracerprovider import AsyncTracerProvider

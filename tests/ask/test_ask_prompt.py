@@ -200,7 +200,7 @@ def test_capped_prompt_context() -> None:
     assert context.size == 0
 
 
-async def test_hierarchy_prompt_context(nucliadb_search: AsyncClient, kb):
+async def test_hierarchy_prompt_context(nucliadb_agentic_ask_api: AsyncClient, kb):
     rid = uuid4().hex
 
     async def mocked_augment(

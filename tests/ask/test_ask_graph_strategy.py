@@ -16,7 +16,7 @@ async def test_ask_graph_strategy(
     mocker_generative,
     mocker_reranker,
     relation_ranking: str,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     graph_resource,
     dummy_predict,
@@ -52,7 +52,7 @@ async def test_ask_graph_strategy(
     }
 
     async def assert_ask(d, expected_paragraphs_text, expected_paragraphs_relations):
-        resp = await nucliadb_search.post(
+        resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json=d,
             headers={"X-Synchronous": "True"},
@@ -166,7 +166,7 @@ async def test_ask_graph_strategy(
 async def test_ask_graph_strategy_with_user_relations(
     mocker_generative,
     mocker_reranker,
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     nucliadb_writer: AsyncClient,
     knowledgebox: str,
     dummy_predict,
@@ -251,7 +251,7 @@ async def test_ask_graph_strategy_with_user_relations(
     mocker_reranker.side_effect = mock_rank
 
     # With relation_text_as_paragraphs=False, cannot return user relations (no paragraph)
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "Which actors have been in movies directed by Christopher Nolan?",
@@ -276,7 +276,7 @@ async def test_ask_graph_strategy_with_user_relations(
     assert ask_response.status == "no_retrieval_data"
 
     # With relation_text_as_paragraphs=True, should answer the question
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={
             "query": "Which actors have been in movies directed by Christopher Nolan?",
@@ -316,7 +316,7 @@ async def test_ask_graph_strategy_with_user_relations(
 
 
 async def test_ask_graph_strategy_inner_fuzzy_prefix_search(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     knowledgebox: str,
     graph_resource,
     dummy_predict,

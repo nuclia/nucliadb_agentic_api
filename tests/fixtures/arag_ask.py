@@ -20,19 +20,6 @@ from nucliadb_agentic_api.settings import Settings
 
 from .predict import DummyPredictEngine
 
-# Main fixture
-
-
-@pytest.fixture(scope="function")
-async def nucliadb_search(
-    # shared storage with nucliadb
-    storage_settings,
-    # API client
-    nucliadb_agentic_ask_api: AsyncClient,
-) -> AsyncIterator[AsyncClient]:
-    yield nucliadb_agentic_ask_api
-
-
 # Nuclia ARAG Ask
 
 
@@ -73,6 +60,7 @@ async def nucliadb_agentic_ask_api_server(
 
 @pytest.fixture(scope="function")
 async def nucliadb_agentic_ask_api(
+    storage_settings,
     nucliadb_agentic_ask_api_server: FastAPI,
 ) -> AsyncIterator[AsyncClient]:
     client_factory = create_api_client_factory(nucliadb_agentic_ask_api_server)

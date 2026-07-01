@@ -6,7 +6,7 @@ from hyperforge_nucliadb_agentic.ask.model import FullResourceStrategy
 
 
 async def test_search_configuration_ask(
-    nucliadb_search: AsyncClient,
+    nucliadb_agentic_ask_api: AsyncClient,
     nucliadb_writer_manager: AsyncClient,
     knowledgebox,
 ):
@@ -33,7 +33,7 @@ async def test_search_configuration_ask(
     async def run_ask(params):
         with patch("nucliadb_agentic_api.v1.ask.ask") as mock:
             mock.side_effect = HTTPException(status_code=500)
-            await nucliadb_search.post(
+            await nucliadb_agentic_ask_api.post(
                 f"/kb/{kbid}/ask",
                 json={**params, "query": "whatever"},
             )
@@ -75,14 +75,14 @@ async def test_search_configuration_ask(
     assert request.rag_strategies == []
 
     # Using invalid search configuration
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "whatever", "search_configuration": "invalid"},
     )
     assert resp.status_code == 400
 
     # Using find search configuration
-    resp = await nucliadb_search.post(
+    resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
         json={"query": "whatever", "search_configuration": "find_config"},
     )

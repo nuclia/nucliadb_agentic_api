@@ -90,7 +90,27 @@ async def nucliadb_agentic_api_app(
 
 
 @pytest.fixture
-async def nucliadb_agentic_api(nucliadb_agentic_api_app: HTTPApplication, load_agents):
+def load_agents_nucliadb_agentic():
+    from hyperforge.configure import load_all_configurations, scan
+
+    for module in [
+        "hyperforge_rephrase",
+        "hyperforge_nucliadb",
+        "hyperforge_nucliadb_agentic",
+        "hyperforge_summarize",
+        "hyperforge_smart",
+        "hyperforge_mcp",
+        "hyperforge_google",
+        "hyperforge_perplexity",
+    ]:
+        scan(module)
+        load_all_configurations(module)
+
+
+@pytest.fixture
+async def nucliadb_agentic_api(
+    nucliadb_agentic_api_app: HTTPApplication, load_agents_nucliadb_agentic
+):
     yield AsyncClient(
         transport=ASGITransport(app=nucliadb_agentic_api_app), base_url="http://test"
     )
