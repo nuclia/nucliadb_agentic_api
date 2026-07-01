@@ -129,29 +129,27 @@ async def create_app(monkeypatch) -> HTTPApplication:
 
 NUCLIADB_PAYLOAD = {
     "type": "nucliadb",
-    "title": "My KB source",
-    "config": {
-        "filter_expression": "label=important",
-        "labels": ["important", "verified"],
-    },
+    "description": "My KB source",
+    "labels": ["important", "verified"],
 }
 
 PERPLEXITY_PAYLOAD = {
     "type": "perplexity",
-    "title": "Perplexity web",
-    "config": {"enabled_domains": ["wikipedia.org", "github.com"]},
+    "description": "Perplexity web",
+    "enabled_domains": ["wikipedia.org", "github.com"],
 }
 
 MCP_PAYLOAD = {
     "type": "mcp",
-    "title": "Internal tools",
-    "config": {"uri": "http://mcp.internal:8080"},
+    "description": "Internal tools",
+    "uri": "http://mcp.internal:8080",
 }
 
 GOOGLE_PAYLOAD = {
     "type": "google",
-    "title": "Google news",
-    "config": {"time_range": "past_week", "exclude_domains": ["example.com"]},
+    "description": "Google news",
+    "time_range": "past_week",
+    "exclude_domains": ["example.com"],
 }
 
 
@@ -182,8 +180,8 @@ async def test_sources_crud_nucliadb(monkeypatch):
         # Patch
         updated = {
             "type": "nucliadb",
-            "title": "Updated KB source",
-            "config": {"labels": ["updated"]},
+            "description": "Updated KB source",
+            "labels": ["updated"],
         }
         resp = await client.patch("/kb/kb1/sources/src-nucliadb", json=updated)
         assert resp.status_code == 204, resp.text
@@ -337,8 +335,10 @@ async def test_sources_list_isolated_by_kb(monkeypatch):
     async with create_api_client(
         app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
     ) as client:
-        await client.post("/kb/kb-a/sources/src-1", json=NUCLIADB_PAYLOAD)
-        await client.post("/kb/kb-b/sources/src-2", json=PERPLEXITY_PAYLOAD)
+        resp = await client.post("/kb/kb-a/sources/src-1", json=NUCLIADB_PAYLOAD)
+        assert resp.status_code == 201, resp.text
+        resp = await client.post("/kb/kb-b/sources/src-2", json=PERPLEXITY_PAYLOAD)
+        assert resp.status_code == 201, resp.text
 
         resp = await client.get("/kb/kb-a/sources")
         assert resp.json() == {"src-1": NUCLIADB_PAYLOAD}

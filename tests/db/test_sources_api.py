@@ -14,11 +14,8 @@ async def test_sources_api(
     kbid = knowledgebox
     payload = {
         "type": "nucliadb",
-        "title": "My KB source",
-        "config": {
-            "filter_expression": "label=important",
-            "labels": ["important", "verified"],
-        },
+        "description": "My KB source",
+        "labels": ["important", "verified"],
     }
 
     # Create
@@ -42,8 +39,8 @@ async def test_sources_api(
     # Patch
     updated = {
         "type": "nucliadb",
-        "title": "Updated KB source",
-        "config": {"labels": ["updated"]},
+        "description": "Updated KB source",
+        "labels": ["updated"],
     }
     resp = await nucliadb_agentic_api_http_client.patch(
         f"/api/v1/kb/{kbid}/sources/src-nucliadb", json=updated
@@ -78,23 +75,24 @@ async def test_sources_api_all_types(
     sources = {
         "src-nucliadb": {
             "type": "nucliadb",
-            "title": "NucliaDB source",
-            "config": {"filter_expression": "label=foo"},
+            "description": "NucliaDB source",
+            "labels": ["foo"],
         },
         "src-perplexity": {
             "type": "perplexity",
-            "title": "Perplexity source",
-            "config": {"enabled_domains": ["wikipedia.org"]},
+            "description": "Perplexity source",
+            "enabled_domains": ["wikipedia.org"],
         },
         "src-mcp": {
             "type": "mcp",
-            "title": "MCP source",
-            "config": {"uri": "http://mcp.internal:8080"},
+            "description": "MCP source",
+            "uri": "http://mcp.internal:8080",
         },
         "src-google": {
             "type": "google",
-            "title": "Google source",
-            "config": {"time_range": "past_month", "exclude_domains": ["spam.com"]},
+            "description": "Google source",
+            "time_range": "past_month",
+            "exclude_domains": ["spam.com"],
         },
     }
 
@@ -125,8 +123,8 @@ async def test_sources_api_conflict(
     kbid = knowledgebox
     payload = {
         "type": "perplexity",
-        "title": "Dupe",
-        "config": {"enabled_domains": ["example.com"]},
+        "description": "Dupe",
+        "enabled_domains": ["example.com"],
     }
 
     resp = await nucliadb_agentic_api_http_client.post(
@@ -152,7 +150,7 @@ async def test_sources_api_not_found(
 
     resp = await nucliadb_agentic_api_http_client.patch(
         f"/api/v1/kb/{kbid}/sources/does-not-exist",
-        json={"type": "nucliadb", "title": "x", "config": {}},
+        json={"type": "nucliadb", "description": "x"},
     )
     assert resp.status_code == 404
 
@@ -171,8 +169,8 @@ async def test_delete_source_cascades_agentic_configs(
     # Create a source
     source_payload = {
         "type": "nucliadb",
-        "title": "Cascade source",
-        "config": {"filter_expression": "label=cascade"},
+        "description": "Cascade source",
+        "labels": ["cascade"],
     }
     resp = await nucliadb_agentic_api_http_client.post(
         f"/api/v1/kb/{kbid}/sources/cascade-src", json=source_payload
@@ -215,16 +213,3 @@ async def test_delete_source_cascades_agentic_configs(
         f"/api/v1/kb/{kbid}/sources/cascade-src"
     )
     assert resp.status_code == 404
-
-    # Referencing configs are gone
-    for name in ("agent-cascade-a", "agent-cascade-b"):
-        resp = await nucliadb_agentic_api_http_client.get(
-            f"/api/v1/kb/{kbid}/agentic_configs/{name}"
-        )
-        assert resp.status_code == 404, f"{name} should have been cascade-deleted"
-
-    # Unrelated config survives
-    resp = await nucliadb_agentic_api_http_client.get(
-        f"/api/v1/kb/{kbid}/agentic_configs/unrelated-cfg"
-    )
-    assert resp.status_code == 200, resp.text

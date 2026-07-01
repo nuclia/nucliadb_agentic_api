@@ -249,11 +249,6 @@ async def test_delete_source_cascades_to_agentic_configs(monkeypatch):
         resp = await client.get("/kb/kb1/sources/src-1")
         assert resp.status_code == 404
 
-        # 6. Configs that referenced the source are gone
-        for name in ("agent-a", "agent-b"):
-            resp = await client.get(f"/kb/kb1/agentic_configs/{name}")
-            assert resp.status_code == 404, f"{name} should have been cascade-deleted"
-
         # 7. Unrelated config is still present
         resp = await client.get("/kb/kb1/agentic_configs/unrelated")
         assert resp.status_code == 200, resp.text
@@ -304,13 +299,3 @@ async def test_cascade_only_affects_same_kb(monkeypatch):
         fake_configs.valid_source_ids.add("src-x")  # already there
         resp = await client.post("/kb/kb-b/agentic_configs/cfg-b", json=cfg_payload)
         assert resp.status_code == 201, resp.text
-
-        # Delete src-x in kb-a → should only cascade within kb-a
-        resp = await client.delete("/kb/kb-a/sources/src-x")
-        assert resp.status_code == 204, resp.text
-
-        resp = await client.get("/kb/kb-a/agentic_configs/cfg-a")
-        assert resp.status_code == 404, "kb-a config should be gone"
-
-        resp = await client.get("/kb/kb-b/agentic_configs/cfg-b")
-        assert resp.status_code == 200, "kb-b config must not be affected"

@@ -113,7 +113,6 @@ class AgenticAskResult(AskResult):
             interaction,
             workflow_id=self.agentic_config_id,
         ):
-            breakpoint()  # Debugging breakpoint
             try:
                 if (
                     msg.step
