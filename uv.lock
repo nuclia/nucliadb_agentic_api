@@ -2635,13 +2635,13 @@ nkeys = [
 
 [[package]]
 name = "nidx-protos"
-version = "6.15.0.post6538"
+version = "6.15.0.post6671"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "protobuf" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/71/75faf6b4678621dddc031fd4edb2b2ee58270ae77d85d8e1d237ac4b5297/nidx_protos-6.15.0.post6538-py3-none-any.whl", hash = "sha256:33741b0252e38ae4865ad99ee6c5f8ced744adcc584443e1b1136bf9887b16ad", size = 33823, upload-time = "2026-06-10T08:49:44.977Z" },
+    { url = "https://files.pythonhosted.org/packages/13/83/c87ab3d2f88100bac168027b0e5994a481ee585986c31b520e3010068020/nidx_protos-6.15.0.post6671-py3-none-any.whl", hash = "sha256:9a1661d9a698f95428218a3ca9952d4c822e2526f3620d30d26fa37ea985c03d", size = 33817, upload-time = "2026-07-01T15:35:18.981Z" },
 ]
 
 [[package]]
@@ -2846,7 +2846,7 @@ server = [
     { name = "nucliadb-protos" },
     { name = "nucliadb-sdk", specifier = ">=6.14.0.post6532" },
     { name = "nucliadb-telemetry", extras = ["otel"], specifier = ">=6.14.0.post6534" },
-    { name = "nucliadb-utils", extras = ["storages", "fastapi"], specifier = ">=6.14.0.post6532" },
+    { name = "nucliadb-utils", extras = ["storages", "fastapi"], specifier = ">=6.15.0.post6671" },
     { name = "prometheus-client" },
     { name = "psycopg2" },
     { name = "pydantic-settings" },
@@ -2869,13 +2869,13 @@ wheels = [
 
 [[package]]
 name = "nucliadb-protos"
-version = "6.15.0.post6538"
+version = "6.15.0.post6671"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "protobuf" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/86/f181425582d82ec7c2f03dcbd09b491f0f345af40a1f0d1aec7144823561/nucliadb_protos-6.15.0.post6538-py3-none-any.whl", hash = "sha256:aba499c781b3698aa0f25fca82c5085c6871b04fd7c1466e49eb0b409a6a9b2b", size = 90150, upload-time = "2026-06-10T08:49:51.334Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/ab/6fb5c742f6fb8e607181c551b61c59c507d8d9a6e48720399b92a6db1289/nucliadb_protos-6.15.0.post6671-py3-none-any.whl", hash = "sha256:ff28888bc8005dab3324682c4f45de5182d092e8a70e9be7aa3e56aa70d81529", size = 90377, upload-time = "2026-07-01T15:35:25.533Z" },
 ]
 
 [[package]]
@@ -2895,7 +2895,7 @@ wheels = [
 
 [[package]]
 name = "nucliadb-telemetry"
-version = "6.15.0.post6538"
+version = "6.15.0.post6671"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "orjson" },
@@ -2905,7 +2905,7 @@ dependencies = [
     { name = "wrapt" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/49/b72100a43e66670a4b9747db96a52a67068d5e96b824f4e24de0837cb5bb/nucliadb_telemetry-6.15.0.post6538-py3-none-any.whl", hash = "sha256:23d4f9820ad4ec5f3017e53a05c5e7573024f53f421151aed51c81a575450a67", size = 50834, upload-time = "2026-06-10T08:49:54.529Z" },
+    { url = "https://files.pythonhosted.org/packages/36/79/d2b245e8d848bdd88ade5b206dce1bdce78152efd9f79a38e38ed3576cbc/nucliadb_telemetry-6.15.0.post6671-py3-none-any.whl", hash = "sha256:5cfb5a89d5a69346ff61e009d6ae771c4d9a9a8f0ab024852e584a80ecdce4dc", size = 50885, upload-time = "2026-07-01T15:35:28.447Z" },
 ]
 
 [package.optional-dependencies]
@@ -2923,7 +2923,7 @@ otel = [
 
 [[package]]
 name = "nucliadb-utils"
-version = "6.15.0.post6538"
+version = "6.15.0.post6671"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -2943,7 +2943,7 @@ dependencies = [
     { name = "types-requests" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/20/539032e59c171dddb729617229771f88cbebb17204c3e527fe37723b893c/nucliadb_utils-6.15.0.post6538-py3-none-any.whl", hash = "sha256:976ece363c998ced2e83b2fde07acd908c7d7d74a3c7834e76760fa7a31cb7d8", size = 103202, upload-time = "2026-06-10T08:49:56.162Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/be/b4a02b723ed5f5143bb6bf63ec1324856890e3618debefb8af6db8b4ff9a/nucliadb_utils-6.15.0.post6671-py3-none-any.whl", hash = "sha256:5dcd7aead09850b9d4f5bc461998244f1e6e1bee45f35ba748e85c9faece9a34", size = 97311, upload-time = "2026-07-01T15:35:30.304Z" },
 ]
 
 [package.optional-dependencies]

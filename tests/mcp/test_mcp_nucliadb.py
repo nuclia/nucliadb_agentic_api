@@ -577,16 +577,17 @@ async def test_read_resource_malformed_uri():
 
 
 async def test_mcp_protected_resource_metadata(
-    arag_api_http_client,
+    nucliadb_agentic_api_http_client,
     article_dataset: str,
 ):
     kbid = article_dataset
-    resp = await arag_api_http_client.get(
+
+    resp = await nucliadb_agentic_api_http_client.get(
         f"/.well-known/oauth-protected-resource/api/v1/kb/{kbid}/mcp"
     )
     assert resp.status_code == 200
     body = resp.json()
-    expected_url = f"{arag_api_http_client.base_url}/api/v1/kb/{kbid}/mcp"
+    expected_url = f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{kbid}/mcp"
     expected_url = expected_url.replace("http://", "https://")
     assert body == {
         "resource": expected_url,

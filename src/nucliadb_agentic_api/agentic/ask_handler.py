@@ -45,6 +45,7 @@ async def create_agentic_response(
     )
 
     nuclia_learning_id = await ask_result.start()
+    breakpoint()
 
     headers = {
         "NUCLIA-LEARNING-ID": nuclia_learning_id or "unknown",

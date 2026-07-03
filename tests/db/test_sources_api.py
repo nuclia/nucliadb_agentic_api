@@ -181,10 +181,8 @@ async def test_delete_source_cascades_agentic_configs(
     for name in ("agent-cascade-a", "agent-cascade-b"):
         cfg_payload = {
             "title": name,
-            "config": {
-                "smart_agent": {
-                    "sources": [{"type": "nucliadb", "source_id": "cascade-src"}],
-                }
+            "smart_agent": {
+                "sources": ["cascade-src"],
             },
         }
         resp = await nucliadb_agentic_api_http_client.post(
@@ -195,7 +193,7 @@ async def test_delete_source_cascades_agentic_configs(
     # Create an agentic config that does NOT reference the source (should survive)
     unrelated_payload = {
         "title": "unrelated",
-        "config": {"summarize": {"conversational": True}},
+        "summarize": {"conversational": True},
     }
     resp = await nucliadb_agentic_api_http_client.post(
         f"/api/v1/kb/{kbid}/agentic_configs/unrelated-cfg", json=unrelated_payload

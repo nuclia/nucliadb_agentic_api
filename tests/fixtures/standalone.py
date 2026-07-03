@@ -153,6 +153,7 @@ def endecryptor_settings() -> Iterator[None]:
 def shared_storage(
     overwrite_gcs_command,
     session_storage_settings: tuple[dict[str, Any], dict[str, Any]],
+    session_storage_buckets,
 ):
     from nucliadb_utils.settings import StorageSettings
     from nucliadb_utils.storages.settings import Settings

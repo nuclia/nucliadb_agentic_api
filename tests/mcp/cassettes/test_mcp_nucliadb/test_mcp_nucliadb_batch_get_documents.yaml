@@ -9,16 +9,16 @@ interactions:
       Connection:
       - keep-alive
       Host:
-      - europe-1.nuclia.cloud
+      - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.1
+      - nuclia.py/4.11.5
       x-nuclia-nuakey:
       - DUMMY
     method: GET
-    uri: https://europe-1.nuclia.cloud/api/authorizer/info
+    uri: https://europe-1.dp.progress.cloud/api/authorizer/info
   response:
     body:
-      string: '{"auth":"nua_key","user":{"identity_type":"nua_key","user_id":"03d47998-f672-4a9b-a57b-bde3a9c3ee8c","account_id":"4f9285c7-7151-4431-94e6-3f1fb0d66aca","account_type":"v3enterprise","allow_kb_management":false},"ip_info":null}'
+      string: '{"auth":"nua_key","user":{"identity_type":"nua_key","user_id":"7fe77405-a6de-43cf-ac27-ac09f80b66c6","account_id":"4f9285c7-7151-4431-94e6-3f1fb0d66aca","account_type":"v3enterprise","allow_kb_management":false},"ip_info":null}'
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000
@@ -27,11 +27,1367 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 08 Jun 2026 13:04:06 GMT
+      - Fri, 03 Jul 2026 20:26:23 GMT
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '6'
+      - '7'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "mcp_no_feedback", "system":
+      null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
+      {}, "truncate": true, "user_prompt": {"prompt": "\nChoose proper prompt to solve
+      the task. If none of the prompts is suitable, do not choose any. Make sure to
+      choose only one prompt.\n\n"}, "citations": false, "citation_threshold": null,
+      "generative_model": "chatgpt-4.1", "max_tokens": 2000, "query_context_images":
+      {}, "prefer_markdown": null, "json_schema": {"type": "object", "title": "PromptSelection",
+      "description": "Select the most appropriate prompt for the task", "properties":
+      {"prompt_id": {"type": "string", "description": "id of the prompt to use"}}},
+      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
+      {"type": "required"}, "reasoning": false, "seed": null}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '801'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.11.5
+      x-client-ident:
+      - agent
+      x-message:
+      - question_id
+      x-origin:
+      - RAO
+      x-session:
+      - default_hola
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"object","object":{"prompt_id":""}}}
+
+        {"chunk":{"type":"status","code":"0"}}
+
+        {"chunk":{"type":"meta","input_tokens":40,"output_tokens":11,"timings":{"generative":0.9115126860015152},"input_nuclia_tokens":0.04,"output_nuclia_tokens":0.011}}
+
+        {"chunk":{"normalized_tokens":{"input":0.0396,"output":0.0112,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Fri, 03 Jul 2026 20:26:22 GMT
+      nuclia-learning-id:
+      - 29caaed431484ead98ea82573b9bd47c
+      nuclia-learning-model:
+      - chatgpt-4.1
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '916'
+      x-nuclia-trace-id:
+      - 7ba58d4b8fe2fda28d95c1a87cd5035a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "mcp_agent", "system": "\"You
+      are an agent that must choose the best tools to perform a task. If more than
+      one tool is needed, return them all.\"\n", "chat_history": [{"author": "USER",
+      "text": "\n<reminderInstructions>\nYou are an agent - you must keep going until
+      the user''s query is completely resolved, before ending your turn and yielding
+      back to the user. ONLY terminate your turn when you are sure that the problem
+      is solved, or you absolutely cannot continue.\nYou take action when possible-
+      the user is expecting YOU to take action and go to work for them. Don''t ask
+      unnecessary questions about the details if you can simply DO something useful
+      instead.\n</reminderInstructions>\n\n\n\n\n<userRequest>\nfull content of the
+      documents 72f6d5fe65e5441f97e52e19216460c3 and c0a5192da40540a8a86c9c1b0114aaee\n\n</userRequest>\n"}],
+      "context": [], "query_context": {}, "query_context_order": {}, "truncate": true,
+      "user_prompt": {"prompt": "Choose the best tool or tools for the task, select
+      task_complete if no more tools are needed according to the user request and
+      previous interactions"}, "citations": null, "citation_threshold": null, "generative_model":
+      "chatgpt-4.1", "max_tokens": null, "query_context_images": [], "prefer_markdown":
+      null, "json_schema": null, "format_prompt": false, "rerank_context": false,
+      "tools": [{"name": "search_documents", "description": "Use this tool to find
+      documents about the knowledge in the 00000000-0000-0000-0000-000000000001 knowledge
+      base. This tool returns chunks of text, names and URLs for matching documents.
+      If the returned chunks are not detailed enough to answer the user''s question
+      use ''get_document'' or ''batch_get_documents'' with the ''parent'' from this
+      tool''s output to retrieve the full document content. You can narrow results
+      using optional ''filters'' to match on classification labels or metadata values.",
+      "parameters": {"$defs": {"Filter": {"properties": {"all": {"anyOf": [{"items":
+      {"type": "string"}, "minItems": 1, "type": "array"}, {"type": "null"}], "default":
+      null, "title": "All"}, "any": {"anyOf": [{"items": {"type": "string"}, "minItems":
+      1, "type": "array"}, {"type": "null"}], "default": null, "title": "Any"}, "none":
+      {"anyOf": [{"items": {"type": "string"}, "minItems": 1, "type": "array"}, {"type":
+      "null"}], "default": null, "title": "None"}, "not_all": {"anyOf": [{"items":
+      {"type": "string"}, "minItems": 1, "type": "array"}, {"type": "null"}], "default":
+      null, "title": "Not All"}}, "title": "Filter", "type": "object"}}, "additionalProperties":
+      false, "properties": {"query": {"description": "Required. The raw query string
+      provided by the user.", "minLength": 1, "title": "Query", "type": "string"},
+      "search_configuration": {"anyOf": [{"type": "string"}, {"type": "null"}], "default":
+      null, "description": "Optional. The name of the Search Configuration to use.
+      If not provided, default settings are used.", "title": "Search Configuration"},
+      "filters": {"anyOf": [{"items": {"$ref": "#/$defs/Filter"}, "type": "array"},
+      {"type": "null"}], "default": null, "description": "Optional. A list of filter
+      objects to narrow results. Each filter can include ''all'' (AND), ''any'' (OR),
+      and/or ''not_all'' (NOT AND) label paths like ''/l/labelset/label''.", "title":
+      "Filters"}}, "required": ["query"], "title": "SearchDocumentsArgs", "type":
+      "object"}}, {"name": "get_document", "description": "Use this tool to get the
+      full content of a single document. The document ID should be obtained from the
+      ''parent'' field of results from a call to the ''search_documents'' tool. If
+      you need to retrieve multiple documents use ''batch_get_documents'' instead.",
+      "parameters": {"additionalProperties": false, "properties": {"name": {"description":
+      "Required. The resource ID of the document to retrieve, as returned in the ''parent''
+      field by the ''search_documents'' tool.", "minLength": 1, "title": "Name", "type":
+      "string"}}, "required": ["name"], "title": "GetDocumentArgs", "type": "object"}},
+      {"name": "batch_get_documents", "description": "Use this tool to retrieve the
+      full content of up to 20 documents in a single call. The document IDs should
+      be obtained from the ''parent'' field of results from a call to the ''search_documents''
+      tool. If you only need to retrieve a single document use ''get_document'' instead.",
+      "parameters": {"additionalProperties": false, "properties": {"names": {"description":
+      "Required. Resource IDs of up to 20 documents to retrieve, as returned in the
+      ''parent'' field by the ''search_documents'' tool.", "items": {"type": "string"},
+      "maxItems": 20, "minItems": 1, "title": "Names", "type": "array"}}, "required":
+      ["names"], "title": "BatchGetDocumentsArgs", "type": "object"}}], "tool_choice":
+      {"type": "required"}, "reasoning": false, "seed": null}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '4561'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.11.5
+      x-client-ident:
+      - agent
+      x-message:
+      - question_id
+      x-origin:
+      - RAO
+      x-session:
+      - default_hola
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"tools","tools":{"batch_get_documents":[{"function":{"name":"batch_get_documents","arguments":{"names":["72f6d5fe65e5441f97e52e19216460c3","c0a5192da40540a8a86c9c1b0114aaee"]}}}]}}}
+
+        {"chunk":{"type":"status","code":"0"}}
+
+        {"chunk":{"type":"meta","input_tokens":327,"output_tokens":93,"timings":{"generative_first_chunk":0.900354557990795,"generative":0.9017912979761604},"input_nuclia_tokens":0.327,"output_nuclia_tokens":0.093}}
+
+        {"chunk":{"normalized_tokens":{"input":0.3272,"output":0.0928,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Fri, 03 Jul 2026 20:26:24 GMT
+      nuclia-learning-id:
+      - b58d44865cf443f89c0f65b1b017bc9d
+      nuclia-learning-model:
+      - chatgpt-4.1
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '907'
+      x-nuclia-trace-id:
+      - 510d09bd09a61e5b8724101985f19537
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "mcp_agent", "system": "\"You
+      are an agent that must choose the best tools to perform a task. If more than
+      one tool is needed, return them all.\"\n", "chat_history": [{"author": "USER",
+      "text": "\n<reminderInstructions>\nYou are an agent - you must keep going until
+      the user''s query is completely resolved, before ending your turn and yielding
+      back to the user. ONLY terminate your turn when you are sure that the problem
+      is solved, or you absolutely cannot continue.\nYou take action when possible-
+      the user is expecting YOU to take action and go to work for them. Don''t ask
+      unnecessary questions about the details if you can simply DO something useful
+      instead.\n</reminderInstructions>\n\n\n\n\n<userRequest>\nfull content of the
+      documents 72f6d5fe65e5441f97e52e19216460c3 and c0a5192da40540a8a86c9c1b0114aaee\n\n</userRequest>\n"},
+      {"author": "NUCLIA", "text": "Tool batch_get_documents executed"}, {"author":
+      "NUCLIA", "text": "\nMetadata: {\"field_id\": \"title\"}"}, {"author": "NUCLIA",
+      "text": "Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models .\n\n Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\n\n[Image logo\nBack to arXiv](https://arxiv.org/)\n\n[Image
+      logo\nBack to arXiv](https://arxiv.org/)\n\nThis is **experimental HTML** to
+      improve accessibility. We invite you to report rendering errors. Use Alt+Y to
+      toggle on accessible reporting links and Alt+Shift+Y to toggle off. Learn more
+      [about this project](https://info.arxiv.org/about/accessible_HTML.html) and
+      [help improve conversions](https://info.arxiv.org/help/submit_latex_best_practices.html).\n\n[Why
+      HTML?](https://info.arxiv.org/about/accessible_HTML.html)\n[Report Issue](#myForm)\n[Back
+      to Abstract](https://arxiv.org/abs/2510.04618v1)\n[Download PDF](https://arxiv.org/pdf/2510.04618v1)\n\n##
+      Table of Contents\n\n1. [Abstract](https://arxiv.org/html/2510.04618#abstract
+      \"Abstract\")\n2. [1 Introduction](https://arxiv.org/html/2510.04618v1#S1 \"In
+      Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models\")\n3.
+      [2 Background and Motivation](https://arxiv.org/html/2510.04618v1#S2 \"In Agentic
+      Context Engineering: Evolving Contexts for Self-Improving Language Models\")\n   1.
+      [2.1 Context Adaptation](https://arxiv.org/html/2510.04618v1#S2.SS1 \"In 2 Background
+      and Motivation \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\n   2. [2.2 Limitations of Existing Context Adaptation Methods](https://arxiv.org/html/2510.04618v1#S2.SS2
+      \"In 2 Background and Motivation \u2023 Agentic Context Engineering: Evolving
+      Contexts for Self-Improving Language Models\")\n      1. [The Brevity Bias.](https://arxiv.org/html/2510.04618v1#S2.SS2.SSS0.Px1
+      \"In 2.2 Limitations of Existing Context Adaptation Methods \u2023 2 Background
+      and Motivation \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\n      2. [Context Collapse.](https://arxiv.org/html/2510.04618v1#S2.SS2.SSS0.Px2
+      \"In 2.2 Limitations of Existing Context Adaptation Methods \u2023 2 Background
+      and Motivation \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\n4. [3 Agentic Context Engineering (ACE)](https://arxiv.org/html/2510.04618v1#S3
+      \"In Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n   1. [3.1 Incremental Delta Updates](https://arxiv.org/html/2510.04618v1#S3.SS1
+      \"In 3 Agentic Context Engineering (ACE) \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n   2. [3.2 Grow-and-Refine](https://arxiv.org/html/2510.04618v1#S3.SS2
+      \"In 3 Agentic Context Engineering (ACE) \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n5. [4 Results](https://arxiv.org/html/2510.04618v1#S4
+      \"In Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n   1. [4.1 Tasks and Datasets](https://arxiv.org/html/2510.04618v1#S4.SS1
+      \"In 4 Results \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\n      1. [Evaluation Metrics.](https://arxiv.org/html/2510.04618v1#S4.SS1.SSS0.Px1
+      \"In 4.1 Tasks and Datasets \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n   2. [4.2 Baselines
+      and Methods](https://arxiv.org/html/2510.04618v1#S4.SS2 \"In 4 Results \u2023
+      Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models\")\n      1.
+      [Base LLM.](https://arxiv.org/html/2510.04618v1#S4.SS2.SSS0.Px1 \"In 4.2 Baselines
+      and Methods \u2023 4 Results \u2023 Agentic Context Engineering: Evolving Contexts
+      for Self-Improving Language Models\")\n      2. [In-Context Learning (ICL) [3].](https://arxiv.org/html/2510.04618v1#S4.SS2.SSS0.Px2
+      \"In 4.2 Baselines and Methods \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n      3. [MIPROv2 [36].](https://arxiv.org/html/2510.04618v1#S4.SS2.SSS0.Px3
+      \"In 4.2 Baselines and Methods \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n      4. [GEPA [4].](https://arxiv.org/html/2510.04618v1#S4.SS2.SSS0.Px4
+      \"In 4.2 Baselines and Methods \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n      5. [Dynamic Cheatsheet
+      (DC) [41].](https://arxiv.org/html/2510.04618v1#S4.SS2.SSS0.Px5 \"In 4.2 Baselines
+      and Methods \u2023 4 Results \u2023 Agentic Context Engineering: Evolving Contexts
+      for Self-Improving Language Models\")\n      6. [ACE (ours).](https://arxiv.org/html/2510.04618v1#S4.SS2.SSS0.Px6
+      \"In 4.2 Baselines and Methods \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")\n   3. [4.3 Results
+      on Agent Benchmark](https://arxiv.org/html/2510.04618v1#S4.SS3 \"In 4 Results
+      \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n      1. [Analysis.](https://arxiv.org/html/2510.04618v1#S4.SS3.SSS0.Px1
+      \"In 4.3 Results on Agent Benchmark \u2023 4 Results \u2023 Agentic Context
+      Engineering: Evolving Contexts for Self-Improving Language Models\")\n   4.
+      [4.4 Results on Domain-Specific Benchmark](https://arxiv.org/html/2510.04618v1#S4.SS4
+      \"In 4 Results \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\n      1. [Analysis.](https://arxiv.org/html/2510.04618v1#S4.SS4.SSS0.Px1
+      \"In 4.4 Results on Domain-Specific Benchmark \u2023 4 Results \u2023 Agentic
+      Context Engineering: Evolving Contexts for Self-Improving Language Models\")\n   5.
+      [4.5 Ablation Study](https://arxiv.org/html/2510.04618v1#S4.SS5 \"In 4 Results
+      \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n   6. [4.6 Cost and Speed Analysis](https://arxiv.org/html/2510.04618v1#S4.SS6
+      \"In 4 Results \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\n6. [5 Discussion](https://arxiv.org/html/2510.04618v1#S5
+      \"In Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n   1. [Longer Context \u2260\\neq Higher Serving Cost.](https://arxiv.org/html/2510.04618v1#S5.SS0.SSS0.Px1
+      \"In 5 Discussion \u2023 Agentic Context Engineering: Evolving Contexts for
+      Self-Improving Language Models\")\n   2. [Implications for Online and Continuous
+      Learning.](https://arxiv.org/html/2510.04618v1#S5.SS0.SSS0.Px2 \"In 5 Discussion
+      \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n7. [A Related Work on Agent Memory](https://arxiv.org/html/2510.04618v1#A1
+      \"In Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n8. [B Limitations and Challenges](https://arxiv.org/html/2510.04618v1#A2
+      \"In Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n9. [C AppWorld Leaderboard Snapshot (09/2025)](https://arxiv.org/html/2510.04618v1#A3
+      \"In Agentic Context Engineering: Evolving Contexts for Self-Improving Language
+      Models\")\n10. [D Prompts](https://arxiv.org/html/2510.04618v1#A4 \"In Agentic
+      Context Engineering: Evolving Contexts for Self-Improving Language Models\")\n11.
+      [References](https://arxiv.org/html/2510.04618#bib \"References\")\n\n[License:
+      CC BY 4.0](https://info.arxiv.org/help/license/index.html#licenses-available)\n\narXiv:2510.04618v1
+      [cs.LG] 06 Oct 2025\n\n# Agentic Context Engineering: Evolving Contexts for
+      Self-Improving Language Models\n\nReport issue for preceding element\n\nQizheng
+      Zhang 1\u2217\n\u2003Changran Hu 2\u2217\n\u2003Shubhangi Upasani 2\n\u2003Boyuan
+      Ma 2\n\u2003Fenglu Hong 2\n  \nVamsidhar Kamanuru 2\n\u2003Jay Rainton 2\n\u2003Chen
+      Wu 2\n\u2003Mengmeng Ji 2\n\u2003Hanchen Li 3\n  \nUrmish Thakker 2\n\u2003James
+      Zou 1\n\u2003Kunle Olukotun 1\n  \n1 Stanford University \u20032 SambaNova Systems,
+      Inc. \u20033 UC Berkeley \u2003\u2217 equal contribution\n  \n#\u2002qizhengz@stanford.edu,
+      changran.hu@sambanovasystems.com\n\nReport issue for preceding element\n\n######
+      Abstract\n\nReport issue for preceding element\n\nLarge language model (LLM)
+      applications such as agents and domain-specific reasoning increasingly rely
+      on *context adaptation*\u2014modifying inputs with instructions, strategies,
+      or evidence, rather than weight updates.\nPrior approaches improve usability
+      but often suffer from brevity bias, which drops domain insights for concise
+      summaries, and from context collapse, where iterative rewriting erodes details
+      over time.\nBuilding on the adaptive memory introduced by Dynamic Cheatsheet,
+      we introduce ACE (Agentic Context Engineering), a framework that treats contexts
+      as evolving playbooks that accumulate, refine, and organize strategies through
+      a modular process of generation, reflection, and curation.\nACE prevents collapse
+      with structured, incremental updates that preserve detailed knowledge and scale
+      with long-context models.\nAcross agent and domain-specific benchmarks, ACE
+      optimizes contexts both offline (e.g., system prompts) and online (e.g., agent
+      memory), consistently outperforming strong baselines: +10.6% on agents and +8.6%
+      on finance, while significantly reducing adaptation latency and rollout cost.\nNotably,
+      ACE could adapt effectively without labeled supervision and instead by leveraging
+      natural execution feedback.\nOn the AppWorld leaderboard, ACE matches the top-ranked
+      production-level agent on the overall average and surpasses it on the harder
+      test-challenge split, despite using a smaller open-source model.\nThese results
+      show that comprehensive, evolving contexts enable scalable, efficient, and self-improving
+      LLM systems with low overhead.\n\nReport issue for preceding element\n\n## 1
+      Introduction\n\nReport issue for preceding element\nImage Refer to caption\n\nFigure
+      1: Overall Performance Results. Our proposed framework, ACE, consistently outperforms
+      strong baselines across agent and domain-specific reasoning tasks.\n\nReport
+      issue for preceding element\n\nModern AI applications based on large language
+      models (LLMs), such as LLM agents [[52](https://arxiv.org/html/2510.04618v1#bib.bib52),
+      [49](https://arxiv.org/html/2510.04618v1#bib.bib49)] and compound AI systems
+      [[55](https://arxiv.org/html/2510.04618v1#bib.bib55)], increasingly depend on
+      context adaptation.\nInstead of modifying model weights, context adaptation
+      improves performance after model training by incorporating clarified instructions,
+      structured reasoning steps, or domain-specific input formats directly into the
+      model\u2019s inputs.\nContexts underpin many AI system components, including
+      system prompts that guide downstream tasks [[36](https://arxiv.org/html/2510.04618v1#bib.bib36),
+      [4](https://arxiv.org/html/2510.04618v1#bib.bib4)], memory that carries past
+      facts and experiences [[41](https://arxiv.org/html/2510.04618v1#bib.bib41),
+      [48](https://arxiv.org/html/2510.04618v1#bib.bib48)], and factual evidence that
+      reduces hallucination and supplements knowledge [[6](https://arxiv.org/html/2510.04618v1#bib.bib6)].\n\nReport
+      issue for preceding element\n\nAdapting through contexts rather than weights
+      offers several key advantages.\nContexts are interpretable and explainable for
+      users and developers [[47](https://arxiv.org/html/2510.04618v1#bib.bib47), [45](https://arxiv.org/html/2510.04618v1#bib.bib45)],
+      allow rapid integration of new knowledge at runtime [[27](https://arxiv.org/html/2510.04618v1#bib.bib27),
+      [7](https://arxiv.org/html/2510.04618v1#bib.bib7)], and can be shared across
+      models or modules in a compound system [[23](https://arxiv.org/html/2510.04618v1#bib.bib23)].\nMeanwhile,
+      advances in long-context LLMs [[39](https://arxiv.org/html/2510.04618v1#bib.bib39)]
+      and context-efficient inference such as KV cache reuse [[17](https://arxiv.org/html/2510.04618v1#bib.bib17),
+      [51](https://arxiv.org/html/2510.04618v1#bib.bib51)] are making context-based
+      approaches increasingly practical for deployment.\nAs a result, context adaptation
+      is emerging as a central paradigm for building capable, scalable, and self-improving
+      AI systems.\n\nReport issue for preceding element\n\nDespite this progress,
+      existing approaches to context adaptation face two key limitations.\nFirst,
+      a brevity bias: many prompt optimizers prioritize concise, broadly applicable
+      instructions over comprehensive accumulation.\nFor example, GEPA [[4](https://arxiv.org/html/2510.04618v1#bib.bib4)]
+      highlights brevity as a strength, but such abstraction can omit domain-specific
+      heuristics, tool-use guidelines, or common failure modes that matter in practice
+      [[16](https://arxiv.org/html/2510.04618v1#bib.bib16)].\nThis objective aligns
+      with validation metrics in some settings, but often fails to capture the detailed
+      strategies required by agents and knowledge-intensive applications.\nSecond,
+      context collapse: methods that rely on monolithic rewriting by an LLM often
+      degrade into shorter, less informative summaries over time, causing sharp performance
+      declines (Figure [2](https://arxiv.org/html/2510.04618v1#S2.F2 \"Figure 2 \u2023
+      The Brevity Bias. \u2023 2.2 Limitations of Existing Context Adaptation Methods
+      \u2023 2 Background and Motivation \u2023 Agentic Context Engineering: Evolving
+      Contexts for Self-Improving Language Models\")).\nIn domains such as interactive
+      agents [[43](https://arxiv.org/html/2510.04618v1#bib.bib43), [38](https://arxiv.org/html/2510.04618v1#bib.bib38),
+      [57](https://arxiv.org/html/2510.04618v1#bib.bib57)], domain-specific programming
+      [[53](https://arxiv.org/html/2510.04618v1#bib.bib53), [56](https://arxiv.org/html/2510.04618v1#bib.bib56)],
+      and financial or legal analysis [[33](https://arxiv.org/html/2510.04618v1#bib.bib33),
+      [18](https://arxiv.org/html/2510.04618v1#bib.bib18), [44](https://arxiv.org/html/2510.04618v1#bib.bib44)],
+      strong performance depends on retaining detailed, task-specific knowledge rather
+      than compressing it away.\n\nReport issue for preceding element\n\nAs applications
+      such as agents and knowledge-intensive reasoning demand greater reliability,
+      recent work has shifted toward saturating contexts with abundant, potentially
+      useful information [[22](https://arxiv.org/html/2510.04618v1#bib.bib22), [12](https://arxiv.org/html/2510.04618v1#bib.bib12),
+      [11](https://arxiv.org/html/2510.04618v1#bib.bib11)], enabled by advances in
+      long-context LLMs [[39](https://arxiv.org/html/2510.04618v1#bib.bib39), [34](https://arxiv.org/html/2510.04618v1#bib.bib34)].\nWe
+      argue that contexts should function not as concise summaries, but as comprehensive,
+      evolving playbooks\u2014detailed, inclusive, and rich with domain insights.\nUnlike
+      humans, who often benefit from concise generalization, LLMs are more effective
+      when provided with long, detailed contexts and can distill relevance autonomously
+      [[22](https://arxiv.org/html/2510.04618v1#bib.bib22), [31](https://arxiv.org/html/2510.04618v1#bib.bib31),
+      [41](https://arxiv.org/html/2510.04618v1#bib.bib41)].\nThus, instead of compressing
+      away domain-specific heuristics and tactics, contexts should preserve them,
+      allowing the model to decide what matters at inference time.\n\nReport issue
+      for preceding element\n\nTo address these limitations, we introduce ACE (Agentic
+      Context Engineering), a framework for comprehensive context adaptation in both
+      offline settings (e.g., system prompt optimization) and online settings (e.g.,
+      test-time memory adaptation).\nRather than compressing contexts into distilled
+      summaries, ACE treats them as evolving playbooks that accumulate and organize
+      strategies over time.\nBuilding on the agentic architecture of Dynamic Cheatsheet
+      [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)], ACE incorporates a modular
+      workflow of generation, reflection, and curation, while adding structured, incremental
+      updates guided by a grow-and-refine principle.\nThis design preserves detailed,
+      domain-specific knowledge, prevents context collapse, and yields contexts that
+      remain comprehensive and scalable throughout adaptation.\n\nReport issue for
+      preceding element\n\nWe evaluate ACE on two categories of LLM applications that
+      most benefit from comprehensive, evolving contexts:\n(1) *agents* [[43](https://arxiv.org/html/2510.04618v1#bib.bib43)],
+      which require multi-turn reasoning, tool use, and environment interaction, where
+      accumulated strategies can be reused across episodes; and\n(2) *domain-specific
+      benchmarks*, which demand specialized tactics and knowledge, where we focus
+      on financial analysis [[33](https://arxiv.org/html/2510.04618v1#bib.bib33),
+      [44](https://arxiv.org/html/2510.04618v1#bib.bib44)].\nOur key findings are:\n\nReport
+      issue for preceding element\n\n* \u2219\\bullet\n\n  ACE consistently outperforms
+      strong baselines, yielding average gains of 10.6% on agents and 8.6% on domain-specific
+      benchmarks, across both offline and online adaptation settings.\n\n  Report
+      issue for preceding element\n* \u2219\\bullet\n\n  ACE is able to construct
+      effective contexts without labeled supervision, instead leveraging execution
+      feedback and environment signals\u2014key ingredients for self-improving LLMs
+      and agents.\n\n  Report issue for preceding element\n* \u2219\\bullet\n\n  On
+      the AppWorld benchmark leaderboard [[5](https://arxiv.org/html/2510.04618v1#bib.bib5)],
+      ACE matches the top-ranked production-level agent IBM-CUGA [[35](https://arxiv.org/html/2510.04618v1#bib.bib35)]
+      (powered by GPT-4.1) on average and surpasses it on the harder test-challenge
+      split, while using a smaller open-source model (DeepSeek-V3.1).\n\n  Report
+      issue for preceding element\n* \u2219\\bullet\n\n  ACE requires significantly
+      fewer rollouts and lower dollar costs, and achieves 86.9% lower adaptation latency
+      (on average) than existing adaptive methods, demonstrating that scalable self-improvement
+      can be achieved with both higher accuracy and lower overhead.\n\n  Report issue
+      for preceding element\n\n## 2 Background and Motivation\n\nReport issue for
+      preceding element\n\n### 2.1 Context Adaptation\n\nReport issue for preceding
+      element\n\nContext adaptation (or context engineering) refers to methods that
+      improve model behavior by constructing or modifying inputs to an LLM, rather
+      than altering its weights.\nThe current state of the art leverages natural language
+      feedback [[40](https://arxiv.org/html/2510.04618v1#bib.bib40), [54](https://arxiv.org/html/2510.04618v1#bib.bib54),
+      [4](https://arxiv.org/html/2510.04618v1#bib.bib4)].\nIn this paradigm, a language
+      model inspects the current context along with signals such as execution traces,
+      reasoning steps, or validation results, and generates natural language feedback
+      on how the context should be revised.\nThis feedback is then incorporated into
+      the context, enabling iterative adaptation.\nRepresentative methods include
+      Reflexion [[40](https://arxiv.org/html/2510.04618v1#bib.bib40)], which reflects
+      on failures to improve agent planning; TextGrad [[54](https://arxiv.org/html/2510.04618v1#bib.bib54)],
+      which optimizes prompts via gradient-like textual feedback;\nGEPA [[4](https://arxiv.org/html/2510.04618v1#bib.bib4)],
+      which refines prompts iteratively based on execution traces and achieves strong
+      performance, even surpassing reinforcement learning approaches in some settings;\nand
+      Dynamic Cheatsheet [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)], which
+      constructs an external memory that accumulates strategies and lessons from past
+      successes and failures during inference.\nThese natural language feedback methods
+      represent a major advance, offering flexible and interpretable signals for improving
+      LLM systems beyond weight updates.\n\nReport issue for preceding element\n\n###
+      2.2 Limitations of Existing Context Adaptation Methods\n\nReport issue for preceding
+      element\n\n#### The Brevity Bias.\n\nReport issue for preceding element\n\nA
+      recurring limitation of context adaptation methods is brevity bias: the tendency
+      of optimization to collapse toward short, generic prompts.\nGao et al. [[16](https://arxiv.org/html/2510.04618v1#bib.bib16)]
+      document this effect in prompt optimization for test generation, where iterative
+      methods repeatedly produced near-identical instructions (e.g., \"Create unit
+      tests to ensure methods behave as expected\"), sacrificing diversity and omitting
+      domain-specific detail.\nThis convergence not only narrows the search space
+      but also propagates recurring errors across iterations, since optimized prompts
+      often inherit the same faults as their seeds.\nMore broadly, such bias undermines
+      performance in domains that demand detailed, context-rich guidance\u2014such
+      as multi-step agents, program synthesis, or knowledge-intensive reasoning\u2014where
+      success hinges on accumulating rather than compressing task-specific insights.\n\nReport
+      issue for preceding element\n\nImage Refer to caption\n\nFigure 2: Context Collapse.
+      Monolithic rewriting of context by an LLM can collapse it into shorter, less
+      informative summaries, leading to sharp performance drops.\n\nReport issue for
+      preceding element\n\n#### Context Collapse.\n\nReport issue for preceding element\n\nIn
+      a case study on the AppWorld benchmark [[43](https://arxiv.org/html/2510.04618v1#bib.bib43)],
+      we observe a phenomenon we call context collapse, which arises when an LLM is
+      tasked with fully rewriting the accumulated context at each adaptation step.\nAs
+      the context grows large, the model tends to compress it into much shorter, less
+      informative summaries, causing a dramatic loss of information.\nFor instance,
+      at step 60 the context contained 18,282 tokens and achieved an accuracy of 66.7,
+      but at the very next step it collapsed to just 122 tokens, with accuracy dropping
+      to 57.1\u2014worse than the baseline accuracy of 63.7 without adaptation.\nWhile
+      we highlight this through Dynamic Cheatsheet [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)],
+      the issue is not specific to that method; rather, it reflects a fundamental
+      risk of end-to-end context rewriting with LLMs, where accumulated knowledge
+      can be abruptly erased instead of preserved.\n\nReport issue for preceding element\n\nImage
+      Refer to caption\n\nFigure 3: Example ACE-Generated Context on the AppWorld
+      Benchmark (partially shown). ACE-generated contexts contain detailed, domain-specific
+      insights along with tools and code that are readily usable, serving as a comprehensive
+      playbook for LLM applications.\n\nReport issue for preceding element\n\n## 3
+      Agentic Context Engineering (ACE)\n\nReport issue for preceding element\n\nWe
+      present ACE (Agentic Context Engineering), a framework for scalable and efficient
+      context adaptation in both offline (e.g., system prompt optimization) and online
+      (e.g., test-time memory adaptation) scenarios.\nInstead of condensing knowledge
+      into terse summaries or static instructions, ACE treats contexts as evolving
+      playbooks that continuously accumulate, refine, and organize strategies over
+      time.\nBuilding on the agentic design of Dynamic Cheatsheet [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)],
+      ACE introduces a structured division of labor across three roles (Figure [4](https://arxiv.org/html/2510.04618v1#S3.F4
+      \"Figure 4 \u2023 3 Agentic Context Engineering (ACE) \u2023 Agentic Context
+      Engineering: Evolving Contexts for Self-Improving Language Models\")): the *Generator*,
+      which produces reasoning trajectories; the *Reflector*, which distills concrete
+      insights from successes and errors; and the *Curator*, which integrates these
+      insights into structured context updates.\nThis mirrors how humans learn\u2014experimenting,
+      reflecting, and consolidating\u2014while avoiding the bottleneck of overloading
+      a single model with all responsibilities.\n\nReport issue for preceding element\n\nTo
+      address the limitations of prior methods discussed in \u00a7[2.2](https://arxiv.org/html/2510.04618v1#S2.SS2
+      \"2.2 Limitations of Existing Context Adaptation Methods \u2023 2 Background
+      and Motivation \u2023 Agentic Context Engineering: Evolving Contexts for Self-Improving
+      Language Models\")\u2014notably brevity bias and context collapse\u2014ACE introduces
+      three key innovations:\n(1) a dedicated Reflector that separates evaluation
+      and insight extraction from curation, improving context quality and downstream
+      performance (\u00a7[4.5](https://arxiv.org/html/2510.04618v1#S4.SS5 \"4.5 Ablation
+      Study \u2023 4 Results \u2023 Agentic Context Engineering: Evolving Contexts
+      for Self-Improving Language Models\"));\n(2) incremental *delta updates* (\u00a7[3.1](https://arxiv.org/html/2510.04618v1#S3.SS1
+      \"3.1 Incremental Delta Updates \u2023 3 Agentic Context Engineering (ACE) \u2023
+      Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models\"))
+      that replace costly monolithic rewrites with localized edits, reducing both
+      latency and compute cost (\u00a7[4.6](https://arxiv.org/html/2510.04618v1#S4.SS6
+      \"4.6 Cost and Speed Analysis \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")); and\n(3) a *grow-and-refine*
+      mechanism (\u00a7[3.2](https://arxiv.org/html/2510.04618v1#S3.SS2 \"3.2 Grow-and-Refine
+      \u2023 3 Agentic Context Engineering (ACE) \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\")) that balances steady
+      context expansion with redundancy control.\n\nReport issue for preceding element\n\nImage
+      Refer to caption\n\nFigure 4: The ACE Framework. Inspired by Dynamic Cheatsheet,
+      ACE adopts an agentic architecture with three specialized components: a Generator,
+      a Reflector, and a Curator.\n\nReport issue for preceding element\n\nAs shown
+      in Figure [4](https://arxiv.org/html/2510.04618v1#S3.F4 \"Figure 4 \u2023 3
+      Agentic Context Engineering (ACE) \u2023 Agentic Context Engineering: Evolving
+      Contexts for Self-Improving Language Models\"), the workflow begins with the
+      Generator producing reasoning trajectories for new queries, which surface both
+      effective strategies and recurring pitfalls.\nThe Reflector critiques these
+      traces to extract lessons, optionally refining them across multiple iterations.\nThe
+      Curator then synthesizes these lessons into compact *delta entries*, which are
+      merged deterministically into the existing context by lightweight, non-LLM logic.\nBecause
+      updates are itemized and localized, multiple deltas can be merged in parallel,
+      enabling batched adaptation at scale.\nACE further supports multi-epoch adaptation,
+      where the same queries are revisited to progressively strengthen the context.\n\nReport
+      issue for preceding element\n\n### 3.1 Incremental Delta Updates\n\nReport issue
+      for preceding element\n\nA core design principle of ACE is to represent context
+      as a collection of *structured, itemized bullets*, rather than a single monolithic
+      prompt.\nThe concept of a bullet is similar to the concept of a memory entry
+      in LLM memory frameworks like Dynamic Cheatsheet [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)]
+      and A-MEM [[48](https://arxiv.org/html/2510.04618v1#bib.bib48)], but builds
+      on top of that and consists of (1) metadata, including a unique identifier and
+      counters tracking how often it was marked helpful or harmful; and (2) content,
+      capturing a small unit such as a reusable strategy, domain concept, or common
+      failure mode.\nWhen solving new problems, the Generator highlights which bullets
+      were useful or misleading, providing feedback that guides the Reflector in proposing
+      corrective updates.\n\nReport issue for preceding element\n\nThis itemized design
+      enables three key properties:\n(1) *localization*, so only the relevant bullets
+      are updated;\n(2) *fine-grained retrieval*, so the Generator can focus on the
+      most pertinent knowledge; and\n(3) *incremental adaptation*, allowing efficient
+      merging, pruning, and de-duplication during inference.\n\nReport issue for preceding
+      element\n\nRather than regenerating contexts in full, ACE incrementally produces
+      compact *delta contexts*: small sets of candidate bullets distilled by the Reflector
+      and integrated by the Curator.\nThis avoids the computational cost and latency
+      of full rewrites, while ensuring that past knowledge is preserved and new insights
+      are steadily appended.\nAs contexts grow, this approach provides the scalability
+      needed for long-horizon or domain-intensive applications.\n\nReport issue for
+      preceding element\n\n### 3.2 Grow-and-Refine\n\nReport issue for preceding element\n\nBeyond
+      incremental growth, ACE ensures that contexts remain compact and relevant through
+      periodic or lazy refinement.\nIn grow-and-refine, bullets with new identifiers
+      are appended, while existing bullets are updated in place (e.g., incrementing
+      counters).\nA de-duplication step then prunes redundancy by comparing bullets
+      via semantic embeddings.\nThis refinement can be performed proactively (after
+      each delta) or lazily (only when the context window is exceeded), depending
+      on application requirements for latency and accuracy.\n\nReport issue for preceding
+      element\n\nTogether, incremental updates and grow-and-refine maintain contexts
+      that expand adaptively, remain interpretable, and avoid the potential variance
+      introduced by monolithic context rewriting.\n\nReport issue for preceding element\n\n##
+      4 Results\n\nReport issue for preceding element\n\nOur evaluation of ACE shows
+      that:\n\nReport issue for preceding element\n\n* \u2219\\bullet\n\n  Enabling
+      High-Performance, Self-Improving Agents. ACE enables agents to self-improve
+      by dynamically refining their input context. It boosts accuracy on the AppWorld
+      benchmark by up to 17.1% by learning to engineer better contexts from execution
+      feedback alone, without needing ground-truth labels. This context-driven improvement
+      allows a smaller, open-source model to match the performance of the top-ranked
+      proprietary agent on the leaderboard. (\u00a7[4.3](https://arxiv.org/html/2510.04618v1#S4.SS3
+      \"4.3 Results on Agent Benchmark \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\"))\n\n  Report issue for
+      preceding element\n* \u2219\\bullet\n\n  Large Gains on Domain-Specific Benchmarks.
+      On complex financial reasoning benchmarks, ACE delivers an average performance
+      gain of 8.6% over strong baselines by constructing comprehensive playbooks with
+      domain-specific concepts and insights. (\u00a7[4.4](https://arxiv.org/html/2510.04618v1#S4.SS4
+      \"4.4 Results on Domain-Specific Benchmark \u2023 4 Results \u2023 Agentic Context
+      Engineering: Evolving Contexts for Self-Improving Language Models\"))\n\n  Report
+      issue for preceding element\n* \u2219\\bullet\n\n  Effective by Design. Ablation
+      studies confirm our design choices are key to success, with components like
+      the Reflector and multi-epoch refinement each contributing substantial performance
+      gains. (\u00a7[4.5](https://arxiv.org/html/2510.04618v1#S4.SS5 \"4.5 Ablation
+      Study \u2023 4 Results \u2023 Agentic Context Engineering: Evolving Contexts
+      for Self-Improving Language Models\"))\n\n  Report issue for preceding element\n*
+      \u2219\\bullet\n\n  Lower Cost and Adaptation Latency. ACE achieves these gains
+      efficiently, reducing adaptation latency by 86.9% on average, while requiring
+      fewer rollouts and lower token dollar costs. (\u00a7[4.6](https://arxiv.org/html/2510.04618v1#S4.SS6
+      \"4.6 Cost and Speed Analysis \u2023 4 Results \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\"))\n\n  Report issue for
+      preceding element\n\n### 4.1 Tasks and Datasets\n\nReport issue for preceding
+      element\n\nWe evaluate ACE on two categories of LLM applications that benefit
+      most from a comprehensive and evolving context:\n(1) *agent benchmarks*, which
+      require multi-turn reasoning, tool use, and environment interaction, where agents
+      can accumulate and reuse strategies across episodes and environments; and\n(2)
+      *domain-specific benchmarks*, which demand mastery of specialized concepts and
+      tactics, where we focus on financial analysis as a case study.\n\nReport issue
+      for preceding element\n\n* \u2219\\bullet\n\n  LLM Agent: AppWorld [[43](https://arxiv.org/html/2510.04618v1#bib.bib43)]
+      is a suite of autonomous agent tasks involving API understanding, code generation,
+      and environment interaction.\n  It provides a realistic execution environment
+      with common applications and APIs (e.g., email, file system) and tasks of two
+      difficulty levels (normal and challenge).\n  A public leaderboard [[5](https://arxiv.org/html/2510.04618v1#bib.bib5)]
+      tracks performance, where, at the time of submission, the best system achieved
+      only 60.3% average accuracy, highlighting the benchmark\u2019s difficulty and
+      realism.\n\n  Report issue for preceding element\n* \u2219\\bullet\n\n  Financial
+      Analysis: FiNER [[33](https://arxiv.org/html/2510.04618v1#bib.bib33)] and Formula
+      [[44](https://arxiv.org/html/2510.04618v1#bib.bib44)] test LLMs on financial
+      reasoning tasks that rely on the eXtensible Business Reporting Language (XBRL).\n  *FiNER*
+      requires labeling tokens in XBRL financial documents with one of 139 fine-grained
+      entity types, a key step for financial information extraction in regulated domains.\n  *Formula*
+      focuses on extracting values from structured XBRL filings and performing computations
+      to answer financial queries, i.e., numerical reasoning.\n\n  Report issue for
+      preceding element\n\n#### Evaluation Metrics.\n\nReport issue for preceding
+      element\n\nFor AppWorld, we follow the official benchmark protocol and report
+      *Task Goal Completion* (TGC) and *Scenario Goal Completion* (SGC) on both the
+      test-normal and test-challenge splits.\nFor FiNER and Formula, we follow the
+      original setup and report accuracy, measured as the proportion of predicted
+      answers that exactly match the ground truth.\n\nReport issue for preceding element\n\nAll
+      datasets follow the original train/validation/test splits.\nFor *offline* context
+      adaptation, methods are optimized on the training split and evaluated on the
+      test split with pass@1 accuracy.\nFor *online* context adaptation, methods are
+      evaluated sequentially on the test split: for each sample, the model first predicts
+      with the current context, then updates its context based on that sample.\nThe
+      same shuffled test split is used across all methods.\n\nReport issue for preceding
+      element\n\n### 4.2 Baselines and Methods\n\nReport issue for preceding element\n\n####
+      Base LLM.\n\nReport issue for preceding element\n\nThe base model is evaluated
+      directly on each benchmark without any context engineering, using the default
+      prompts provided by dataset authors.\nFor AppWorld, we follow the official ReAct
+      [[52](https://arxiv.org/html/2510.04618v1#bib.bib52)] implementation released
+      by the benchmark authors, and build all other baselines and methods on top of
+      this framework.\n\nReport issue for preceding element\n\n#### In-Context Learning
+      (ICL) [[3](https://arxiv.org/html/2510.04618v1#bib.bib3)].\n\nReport issue for
+      preceding element\n\nICL provides the model with task demonstrations in the
+      input prompt (few-shot or many-shot).\nThis allows the model to infer the task
+      format and desired output without weight updates.\nWe supply all training samples
+      when they fit within the model\u2019s context window; otherwise, we fill the
+      window with as many demonstrations as possible.\n\nReport issue for preceding
+      element\n\n#### MIPROv2 [[36](https://arxiv.org/html/2510.04618v1#bib.bib36)].\n\nReport
+      issue for preceding element\n\nMIPROv2 is a popular prompt optimizer for LLM
+      applications that works by jointly optimizing system instructions and in-context
+      demonstrations via bayesian optimization.\nWe use the official DSPy implementation
+      [[15](https://arxiv.org/html/2510.04618v1#bib.bib15)], setting `auto=\"heavy\"`
+      to maximize optimization performance.\n\nReport issue for preceding element\n\n####
+      GEPA [[4](https://arxiv.org/html/2510.04618v1#bib.bib4)].\n\nReport issue for
+      preceding element\n\nGEPA (Genetic-Pareto) is a sample-efficient prompt optimizer
+      based on reflective prompt evolution.\nIt collects execution traces (reasoning,
+      tool calls, intermediate outputs) and applies natural-language reflection to
+      diagnose errors, assign credit, and propose prompt updates.\nA genetic Pareto
+      search maintains a frontier of high-performing prompts, mitigating local optima.\nEmpirically,
+      GEPA outperforms reinforcement learning methods such as GRPO and prompt optimizers
+      like MIPROv2, achieving up to 10\u201320% higher accuracy with as much as 35\u00d7
+      fewer rollouts.\nWe use the official DSPy implementation [[14](https://arxiv.org/html/2510.04618v1#bib.bib14)],
+      setting `auto=\"heavy\"` to maximize optimization performance.\n\nReport issue
+      for preceding element\n\n#### Dynamic Cheatsheet (DC) [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)].\n\nReport
+      issue for preceding element\n\nDC is a test-time learning approach that introduces
+      an adaptive external memory of reusable strategies and code snippets.\nBy continuously
+      updating this memory with newly encountered inputs and outputs, DC enables models
+      to accumulate knowledge and reuse it across tasks, often leading to substantial
+      improvements over static prompting methods.\nA key advantage of DC is that it
+      does not require ground-truth labels: the model can curate its own memory from
+      its generations, making the method highly flexible and broadly applicable.\nWe
+      use the official implementation released by the authors [[42](https://arxiv.org/html/2510.04618v1#bib.bib42)]
+      and set it to use the cumulative mode (DC-CU).\n\nReport issue for preceding
+      element\n\n#### ACE (ours).\n\nReport issue for preceding element\n\nACE optimizes
+      LLM contexts for both offline and online adaptation through an agentic context
+      engineering framework.\nTo ensure fairness, we use the same LLM for the Generator,
+      Reflector, and Curator (non-thinking mode of DeepSeek-V3.1 [[13](https://arxiv.org/html/2510.04618v1#bib.bib13)]),
+      preventing knowledge transfer from a stronger Reflector or Curator to a weaker
+      Generator.\nThis isolates the benefit of context construction itself.\nWe adopt
+      a batch size of 1 (constructing a delta context from each sample).\nWe set the
+      maximum number of Reflector refinement rounds and the maximum number of epochs
+      in offline adaptation to 5.\n\nReport issue for preceding element\n\n|  |  |  |  |  |  |  |\n|
+      --- | --- | --- | --- | --- | --- | --- |\n| Method | GT Labels | Test-Normal
+      | | Test-Challenge | | Average |\n| TGC\u2191\\uparrow | SGC\u2191\\uparrow
+      | TGC\u2191\\uparrow | SGC\u2191\\uparrow |\n| DeepSeek-V3.1 as Base LLM | |
+      | | | | |\n| ReAct |  | 63.7 | 42.9 | 41.5 | 21.6 | 42.4 |\n| Offline Adaptation
+      | | | | | | |\n| ReAct + ICL | \u2713 | 64.3+0.664.3\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+0.6}}
+      | 46.4+3.546.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+3.5}}
+      | 46.0+4.546.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+4.5}}
+      | 27.3+5.727.3\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+5.7}}
+      | 46.0+3.646.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+3.6}}
+      |\n| ReAct + GEPA | \u2713 | 64.9+1.264.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+1.2}}
+      | 44.6+1.744.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+1.7}}
+      | 46.0+4.546.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+4.5}}
+      | 30.2+8.630.2\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+8.6}}
+      | 46.4+4.046.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+4.0}}
+      |\n| ReAct + ACE | \u2713 | 76.2+12.5{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{76.2}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+12.5}}}
+      | 64.3+21.4{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{64.3}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+21.4}}}
+      | 57.3+15.8{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{57.3}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+15.8}}}
+      | 39.6+18.0{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{39.6}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+18.0}}}
+      | 59.4+17.0{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{59.4}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+17.0}}}
+      |\n| ReAct + ACE | \u2717 | 75.0+11.375.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+11.3}}
+      | 64.3+21.4{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{64.3}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+21.4}}}
+      | 54.4+12.954.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+12.9}}
+      | 35.2+13.635.2\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+13.6}}
+      | 57.2+14.857.2\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+14.8}}
+      |\n| Online Adaptation | | | | | | |\n| ReAct + DC (CU) | \u2717 | 65.5+1.865.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+1.8}}
+      | 58.9+16.0{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{58.9}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+16.0}}}
+      | 52.3+10.852.3\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+10.8}}
+      | 30.8+9.230.8\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+9.2}}
+      | 51.9+9.551.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+9.5}}
+      |\n| ReAct + ACE | \u2717 | 69.6+5.9{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{69.6}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+5.9}}}
+      | 53.6+10.753.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+10.7}}
+      | 66.0+24.5{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{66.0}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+24.5}}}
+      | 48.9+27.3{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{48.9}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+27.3}}}
+      | 59.5+17.1{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{59.5}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+17.1}}}
+      |\n\nTable 1: Results on the AppWorld Agent Benchmark. \"GT labels\" indicates
+      whether ground-truth labels are available to the Reflector during adaptation.
+      We evaluate the ACE framework against multiple baselines on top of the official
+      ReAct implementation, both for offline and online context adaptation.\nReAct
+      + ACE outperforms selected baselines by an average of 10.6%, and could achieve
+      good performance even without access to GT labels.\n\nReport issue for preceding
+      element\n\n### 4.3 Results on Agent Benchmark\n\nReport issue for preceding
+      element\n\n#### Analysis.\n\nReport issue for preceding element\n\nAs shown
+      in Table [1](https://arxiv.org/html/2510.04618v1#S4.T1 \"Table 1 \u2023 ACE
+      (ours). \u2023 4.2 Baselines and Methods \u2023 4 Results \u2023 Agentic Context
+      Engineering: Evolving Contexts for Self-Improving Language Models\"), ACE consistently
+      improves over strong baselines on the AppWorld benchmark.\nIn the offline setting,
+      ReAct + ACE outperforms both ReAct + ICL and ReAct + GEPA by significant margins
+      (12.3% and 11.9%, respectively), demonstrating that structured, evolving, and
+      detailed contexts enable more effective agent learning than fixed demonstrations
+      or single optimized instruction prompts.\nThese gains extend to the online setting,
+      where ACE continues to outperform prior adaptive methods such as Dynamic Cheatsheet
+      by an average of 7.6%.\n\nReport issue for preceding element\n\nIn the agent
+      use case, ACE remains effective even without access to ground-truth labels during
+      adaptation: ReAct + ACE achieves an average improvement of 14.8% over the ReAct
+      baseline in this setting.\nThis robustness arises because ACE leverages signals
+      naturally available during execution (e.g., code execution success or failure)
+      to guide the Reflector and Curator in forming structured lessons of successes
+      and failures.\nTogether, these results establish ACE as a strong and versatile
+      framework for building self-improving agents that adapt reliably both with and
+      without labeled supervision.\n\nReport issue for preceding element\n\nNotably,
+      on the latest AppWorld leaderboard (as of September 20, 2025; Figure [5](https://arxiv.org/html/2510.04618v1#A3.F5
+      \"Figure 5 \u2023 Appendix C AppWorld Leaderboard Snapshot (09/2025) \u2023
+      Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models\")),
+      on average, ReAct + ACE (59.4%) matches the top-ranked IBM CUGA (60.3%), a production-level
+      GPT-4.1\u2013based agent [[35](https://arxiv.org/html/2510.04618v1#bib.bib35)],
+      despite using the smaller open-source model DeepSeek-V3.1.\nWith online adaptation,
+      ReAct + ACE even surpasses IBM CUGA by 8.4% in TGC and 0.7% in SGC on the harder
+      test-challenge split, underscoring the effectiveness of ACE in building comprehensive
+      and self-evolving contexts for agents.\n\nReport issue for preceding element\n\n###
+      4.4 Results on Domain-Specific Benchmark\n\nReport issue for preceding element\n\n|  |  |  |  |  |\n|
+      --- | --- | --- | --- | --- |\n| Method | GT Labels | FINER (Acc\u2191\\uparrow)
+      | Formula (Acc\u2191\\uparrow) | Average |\n| DeepSeek-V3.1 as Base LLM | |
+      | | |\n| Base LLM |  | 70.7 | 67.5 | 69.1 |\n| Offline Adaptation | | | | |\n|
+      ICL | \u2713 | 72.3+1.672.3\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+1.6}}
+      | 67.0\u22120.567.0\\_{{\\color[rgb]{1,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{1,0,0}-0.5}}
+      | 69.6+0.569.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+0.5}}
+      |\n| MIPROv2 | \u2713 | 72.4+1.772.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+1.7}}
+      | 69.5+2.069.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+2.0}}
+      | 70.9+1.870.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+1.8}}
+      |\n| GEPA | \u2713 | 73.5+2.873.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+2.8}}
+      | 71.5+4.071.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+4.0}}
+      | 72.5+3.472.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+3.4}}
+      |\n| ACE | \u2713 | 78.3+7.6{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{78.3}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+7.6}}}
+      | 85.5+18.0{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{85.5}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+18.0}}}
+      | 81.9+12.8{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{81.9}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+12.8}}}
+      |\n| ACE | \u2717 | 71.1+0.471.1\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+0.4}}
+      | 83.0+15.583.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+15.5}}
+      | 77.1+8.077.1\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+8.0}}
+      |\n| Online Adaptation | | | | |\n| DC (CU) | \u2713 | 74.2+3.574.2\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+3.5}}
+      | 69.5+2.069.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+2.0}}
+      | 71.8+2.771.8\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+2.7}}
+      |\n| DC (CU) | \u2717 | 68.3\u22122.468.3\\_{{\\color[rgb]{1,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{1,0,0}-2.4}}
+      | 62.5\u22125.062.5\\_{{\\color[rgb]{1,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{1,0,0}-5.0}}
+      | 65.4\u22123.765.4\\_{{\\color[rgb]{1,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{1,0,0}-3.7}}
+      |\n| ACE | \u2713 | 76.7+6.0{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{76.7}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+6.0}}}
+      | 76.5+9.076.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+9.0}}
+      | 76.6+7.5{\\color[rgb]{0,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{0,0,0}\\pgfsys@color@gray@stroke{0}\\pgfsys@color@gray@fill{0}\\mathbf{76.6}}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+7.5}}}
+      |\n| ACE | \u2717 | 67.3\u22123.467.3\\_{{\\color[rgb]{1,0,0}\\definecolor[named]{pgfstrokecolor}{rgb}{1,0,0}-3.4}}
+      | 78.5+11.0\\mathbf{78.5}\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}\\mathbf{+11.0}}}
+      | 72.9+3.872.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+3.8}}
+      |\n\nTable 2: Results on Financial Analysis Benchmark. \"GT labels\" indicates
+      whether ground-truth labels are available to the Reflector during adaptation.
+      With GT labels, ACE outperforms selected baselines by an average of 8.6%, highlighting
+      the advantage of structured and evolving contexts for domain-specific reasoning.
+      However, we also observe that in the absence of reliable feedback signals (e.g.,
+      ground-truth labels or execution outcomes), both ACE and other adaptive methods
+      such as Dynamic Cheatsheet may degrade, suggesting that context adaptation depends
+      critically on feedback quality.\n\nReport issue for preceding element\n\n####
+      Analysis.\n\nReport issue for preceding element\n\nAs shown in Table [2](https://arxiv.org/html/2510.04618v1#S4.T2
+      \"Table 2 \u2023 4.4 Results on Domain-Specific Benchmark \u2023 4 Results \u2023
+      Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models\"),
+      ACE delivers strong improvements on financial analysis benchmarks.\nIn the offline
+      setting, when provided with ground-truth answers from the training split, ACE
+      surpasses ICL, MIPROv2, and GEPA by clear margins (an average of 10.9%), showing
+      that structured and evolving contexts are particularly effective when tasks
+      require precise domain knowledge (e.g., financial concepts, XBRL rules) that
+      goes beyond fixed demonstrations or monolithic optimized prompts.\nIn the online
+      setting, ACE continues to exceed prior adaptive methods such as DC by an average
+      of 6.2%, further confirming the benefit of agentic context engineering for accumulating
+      reusable insights across specialized domains.\n\nReport issue for preceding
+      element\n\nMoreover, we also observe that when ground-truth supervision or reliable
+      execution signals are absent, both ACE and DC may degrade in performance.\nIn
+      such cases, the constructed context can be polluted by spurious or misleading
+      signals, highlighting a potential limitation of inference-time adaptation without
+      reliable feedback.\nThis suggests that while ACE is robust under rich feedback
+      (e.g., code execution results or formula correctness in agent tasks), its effectiveness
+      depends on the availability of signals that allow the Reflector and Curator
+      to make sound judgments.\nWe return to this limitation in Appendix [B](https://arxiv.org/html/2510.04618v1#A2
+      \"Appendix B Limitations and Challenges \u2023 Agentic Context Engineering:
+      Evolving Contexts for Self-Improving Language Models\").\n\nReport issue for
+      preceding element\n\n### 4.5 Ablation Study\n\nReport issue for preceding element\n\nTable
+      [3](https://arxiv.org/html/2510.04618v1#S4.T3 \"Table 3 \u2023 4.5 Ablation
+      Study \u2023 4 Results \u2023 Agentic Context Engineering: Evolving Contexts
+      for Self-Improving Language Models\") reports ablation studies on the AppWorld
+      benchmark, analyzing how individual design choices of ACE contribute to effective
+      context adaptation.\nWe examine three factors: (1) the Reflector with iterative
+      refinement, our addition to the agentic framework beyond Dynamic Cheatsheet,
+      (2) multi-epoch adaptation, which refines contexts over training samples multiple
+      times, and (3) offline warmup, which initializes the context through offline
+      adaptation before online adaptation begins.\n\nReport issue for preceding element\n\n|  |  |  |  |  |  |  |\n|
+      --- | --- | --- | --- | --- | --- | --- |\n| Method | GT Labels | Test-Normal
+      | | Test-Challenge | | Average |\n| TGC\u2191\\uparrow | SGC\u2191\\uparrow
+      | TGC\u2191\\uparrow | SGC\u2191\\uparrow |\n| DeepSeek-V3.1 as Base LLM | |
+      | | | | |\n| ReAct |  | 63.7 | 42.9 | 41.5 | 21.6 | 42.4 |\n| Offline Adaptation
+      | | | | | | |\n| ReAct + ACE w/o Reflector or multi-epoch | \u2713 | 70.8+7.170.8\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+7.1}}
+      | 55.4+12.555.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+12.5}}
+      | 55.9+14.455.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+14.4}}
+      | 38.1+17.538.1\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+17.5}}
+      | 55.1+12.755.1\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+12.7}}
+      |\n| ReAct + ACE w/o multi-epoch | \u2713 | 72.0+8.372.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+8.3}}
+      | 60.7+17.860.7\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+17.8}}
+      | 54.9+13.454.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+13.4}}
+      | 39.6+18.039.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+18.0}}
+      | 56.8+14.456.8\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+14.4}}
+      |\n| ReAct + ACE | \u2713 | 76.2+12.576.2\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+12.5}}
+      | 64.3+21.464.3\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+21.4}}
+      | 57.3+15.857.3\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+15.8}}
+      | 39.6+18.039.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+18.0}}
+      | 59.4+17.059.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+17.0}}
+      |\n| Online Adaptation | | | | | | |\n| ReAct + ACE | \u2717 | 67.9+4.267.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+4.2}}
+      | 51.8+8.951.8\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+8.9}}
+      | 61.4+19.961.4\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+19.9}}
+      | 43.2+21.643.2\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+21.6}}
+      | 56.1+13.756.1\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+13.7}}
+      |\n| ReAct + ACE + offline warmup | \u2717 | 69.6+5.969.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+5.9}}
+      | 53.6+10.753.6\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+10.7}}
+      | 66.0+24.566.0\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+24.5}}
+      | 48.9+27.348.9\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+27.3}}
+      | 59.5+17.159.5\\_{{\\color[rgb]{0.1328125,0.546875,0.1328125}\\definecolor[named]{pgfstrokecolor}{rgb}{0.1328125,0.546875,0.1328125}+17.1}}
+      |\n\nTable 3: Ablation Studies on AppWorld. We study how particular design choices
+      of ACE (iterative refinement, multi-epoch adaptation, and offline warmup) could
+      help high-quality context adaptation.\n\nReport issue for preceding element\n\n###
+      4.6 Cost and Speed Analysis\n\nReport issue for preceding element\n\n| Method
+      | Latency (s)\u2193\\downarrow | # Rollouts\u2193\\downarrow |\n| --- | ---
+      | --- |\n| ReAct + GEPA | 53898 | 1434 |\n| ReAct + ACE | 9517(-82.3%) | 357(-75.1%)
+      |\n\n(a) Offline (AppWorld).\n\nReport issue for preceding element\n\n| Method
+      | Latency (s)\u2193\\downarrow | Token Cost ($)\u2193\\downarrow |\n| --- |
+      --- | --- |\n| DC (CU) | 65104 | 17.7 |\n| ACE | 5503(-91.5%) | 2.9(-83.6%)
+      |\n\n(b) Online (FiNER).\n\nReport issue for preceding element\n\nTable 4: Cost
+      and Speed Analysis. We measure the context adaptation latency, number of rollouts,
+      and dollar costs of ACE against GEPA (offline) and DC (online).\n\nReport issue
+      for preceding element\n\nDue to its support for incremental, \u201cdelta\" context
+      updates and non-LLM-based context merging and de-duplication, ACE demonstrates
+      particular advantages in reducing the cost (in terms of the number of rollouts
+      or the amount of dollar cost for token ingestion/generation) and latency of
+      adaptation.\n\nReport issue for preceding element\n\nAs examples, on the offline
+      adaptation of AppWorld, ACE achieves 82.3% reduction in adaptation latency and
+      75.1% reduction in the number of rollouts as compared to GEPA (Table [4](https://arxiv.org/html/2510.04618v1#S4.T4
+      \"Table 4 \u2023 4.6 Cost and Speed Analysis \u2023 4 Results \u2023 Agentic
+      Context Engineering: Evolving Contexts for Self-Improving Language Models\")(a)).\nOn
+      the online adaptation of FiNER, ACE achieves 91.5% reduction in adaptation latency
+      and 83.6% reduction in token dollar cost for token ingestion and generation
+      as compared to DC (Table [4](https://arxiv.org/html/2510.04618v1#S4.T4 \"Table
+      4 \u2023 4.6 Cost and Speed Analysis \u2023 4 Results \u2023 Agentic Context
+      Engineering: Evolving Contexts for Self-Improving Language Models\")(b)).\n\nReport
+      issue for preceding element\n\n## 5 Discussion\n\nReport issue for preceding
+      element\n\n#### Longer Context \u2260\\neq Higher Serving Cost.\n\nReport issue
+      for preceding element\n\nAlthough ACE produces longer contexts than methods
+      such as GEPA, this does not translate to linearly higher inference cost or GPU
+      memory usage.\nModern serving infrastructures are increasingly optimized for
+      long-context workloads through techniques such as the reuse [[17](https://arxiv.org/html/2510.04618v1#bib.bib17),
+      [51](https://arxiv.org/html/2510.04618v1#bib.bib51)], compression [[32](https://arxiv.org/html/2510.04618v1#bib.bib32),
+      [30](https://arxiv.org/html/2510.04618v1#bib.bib30)], and offload [[25](https://arxiv.org/html/2510.04618v1#bib.bib25)]
+      of KV cache.\nThese mechanisms allow frequently reused context segments to be
+      cached locally or remotely, avoiding repetitive and expensive prefill operations.\nOngoing
+      advances in ML systems suggest that the amortized cost of handling long contexts
+      will continue to decrease, making context-rich approaches like ACE increasingly
+      practical in deployment.\n\nReport issue for preceding element\n\n#### Implications
+      for Online and Continuous Learning.\n\nReport issue for preceding element\n\nOnline
+      and continuous learning are key research directions in machine learning for
+      addressing issues like distribution shifts [[24](https://arxiv.org/html/2510.04618v1#bib.bib24),
+      [19](https://arxiv.org/html/2510.04618v1#bib.bib19)] and limited training data
+      [[37](https://arxiv.org/html/2510.04618v1#bib.bib37), [21](https://arxiv.org/html/2510.04618v1#bib.bib21),
+      [60](https://arxiv.org/html/2510.04618v1#bib.bib60)].\nACE offers a flexible
+      and efficient alternative to conventional model fine-tuning, as adapting contexts
+      is generally cheaper than updating model weights [[9](https://arxiv.org/html/2510.04618v1#bib.bib9),
+      [26](https://arxiv.org/html/2510.04618v1#bib.bib26), [28](https://arxiv.org/html/2510.04618v1#bib.bib28),
+      [20](https://arxiv.org/html/2510.04618v1#bib.bib20)].\nMoreover, because contexts
+      are human-interpretable, ACE enables selective unlearning [[10](https://arxiv.org/html/2510.04618v1#bib.bib10),
+      [8](https://arxiv.org/html/2510.04618v1#bib.bib8), [29](https://arxiv.org/html/2510.04618v1#bib.bib29)]\u2014whether
+      due to privacy or legal constraints [[1](https://arxiv.org/html/2510.04618v1#bib.bib1),
+      [2](https://arxiv.org/html/2510.04618v1#bib.bib2)], or when outdated or incorrect
+      information is identified by domain experts.\nThese are promising directions
+      for future work, where ACE could play a central role in advancing continuous
+      and responsible learning.\n\nReport issue for preceding element\n\n## References\n\nReport
+      issue for preceding element\n\n* [1]\u2191\n\n  General Data Protection Regulation
+      article 17: Right to erasure.\n  EU Regulation 2016/679, 2016.\n  Official consolidated
+      text.\n* [2]\u2191\n\n  California consumer privacy act, civil code \u00a71798.105:
+      Right to delete.\n  State of California Civil Code, 2018.\n* [3]\u2191\n\n  Rishabh
+      Agarwal, Avi Singh, Lei Zhang, Bernd Bohnet, Luis Rosias, Stephanie\n  Chan,
+      Biao Zhang, Ankesh Anand, Zaheer Abbas, Azade Nova, et al.\n  Many-shot in-context
+      learning.\n  Advances in Neural Information Processing Systems,\n  37:76930\u201376966,
+      2024.\n* [4]\u2191\n\n  Lakshya A Agrawal, Shangyin Tan, Dilara Soylu, Noah
+      Ziems, Rishi Khare, Krista\n  Opsahl-Ong, Arnav Singhvi, Herumb Shandilya, Michael
+      J Ryan, Meng Jiang,\n  et al.\n  Gepa: Reflective prompt evolution can outperform
+      reinforcement\n  learning.\n  arXiv preprint arXiv:2507.19457, 2025.\n* [5]\u2191\n\n  AppWorld.\n  Leaderboard.\n  <https://appworld.dev/leaderboard>,
+      2025.\n  Accessed: 2025-09-20.\n* [6]\u2191\n\n  Akari Asai, Zeqiu Wu, Yizhong
+      Wang, Avirup Sil, and Hannaneh Hajishirzi.\n  Self-rag: Learning to retrieve,
+      generate, and critique through\n  self-reflection.\n  2024.\n* [7]\u2191\n\n  Sebastian
+      Borgeaud, Arthur Mensch, Jordan Hoffmann, Trevor Cai, Eliza\n  Rutherford, Katie
+      Millican, George Bm Van Den Driessche, Jean-Baptiste\n  Lespiau, Bogdan Damoc,
+      Aidan Clark, et al.\n  Improving language models by retrieving from trillions
+      of tokens.\n  In International conference on machine learning, pages\n  2206\u20132240.
+      PMLR, 2022.\n* [8]\u2191\n\n  Lucas Bourtoule, Varun Chandrasekaran, Christopher
+      Choquette-Choo, Hengrui Jia,\n  Adelin Travers, Baiwu Zhang, David Lie, and
+      Nicolas Papernot.\n  Machine unlearning.\n  IEEE Symposium on Security and Privacy,
+      pages 141\u2013159, 2021.\n* [9]\u2191\n\n  Tom Brown et al.\n  Language models
+      are few-shot learners.\n  In NeurIPS, 2020.\n* [10]\u2191\n\n  Yinzhi Cao and
+      Junfeng Yang.\n  Towards making systems forget with machine unlearning.\n  In
+      IEEE Symposium on Security and Privacy, 2015.\n* [11]\u2191\n\n  Tianxiang Chen,
+      Zhentao Tan, Xiaofan Bo, Yue Wu, Tao Gong, Qi Chu, Jieping Ye,\n  and Nenghai
+      Yu.\n  Flora: Effortless context construction to arbitrary length and scale.\n  arXiv
+      preprint arXiv:2507.19786, 2025.\n* [12]\u2191\n\n  Yeounoh Chung, Gaurav T
+      Kakkar, Yu Gan, Brenton Milne, and Fatma Ozcan.\n  Is long context all you need?
+      leveraging llm\u2019s extended context for\n  nl2sql.\n  arXiv preprint arXiv:2501.12372,
+      2025.\n* [13]\u2191\n\n  DeepSeek-AI.\n  Deepseek-v3 technical report, 2024.\n*
+      [14]\u2191\n\n  DSPy.\n  dspy.gepa: Reflective prompt optimizer.\n  <https://dspy.ai/api/optimizers/GEPA/overview/>,
+      2025.\n  Accessed: 2025-09-24.\n* [15]\u2191\n\n  DSPy.\n  dspy.miprov2.\n  <https://dspy.ai/api/optimizers/MIPROv2/>,
+      2025.\n  Accessed: 2025-09-24.\n* [16]\u2191\n\n  Shuzheng Gao, Chaozheng Wang,
+      Cuiyun Gao, Xiaoqian Jiao, Chun Yong Chong, Shan\n  Gao, and Michael Lyu.\n  The
+      prompt alchemist: Automated llm-tailored prompt optimization for\n  test case
+      generation.\n  arXiv preprint arXiv:2501.01329, 2025.\n* [17]\u2191\n\n  In
+      Gim, Guojun Chen, Seung-seob Lee, Nikhil Sarda, Anurag Khandelwal, and Lin\n  Zhong.\n  Prompt
+      cache: Modular attention reuse for low-latency inference.\n  Proceedings of
+      Machine Learning and Systems, 6:325\u2013338, 2024.\n* [18]\u2191\n\n  Neel
+      Guha, Julian Nyarko, Daniel Ho, Christopher R\u00e9, Adam Chilton, Alex\n  Chohlas-Wood,
+      Austin Peters, Brandon Waldon, Daniel Rockmore, Diego Zambrano,\n  et al.\n  Legalbench:
+      A collaboratively built benchmark for measuring legal\n  reasoning in large
+      language models.\n  Advances in neural information processing systems,\n  36:44123\u201344279,
+      2023.\n* [19]\u2191\n\n  Ishaan Gulrajani and David Lopez-Paz.\n  In search
+      of lost domain generalization.\n  In ICLR, 2021.\n* [20]\u2191\n\n  Edward J.
+      Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean\n  Wang,
+      Lu Wang, and Weizhu Chen.\n  LoRA: Low-rank adaptation of large language models.\n  arXiv:2106.09685,
+      2021.\n* [21]\u2191\n\n  Maxwell L Hutchinson, Erin Antono, Brenna M Gibbons,
+      Sean Paradiso, Julia Ling,\n  and Bryce Meredig.\n  Overcoming data scarcity
+      with transfer learning.\n  arXiv preprint arXiv:1711.05099, 2017.\n* [22]\u2191\n\n  Mingjian
+      Jiang, Yangjun Ruan, Luis Lastras, Pavan Kapanipathi, and Tatsunori\n  Hashimoto.\n  Putting
+      it all into context: Simplifying agents with lclms.\n  arXiv preprint arXiv:2505.08120,
+      2025.\n* [23]\u2191\n\n  Tushar Khot, Harsh Trivedi, Matthew Finlayson, Yao
+      Fu, Kyle Richardson, Peter\n  Clark, and Ashish Sabharwal.\n  Decomposed prompting:
+      A modular approach for solving complex tasks.\n  arXiv preprint arXiv:2210.02406,
+      2022.\n* [24]\u2191\n\n  Pang Wei Koh, Shiori Sagawa, Henrik Marklund, Sang
+      Michael Xie, Marvin Zhang,\n  Akshay Balsubramani, Weihua Hu, Michihiro Yasunaga,
+      Richard Lanas Phillips,\n  Irena Gao, et al.\n  Wilds: A benchmark of in-the-wild
+      distribution shifts.\n  In International conference on machine learning, pages\n  5637\u20135664.
+      PMLR, 2021.\n* [25]\u2191\n\n  Wonbeom Lee, Jungi Lee, Junghwan Seo, and Jaewoong
+      Sim.\n  {\\{InfiniGen}\\}: Efficient generative inference of large language\n  models
+      with dynamic {\\{KV}\\} cache management.\n  In 18th USENIX Symposium on Operating
+      Systems Design and\n  Implementation (OSDI 24), pages 155\u2013172, 2024.\n*
+      [26]\u2191\n\n  Brian Lester, Rami Al-Rfou, and Noah Constant.\n  The power
+      of scale for parameter-efficient prompt tuning.\n  In EMNLP, 2021.\n* [27]\u2191\n\n  Patrick
+      Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir\n  Karpukhin,
+      Naman Goyal, Heinrich K\u00fcttler, Mike Lewis, Wen-tau Yih, Tim\n  Rockt\u00e4schel,
+      et al.\n  Retrieval-augmented generation for knowledge-intensive nlp tasks.\n  Advances
+      in neural information processing systems,\n  33:9459\u20139474, 2020.\n* [28]\u2191\n\n  Xiang
+      Lisa Li and Percy Liang.\n  Prefix-tuning: Optimizing continuous prompts for
+      generation.\n  ACL, 2021.\n* [29]\u2191\n\n  Shiyang Liu et al.\n  Rethinking
+      machine unlearning for large language models.\n  arXiv:2402.08787, 2024.\n*
+      [30]\u2191\n\n  Yuhan Liu, Hanchen Li, Yihua Cheng, Siddhant Ray, Yuyang Huang,
+      Qizheng Zhang,\n  Kuntai Du, Jiayi Yao, Shan Lu, Ganesh Ananthanarayanan, et
+      al.\n  Cachegen: Kv cache compression and streaming for fast large language\n  model
+      serving.\n  In Proceedings of the ACM SIGCOMM 2024 Conference, pages\n  38\u201356,
+      2024.\n* [31]\u2191\n\n  Zhining Liu, Rana Ali Amjad, Ravinarayana Adkathimar,
+      Tianxin Wei, and Hanghang\n  Tong.\n  Selfelicit: Your language model secretly
+      knows where is the relevant\n  evidence.\n  arXiv preprint arXiv:2502.08767,
+      2025.\n* [32]\u2191\n\n  Zirui Liu, Jiayi Yuan, Hongye Jin, Shaochen Zhong,
+      Zhaozhuo Xu, Vladimir\n  Braverman, Beidi Chen, and Xia Hu.\n  Kivi: A tuning-free
+      asymmetric 2bit quantization for kv cache.\n  arXiv preprint arXiv:2402.02750,
+      2024.\n* [33]\u2191\n\n  Lefteris Loukas, Manos Fergadiotis, Ilias Chalkidis,
+      Eirini Spyropoulou,\n  Prodromos Malakasiotis, Ion Androutsopoulos, and Georgios
+      Paliouras.\n  Finer: Financial numeric entity recognition for xbrl tagging.\n  arXiv
+      preprint arXiv:2203.06482, 2022.\n* [34]\u2191\n\n  Yansheng Mao, Jiaqi Li,
+      Fanxu Meng, Jing Xiong, Zilong Zheng, and Muhan Zhang.\n  Lift: Improving long
+      context understanding through long input\n  fine-tuning.\n  arXiv preprint arXiv:2412.13626,
+      2024.\n* [35]\u2191\n\n  Sami Marreed, Alon Oved, Avi Yaeli, Segev Shlomov,
+      Ido Levy, Offer Akrabi,\n  Aviad Sela, Asaf Adi, and Nir Mashkif.\n  Towards
+      enterprise-ready computer using generalist agent.\n  arXiv preprint arXiv:2503.01861,
+      2025.\n* [36]\u2191\n\n  Krista Opsahl-Ong, Michael J Ryan, Josh Purtell, David
+      Broman, Christopher\n  Potts, Matei Zaharia, and Omar Khattab.\n  Optimizing
+      instructions and demonstrations for multi-stage language\n  model programs.\n  arXiv
+      preprint arXiv:2406.11695, 2024.\n* [37]\u2191\n\n  Sinno Jialin Pan and Qiang
+      Yang.\n  A survey on transfer learning.\n  IEEE Transactions on Knowledge and
+      Data Engineering,\n  22(10):1345\u20131359, 2010.\n* [38]\u2191\n\n  Shishir
+      G Patil, Tianjun Zhang, Xin Wang, and Joseph E Gonzalez.\n  Gorilla: Large language
+      model connected with massive apis.\n  Advances in Neural Information Processing
+      Systems,\n  37:126544\u2013126565, 2024.\n* [39]\u2191\n\n  Bowen Peng, Jeffrey
+      Quesnelle, Honglu Fan, and Enrico Shippole.\n  Yarn: Efficient context window
+      extension of large language models.\n  arXiv preprint arXiv:2309.00071, 2023.\n*
+      [40]\u2191\n\n  Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan,
+      and Shunyu\n  Yao.\n  Reflexion: Language agents with verbal reinforcement learning.\n  Advances
+      in Neural Information Processing Systems,\n  36:8634\u20138652, 2023.\n* [41]\u2191\n\n  Mirac
+      Suzgun, Mert Yuksekgonul, Federico Bianchi, Dan Jurafsky, and James Zou.\n  Dynamic
+      cheatsheet: Test-time learning with adaptive memory.\n  arXiv preprint arXiv:2504.07952,
+      2025.\n* [42]\u2191\n\n  Mirac Suzgun, Mert Yuksekgonul, Federico Bianchi, Dan
+      Jurafsky, and James Zou.\n  Dynamic cheatsheet: Test-time learning with adaptive
+      memory.\n  <https://github.com/suzgunmirac/dynamic-cheatsheet>, 2025.\n  Accessed:
+      2025-09-24.\n* [43]\u2191\n\n  Harsh Trivedi, Tushar Khot, Mareike Hartmann,
+      Ruskin Manku, Vinty Dong, Edward\n  Li, Shashank Gupta, Ashish Sabharwal, and
+      Niranjan Balasubramanian.\n  Appworld: A controllable world of apps and people
+      for benchmarking\n  interactive coding agents.\n  arXiv preprint arXiv:2407.18901,
+      2024.\n* [44]\u2191\n\n  Dannong Wang, Jaisal Patel, Daochen Zha, Steve Y Yang,
+      and Xiao-Yang Liu.\n  Finlora: Benchmarking lora methods for fine-tuning llms
+      on financial\n  datasets.\n  arXiv preprint arXiv:2505.19819, 2025.\n* [45]\u2191\n\n  Xuezhi
+      Wang, Jason Wei, Dale Schuurmans, Quoc Le, Ed Chi, Sharan Narang,\n  Aakanksha
+      Chowdhery, and Denny Zhou.\n  Self-consistency improves chain of thought reasoning
+      in language\n  models.\n  arXiv preprint arXiv:2203.11171, 2022.\n* [46]\u2191\n\n  Zora
+      Zhiruo Wang, Jiayuan Mao, Daniel Fried, and Graham Neubig.\n  Agent workflow
+      memory.\n  arXiv preprint arXiv:2409.07429, 2024.\n* [47]\u2191\n\n  Jason Wei,
+      Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed Chi, Quoc V\n  Le,
+      Denny Zhou, et al.\n  Chain-of-thought prompting elicits reasoning in large
+      language\n  models.\n  Advances in neural information processing systems,\n  35:24824\u201324837,
+      2022.\n* [48]\u2191\n\n  Wujiang Xu, Kai Mei, Hang Gao, Juntao Tan, Zujie Liang,
+      and Yongfeng Zhang.\n  A-mem: Agentic memory for llm agents.\n  arXiv preprint
+      arXiv:2502.12110, 2025.\n* [49]\u2191\n\n  John Yang, Carlos E Jimenez, Alexander
+      Wettig, Kilian Lieret, Shunyu Yao,\n  Karthik Narasimhan, and Ofir Press.\n  Swe-agent:
+      Agent-computer interfaces enable automated software\n  engineering.\n  Advances
+      in Neural Information Processing Systems,\n  37:50528\u201350652, 2024.\n* [50]\u2191\n\n  Zhilin
+      Yang, Peng Qi, Saizheng Zhang, Yoshua Bengio, William W Cohen, Ruslan\n  Salakhutdinov,
+      and Christopher D Manning.\n  Hotpotqa: A dataset for diverse, explainable multi-hop
+      question\n  answering.\n  arXiv preprint arXiv:1809.09600, 2018.\n* [51]\u2191\n\n  Jiayi
+      Yao, Hanchen Li, Yuhan Liu, Siddhant Ray, Yihua Cheng, Qizheng Zhang,\n  Kuntai
+      Du, Shan Lu, and Junchen Jiang.\n  Cacheblend: Fast large language model serving
+      for rag with cached\n  knowledge fusion.\n  In Proceedings of the Twentieth
+      European Conference on Computer\n  Systems, pages 94\u2013109, 2025.\n* [52]\u2191\n\n  Shunyu
+      Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan,\n  and
+      Yuan Cao.\n  React: Synergizing reasoning and acting in language models.\n  In
+      International Conference on Learning Representations (ICLR),\n  2023.\n* [53]\u2191\n\n  Jiacheng
+      Ye, Chengzu Li, Lingpeng Kong, and Tao Yu.\n  Generating data for symbolic language
+      with large language models.\n  arXiv preprint arXiv:2305.13917, 2023.\n* [54]\u2191\n\n  Mert
+      Yuksekgonul, Federico Bianchi, Joseph Boen, Sheng Liu, Zhi Huang, Carlos\n  Guestrin,
+      and James Zou.\n  Textgrad: Automatic\" differentiation\" via text.\n  arXiv
+      preprint arXiv:2406.07496, 2024.\n* [55]\u2191\n\n  Matei Zaharia, Omar Khattab,
+      Lingjiao Chen, Jared Quincy Davis, Heather Miller,\n  Chris Potts, James Zou,
+      Michael Carbin, Jonathan Frankle, Naveen Rao, and Ali\n  Ghodsi.\n  The shift
+      from models to compound ai systems.\n  <https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/>,\n  2024.\n*
+      [56]\u2191\n\n  Genghan Zhang, Weixin Liang, Olivia Hsu, and Kunle Olukotun.\n  Adaptive
+      self-improvement llm agentic system for ml library\n  development.\n  arXiv
+      preprint arXiv:2502.02534, 2025.\n* [57]\u2191\n\n  Qizheng Zhang, Ali Imran,
+      Enkeleda Bardhi, Tushar Swamy, Nathan Zhang, Muhammad\n  Shahbaz, and Kunle
+      Olukotun.\n  Caravan: Practical online learning of {\\{In-Network}\\}{\\{ML}\\}\n  models
+      with labeling agents.\n  In 18th USENIX Symposium on Operating Systems Design
+      and\n  Implementation (OSDI 24), pages 325\u2013345, 2024.\n* [58]\u2191\n\n  Qizheng
+      Zhang, Michael Wornow, and Kunle Olukotun.\n  Cost-efficient serving of llm
+      agents via test-time plan caching.\n  arXiv preprint arXiv:2506.14852, 2025.\n*
+      [59]\u2191\n\n  Huichi Zhou, Yihang Chen, Siyuan Guo, Xue Yan, Kin Hei Lee,
+      Zihan Wang, Ka Yiu\n  Lee, Guchun Zhang, Kun Shao, Linyi Yang, et al.\n  Agentfly:
+      Fine-tuning llm agents without fine-tuning llms.\n  arXiv preprint arXiv:2508.16153,
+      2025.\n* [60]\u2191\n\n  Fuzhen Zhuang, Zhiyuan Qi, Keyu Duan, Dongbo Xi, Yongchun
+      Zhu, Hengshu Zhu, Hui\n  Xiong, and Qing He.\n  A comprehensive survey on transfer
+      learning.\n  arXiv:1911.02685, 2019.\n\n## Appendix A Related Work on Agent
+      Memory\n\nReport issue for preceding element\n\nA growing body of work explores
+      how agents can accumulate experience from past trajectories and leverage external
+      (often non-parametric) memory to guide future actions.\nAgentFly [[59](https://arxiv.org/html/2510.04618v1#bib.bib59)]
+      presents an extensible framework where memory evolves continuously as agents
+      solve tasks, enabling scalable reinforcement learning and long-horizon reasoning
+      across diverse environments.\nAWM (Agent Workflow Memory) [[46](https://arxiv.org/html/2510.04618v1#bib.bib46)]
+      induces reusable *workflows*\u2014structured routines distilled from past trajectories\u2014and
+      selectively injects them into memory to improve efficiency and generalization
+      in web navigation benchmarks.\nA-MEM [[48](https://arxiv.org/html/2510.04618v1#bib.bib48)]
+      introduces a dynamically organized memory system inspired by the Zettelkasten
+      method: each stored memory is annotated with structured attributes (e.g., tags,
+      keywords, contextual descriptions) and automatically linked to relevant past
+      entries, while existing entries are updated to integrate new knowledge, yielding
+      adaptive and context-aware retrieval.\nAgentic Plan Caching [[58](https://arxiv.org/html/2510.04618v1#bib.bib58)]
+      instead focuses on cost efficiency by extracting reusable plan templates from
+      agent trajectories and caching them for fast execution at test time.\n\nReport
+      issue for preceding element\n\nTogether, these works demonstrate the value of
+      external memory for improving adaptability, efficiency, and generalization in
+      LLM agents.\nOur work differs by tackling the broader challenge of *context
+      adaptation*, which spans not only agent memory but also system prompts, factual
+      evidence, and other inputs underpinning AI systems.\nWe further highlight two
+      fundamental limitations of existing adaptation methods\u2014brevity bias and
+      context collapse\u2014and show that addressing them is essential for robustness,
+      reliability, and scalability beyond raw task performance.\nAccordingly, our
+      evaluation considers not only accuracy but also cost, latency, and scalability.\n\nReport
+      issue for preceding element\n\n## Appendix B Limitations and Challenges\n\nReport
+      issue for preceding element\n\nA potential limitation of ACE is its reliance
+      on a reasonably strong Reflector: if the Reflector fails to extract meaningful
+      insights from generated traces or outcomes, the constructed context may become
+      noisy or even harmful.\nIn domain-specific tasks where no model can extract
+      useful insights, the resulting context will naturally lack them. This dependency
+      is similar to Dynamic Cheatsheet [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)],
+      where the quality of adaptation hinges on the underlying model\u2019s ability
+      to curate memory.\nWe also note that not all applications require rich or detailed
+      contexts.\nTasks like HotPotQA [[50](https://arxiv.org/html/2510.04618v1#bib.bib50)]
+      often benefit more from concise, high-level instructions (e.g., how to retrieve
+      and synthesize evidence) than from long contexts.\nSimilarly, games with fixed
+      strategies such as Game of 24 [[41](https://arxiv.org/html/2510.04618v1#bib.bib41)]
+      may only need a single reusable rule, rendering additional context redundant.\nOverall,
+      ACE is most beneficial in settings that demand detailed domain knowledge, complex
+      tool use, or environment-specific strategies that go beyond what is already
+      embedded in model weights or simple system instructions.\n\nReport issue for
+      preceding element\n\n## Appendix C AppWorld Leaderboard Snapshot (09/2025)\n\nReport
+      issue for preceding element\nImage Refer to caption\n\nFigure 5: The AppWorld
+      leaderboard as accessed on 09/20/2025.\n\nReport issue for preceding element\n\n##
+      Appendix D Prompts\n\nReport issue for preceding element\n\nWe release the language
+      model prompts used in our agentic context engineering framework as well as the
+      baselines to support research transparency and reproducibility.\n\nReport issue
+      for preceding element\n\nImage Refer to caption\n\nFigure 6: ICL-baseline Generator
+      prompt on AppWorld\n\nReport issue for preceding element\nImage Refer to caption\n\nFigure
+      7: Dynamic Cheatsheet Generator prompt on AppWorld\n\nReport issue for preceding
+      element\nImage Refer to caption\n\nFigure 8: GEPA prompt on AppWorld\n\nReport
+      issue for preceding element\nImage Refer to caption\n\nFigure 9: ACE Generator
+      prompt on AppWorld\n\nReport issue for preceding element\nImage Refer to caption\n\nFigure
+      10: ACE Reflector prompt on AppWorld\n\nReport issue for preceding element\nImage
+      Refer to caption\n\nFigure 11: ACE Curator prompt on AppWorld\n\nReport issue
+      for preceding element\nImage Refer to caption\n\nFigure 12: ACE Generator prompt
+      on FINER\n\nReport issue for preceding element\nImage Refer to caption\n\nFigure
+      13: ACE Reflector prompt on FINER\n\nReport issue for preceding element\nImage
+      Refer to caption\n\nFigure 14: ACE Curator prompt on FINER\n\nReport issue for
+      preceding element\n\nReport Issue\n\n##### Report Github Issue\n\nTitle:Content
+      selection saved. Describe the issue below:Description:\n\nSubmit without GithubSubmit
+      in Github\n\nReport Issue for Selection\n\nGenerated by\n[L\nA\nT\nE\nxml\n![[LOGO]](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==)](https://math.nist.gov/~BMiller/LaTeXML/)\n\n##
+      Instructions for reporting errors\n\nWe are continuing to improve HTML versions
+      of papers, and your feedback helps enhance accessibility and mobile support.
+      To report errors in the HTML that will help us improve conversion and rendering,
+      choose any of the methods listed below:\n\n* Click the \"Report Issue\" button.\n*
+      Open a report feedback form via keyboard, use \"**Ctrl + ?**\".\n* Make a text
+      selection and click the \"Report Issue for Selection\" button near your cursor.\n*
+      You can use Alt+Y to toggle on and Alt+Shift+Y to toggle off accessible reporting
+      links at each section.\n\nOur team has already identified [the following issues](https://github.com/arXiv/html_feedback/issues).
+      We appreciate your time reviewing and reporting rendering errors we may not
+      have found yet. Your efforts will help us improve the HTML versions for all
+      readers, because disability should not be a barrier to accessing research. Thank
+      you for your continued support in championing open access for all.\n\nHave a
+      free development cycle? Help support accessibility at arXiv! Our collaborators
+      at LaTeXML maintain a [list of packages that need conversion](https://github.com/brucemiller/LaTeXML/wiki/Porting-LaTeX-packages-for-LaTeXML),
+      and welcome [developer contributions](https://github.com/brucemiller/LaTeXML/issues).A
+      black and white image of a sword crossed out. \n\n\n A black and white image
+      with the word arxiv crossed out. \n\n\n unanswerable \n\n\n \nMetadata: {\"field_id\":
+      \"link\"}"}, {"author": "NUCLIA", "text": "\nMetadata: {\"field_id\": \"title\"}"},
+      {"author": "NUCLIA", "text": "Agents 2.0: From Shallow Loops to Deep Agents
+      .\n\n Agents 2.0: From Shallow Loops to Deep Agents\n\n[Image logoPhilschmid](/)\n\nSearch`\u2318k`\n\n[Blog](/)[Projects](/projects)[Newsletter](/cloud-attention)[About
+      Me](/philipp-schmid)Toggle Menu\n\n# Agents 2.0: From Shallow Loops to Deep
+      Agents\n\nOctober 12, 20255 minute read\n\nFor the past year, building an AI
+      agent usually meant one thing: setting up a while loop, take a user prompt,
+      send it to an LLM, parse a tool call, execute the tool, send the result back,
+      and repeat. This is what we call a Shallow Agent or Agent 1.0.\n\nThis architecture
+      is fantastically simple for transactional tasks like \"What''s the weather in
+      Tokyo and what should I wear?\", but when asked to perform a task that requires
+      50 steps over three days, and they invariably get distracted, lose context,
+      enter infinite loops, or hallucinates because the task requires too many steps
+      for a single context window.\n\nWe are seeing an architectural shift towards
+      [Deep Agents](https://blog.langchain.com/deep-agents/) or Agents 2.0. These
+      systems do not just react in a loop. They combine [agentic patterns](https://www.philschmid.de/agentic-pattern)
+      to plan, manage a [persistent memory/state](https://www.philschmid.de/memory-in-agents),
+      and delegate work to specialized [sub-agents](https://www.philschmid.de/the-rise-of-subagents)
+      to solve multi-step, complex problems.\n\nImage overview\n\n## Agents 1.0: The
+      Limits of the \"Shallow\" Loop\n\nTo understand where we are going, we must
+      understand where we are. Most agents today are \"shallow\". This means rely
+      entirely on the LLM''s context window (conversation history) as their state.\n\n1.
+      **User Prompt:** \"Find the price of Apple stock and tell me if it''s a good
+      buy.\"\n2. **LLM Reason:** \"I need to use a search tool.\"\n3. **Tool Call:**
+      `search(\"AAPL stock price\")`\n4. **Observation:** The tool returns data.\n5.
+      **LLM Answer:** Generates a response based on the observation or calls another
+      tool.\n6. **Repeat:** Loop until done.\n\nThis architecture is stateless and
+      ephemeral. The agent''s entire \"brain\" is within the context window. When
+      a task becomes complex, e.g. \"Research 10 competitors, analyze their pricing
+      models, build a comparison spreadsheet, and write a strategic summary\" it will
+      fail due to:\n\n* **Context Overflow:** The history fills up with tool outputs
+      (HTML, messy data), pushing instructions out of the context window.\n* **Loss
+      of Goal:** Amidst the noise of intermediate steps, the agent forgets the original
+      objective.\n* **No Recovery mechanism:** If it goes down a rabbit hole, it rarely
+      has the foresight to stop, backtrack, and try a new approach.\n\nShallow agents
+      are great at tasks that take 5-15 steps. They are terrible at tasks that take
+      500.\n\n## The Architecture of Agents 2.0 (Deep Agents)\n\nDeep Agents decouple
+      planning from execution and manage memory external to the context window. The
+      architecture consists of four pillars.\n\n### Pillar 1: Explicit Planning\n\nShallow
+      agents plan implicitly via chain-of-thought (\"I should do X, then Y\"). Deep
+      agents use tools to create and maintain an explicit plan, which can be To-Do
+      list in a markdown document.\n\nBetween every step, the agent reviews and updates
+      this plan, marking steps as pending, in\\_progress, or completed or add notes.
+      If a step fails, it doesn''t just retry blindly, it updates the plan to accommodate
+      the failure. This keeps the agent focused on the high-level task.\n\n### Pillar
+      2: Hierarchical Delegation (Sub-Agents)\n\nComplex tasks require specialization.
+      Shallow Agents tries to be a jack-of-all-trades in one prompt. Deep Agents utilize
+      an Orchestrator \u2192 Sub-Agent pattern.\n\nThe Orchestrator delegates task(s)
+      to [sub-agent(s)](https://www.philschmid.de/the-rise-of-subagents) each with
+      a clean context. The [sub-agent](https://www.philschmid.de/the-rise-of-subagents)
+      (e.g., a \"Researcher,\" a \"Coder,\" a \"Writer\") performs its tool call loops
+      (searching, erroring, retrying), compiles the final answer, and returns *only*
+      the synthesized answer to the Orchestrator.\n\n### Pillar 3: Persistent Memory\n\nTo
+      prevent context window overflow, Deep Agents utilize external memory sources,
+      like filesystem or vector databases as their source of truth. Frameworks like
+      Claude Code and Manus give agents `read`/`write` access to them. An agent writes
+      intermediate results (code, draft text, raw data). Subsequent agents reference
+      file paths or queries to only retrieve what is necessary. This shifts the paradigm
+      from \"remembering everything\" to \"knowing where to find information.\"\n\n###
+      Pillar 4: Extreme Context Engineering\n\nSmarter models do not require less
+      prompting, they require better context. You cannot get Agent 2.0 behavior with
+      a prompt that says, \"You are a helpful AI.\". Deep Agents rely on highly detailed
+      instructions sometimes thousands of tokens long. These define:\n\n* Identifying
+      when to stop and plan before acting.\n* Protocols for when to spawn a sub-agent
+      vs. doing work themselves.\n* Tool definitions and examples on how and when
+      to use.\n* Standards for file naming and directory structures.\n* Strict formats
+      for human-in-the-loop collaboration.\n\n## Visualizing a Deep Agent Flow\n\nHow
+      do these pillars come together? Let''s look at a sequence diagram for a Deep
+      Agent handling a complex request: *\"Research Quantum Computing and write a
+      summary to a file.\"*\n\nImage sequence\n\n## Conclusion\n\nMoving from Shallow
+      Agents to Deep Agents (Agent 1.0 to Agent 2.0) isn''t just about connecting
+      an LLM to more tools. It is a shift from reactive loops to proactive architecture.
+      It is about better engineering around the model.\n\nImplementing explicit planning,
+      hierarchical delegation via [sub-agents](https://www.philschmid.de/the-rise-of-subagents),
+      and [persistent memory](https://www.philschmid.de/memory-in-agents), allow us
+      to control the context and by controlling the context, we control the complexity,
+      unlocking the ability to solve problems that take hours or days, not just seconds.\n\n##
+      Acknowledgements\n\nThis overview was created with the help of deep and manual
+      research. The term [**\u201cDeep Agents\u201d**](https://blog.langchain.com/deep-agents/)
+      was notably popularized by the LangChain team to describe this architectural
+      evolution.\n\n---\n\nThanks for reading! If you have any questions or feedback,
+      please let me know on [Twitter](https://twitter.com/_philschmid) or [LinkedIn](https://www.linkedin.com/in/philipp-schmid-a6a2bb196/).\n\n*
+      [Agents 1.0: The Limits of the \"Shallow\" Loop](#agents-10-the-limits-of-the-shallow-loop)\n*
+      [The Architecture of Agents 2.0 (Deep Agents)](#the-architecture-of-agents-20-deep-agents)\n  +
+      [Pillar 1: Explicit Planning](#pillar-1-explicit-planning)\n  + [Pillar 2: Hierarchical
+      Delegation (Sub-Agents)](#pillar-2-hierarchical-delegation-sub-agents)\n  +
+      [Pillar 3: Persistent Memory](#pillar-3-persistent-memory)\n  + [Pillar 4: Extreme
+      Context Engineering](#pillar-4-extreme-context-engineering)\n* [Visualizing
+      a Deep Agent Flow](#visualizing-a-deep-agent-flow)\n* [Conclusion](#conclusion)\n*
+      [Acknowledgements](#acknowledgements)\n\n[Philipp Schmid \u00a9 2025](/philipp-schmid)[Imprint](/imprint)[RSS
+      Feed](/rss)\n\ntheme\n\n[Mail](mailto:schmidphilipp1995@gmail.com)[Twitter](https://twitter.com/_philschmid)[LinkedIn](https://www.linkedin.com/in/philipp-schmid-a6a2bb196/)[GitHub](https://github.com/philschmid)Agent
+      2.0 Deep Agents)\n\nPlanning\n\nUpdate v7\n\n\\\n| Context\nEngineering\n\\\n\nSub-Agents\n\nOrchestrator\n\n(Specialists)\n\n|
+      A\n1\n\nWrite Read\n|\n\nPersistent\n\nMemory \n\n\n A diagram showing the steps
+      involved in a project. \n\n\n Main Process Ephemeral Process\n\n1 Orchestrator
+      (LLM)\nUser\n\nExternal Memory/State Sub-Agent (Researcher)\n\n\"Research Quantum
+      Computing and rite a\n\nUpdate State: Add tasks [Research, Outline, Write]\n\nSpawn(Task=\"Research
+      Quantum Computing\")\n\no\u00a3\n\n$earch web, reat docs, filter noige.\n\nReturn
+      synthesized summary.\n\nWrite summary to /memory/research_notes.txt\n\nCa\n\nUpdate
+      State: Mark \"Research\" as COMPLETE.\n\npines\n\n\"Finished my research and
+      created ...\"\n\nExternal Memory/State\n\nQ Orchestrator (LLM)\n\nSub-Agent
+      (Researcher) \n\n\n A diagram showing the main process of a research project.
+      \n\n\n \nMetadata: {\"field_id\": \"link\"}"}, {"author": "NUCLIA", "text":
+      "Tool: batch_get_documents\nis_error: False\ntext_blocks: 4\nimage_blocks: 0\nresource_links:
+      0"}], "context": [], "query_context": {}, "query_context_order": {}, "truncate":
+      true, "user_prompt": {"prompt": "Choose the best tool or tools for the task,
+      select task_complete if no more tools are needed according to the user request
+      and previous interactions"}, "citations": null, "citation_threshold": null,
+      "generative_model": "chatgpt-4.1", "max_tokens": null, "query_context_images":
+      [], "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
+      false, "tools": [{"name": "search_documents", "description": "Use this tool
+      to find documents about the knowledge in the 00000000-0000-0000-0000-000000000001
+      knowledge base. This tool returns chunks of text, names and URLs for matching
+      documents. If the returned chunks are not detailed enough to answer the user''s
+      question use ''get_document'' or ''batch_get_documents'' with the ''parent''
+      from this tool''s output to retrieve the full document content. You can narrow
+      results using optional ''filters'' to match on classification labels or metadata
+      values.", "parameters": {"$defs": {"Filter": {"properties": {"all": {"anyOf":
+      [{"items": {"type": "string"}, "minItems": 1, "type": "array"}, {"type": "null"}],
+      "default": null, "title": "All"}, "any": {"anyOf": [{"items": {"type": "string"},
+      "minItems": 1, "type": "array"}, {"type": "null"}], "default": null, "title":
+      "Any"}, "none": {"anyOf": [{"items": {"type": "string"}, "minItems": 1, "type":
+      "array"}, {"type": "null"}], "default": null, "title": "None"}, "not_all": {"anyOf":
+      [{"items": {"type": "string"}, "minItems": 1, "type": "array"}, {"type": "null"}],
+      "default": null, "title": "Not All"}}, "title": "Filter", "type": "object"}},
+      "additionalProperties": false, "properties": {"query": {"description": "Required.
+      The raw query string provided by the user.", "minLength": 1, "title": "Query",
+      "type": "string"}, "search_configuration": {"anyOf": [{"type": "string"}, {"type":
+      "null"}], "default": null, "description": "Optional. The name of the Search
+      Configuration to use. If not provided, default settings are used.", "title":
+      "Search Configuration"}, "filters": {"anyOf": [{"items": {"$ref": "#/$defs/Filter"},
+      "type": "array"}, {"type": "null"}], "default": null, "description": "Optional.
+      A list of filter objects to narrow results. Each filter can include ''all''
+      (AND), ''any'' (OR), and/or ''not_all'' (NOT AND) label paths like ''/l/labelset/label''.",
+      "title": "Filters"}}, "required": ["query"], "title": "SearchDocumentsArgs",
+      "type": "object"}}, {"name": "get_document", "description": "Use this tool to
+      get the full content of a single document. The document ID should be obtained
+      from the ''parent'' field of results from a call to the ''search_documents''
+      tool. If you need to retrieve multiple documents use ''batch_get_documents''
+      instead.", "parameters": {"additionalProperties": false, "properties": {"name":
+      {"description": "Required. The resource ID of the document to retrieve, as returned
+      in the ''parent'' field by the ''search_documents'' tool.", "minLength": 1,
+      "title": "Name", "type": "string"}}, "required": ["name"], "title": "GetDocumentArgs",
+      "type": "object"}}, {"name": "batch_get_documents", "description": "Use this
+      tool to retrieve the full content of up to 20 documents in a single call. The
+      document IDs should be obtained from the ''parent'' field of results from a
+      call to the ''search_documents'' tool. If you only need to retrieve a single
+      document use ''get_document'' instead.", "parameters": {"additionalProperties":
+      false, "properties": {"names": {"description": "Required. Resource IDs of up
+      to 20 documents to retrieve, as returned in the ''parent'' field by the ''search_documents''
+      tool.", "items": {"type": "string"}, "maxItems": 20, "minItems": 1, "title":
+      "Names", "type": "array"}}, "required": ["names"], "title": "BatchGetDocumentsArgs",
+      "type": "object"}}, {"name": "task_complete", "description": "Call this tool
+      when the task given by the user is complete", "parameters": {"type": "object",
+      "properties": {}}}], "tool_choice": {"type": "required"}, "reasoning": false,
+      "seed": null}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '98537'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.11.5
+      x-client-ident:
+      - agent
+      x-message:
+      - question_id
+      x-origin:
+      - RAO
+      x-session:
+      - default_hola
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"tools","tools":{"task_complete":[{"function":{"name":"task_complete","arguments":{}}}]}}}
+
+        {"chunk":{"type":"status","code":"0"}}
+
+        {"chunk":{"type":"meta","input_tokens":11138,"output_tokens":18,"timings":{"generative_first_chunk":2.025706732994877,"generative":2.027147682965733},"input_nuclia_tokens":11.138,"output_nuclia_tokens":0.018}}
+
+        {"chunk":{"normalized_tokens":{"input":11.1384,"output":0.0176,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Fri, 03 Jul 2026 20:26:24 GMT
+      nuclia-learning-id:
+      - 8cf998b86a2e4abebeb4e861d646b7c9
+      nuclia-learning-model:
+      - chatgpt-4.1
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '2031'
+      x-nuclia-trace-id:
+      - 2fe38c8dd9eadc97386a50fba3b87624
     status:
       code: 200
       message: OK

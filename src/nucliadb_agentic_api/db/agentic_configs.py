@@ -67,7 +67,7 @@ def _serialize_config(config: AgenticConfigSchema) -> dict:
 
 
 def _config_from_row(row) -> AgenticConfigSchema:
-    return AgenticConfigSchema.model_validate(row)
+    return AgenticConfigSchema.model_validate(row["config"])
 
 
 class AgenticConfigs:

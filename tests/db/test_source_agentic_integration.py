@@ -205,7 +205,7 @@ _MANAGER_READER = [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
 _NUCLIADB_SOURCE = {
     "type": "nucliadb",
     "title": "A NucliaDB source",
-    "config": {"filter_expression": "label=foo"},
+    "labels": ["foo", "bar"],
 }
 
 
@@ -224,10 +224,8 @@ async def test_delete_source_cascades_to_agentic_configs(monkeypatch):
         for name in ("agent-a", "agent-b"):
             payload = {
                 "title": name,
-                "config": {
-                    "smart_agent": {
-                        "sources": [{"type": "nucliadb", "source_id": "src-1"}],
-                    }
+                "smart_agent": {
+                    "sources": ["src-1"],
                 },
             }
             resp = await client.post(f"/kb/kb1/agentic_configs/{name}", json=payload)
@@ -285,10 +283,8 @@ async def test_cascade_only_affects_same_kb(monkeypatch):
         # Create an agentic config in kb-a that references src-x
         cfg_payload = {
             "title": "cfg-a",
-            "config": {
-                "smart_agent": {
-                    "sources": [{"type": "nucliadb", "source_id": "src-x"}],
-                }
+            "smart_agent": {
+                "sources": ["src-x"],
             },
         }
         resp = await client.post("/kb/kb-a/agentic_configs/cfg-a", json=cfg_payload)

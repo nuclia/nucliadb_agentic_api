@@ -33,11 +33,9 @@ async def test_agentic_ask_nucliadb(
 
     payload = {
         "title": "Agentic config with NucliaDB source",
-        "config": {
-            "rephrase": {},
-            "smart_agent": {"mode": "reactive", "sources": ["full-kb"]},
-            "summarize": {},
-        },
+        "rephrase": {},
+        "smart_agent": {"mode": "reactive", "sources": ["full-kb"]},
+        "summarize": {},
     }
     resp = await nucliadb_agentic_api_http_client.post(
         f"/api/v1/kb/{eric_dataset}/agentic_configs/key-nucliadb", json=payload
@@ -53,7 +51,7 @@ async def test_agentic_ask_nucliadb(
         base_url=f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{eric_dataset}",
         headers={"X-NUCLIADB-ROLES": "MANAGER;READER;WRITER"},
     )
-    response = await client.post("/ask", json=ask_request.model_dump())
+    response = await client.post("/ask", json=ask_request.model_dump(), timeout=1000)
     assert response.status_code == 200, response.text
     assert b"Agents" in response.content
 

@@ -64,8 +64,8 @@ async def nucliadb_agentic_api_app(
     setup_logging(
         settings=LogSettings(
             log_format_type=LogFormatType.PLAIN,
-            debug=True,
-            log_level=LogLevel(LogLevel.DEBUG),
+            # debug=True,
+            log_level=LogLevel(LogLevel.ERROR),
             logger_levels={
                 "uvicorn.error": LogLevel.ERROR,
                 "nucliadb_telemetry": LogLevel.ERROR,

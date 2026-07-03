@@ -114,6 +114,10 @@ class AgenticAskResult(AskResult):
             workflow_id=self.agentic_config_id,
         ):
             try:
+                if msg.operation == AnswerOperation.DONE:
+                    await self.queue.put(msg)
+                    self.event_learning_id.set()
+                    break
                 if (
                     msg.step
                     and msg.step.metadata
@@ -124,6 +128,7 @@ class AgenticAskResult(AskResult):
                 await self.queue.put(msg)
             except (RuntimeError, asyncio.QueueFull):
                 # WebSocket already closed
+                self.event_learning_id.set()
                 pass
 
     async def start(self) -> str:
