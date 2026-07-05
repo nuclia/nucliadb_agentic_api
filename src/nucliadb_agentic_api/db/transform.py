@@ -1,13 +1,13 @@
 from typing import Any, Dict, Tuple
 from uuid import uuid4
 
-from hyperforge.driver import Driver, DriverConfig
+from hyperforge.driver import DriverConfig
 from hyperforge.models import MemoryConfig, Rules
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge.workflows import WorkflowData
-from hyperforge_mcp.config import Transport
-from hyperforge_mcp.config_driver import MCPHTTPDriverConfig, MCPHTTPInnerConfig
-from hyperforge_nucliadb.driver_config import (
+from hyperforge_mcp.config import Transport  # type: ignore
+from hyperforge_mcp.config_driver import MCPHTTPDriverConfig, MCPHTTPInnerConfig  # type: ignore
+from hyperforge_nucliadb.driver_config import (  # type: ignore
     NucliaDBConfig,
     NucliaDBConnection,
 )
@@ -19,7 +19,6 @@ from nucliadb_agentic_api.models import AgenticConfigSchema
 
 async def transform_agentic_config(
     agentic_config: AgenticConfigSchema,
-    global_drivers: Dict[str, Driver],
     source_manager: Sources,
     account: str,
     internal_nucliadb: bool = True,

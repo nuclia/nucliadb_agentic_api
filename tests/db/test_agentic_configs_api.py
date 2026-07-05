@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from httpx import AsyncClient
 
 
@@ -5,7 +7,7 @@ async def test_agentic_configs_api(
     nucliadb_agentic_api_http_client: AsyncClient, knowledgebox: str
 ):
 
-    payload = {
+    payload: Dict[str, Any] = {
         "type": "nucliadb",
         "description": "Nucliadb",
     }

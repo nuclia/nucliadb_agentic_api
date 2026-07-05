@@ -24,7 +24,6 @@ from nucliadb_models.filters import (
 from nucliadb_models.resource import Resource as ResourceResponse
 from nucliadb_models.search import (
     CatalogRequest,
-    FieldExtensionStrategy,
     Filter,
     FindRequest,
     KnowledgeboxFindResults,
@@ -35,7 +34,9 @@ from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     FullResourceStrategy,
     MetadataExtensionStrategy,
+    FieldExtensionStrategy,
     NeighbouringParagraphsStrategy,
+    RagStrategies,
     SyncAskResponse,
     CitationsType,
 )
@@ -989,12 +990,12 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         )
 
         if full_resource:
-            rag_strategies = [
+            rag_strategies: list[RagStrategies] = [
                 FullResourceStrategy(count=1),
                 MetadataExtensionStrategy(types=["classification_labels", "origin"]),
             ]
         else:
-            rag_strategies = [
+            rag_strategies: list[RagStrategies] = [
                 FieldExtensionStrategy(fields=["a/title", "a/summary"]),
                 NeighbouringParagraphsStrategy(before=5, after=5),
                 MetadataExtensionStrategy(types=["classification_labels", "origin"]),

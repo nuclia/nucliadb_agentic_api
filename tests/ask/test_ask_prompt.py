@@ -392,7 +392,7 @@ async def test_prompt_context_image_context_builder() -> None:
 
 async def test_prompt_context_builder_with_extra_image_context() -> None:
     image_content = base64.b64encode(b"my-image")
-    user_image = Image(content_type="image/png", b64encoded=image_content)
+    user_image = Image(content_type="image/png", b64encoded=image_content.decode())
 
     builder = chat_prompt.PromptContextBuilder(
         rpc.get_sdk("search"),

@@ -2,6 +2,7 @@ import asyncio
 import json
 
 from fastapi import Header, Query, WebSocket, WebSocketDisconnect
+from hyperforge.api.authentication import requires
 from hyperforge.api.v1.interaction import WebsocketReceiver, stream_response
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
 from hyperforge_nucliadb_agentic.ask.model import (
@@ -17,7 +18,7 @@ from nucliadb_models.search import (
     NucliaDBClientType,
 )
 from nucliadb_models.security import RequestSecurity
-from nucliadb_utils.authentication import NucliaUser, requires
+from nucliadb_utils.authentication import NucliaUser
 from pydantic import ValidationError
 
 from nucliadb_agentic_api.v1.router import router
@@ -32,7 +33,8 @@ async def websocket_endpoint(
         ..., description="ID of the agentic configuration to use for this session"
     ),
     search_configuration: str | None = Query(
-        ..., description="Optional search configuration to use for this session"
+        default=None,
+        description="Optional search configuration to use for this session",
     ),
     groups: list[str] = Query(
         default=[],
@@ -63,7 +65,7 @@ async def websocket_endpoint(
     else:
         security = RequestSecurity(groups=groups)
 
-    item = AskRequest()
+    item = AskRequest(query="")
     item.security = security
 
     if search_configuration is not None:
@@ -113,6 +115,7 @@ async def websocket_endpoint(
         for header, header_value in websocket.headers.items():
             interaction.headers[header] = header_value
 
+        item.query = interaction.question
         interaction.arguments["ask_request"] = item.model_dump_json()
 
         async for msg in stream_response(

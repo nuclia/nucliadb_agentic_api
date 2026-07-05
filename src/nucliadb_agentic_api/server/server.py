@@ -1,6 +1,6 @@
 import asyncio
 from importlib.metadata import version
-from typing import Optional
+from typing import Any, Optional
 
 import sentry_sdk
 from hyperforge.broker.redis import RedisBroker
@@ -9,7 +9,6 @@ from hyperforge.server.cache import ValkeyCache
 from hyperforge.server.run import run_metrics_server
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
-from nucliadb_telemetry.tracerprovider import AsyncTracerProvider
 from nucliadb_telemetry.utils import setup_telemetry
 from nucliadb_utils.settings import AuditSettings
 from sentry_sdk.integrations.excepthook import ExcepthookIntegration
@@ -34,7 +33,7 @@ def set_sentry(zone: str, environment: str, sentry_url: str):
 
 async def run_server(
     settings: Settings,
-    tracer: Optional[AsyncTracerProvider],
+    tracer: Optional[Any],
     data_manager_settings: DataManagerSettings,
 ) -> NucliaDBAgenticSessionManager:
     if tracer:

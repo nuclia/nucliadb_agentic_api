@@ -1,6 +1,6 @@
-from httpx import AsyncClient
-from nucliadb_models.resource import NucliaDBRoles
+from typing import Any, Dict
 
+from httpx import AsyncClient
 
 # ---------------------------------------------------------------------------
 # Existing CRUD tests (unchanged)
@@ -10,7 +10,7 @@ from nucliadb_models.resource import NucliaDBRoles
 async def test_agentic_config_crud(
     nucliadb_agentic_api_http_client: AsyncClient, knowledgebox: str
 ):
-    payload = {
+    payload: Dict[str, Any] = {
         "type": "perplexity",
         "description": "Dupe",
         "enabled_domains": ["example.com"],
@@ -103,7 +103,7 @@ async def test_agentic_config_patch_rejects_unknown_source_id(
 ):
     """Patching a config to reference a non-existent source_id returns 422."""
 
-    payload = {
+    payload: Dict[str, Any] = {
         "type": "perplexity",
         "description": "Dupe",
         "enabled_domains": ["example.com"],

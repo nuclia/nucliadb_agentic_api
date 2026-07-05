@@ -9,8 +9,8 @@ from hyperforge.llm import NUAConnection
 from hyperforge.manager import Manager
 from hyperforge.memory.memory import EphemeralSessionMemory
 from hyperforge.models import MemoryConfig, Rule, Rules
-from hyperforge_mcp.agent import MCPAgent
-from hyperforge_mcp.config import MCPAgentConfig, Transport
+from hyperforge_mcp.agent import MCPAgent  # type: ignore
+from hyperforge_mcp.config import MCPAgentConfig, Transport  # type: ignore
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.types import TextContent
 from nucliadb_sdk.v2.exceptions import NotFoundError, RateLimitError

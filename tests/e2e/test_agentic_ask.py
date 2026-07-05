@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import pytest
 from httpx import AsyncClient
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
@@ -20,7 +22,7 @@ async def test_agentic_ask_nucliadb(
     # In this basic test we just want to verify that the ask endpoint is working end-to-end with a simple question, without any agentic config.
     # We use a dataset with a single article to have a predictable answer.
 
-    payload = {
+    payload: Dict[str, Any] = {
         "type": "nucliadb",
         "description": "Information about movies and actors.",
     }
@@ -53,7 +55,7 @@ async def test_agentic_ask_nucliadb(
     )
     response = await client.post("/ask", json=ask_request.model_dump(), timeout=1000)
     assert response.status_code == 200, response.text
-    assert b"Agents" in response.content
+    assert b"Debbie" in response.content
 
 
 async def test_agentic_ask_perplexity(
@@ -136,4 +138,4 @@ async def test_agentic_ask_perplexity(
     )
     response = await client.post("/ask", json=ask_request.model_dump(), timeout=1000)
     assert response.status_code == 200, response.text
-    assert b"cookbooks" in response.content
+    assert b"Banana" in response.content

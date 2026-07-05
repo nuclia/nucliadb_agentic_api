@@ -1,5 +1,6 @@
 import os
 from collections.abc import AsyncGenerator
+from typing import Tuple
 
 import pytest
 from hyperforge.broker.redis import RedisBroker
@@ -17,7 +18,7 @@ NUA = os.environ.get("NUA_KEY", "DUMMY")
 
 @pytest.fixture(scope="function")
 async def nucliadb_agentic_api_server(
-    valkey: str,
+    valkey: Tuple[str, str],
     agentic_configs_db_server: AgenticConfigs,
     nucliadb: NucliaFixture,
     nucliadb_agentic_audit_settings: AuditSettings,

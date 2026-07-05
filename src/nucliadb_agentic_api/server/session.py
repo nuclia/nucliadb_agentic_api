@@ -51,6 +51,8 @@ def tracer():
 
 
 class NucliaDBAgenticSessionManager(SessionManager):
+    agent_manager: AgenticConfigs  # type: ignore
+
     def __init__(
         self,
         settings: ServerSettings,

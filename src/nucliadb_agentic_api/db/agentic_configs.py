@@ -48,7 +48,7 @@ agentic_config_table = sa.Table(
 )
 
 
-CACHE = LRU(size=1024)
+CACHE = LRU(size=1024)  # type: ignore
 
 
 def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
@@ -141,14 +141,14 @@ class AgenticConfigs:
         if existing is not None:
             raise exceptions.Conflict("Agentic configuration already exists")
 
-        query = sa.insert(agentic_config_table).values(
+        insert_query = sa.insert(agentic_config_table).values(
             account=account,
             kbid=kbid,
             agentic_id=agentic_id,
             title=config.title,
             config=_serialize_config(config),
         )
-        await self.database.execute(query)
+        await self.database.execute(insert_query)
         CACHE[_cache_key(account, kbid, agentic_id)] = config
 
     async def _validate_sources_exist(
@@ -246,12 +246,10 @@ class AgenticConfigs:
         # the right one based on these parameters
         retrieval_config: RetrievalAgentConfig
         agentic_config = await self.get_agentic_config(account, kbid, workflow_id)
-        global_drivers = {}
 
         source_manager = Sources(self.database, self.settings)
         retrieval_config, drivers, global_drivers = await transform_agentic_config(
             agentic_config,
-            global_drivers,
             source_manager,
             account,
             internal_nucliadb=internal_nucliadb,

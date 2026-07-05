@@ -108,7 +108,7 @@ class Sources:
             raise exceptions.Conflict("Source already exists")
 
         serialized = _serialize_source(source)
-        query = sa.insert(sources_table).values(
+        insert_query = sa.insert(sources_table).values(
             account=account,
             kbid=kbid,
             source_id=source_id,
@@ -116,7 +116,7 @@ class Sources:
             type=serialized["type"],
             config=serialized,
         )
-        await self.database.execute(query)
+        await self.database.execute(insert_query)
         CACHE[_cache_key(account, kbid, source_id)] = source
 
     async def get_source(

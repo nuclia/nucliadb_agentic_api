@@ -15,6 +15,7 @@ from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs, _collect_source_ids
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.sources import Sources
+from nucliadb_agentic_api.models import AgenticConfigSchema
 from nucliadb_agentic_api.settings import Settings
 
 # ---------------------------------------------------------------------------
@@ -74,7 +75,7 @@ class FakeSources:
 
 class FakeAgenticConfigs:
     def __init__(self, valid_source_ids: set | None = None):
-        self.configs = {}
+        self.configs: dict[tuple[str, str, str], AgenticConfigSchema] = {}
         self.valid_source_ids: set = (
             valid_source_ids if valid_source_ids is not None else set()
         )
