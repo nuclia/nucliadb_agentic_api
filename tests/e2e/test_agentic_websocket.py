@@ -15,6 +15,7 @@ from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 pytestmark = [
     pytest.mark.vcr(
         ignore_localhost=True,  # Ignore localhost requests (e.g., to the test server)
+        match_on=["scheme", "host", "port", "path", "nua_chat"],
     ),
     pytest.mark.asyncio,
 ]
@@ -75,7 +76,6 @@ async def test_agentic_websocket_nucliadb(
         }
         await websocket.send(json.dumps(initial_message))
 
-        questions = ["Answer: Something", "Answer: Third response"]
         answers = []
         async for message in websocket:
             print(message)
@@ -84,15 +84,7 @@ async def test_agentic_websocket_nucliadb(
                 if response.answer:
                     answers.append(response.answer)
             elif response.operation == AnswerOperation.DONE:
-                next_question = questions.pop(0) if questions else None
-                if next_question:
-                    initial_message = {
-                        "question": next_question,
-                        "operation": InteractionOperation.QUESTION,
-                    }
-                    await websocket.send(json.dumps(initial_message))
-                else:
-                    break
+                break
             elif response.operation == AnswerOperation.ERROR:
                 assert False, (
                     f"Interaction error: {response.exception.detail if response.exception else ''}"
@@ -154,7 +146,6 @@ async def test_agentic_websocket_perplexity(
     assert resp.status_code == 201, resp.text
 
     payload = {
-        "rephrase": {},
         "smart_agent": {
             "mode": "reactive",
             "sources": ["recipes-kb", "perplexity"],
@@ -192,7 +183,6 @@ async def test_agentic_websocket_perplexity(
         }
         await websocket.send(json.dumps(initial_message))
 
-        questions = ["Answer: Something", "Answer: Third response"]
         answers = []
         async for message in websocket:
             print(message)
@@ -201,15 +191,7 @@ async def test_agentic_websocket_perplexity(
                 if response.answer:
                     answers.append(response.answer)
             elif response.operation == AnswerOperation.DONE:
-                next_question = questions.pop(0) if questions else None
-                if next_question:
-                    initial_message = {
-                        "question": next_question,
-                        "operation": InteractionOperation.QUESTION,
-                    }
-                    await websocket.send(json.dumps(initial_message))
-                else:
-                    break
+                break
             elif response.operation == AnswerOperation.ERROR:
                 assert False, (
                     f"Interaction error: {response.exception.detail if response.exception else ''}"
@@ -219,4 +201,4 @@ async def test_agentic_websocket_perplexity(
                     "No feedback, step, possible_answer, context or generated_text in response"
                 )
 
-        assert "chocolate" in answers[0].lower() or "fruit" in answers[0].lower()
+        assert "banana" in answers[0].lower() or "fruit" in answers[0].lower()

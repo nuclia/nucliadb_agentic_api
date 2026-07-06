@@ -1702,14 +1702,14 @@ wheels = [
 
 [[package]]
 name = "hyperforge-rephrase"
-version = "1.0.0.post30"
+version = "1.0.0.post33"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "hyperforge" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d1/66/465e5de42e1b0962d5b5f29175884f55e16a1db24f2515e5dd496ee4c18e/hyperforge_rephrase-1.0.0.post30.tar.gz", hash = "sha256:dc09eddca474c91622e5dba72b19f07fe5ba089814f9294b04033c2700f5cd75", size = 7065, upload-time = "2026-06-25T09:15:44.584Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/86/0cc904087fc7d21587c18c0a251b82653edd2029ae22fb40938d46666ff8/hyperforge_rephrase-1.0.0.post33.tar.gz", hash = "sha256:9d4e9234db5ea2b987458296ddceaea71000050f0a307ccf5f6248a6b0c7e2c7", size = 7073, upload-time = "2026-07-06T13:04:43.247Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/0f/d3825b5ff1fe1b89e2ef3a03e590bb8787a4b9245a85feed5b55bd788ec9/hyperforge_rephrase-1.0.0.post30-py3-none-any.whl", hash = "sha256:0dd5772687d271e016b9653586f66148a6c0dd37ea145194843d75705dd590a8", size = 6113, upload-time = "2026-06-25T09:15:43.603Z" },
+    { url = "https://files.pythonhosted.org/packages/89/9e/ff4207980aa6ac7bc13b65ab295d402df326004869e58b5705145a8862ca/hyperforge_rephrase-1.0.0.post33-py3-none-any.whl", hash = "sha256:81b1b2eba3e5d9bad03c9d8d04074845d4c2ffc95a86709ebf930daa051a40c1", size = 6118, upload-time = "2026-07-06T13:04:42.103Z" },
 ]
 
 [[package]]
@@ -2833,7 +2833,7 @@ server = [
     { name = "hyperforge-nucliadb", specifier = ">=1.0.0.post34" },
     { name = "hyperforge-nucliadb-agentic", editable = "agents/nucliadb" },
     { name = "hyperforge-perplexity", specifier = ">=1.0.0.post30" },
-    { name = "hyperforge-rephrase", specifier = ">=1.0.0.post30" },
+    { name = "hyperforge-rephrase", specifier = ">=1.0.0.post33" },
     { name = "hyperforge-smart", specifier = ">=1.0.0.post30" },
     { name = "hyperforge-summarize", specifier = ">=1.0.0.post29" },
     { name = "jinja2" },

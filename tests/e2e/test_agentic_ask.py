@@ -9,6 +9,7 @@ from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 pytestmark = [
     pytest.mark.vcr(
         ignore_localhost=True,  # Ignore localhost requests (e.g., to the test server)
+        match_on=["scheme", "host", "port", "path", "nua_chat"],
     ),
     pytest.mark.asyncio,
 ]

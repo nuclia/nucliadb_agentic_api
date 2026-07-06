@@ -6,7 +6,10 @@ from hyperforge.models import MemoryConfig, Rules
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge.workflows import WorkflowData
 from hyperforge_mcp.config import Transport  # type: ignore
-from hyperforge_mcp.config_driver import MCPHTTPDriverConfig, MCPHTTPInnerConfig  # type: ignore
+from hyperforge_mcp.config_driver import (  # type: ignore
+    MCPHTTPDriverConfig,
+    MCPHTTPInnerConfig,
+)
 from hyperforge_nucliadb.driver_config import (  # type: ignore
     NucliaDBConfig,
     NucliaDBConnection,
