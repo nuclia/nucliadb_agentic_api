@@ -1,4 +1,5 @@
 import asyncio
+from uuid import uuid4
 
 import pytest
 from hyperforge.fixtures import init_fixture
@@ -14,7 +15,7 @@ def eric_dataset(nucliadb: NucliaFixture):
     kbid = asyncio.run(
         init_fixture(
             nucliadb,
-            "conv",
+            uuid4().hex,
             Eric_Dataset,
             "multilingual-2024-05-06",
             "gemini-2.5-flash-lite",
