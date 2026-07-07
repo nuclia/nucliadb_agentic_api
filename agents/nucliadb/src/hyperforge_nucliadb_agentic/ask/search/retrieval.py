@@ -666,14 +666,6 @@ async def hydrate_and_rerank(
         score = item.score
         score_type = item.score_type
 
-        if paragraph_id not in text_blocks_by_id:
-            breakpoint()  # --- IGNORE ---
-            logger.warning(
-                "Reranker returned a paragraph id that was not in the original results",
-                extra={"paragraph_id": paragraph_id},
-            )
-            continue
-
         text_block = text_blocks_by_id[paragraph_id]
         text_block.scores.append(RerankerScore(score=score))
         text_block.score_type = score_type

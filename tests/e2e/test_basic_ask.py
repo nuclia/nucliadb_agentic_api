@@ -2,10 +2,18 @@ import pytest
 from httpx import AsyncClient
 from nuclia.sdk import AsyncNucliaSearch
 
+
+def cleanup(request):
+    if request.path.startswith("/api/v1/predict/rerank"):
+        return None
+    return request
+
+
 pytestmark = [
     pytest.mark.vcr(
         ignore_localhost=True,  # Ignore localhost requests (e.g., to the test server)
-        match_on=["scheme", "host", "port", "path", "nua_chat", "localhost"],
+        match_on=["scheme", "host", "port", "path", "nua_chat"],
+        before_record_request=cleanup,
     ),
     pytest.mark.asyncio,
 ]

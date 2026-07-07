@@ -27,11 +27,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 03 Jul 2026 20:26:23 GMT
+      - Tue, 07 Jul 2026 11:20:18 GMT
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '7'
+      - '4'
     status:
       code: 200
       message: OK
@@ -82,14 +82,14 @@ interactions:
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":40,"output_tokens":11,"timings":{"generative":0.9115126860015152},"input_nuclia_tokens":0.04,"output_nuclia_tokens":0.011}}
+        {"chunk":{"type":"meta","input_tokens":40,"output_tokens":11,"timings":{"generative":0.77888817800158},"input_nuclia_tokens":0.04,"output_nuclia_tokens":0.011}}
 
         {"chunk":{"normalized_tokens":{"input":0.0396,"output":0.0112,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -97,17 +97,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Fri, 03 Jul 2026 20:26:22 GMT
+      - Tue, 07 Jul 2026 11:20:19 GMT
       nuclia-learning-id:
-      - 29caaed431484ead98ea82573b9bd47c
+      - bbe0471e824a4b02886b2736af363b70
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '916'
+      - '784'
       x-nuclia-trace-id:
-      - 7ba58d4b8fe2fda28d95c1a87cd5035a
+      - da588e0ff59c5b0455ab32ec88e7cd01
     status:
       code: 200
       message: OK
@@ -207,14 +207,14 @@ interactions:
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":327,"output_tokens":93,"timings":{"generative_first_chunk":0.900354557990795,"generative":0.9017912979761604},"input_nuclia_tokens":0.327,"output_nuclia_tokens":0.093}}
+        {"chunk":{"type":"meta","input_tokens":327,"output_tokens":93,"timings":{"generative_first_chunk":1.0519300519954413,"generative":1.0537177819933277},"input_nuclia_tokens":0.327,"output_nuclia_tokens":0.093}}
 
         {"chunk":{"normalized_tokens":{"input":0.3272,"output":0.0928,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -222,17 +222,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Fri, 03 Jul 2026 20:26:24 GMT
+      - Tue, 07 Jul 2026 11:20:20 GMT
       nuclia-learning-id:
-      - b58d44865cf443f89c0f65b1b017bc9d
+      - 206d01d989d24ce09140c72a6e7050f0
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '907'
+      - '1059'
       x-nuclia-trace-id:
-      - 510d09bd09a61e5b8724101985f19537
+      - d328fe1fbf2177fb6855b1a60bfb9eeb
     status:
       code: 200
       message: OK
@@ -1362,7 +1362,7 @@ interactions:
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":11138,"output_tokens":18,"timings":{"generative_first_chunk":2.025706732994877,"generative":2.027147682965733},"input_nuclia_tokens":11.138,"output_nuclia_tokens":0.018}}
+        {"chunk":{"type":"meta","input_tokens":11138,"output_tokens":18,"timings":{"generative_first_chunk":2.2245234019937925,"generative":2.225998551992234},"input_nuclia_tokens":11.138,"output_nuclia_tokens":0.018}}
 
         {"chunk":{"normalized_tokens":{"input":11.1384,"output":0.0176,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
@@ -1377,17 +1377,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Fri, 03 Jul 2026 20:26:24 GMT
+      - Tue, 07 Jul 2026 11:20:21 GMT
       nuclia-learning-id:
-      - 8cf998b86a2e4abebeb4e861d646b7c9
+      - e5dac456f71041278c601b9b894bbb9e
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '2031'
+      - '2230'
       x-nuclia-trace-id:
-      - 2fe38c8dd9eadc97386a50fba3b87624
+      - b0aec4991bf04e5909094d251f896d7e
     status:
       code: 200
       message: OK
