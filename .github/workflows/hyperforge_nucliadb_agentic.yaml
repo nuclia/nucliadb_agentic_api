@@ -50,6 +50,7 @@ jobs:
               run: make test
               env: # Or as an environment variable
                   NUA_KEY: ${{ secrets.NUA_KEY }}
+                  HEALTH_CHECK_PORT: 8087
     build_wheels:
         name: Build wheels
         runs-on: ubuntu-24.04
