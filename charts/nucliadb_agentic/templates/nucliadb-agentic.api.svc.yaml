@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nucliadb-agentic-api
+  labels:
+    app: nucliadb-agentic-api
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  selector:
+    app: nucliadb-agentic-api
+  {{- with .Values.api.service.ports }}
+  ports:
+{{ toYaml . | indent 4 }}
+  {{- end }}

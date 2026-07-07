@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: nucliadb-agentic-api-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: nucliadb-agentic-api

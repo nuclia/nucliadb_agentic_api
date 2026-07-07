@@ -1,0 +1,24 @@
+{{- if .Values.server.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nucliadb-agentic-server
+  labels:
+    app: nucliadb-agentic-server
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: nucliadb-agentic-server
+  endpoints:
+    - targetPort: {{.Values.server.serviceMonitor.port }}
+      interval: {{ ((.Values.server.serviceMonitor).interval) | default "60s" }}
+      path: /metrics
+    {{- if .Values.server.sandbox.serviceMonitor.enabled }}
+    - targetPort: {{.Values.server.sandbox.serviceMonitor.port }}
+      interval: {{ ((.Values.server.sandbox.serviceMonitor).interval) | default "60s" }}
+      path: /metrics
+    {{- end }}
+{{- end }}

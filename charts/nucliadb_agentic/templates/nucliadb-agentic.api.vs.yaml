@@ -1,0 +1,68 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nucliadb-agentic
+  labels:
+    app: nucliadb-agentic
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  gateways:
+    - "{{ .Values.vs.gateway }}"
+  hosts:
+    - "{{ .Values.zone }}.{{ .Values.vs.host }}"
+  http:
+    - name: nucliadb-agentic_public_api_endpoints
+      match:
+        - uri:
+            regex: ^/api/v\d+/kb/[^/]+/agent/.*
+          method:
+            regex: "GET|PATCH|DELETE|OPTIONS|POST"
+        - uri:
+            regex: ^/api/v\d+/kb/[^/]+/mcp
+          method:
+            regex: "GET|PATCH|DELETE|OPTIONS|POST"
+        - uri:
+            regex: ^/.well-known/oauth-protected-resource/api/v\d+/kb/.+
+          method:
+            regex: "GET|OPTIONS"
+      route:
+        - destination:
+            port:
+              number: 8080
+            host: " nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+      corsPolicy:
+        allowOrigins:
+          - exact: "*"
+        allowHeaders:
+          - "*"
+          # Authorization will be exluded from * in the future, (CORS non-wildcard request-header).
+          # Browsers already showing deprecation notices, so it needs to be specified explicitly
+          - "Authorization"
+        allowMethods:
+          - GET
+          - HEAD
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+    - name: ask_endpoint
+      match:
+        - uri:
+            regex: '^/api/v\d+/kb/[^/]+/ask$'
+          method:
+            regex: "POST|OPTIONS"
+        - uri:
+            regex: '^/api/v\d+/kb/[^/]+/(resource|slug)/[^/]+/ask$'
+          method:
+            regex: "POST|OPTIONS"
+      route:
+        - destination:
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            port:
+              number: 8080
+      retries:
+        attempts: 3
+        retryOn: connect-failure,5xx

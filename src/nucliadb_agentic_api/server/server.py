@@ -1,0 +1,109 @@
+import asyncio
+from importlib.metadata import version
+from typing import Any, Optional
+
+import sentry_sdk
+from hyperforge.broker.redis import RedisBroker
+from hyperforge.feature_flag import get_flag_service
+from hyperforge.server.cache import ValkeyCache
+from hyperforge.server.run import run_metrics_server
+from nucliadb_telemetry.logs import setup_logging
+from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
+from nucliadb_telemetry.utils import setup_telemetry
+from nucliadb_utils.settings import AuditSettings
+from sentry_sdk.integrations.excepthook import ExcepthookIntegration
+
+from nucliadb_agentic_api import SERVICE_NAME
+from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
+from nucliadb_agentic_api.db.settings import DataManagerSettings
+from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
+from nucliadb_agentic_api.server.settings import Settings
+
+
+def set_sentry(zone: str, environment: str, sentry_url: str):
+    sentry_exception = ExcepthookIntegration(always_run=True)
+    sentry_sdk.init(
+        release=version("hyperforge"),
+        environment=environment,
+        dsn=sentry_url,
+        integrations=[sentry_exception],
+    )
+    sentry_sdk.set_tag("zone", zone)
+
+
+async def run_server(
+    settings: Settings,
+    tracer: Optional[Any],
+    data_manager_settings: DataManagerSettings,
+) -> NucliaDBAgenticSessionManager:
+    if tracer:
+        await setup_telemetry(SERVICE_NAME)
+
+    audit_settings: AuditSettings = AuditSettings()
+    # Connect to Valkey
+    broker = RedisBroker.from_url(
+        url=settings.valkey_url,
+        activate_subject=settings.activate_subject,
+        keepalive_ms=int(settings.pubsub_keepalive_seconds * 1000),
+        cluster_mode=settings.valkey_cluster_mode,
+    )
+
+    agent_manager = await AgenticConfigs.from_settings(
+        settings=data_manager_settings,
+    )
+    await agent_manager.initialize()
+
+    session = NucliaDBAgenticSessionManager(
+        settings=settings,
+        broker=broker,
+        agent_manager=agent_manager,  # type: ignore
+        cache=ValkeyCache(broker._client),
+        audit_settings=audit_settings,
+    )
+
+    return session
+
+
+def run():  # pragma: no cover
+    settings = Settings()
+    setup_logging(
+        settings=LogSettings(
+            log_format_type=LogFormatType.STRUCTURED
+            if not settings.debug
+            else LogFormatType.PLAIN,
+            debug=settings.debug,
+            log_level=LogLevel(settings.log_level),
+            logger_levels={
+                "uvicorn.error": LogLevel.ERROR,
+                "nucliadb_telemetry": LogLevel.ERROR,
+                "mcp.client.streamable_http": LogLevel.WARNING,
+                "mcp.server.lowlevel.server": LogLevel.WARNING,
+                "hyperforge.configure": LogLevel.WARNING,
+            },
+        )
+    )
+    tracer = setup_telemetry(SERVICE_NAME)  # type: ignore
+    if settings.sentry_url is not None:
+        set_sentry(
+            settings.zone,
+            settings.running_environment,
+            settings.sentry_url,
+        )
+
+    get_flag_service()  # precache the flag service
+
+    data_manager_settings = DataManagerSettings()
+    loop = asyncio.get_event_loop()
+
+    loop.create_task(run_metrics_server(settings.metrics_port))
+
+    session = loop.run_until_complete(
+        run_server(settings, tracer, data_manager_settings)
+    )
+    loop.run_until_complete(session.initialize())
+    try:
+        loop.run_forever()
+    finally:
+        loop.run_until_complete(session.finalize())
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()

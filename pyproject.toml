@@ -1,0 +1,131 @@
+[build-system]
+requires = ["uv_build>=0.11.19,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "nucliadb_agentic_api"
+version = "1.0.0"
+authors = [{ name = "AI Data Team", email = "learning@nuclia.com" }]
+description = "NucliaDB Agentic API for Hyperforge"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "Apache-2.0"
+
+[tool.uv.build-backend]
+# Include additional non-Python asset files
+source-include = [
+    "alembic/**/*",
+    "alembic.ini",
+    "VERSION",
+    "frontend/dist/**/*",
+]
+source-exclude = ["tests/**/*"]
+
+[tool.setuptools.packages.find]
+where = ["src/"]
+
+[tool.uv]
+default-groups = "all"
+
+[tool.uv.sources]
+nucliadb_agentic_api = { workspace = true }
+hyperforge_nucliadb_agentic = { workspace = true }
+
+[tool.uv.workspace]
+members = [".", "agents/nucliadb"]
+
+[project.urls]
+"Progress" = "https://progress.com"
+"Github" = "https://github.com/nuclia/forge"
+"API Reference" = "https://docs.rag.progress.cloud"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+
+[project.scripts]
+nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
+nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
+
+[dependency-groups]
+
+server = [
+    "hyperforge_nucliadb_agentic",
+    "aiohttp<3.14.0",
+    "backoff",
+    "nats-py",
+    "nuclia>=4.11.5",
+    "nuclia-models>=0.59.0",
+    "nucliadb-protos",
+    "nucliadb-sdk>=6.14.0.post6532",
+    "nucliadb-telemetry[otel]>=6.14.0.post6534",
+    "nucliadb-utils[storages,fastapi]>=6.15.0.post6671",
+    "hyperforge>=1.0.0.post64",
+    "hyperforge_mcp>=1.0.0.post31",
+    "hyperforge_nucliadb>=1.0.0.post34",
+    "hyperforge_rephrase>=1.0.0.post33",
+    "hyperforge_smart>=1.0.0.post30",
+    "hyperforge_summarize>=1.0.0.post29",
+    "hyperforge_google>=1.0.0.post38",
+    "hyperforge_perplexity>=1.0.0.post30",
+    "pydantic_settings",
+    "mcp>=1.26.0",
+    "prometheus_client",
+    "mrflagly>=0.2.11",
+    "aiodns",
+    "httpx",
+    "jinja2",
+    "databases[asyncpg]",
+    "sqlalchemy",
+    "cryptography",
+    "mmh3",
+    "psycopg2",
+    "tenacity",
+    "websockets",
+    "redis[hiredis]>=6.4.0",
+    "alembic>=1.18.4",
+    "fastapi",
+]
+
+models = [
+    "nucliadb-models>=6.13.0.post6252",
+    "nuclia-models>=0.52.1",
+    "pydantic",
+]
+
+dev = [
+    # Linting
+    "mypy-protobuf>=3.6.0",
+    "mypy",
+    "pre-commit",
+    "ruff",
+    # Testing
+    "aioresponses",
+    "faker>=25.1.0",
+    "jsonschema",
+    "pdbpp>=0.10.3",
+    "pytest-asyncio>=0.23.0",
+    "pytest-benchmark",
+    "pytest-cov",
+    "pytest-docker-fixtures[pg]>=1.4.2",
+    "pytest-lazy-fixtures",
+    "pytest-mock",
+    "pytest-rerunfailures>=11.1.2",
+    "pytest-shard",
+    "pytest-xdist>=3.6.1",
+    "pytest-recording",
+    "pytest>=8.2.2,<9",
+    "requests",
+    "requests-mock>=1.12.1",
+    "types-PyYAML>=6.0.12.20240808",
+    "ty>=0.0.34",
+    "sqlalchemy_utils",
+    "inline_snapshot",
+    "types-redis>=4.6.0.20241004",
+    "ruff>=0.15.10",
+    "types-grpcio",
+]
