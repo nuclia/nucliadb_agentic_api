@@ -22,6 +22,7 @@ NUA_KEY = os.environ.get("NUA_KEY", "DUMMY")
 pytestmark = [
     pytest.mark.vcr(
         ignore_localhost=True,  # Ignore localhost requests (e.g., to the test server)
+        match_on=["scheme", "host", "port", "path", "nua_chat"],
     ),
     pytest.mark.asyncio,
 ]
@@ -293,7 +294,9 @@ async def test_mcp_nucliadb_two_steps(
         "Used tool: search_documents with arguments",
         "Used tool: get_document",
     ]
-    all_steps_values = " ".join(step.value for step in question_memory.steps)
+    all_steps_values = " ".join(
+        step.value for step in question_memory.steps if step.value is not None
+    )
     assert all(
         necessary_step in all_steps_values for necessary_step in necessary_steps
     ), "Not all necessary steps were used in the question memory"

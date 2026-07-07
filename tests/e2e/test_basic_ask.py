@@ -5,6 +5,7 @@ from nuclia.sdk import AsyncNucliaSearch
 pytestmark = [
     pytest.mark.vcr(
         ignore_localhost=True,  # Ignore localhost requests (e.g., to the test server)
+        match_on=["scheme", "host", "port", "path", "nua_chat", "localhost"],
     ),
     pytest.mark.asyncio,
 ]
