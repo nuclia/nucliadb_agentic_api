@@ -1,4 +1,4 @@
-include ../../hyperforge.mk
+include ../../nucliadb.mk
 
 .PHONY: test-cov
 test-cov:

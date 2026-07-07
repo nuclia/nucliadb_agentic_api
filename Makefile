@@ -1,3 +1,5 @@
+include nucliadb.mk
+
 install:
 	uv sync
 
@@ -46,19 +48,3 @@ generate_alembic_version:
 
 dockers:
 	docker build -t nucliadb_agentic . -f NUCLIADB_AGENTIC.Dockerfile
-
-pytest_flags := -s -rfE -v --tb=native 
-pytest_extra_flags :=
-pytest_record_flags := --record-mode=rewrite
-pytest_play_record_flags := --record-mode=none
-pytest_cov_report_flags := --cov-report xml --cov-report term-missing:skip-covered
-
-PYTEST := pytest $(pytest_flags) $(pytest_extra_flags)
-
-
-.PHONY: test
-test:
-	uv run $(PYTEST) $(pytest_play_record_flags) tests/ $(ARGS)
-
-record:
-	uv run $(PYTEST) $(pytest_record_flags) tests/ $(ARGS)
