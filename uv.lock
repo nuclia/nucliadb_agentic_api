@@ -1673,7 +1673,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hyperforge" },
+    { name = "hyperforge", specifier = ">=1.0.0.post76" },
     { name = "lingua-language-detector" },
     { name = "nucliadb-sdk" },
 ]

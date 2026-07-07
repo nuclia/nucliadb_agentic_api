@@ -6,17 +6,8 @@ install:
 install-test:
 	uv sync --group dev
 
-fmt:
-	uv run ruff format src tests
-	uv run ruff check src tests --select I --fix 
-
 extract-openai:
 	uv run arag-extract-openapi  $(DOCS_FILE) $(API_VERSION) $(HASH)
-
-lint:
-	uv run ruff check src tests
-	uv run ruff format --check src tests
-	uv run mypy src tests
 
 start_local_db:
 	brew services start postgresql

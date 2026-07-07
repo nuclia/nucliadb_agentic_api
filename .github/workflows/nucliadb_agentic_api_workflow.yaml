@@ -90,10 +90,10 @@ jobs:
 
             - name: Test package
               run: |
-                  make  test
+                  make test
               env:
                   NUA_KEY: ${{ secrets.NUA_KEY }}
-                  HEALTH_CHECK_PORT: 8087
+                  HEALTH_CHECK_PORT: 8099
     build_wheels:
         name: Build wheels
         runs-on: ubuntu-24.04

@@ -18,7 +18,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 requires-python = ">=3.10, <4"
-dependencies = ["hyperforge", "lingua-language-detector", "nucliadb_sdk"]
+dependencies = [
+    "hyperforge>=1.0.0.post76",
+    "lingua-language-detector",
+    "nucliadb_sdk",
+]
 
 [dependency-groups]
 # these dependencies are actually in the src/ folder (under
