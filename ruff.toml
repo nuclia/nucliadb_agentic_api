@@ -25,6 +25,7 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
+    "tooling",
 ]
 
 [lint]
@@ -34,7 +35,6 @@ ignore = [
     "W391",
     "E722",
     "E501",
-    "E203",
     "E203",
     "E741",
     "E712",
