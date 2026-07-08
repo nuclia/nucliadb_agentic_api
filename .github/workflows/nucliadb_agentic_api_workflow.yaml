@@ -194,6 +194,8 @@ jobs:
                 client-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
                 private-key: ${{ secrets.PK_GHAPP_NUCLIABOT }}
                 owner: nuclia
+                repositories: tooling
+                permission-contents: read
 
             - name: Checkout tooling repository
               uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -243,3 +245,81 @@ jobs:
                 helm-version: v3.15.3
                 set-only-tag: true # Skips the standard method of setting the image, and just set the tag value.
                 push-to-artifact-registry: true
+    
+    send-to-promo-queue:
+        name: Send to promo queue
+        runs-on: nuclia-base
+        needs:
+            - build_and_push_internal
+            - test
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Generate a token
+              id: app-token
+              uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+              with:
+                client-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
+                private-key: ${{ secrets.PK_GHAPP_NUCLIABOT }}
+                owner: nuclia
+                repositories: core-apps
+                # POST /repos/{owner}/{repo}/dispatches requires contents: write
+                permission-contents: write
+
+            - name: Create components promotion summary.
+              env:
+                SKIP_ARGO_HEALTH: false
+                ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'stage' || 'dev' }}
+                PROMO_PRODUCTION: ${{ env.PROMO_PRODUCTION }}
+                TEAM: ${{ secrets.TEAM_NAME }}
+                SLACK_TEAM: ${{ secrets.SLACK_TEAM }}
+              run: |
+                MERGED_JSON=$(jq -cs \
+                  --arg environment "$ENVIRONMENT" \
+                  --arg skip_queue "$SKIP_QUEUE" \
+                  --arg skip_argo_health "$SKIP_ARGO_HEALTH" \
+                  --arg team "$TEAM" \
+                  --arg slack_team "$SLACK_TEAM" \
+                  --arg promo_production "$PROMO_PRODUCTION" \
+                  --arg commit_sha "${{ github.sha }}" \
+                  '{
+                    skip_promo_queue: ($skip_queue == "true")
+                  } + {
+                    skip_argo_health: ($skip_argo_health == "true")
+                  } + {
+                    environment: $environment
+                  } + {
+                    promo_production: ($promo_production == "true")
+                  } + {
+                    team: $team
+                  } + {
+                    slack_team: $slack_team
+                  } + {
+                    tests: {
+                      "run-e2e": true,
+                      "run-nuclia-e2e": true
+                    }
+                  } + {
+                    "commit-sha": $commit_sha
+                  } + {
+                    "components": [
+                      {
+                        "component": "${{ needs.test.outputs.component }}",
+                        "chart-version": "${{ needs.test.outputs.chart-version }}",
+                        "component-type": "regional"
+                      }
+                    ]
+                  }'
+                )
+                
+                echo "JSON_PROMO_SUMMARY=$MERGED_JSON" >> $GITHUB_ENV
+
+            - name: Send to promotion queue
+              id: send-to-promo
+              uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
+              with:
+                token: ${{ steps.app-token.outputs.token }}
+                repository: nuclia/core-apps
+                event-type: promotions
+                client-payload: '${{ env.JSON_PROMO_SUMMARY }}'
