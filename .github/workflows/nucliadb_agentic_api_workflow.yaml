@@ -229,3 +229,17 @@ jobs:
                 push: true
                 ghapp-nuclia-service-bot-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
                 ghapp-nuclia-service-bot-pk: ${{ secrets.PK_GHAPP_NUCLIABOT }}
+
+            - name: Build and push helm chart
+              uses: ./tooling/.github/actions/build-helm-chart
+              with:
+                component: ${{ needs.test.outputs.component }}
+                chart-version: ${{ needs.test.outputs.chart-version }}
+                image-name: ${{ needs.test.outputs.component }}
+                image-version: ${{ needs.test.outputs.img-version }}
+                hash: ${{ needs.test.outputs.hash }}
+                helm-chart-url: ${{ secrets.HELM_CHART_URL }}
+                chart-dir: "./charts/nucliadb_agentic"
+                helm-version: v3.15.3
+                set-only-tag: true # Skips the standard method of setting the image, and just set the tag value.
+                push-to-artifact-registry: true
