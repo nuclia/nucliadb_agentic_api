@@ -14,16 +14,16 @@ PYTEST := pytest $(pytest_flags) $(pytest_extra_flags)
 
 .PHONY: format
 format:
-	uv run ruff check --fix --config=../../ruff.toml .
-	uv run ruff format --config=../../ruff.toml .
+	uv run ruff check --fix --config=ruff.toml .
+	uv run ruff format --config=ruff.toml .
 
 
 .PHONY: lint
 lint:
-	uv run ruff check --config=../../ruff.toml .
-	uv run ruff format --check --config=../../ruff.toml .
+	uv run ruff check --config=ruff.toml .
+	uv run ruff format --check --config=ruff.toml .
 	uv run ty check .
-	uv run mypy --config-file=../../mypy.ini src
+	uv run mypy --config-file=mypy.ini src
 
 .PHONY: test
 test:

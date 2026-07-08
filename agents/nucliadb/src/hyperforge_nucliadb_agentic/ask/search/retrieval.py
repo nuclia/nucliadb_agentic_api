@@ -477,7 +477,7 @@ async def find_retrieval(
     audit = get_audit()
     if audit is not None:
         audit.retrieve(
-            retrieval_time=metrics.get("retrieval"),  # type: ignore[arg-type] # we just recorded it
+            retrieval_time=metrics.get("retrieval"),  # type: ignore
             resources=len(resources),
             retrieval_request=retrieval_request,
         )

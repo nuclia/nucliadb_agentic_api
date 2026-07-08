@@ -34,7 +34,6 @@ from nucliadb_models.search import Filter, FindRequest
 from nucliadb_protos import knowledgebox_pb2
 from nucliadb_sdk import NucliaDBAsync
 from pydantic import ValidationError
-from hyperforge_nucliadb_agentic.ask import model as agentic_models
 
 from hyperforge_nucliadb_agentic.ask import logger
 from hyperforge_nucliadb_agentic.ask.exceptions import (
@@ -116,12 +115,12 @@ class FindParser:
         if search_models.FindOptions.KEYWORD in self.item.features:
             self._query.keyword = await parse_keyword_query(
                 self.item, fetcher=self.fetcher
-            )  # type: ignore
+            )
 
         if search_models.FindOptions.SEMANTIC in self.item.features:
             self._query.semantic = await parse_semantic_query(
                 self.item, fetcher=self.fetcher
-            )  # type: ignore
+            )
 
         if search_models.FindOptions.RELATIONS in self.item.features:
             # skip, we'll do something about this later on
@@ -456,7 +455,7 @@ def parse_keyword_min_score(
     if min_score is None or isinstance(min_score, float):
         return 0.0
     else:
-        return min_score.bm25
+        return min_score.bm25  # type: ignore
 
 
 async def parse_semantic_query(
@@ -484,7 +483,7 @@ async def parse_semantic_min_score(
     elif isinstance(min_score, float):
         min_score = min_score
     else:
-        min_score = min_score.semantic
+        min_score = min_score.semantic  # type: ignore
     if min_score is None:
         # min score not defined by the user, we'll try to get the default
         # from Predict API
@@ -521,9 +520,9 @@ def convert_labels_to_filter_expressions(
             facet_filter = filter_from_facet(label)
 
             if is_paragraph_label(label, classification_labels):
-                paragraph_expressions.append(facet_filter)  # type: ignore[arg-type]
+                paragraph_expressions.append(facet_filter)  # type: ignore
             else:
-                field_expressions.append(facet_filter)  # type: ignore[arg-type]
+                field_expressions.append(facet_filter)  # type: ignore
 
         else:
             combinator: (
@@ -569,17 +568,17 @@ def convert_labels_to_filter_expressions(
             if len(field) == 1:
                 field_expressions.append(field[0])  # type: ignore
             elif len(field) > 1:
-                field_expressions.append(combinator(operands=field))  # type: ignore
+                field_expressions.append(combinator(operands=field))
 
             if len(paragraph) == 1:
                 paragraph_expressions.append(paragraph[0])  # type: ignore
             elif len(paragraph) > 1:
-                paragraph_expressions.append(combinator(operands=paragraph))  # type: ignore
+                paragraph_expressions.append(combinator(operands=paragraph))
 
     if len(paragraph_expressions) == 1:
-        paragraph_expression = paragraph_expressions[0]  # type: ignore
+        paragraph_expression = paragraph_expressions[0]
     elif len(paragraph_expressions) > 1:
-        paragraph_expression = And(operands=paragraph_expressions)  # type: ignore
+        paragraph_expression = And(operands=paragraph_expressions)
     else:
         paragraph_expression = None
 

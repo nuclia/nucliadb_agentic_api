@@ -39,6 +39,7 @@ async def nucliadb_agentic_api_server(
         activate_subject="test_activate",
         answers_subject="test_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
         oauth_subject="test_oauth_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
+        health_check_enabled=False,
     )
     broker = RedisBroker.from_url(
         url=valkey_url,

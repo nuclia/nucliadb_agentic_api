@@ -5,12 +5,12 @@ from hyperforge.driver import DriverConfig
 from hyperforge.models import MemoryConfig, Rules
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge.workflows import WorkflowData
-from hyperforge_mcp.config import Transport  # type: ignore
-from hyperforge_mcp.config_driver import (  # type: ignore
+from hyperforge_mcp.config import Transport
+from hyperforge_mcp.config_driver import (
     MCPHTTPDriverConfig,
     MCPHTTPInnerConfig,
 )
-from hyperforge_nucliadb.driver_config import (  # type: ignore
+from hyperforge_nucliadb.driver_config import (
     NucliaDBConfig,
     NucliaDBConnection,
 )
@@ -31,7 +31,7 @@ async def transform_agentic_config(
     ask_request: AskRequest | None = None,
     kbid: str = "",
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
-    drivers = {}
+    drivers: Dict[str, DriverConfig] = {}
     global_driver = []
 
     title = agentic_config.title if agentic_config.title else "Default Agentic Config"
@@ -116,7 +116,7 @@ async def transform_agentic_config(
                 source_config["sources"] = [uid]
                 source_config["transport"] = Transport.HTTP
                 source_config["module"] = "mcp"
-                ndb_driver_config = MCPHTTPDriverConfig(
+                mcp_driver_config = MCPHTTPDriverConfig(
                     identifier=uid,
                     name="MCPHTTP",
                     provider="mcphttp",
@@ -125,7 +125,7 @@ async def transform_agentic_config(
                         headers=source_obj.headers if source_obj.headers else {},
                     ),
                 )  # TODO: pass real config if needed
-                drivers[uid] = ndb_driver_config
+                drivers[uid] = mcp_driver_config
                 registered_agents.append(source_config)
 
             elif source_obj.type == "google":

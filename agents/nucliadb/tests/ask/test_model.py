@@ -16,15 +16,11 @@ from pydantic import ValidationError
 
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
-    AskRetrievalMatch,
     AskTimings,
     AskTokens,
     Author,
-    AugmentedContext,
-    AugmentedTextBlock,
     ChatContextMessage,
     CitationsType,
-    ConversationalStrategy,
     CustomPrompt,
     FieldExtensionStrategy,
     FullResourceStrategy,
@@ -34,17 +30,11 @@ from hyperforge_nucliadb_agentic.ask.model import (
     MetadataExtensionStrategy,
     MetadataExtensionType,
     NeighbouringParagraphsStrategy,
-    PreQueriesStrategy,
-    PreQuery,
-    RagStrategyName,
     Reasoning,
     SyncAskMetadata,
     SyncAskResponse,
-    TextBlockAugmentationType,
-    UserPrompt,
     parse_custom_prompt,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -63,7 +53,7 @@ def _sync_ask_response(**extra) -> SyncAskResponse:
     return SyncAskResponse(
         answer="test answer",
         status="success",
-        retrieval_results=MINIMAL_FIND_RESULTS,
+        retrieval_results=MINIMAL_FIND_RESULTS,  # type: ignore
         **extra,
     )
 
@@ -204,12 +194,15 @@ class TestMetadataExtensionStrategy:
 
     def test_valid_types(self):
         s = MetadataExtensionStrategy(
-            types=[MetadataExtensionType.ORIGIN, MetadataExtensionType.CLASSIFICATION_LABELS]
+            types=[
+                MetadataExtensionType.ORIGIN,
+                MetadataExtensionType.CLASSIFICATION_LABELS,
+            ]
         )
         assert MetadataExtensionType.ORIGIN in s.types
 
     def test_string_types_accepted(self):
-        s = MetadataExtensionStrategy(types=["origin"])
+        s = MetadataExtensionStrategy(types=["origin"])  # type: ignore
         assert s.types[0] == MetadataExtensionType.ORIGIN
 
 
@@ -271,30 +264,33 @@ class TestAskRequest:
 
     def test_context_renamed_to_chat_history(self):
         history = [{"author": "USER", "text": "hi"}]
-        req = AskRequest(query="q", context=history)
+        req = AskRequest(query="q", context=history)  # type: ignore
         assert req.chat_history is not None
         assert req.context is None
 
     def test_cannot_set_both_context_and_chat_history(self):
         history = [{"author": "USER", "text": "hi"}]
         with pytest.raises(ValidationError):
-            AskRequest(query="q", context=history, chat_history=history)
+            AskRequest(query="q", context=history, chat_history=history)  # type: ignore
 
     def test_legacy_rank_fusion_converted_to_rrf(self):
-        req = AskRequest(query="q", rank_fusion="legacy")
+        req = AskRequest(query="q", rank_fusion="legacy")  # type: ignore
         from hyperforge_nucliadb_agentic.ask.model import RankFusionName
 
         assert req.rank_fusion == RankFusionName.RECIPROCAL_RANK_FUSION
 
     def test_rag_strategy_full_resource(self):
-        req = AskRequest(query="q", rag_strategies=[{"name": "full_resource", "count": 2}])
+        req = AskRequest(
+            query="q",
+            rag_strategies=[{"name": "full_resource", "count": 2}],  # type: ignore
+        )
         assert req.rag_strategies[0].name == "full_resource"
 
     def test_rag_strategy_duplicates_raise(self):
         with pytest.raises(ValidationError):
             AskRequest(
                 query="q",
-                rag_strategies=[
+                rag_strategies=[  # type: ignore
                     {"name": "full_resource"},
                     {"name": "full_resource"},
                 ],
@@ -304,7 +300,7 @@ class TestAskRequest:
         with pytest.raises(ValidationError):
             AskRequest(
                 query="q",
-                rag_strategies=[
+                rag_strategies=[  # type: ignore
                     {"name": "full_resource"},
                     {"name": "hierarchy"},
                 ],
@@ -314,7 +310,7 @@ class TestAskRequest:
         with pytest.raises(ValidationError):
             AskRequest(
                 query="q",
-                rag_strategies=[
+                rag_strategies=[  # type: ignore
                     {"name": "full_resource"},
                     {"name": "field_extension", "fields": ["a/title"]},
                 ],
@@ -324,7 +320,7 @@ class TestAskRequest:
         with pytest.raises(ValidationError):
             AskRequest(
                 query="q",
-                rag_strategies=[
+                rag_strategies=[  # type: ignore
                     {"name": "full_resource"},
                     {"name": "neighbouring_paragraphs"},
                 ],
@@ -332,11 +328,13 @@ class TestAskRequest:
 
     def test_rag_strategy_invalid_object_raises(self):
         with pytest.raises(ValidationError):
-            AskRequest(query="q", rag_strategies=["not-a-dict"])
+            AskRequest(query="q", rag_strategies=["not-a-dict"])  # type: ignore
 
     def test_resource_filters_validation(self):
         # Valid UUID-like filter
-        req = AskRequest(query="q", resource_filters=["a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"])
+        req = AskRequest(
+            query="q", resource_filters=["a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"]
+        )
         assert len(req.resource_filters) == 1
 
 
@@ -369,8 +367,8 @@ class TestSyncAskResponse:
             timings=AskTimings(generative_first_chunk=0.3, generative_total=1.2),
         )
         resp = _sync_ask_response(metadata=metadata)
-        assert resp.metadata.tokens.input == 100
-        assert resp.metadata.timings.generative_total == 1.2
+        assert resp.metadata.tokens.input == 100  # type: ignore
+        assert resp.metadata.timings.generative_total == 1.2  # type: ignore
 
     def test_citations_dict(self):
         resp = _sync_ask_response(citations={"block-AA": "rid/f/field/0-100"})

@@ -1,6 +1,7 @@
 from enum import Enum
-from typing import Annotated, Any, Literal, Self
+from typing import Annotated, Any, Literal, Self  # type: ignore
 
+from nuclia_models.common.consumption import Consumption
 from nucliadb_models import (
     DateTime,
     FieldTypeName,
@@ -9,10 +10,6 @@ from nucliadb_models import (
     SearchParamDefaults,
 )
 from nucliadb_models.resource import ExtractedDataTypeName
-from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
-from pydantic.json_schema import SkipJsonSchema
-
-from nuclia_models.common.consumption import Consumption
 from nucliadb_models.search import (
     ANSWER_JSON_SCHEMA_EXAMPLE,
     AuditMetadataBase,
@@ -31,6 +28,8 @@ from nucliadb_models.search import (
     TextPosition,
     _validate_resource_filter,
 )
+from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
+from pydantic.json_schema import SkipJsonSchema
 
 
 class Author(str, Enum):

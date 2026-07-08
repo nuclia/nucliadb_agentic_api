@@ -2,9 +2,6 @@
 test_config.py — unit tests for NucliaDBAgentConfig.
 """
 
-import pytest
-from pydantic import ValidationError
-
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 
 
@@ -58,39 +55,39 @@ class TestNucliaDBAgentConfigKnownFunctions:
 
     def test_ask_agent_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "ask_agent" in cfg.published_functions
+        assert "ask_agent" in cfg.published_functions  # type: ignore
 
     def test_ask_labels_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "ask_labels" in cfg.published_functions
+        assert "ask_labels" in cfg.published_functions  # type: ignore
 
     def test_ask_labels_list_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "ask_labels_list" in cfg.published_functions
+        assert "ask_labels_list" in cfg.published_functions  # type: ignore
 
     def test_search_by_title_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "search_by_title" in cfg.published_functions
+        assert "search_by_title" in cfg.published_functions  # type: ignore
 
     def test_facets_count_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "facets_count" in cfg.published_functions
+        assert "facets_count" in cfg.published_functions  # type: ignore
 
     def test_facets_search_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "facets_search" in cfg.published_functions
+        assert "facets_search" in cfg.published_functions  # type: ignore
 
     def test_catalog_search_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "catalog_search" in cfg.published_functions
+        assert "catalog_search" in cfg.published_functions  # type: ignore
 
     def test_all_images_by_title_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "all_images_by_title" in cfg.published_functions
+        assert "all_images_by_title" in cfg.published_functions  # type: ignore
 
     def test_search_images_is_published(self):
         cfg = NucliaDBAgentConfig()
-        assert "search_images" in cfg.published_functions
+        assert "search_images" in cfg.published_functions  # type: ignore
 
 
 class TestNucliaDBAgentConfigSerialization:

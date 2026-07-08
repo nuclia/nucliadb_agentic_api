@@ -56,7 +56,7 @@ async def run_server(
     session = NucliaDBAgenticSessionManager(
         settings=settings,
         broker=broker,
-        agent_manager=agent_manager,  # type: ignore
+        agent_manager=agent_manager,
         cache=ValkeyCache(broker._client),
         audit_settings=audit_settings,
     )
@@ -82,7 +82,7 @@ def run():  # pragma: no cover
             },
         )
     )
-    tracer = setup_telemetry(SERVICE_NAME)  # type: ignore
+    tracer = setup_telemetry(SERVICE_NAME)
     if settings.sentry_url is not None:
         set_sentry(
             settings.zone,
@@ -92,7 +92,7 @@ def run():  # pragma: no cover
 
     get_flag_service()  # precache the flag service
 
-    data_manager_settings = DataManagerSettings()
+    data_manager_settings = DataManagerSettings()  # type: ignore
     loop = asyncio.get_event_loop()
 
     loop.create_task(run_metrics_server(settings.metrics_port))

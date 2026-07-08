@@ -5,8 +5,7 @@ Tests are isolated: every external call (NucliaDBDriver, Manager, ask())
 is mocked so that no real network traffic or NucliaDB instance is needed.
 """
 
-from typing import List
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -16,8 +15,6 @@ from hyperforge_nucliadb_agentic.agent import (
     get_catalog_filter_prompt,
     get_chunk_text,
 )
-from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
-
 
 # ---------------------------------------------------------------------------
 # Construction
@@ -77,7 +74,7 @@ class TestAskLabels:
         # be a key in that dict, the second call is skipped.
         # We model this by using the source id as a top-level label-set name.
         source_id = nucliadb_agent.config.sources[0]  # "kb-source-1"
-        labels = {source_id: ["some-label"]}           # source id IS a key → cached
+        labels = {source_id: ["some-label"]}  # source id IS a key → cached
         mock_nucliadb_driver.labels = AsyncMock(return_value=labels)
 
         await nucliadb_agent.ask_labels(memory=mock_memory, manager=mock_manager)
@@ -93,7 +90,9 @@ class TestAskLabels:
         # Provide drivers for both sources
         mock_manager.drivers["kb-source-2"] = MagicMock()
 
-        with pytest.raises(Exception, match="ask_labels can only be used with one source"):
+        with pytest.raises(
+            Exception, match="ask_labels can only be used with one source"
+        ):
             await agent.ask_labels(memory=mock_memory, manager=mock_manager)
 
 
@@ -235,7 +234,9 @@ class TestBuildCatalogFilterExpression:
     ):
         from nucliadb_models.filters import CatalogFilterExpression, Label
 
-        driver_fe = CatalogFilterExpression(resource=Label(labelset="topic", label="tech"))
+        driver_fe = CatalogFilterExpression(
+            resource=Label(labelset="topic", label="tech")
+        )
         mock_nucliadb_driver.config.catalog_filter_expression = driver_fe
 
         result = await nucliadb_agent.build_catalog_filter_expression(
@@ -360,10 +361,12 @@ class TestGetChunkText:
 class TestCleanCitationFootnotes:
     def test_removes_inline_markers_and_definitions(self):
         answer = (
-            "The answer is here[1] and also here[2].\n\n"
-            "[1]: block-AA\n[2]: block-AB"
+            "The answer is here[1] and also here[2].\n\n[1]: block-AA\n[2]: block-AB"
         )
-        footnote_map = {"block-AA": "rid/f/field/0-100", "block-AB": "rid/f/field/100-200"}
+        footnote_map = {
+            "block-AA": "rid/f/field/0-100",
+            "block-AB": "rid/f/field/100-200",
+        }
         result = clean_citation_footnotes_from_answer(answer, footnote_map)
         assert "[1]" not in result
         assert "[2]" not in result
@@ -376,7 +379,9 @@ class TestCleanCitationFootnotes:
 
     def test_only_inline_markers_no_definitions(self):
         answer = "Some text[1] more text."
-        result = clean_citation_footnotes_from_answer(answer, {"block-AA": "rid/f/field/0-100"})
+        result = clean_citation_footnotes_from_answer(
+            answer, {"block-AA": "rid/f/field/0-100"}
+        )
         assert "[1]" not in result
         assert "text" in result
 
@@ -401,7 +406,9 @@ class TestGetCatalogFilterPrompt:
             labels_str="{}",
         )
         # All three pre-filled examples should be rendered
-        assert "example_filter_exp" not in prompt  # template variable should be resolved
+        assert (
+            "example_filter_exp" not in prompt
+        )  # template variable should be resolved
         assert "/l/" in prompt  # label prefix from examples
 
     def test_question_is_interpolated(self):

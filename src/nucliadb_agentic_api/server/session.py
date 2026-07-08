@@ -1,5 +1,5 @@
-import asyncio
 import os
+from asyncio import Task, create_task, timeout  # type: ignore
 from functools import partial
 
 import nucliadb_telemetry.context
@@ -51,7 +51,7 @@ def tracer():
 
 
 class NucliaDBAgenticSessionManager(SessionManager):
-    agent_manager: AgenticConfigs  # type: ignore
+    agent_manager: AgenticConfigs  # type: ignore[assignment]
 
     def __init__(
         self,
@@ -66,7 +66,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
         self.agent_manager = agent_manager
         self.broker = broker
         self.memory: LRU = LRU(800)
-        self.activation_task: asyncio.Task | None = None
+        self.activation_task: Task | None = None
         self.tasks = []
         self.cache = cache
 
@@ -161,7 +161,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 streaming=message.streaming,
             )
 
-            task = asyncio.create_task(
+            task = create_task(
                 self.answer(
                     message.account,
                     message.agent_id,
@@ -201,7 +201,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
     ):
         error = None
 
-        keepalive = asyncio.create_task(self.keep_alive(topic))
+        keepalive = create_task(self.keep_alive(topic))
         observation = answer_observer()
         observation.start()
         answer_running.inc()
@@ -230,7 +230,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 AragAnswer(operation=AnswerOperation.START),
             )
 
-            async with asyncio.timeout(self.settings.question_timeout_seconds):
+            async with timeout(self.settings.question_timeout_seconds):
                 await state.agent(question_memory, state.manager)
 
         except Exception as e:

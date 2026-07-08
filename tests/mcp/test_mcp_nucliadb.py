@@ -9,8 +9,8 @@ from hyperforge.llm import NUAConnection
 from hyperforge.manager import Manager
 from hyperforge.memory.memory import EphemeralSessionMemory
 from hyperforge.models import MemoryConfig, Rule, Rules
-from hyperforge_mcp.agent import MCPAgent  # type: ignore
-from hyperforge_mcp.config import MCPAgentConfig, Transport  # type: ignore
+from hyperforge_mcp.agent import MCPAgent
+from hyperforge_mcp.config import MCPAgentConfig, Transport
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.types import TextContent
 from nucliadb_sdk.v2.exceptions import NotFoundError, RateLimitError
@@ -113,10 +113,10 @@ async def test_mcp_nucliadb_generation_client(
     )
 
     assert len(question_memory.contexts) > 0, "No context retrieved from MCP NucliaDB"
-    assert question_memory.contexts[0].chunks[0].metadata["type"] == "citations", (  # type: ignore
+    assert question_memory.contexts[0].chunks[0].metadata["type"] == "citations", (
         "Retrieved context is not of type 'answer'"
     )
-    assert question_memory.contexts[0].chunks[-1].metadata["type"] == "answer", (  # type: ignore
+    assert question_memory.contexts[0].chunks[-1].metadata["type"] == "answer", (
         "Retrieved context is not of type 'answer'"
     )
     assert question_memory.contexts[0].summary, "Answer summary is empty"
@@ -341,7 +341,7 @@ async def test_text_content_audience_includes_assistant():
     results = await get_resource(ndb, "kbid", "rid")
     assert all(isinstance(r, TextContent) for r in results)
     for r in results:
-        assert "assistant" in r.annotations.audience, (
+        assert "assistant" in r.annotations.audience, (  # type: ignore
             "get_resource: 'assistant' missing from TextContent audience"
         )
 
@@ -373,7 +373,7 @@ async def test_text_content_audience_includes_assistant():
         results = await call_tool(
             x_stf_account="account",
             x_nucliadb_user="user",
-            x_ndb_client=MagicMock(),
+            x_ndb_client=MagicMock(),  # type: ignore
             x_forwarded_for="",
             ndb_reader=AsyncMock(),
             ndb_search=AsyncMock(),
@@ -389,7 +389,7 @@ async def test_text_content_audience_includes_assistant():
     answer_blocks = [r for r in results if isinstance(r, TextContent)]
     assert answer_blocks, "No TextContent returned from call_tool search_documents"
     for r in answer_blocks:
-        assert "assistant" in r.annotations.audience, (
+        assert "assistant" in r.annotations.audience, (  # type: ignore
             "call_tool search_documents: 'assistant' missing from TextContent audience"
         )
 
@@ -410,7 +410,7 @@ async def test_text_content_audience_includes_assistant():
         await call_tool(
             x_stf_account="account",
             x_nucliadb_user="user",
-            x_ndb_client=MagicMock(),
+            x_ndb_client=MagicMock(),  # type: ignore
             x_forwarded_for="",
             ndb_reader=AsyncMock(),
             ndb_search=AsyncMock(),
@@ -435,7 +435,7 @@ async def test_text_content_audience_includes_assistant():
         await call_tool(
             x_stf_account="account",
             x_nucliadb_user="user",
-            x_ndb_client=MagicMock(),
+            x_ndb_client=MagicMock(),  # type: ignore
             x_forwarded_for="",
             ndb_reader=AsyncMock(),
             ndb_search=AsyncMock(),
@@ -483,7 +483,7 @@ async def test_call_tool_search_documents_known_exceptions():
             ),
             pytest.raises(ResourceError, match=expected_fragment),
         ):
-            await call_tool(**base_args)
+            await call_tool(**base_args)  # type: ignore
 
 
 async def test_call_tool_invalid_arguments():
@@ -494,7 +494,7 @@ async def test_call_tool_invalid_arguments():
         await call_tool(
             x_stf_account="account",
             x_nucliadb_user="user",
-            x_ndb_client=MagicMock(),
+            x_ndb_client=MagicMock(),  # type: ignore
             x_forwarded_for="",
             ndb_reader=AsyncMock(),
             ndb_search=AsyncMock(),
@@ -529,7 +529,7 @@ async def test_call_tool_batch_get_documents_partial_failure():
     results = await call_tool(
         x_stf_account="account",
         x_nucliadb_user="user",
-        x_ndb_client=MagicMock(),
+        x_ndb_client=MagicMock(),  # type: ignore
         x_forwarded_for="",
         ndb_reader=ndb_reader,
         ndb_search=AsyncMock(),
@@ -564,7 +564,7 @@ async def test_call_tool_unknown_tool():
         await call_tool(
             x_stf_account="account",
             x_nucliadb_user="user",
-            x_ndb_client=MagicMock(),
+            x_ndb_client=MagicMock(),  # type: ignore
             x_forwarded_for="",
             ndb_reader=AsyncMock(),
             ndb_search=AsyncMock(),

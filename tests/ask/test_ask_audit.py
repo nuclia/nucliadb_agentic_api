@@ -21,6 +21,8 @@ import asyncio
 from unittest.mock import patch
 
 import nats
+import nats.errors
+import nats.js.errors
 import pytest
 from httpx import AsyncClient
 from hyperforge.feature_flag import get_flag_service
@@ -85,10 +87,10 @@ async def test_ask_sends_only_one_audit(
 
         # Testing the middleware integration where it collects audit calls and sends a single message
         # at requests ends. In this case we expect one retrieve and one ask calls and sent once
-        audit.retrieve.assert_called_once()  # type: ignore[attr-defined] # those are spies but we can't tell mypy about it
-        audit.ask.assert_called_once()  # type: ignore[attr-defined]
-        assert audit.js.publish.call_count == 1  # type: ignore[attr-defined]
-        audit.send.assert_called_once()  # type: ignore[attr-defined]
+        audit.retrieve.assert_called_once()  # type: ignore
+        audit.ask.assert_called_once()  # type: ignore
+        assert audit.js.publish.call_count == 1  # type: ignore
+        audit.send.assert_called_once()  # type: ignore
 
         auditreq = await get_audit_messages(psub)
         assert auditreq.type == AuditRequest.AuditType.ASK

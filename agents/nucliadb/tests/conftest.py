@@ -5,13 +5,12 @@ All fixtures are lightweight and use unittest.mock to avoid any real network
 connections or external services.
 """
 
-from typing import Any, Dict, List
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import Any, List
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
-
 
 # ---------------------------------------------------------------------------
 # Helpers / small data builders
@@ -95,7 +94,9 @@ def mock_nucliadb_driver():
     driver.field_labels = AsyncMock(return_value=({}, 0))
 
     # catalog / find stubs
-    driver.catalog_search_raw = AsyncMock(return_value=MagicMock(resources={}, fulltext=None))
+    driver.catalog_search_raw = AsyncMock(
+        return_value=MagicMock(resources={}, fulltext=None)
+    )
     driver.find_raw = AsyncMock(return_value=MagicMock(resources={}))
     driver.get_resource_by_id = AsyncMock(return_value=None)
     driver.get_ephemeral_token = AsyncMock(return_value="fake-token")

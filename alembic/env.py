@@ -1,9 +1,14 @@
-from logging.config import fileConfig
 import os
+from logging.config import fileConfig
 
-from alembic import context
+from hyperforge.database import metadata
 from sqlalchemy import engine_from_config, pool
 
+from alembic import context
+from nucliadb_agentic_api.db import (
+    agentic_configs,  # noqa: F401
+    sources,  # noqa: F401
+)
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 
 # this is the Alembic Config object, which provides
@@ -19,10 +24,6 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from hyperforge.database import metadata
-from nucliadb_agentic_api.db import agentic_configs  # noqa: F401
-from nucliadb_agentic_api.db import sources  # noqa: F401
-
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 migrations_dir = os.path.dirname(current_dir)
@@ -31,7 +32,7 @@ config.set_main_option("script_location", migrations_dir)
 
 # Configure Alembic to use our DATABASE_URL and our table definitions...
 if os.environ.get("POSTGRESQL_DSN") or os.environ.get("postgresql_dsn"):
-    url = DataManagerSettings().postgresql_dsn.split("?")[0]
+    url = DataManagerSettings().postgresql_dsn.split("?")[0]  # type: ignore
     config.set_main_option("sqlalchemy.url", url)
 
 
