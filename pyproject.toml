@@ -67,6 +67,7 @@ server = [
     "nucliadb-telemetry[otel]>=6.14.0.post6534",
     "nucliadb-utils[storages,fastapi]>=6.15.0.post6671",
     "hyperforge>=1.0.0.post88",
+    "hyperforge_conditional>=1.0.0.post27",
     "hyperforge_mcp>=1.0.0.post41",
     "hyperforge_nucliadb>=1.0.0.post46",
     "hyperforge_rephrase>=1.0.0.post40",
