@@ -1,6 +1,6 @@
 apiVersion: v2
 description: NucliaDB Agentic API
-name: nucliadb_agentic_api
+name: nucliadb-agentic
 version: 99999.99999.99999
 appVersion: 99999.99999.99999
 keywords:
