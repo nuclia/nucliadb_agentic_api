@@ -50,6 +50,7 @@ asyncio_mode = "auto"
 [project.scripts]
 nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
 nucliadb-agentic-server = "nucliadb_agentic_api.server.server:run"
+nucliadb-agentic-sandbox = "hyperforge.server.sandbox:run"
 nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
 
 [dependency-groups]
