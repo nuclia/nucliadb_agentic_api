@@ -10,17 +10,17 @@ ENV VIRTUAL_ENV=/app
 COPY pyproject.toml uv.lock /app/
 COPY agents/nucliadb/pyproject.toml /app/agents/nucliadb/pyproject.toml
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --active --frozen --directory /app --compile-bytecode --no-install-workspace
+    uv sync --active --frozen --directory /app --compile-bytecode --no-install-workspace --link-mode=copy
 
 # Copy source code and reinstall workspace packages
 COPY . /app/.
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --active --frozen --directory /app --compile-bytecode
+    uv sync --active --frozen --directory /app --compile-bytecode --link-mode=copy
 
 #
 # Only copy the virtual env to the final image.
 #
-FROM python:3.12-slim
+FROM python:3.12
 COPY --from=build /app /app
 ENV PATH=/app/bin:$PATH
 
