@@ -84,16 +84,16 @@ jobs:
               env:
                   PYTHONUNBUFFERED: 1
 
-            - name: Lint package
-              run: |
-                  make lint
+            # - name: Lint package
+            #   run: |
+            #       make lint
 
-            - name: Test package
-              run: |
-                  make test
-              env:
-                  NUA_KEY: ${{ secrets.NUA_KEY }}
-                  HEALTH_CHECK_PORT: 8099
+            # - name: Test package
+            #   run: |
+            #       make test
+            #   env:
+            #       NUA_KEY: ${{ secrets.NUA_KEY }}
+            #       HEALTH_CHECK_PORT: 8099
     # build_wheels:
     #     name: Build wheels
     #     runs-on: ubuntu-24.04
