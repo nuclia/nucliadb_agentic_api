@@ -40,6 +40,9 @@ ignore = [
     "E712",
 ]
 select = [
+    "E4",
+    "E7",
+    "E9",
     "I",
     "E",
     "F",
@@ -82,3 +85,6 @@ select = [
     "T100",     # Breakpoints
     "RUF012",   # Mutable class attributes should be annotated with ClassVar or initialized in __init__
 ]
+
+[lint.isort]
+combine-as-imports = true

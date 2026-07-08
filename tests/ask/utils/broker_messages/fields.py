@@ -7,8 +7,7 @@ from hyperforge_nucliadb_agentic.ask.utils.ids import (
     FieldId,
     ParagraphId,
 )
-from nucliadb_protos import resources_pb2 as rpb
-from nucliadb_protos import utils_pb2
+from nucliadb_protos import resources_pb2 as rpb, utils_pb2
 from nucliadb_utils.storages.azure import AzureStorage
 from nucliadb_utils.storages.gcs import GCSStorage
 from nucliadb_utils.storages.local import LocalStorage

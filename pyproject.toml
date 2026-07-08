@@ -103,6 +103,7 @@ dev = [
     "mypy",
     "pre-commit",
     "ruff",
+    "isort",
     # Testing
     "aioresponses",
     "faker>=25.1.0",

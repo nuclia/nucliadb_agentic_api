@@ -32,8 +32,6 @@ from hyperforge_nucliadb_agentic.ask.search.metrics import (
 )
 from nuclia_models.common.consumption import (
     Consumption,
-)
-from nuclia_models.common.consumption import (
     TokensDetail as ConsumptionTokensDetail,
 )
 from nuclia_models.predict.generative_responses import (

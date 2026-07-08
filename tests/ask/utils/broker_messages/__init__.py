@@ -1,8 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from nucliadb_protos import resources_pb2 as rpb
-from nucliadb_protos import writer_pb2 as wpb
+from nucliadb_protos import resources_pb2 as rpb, writer_pb2 as wpb
 
 from .fields import FieldBuilder
 from .helpers import labels_to_classifications

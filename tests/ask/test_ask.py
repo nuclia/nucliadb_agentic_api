@@ -32,8 +32,7 @@ from nuclia_models.predict.generative_responses import (
     StatusGenerativeResponse,
 )
 from nucliadb_models.search import FindParagraph
-from nucliadb_protos import resources_pb2 as rpb2
-from nucliadb_protos import writer_pb2 as wpb2
+from nucliadb_protos import resources_pb2 as rpb2, writer_pb2 as wpb2
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
 from ..fixtures.predict import DummyPredictEngine

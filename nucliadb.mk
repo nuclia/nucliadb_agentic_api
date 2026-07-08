@@ -21,7 +21,6 @@ format:
 .PHONY: lint
 lint:
 	uv run ruff check --config=ruff.toml .
-	uv run ruff format --check --config=ruff.toml .
 	uv run mypy --config-file=mypy.ini src
 
 .PHONY: test

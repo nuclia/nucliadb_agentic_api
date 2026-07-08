@@ -13,8 +13,7 @@ from hyperforge.api.authentication import requires_one
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.server.fastmcp.utilities.types import Image
 from mcp.server.lowlevel.helper_types import ReadResourceContents
-from mcp.server.lowlevel.server import Server as MCPServer
-from mcp.server.lowlevel.server import lifespan as default_lifespan
+from mcp.server.lowlevel.server import Server as MCPServer, lifespan as default_lifespan
 from mcp.types import (
     Annotations,
     EmbeddedResource,
@@ -36,6 +35,7 @@ from nucliadb_agentic_api import logger
 
 if TYPE_CHECKING:
     from hyperforge.api.app import HTTPApplication
+
 from anyio.abc import TaskStatus
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     InvalidQueryError,
