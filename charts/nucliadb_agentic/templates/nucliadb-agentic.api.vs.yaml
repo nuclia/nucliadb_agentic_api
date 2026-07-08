@@ -1,4 +1,4 @@
-apiVersion: networking.istio.io/v1beta1
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: nucliadb-agentic
@@ -32,7 +32,7 @@ spec:
         - destination:
             port:
               number: 8080
-            host: " nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
       corsPolicy:
         allowOrigins:
           - exact: "*"

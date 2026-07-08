@@ -1612,6 +1612,18 @@ wheels = [
 ]
 
 [[package]]
+name = "hyperforge-conditional"
+version = "1.0.0.post27"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "hyperforge" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/90/93/4e5137ad2b110ab0679b1bc8171467b93459bb3a3703a7f15af03ecdb156/hyperforge_conditional-1.0.0.post27.tar.gz", hash = "sha256:aa17409d24debb2f87e03f0f303f428f3fbcc615d324e1f19fa1572b3b529f5f", size = 7807, upload-time = "2026-06-04T10:19:40.558Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/02/d9/4caeb2784267ca1c43521ac451552a321f30c3a41417eaf7de8380954765/hyperforge_conditional-1.0.0.post27-py3-none-any.whl", hash = "sha256:d6c1dcb0521cf2054c66d2a3149e9387ddae977f7676cce245911a5bab01da31", size = 8253, upload-time = "2026-06-04T10:19:39.426Z" },
+]
+
+[[package]]
 name = "hyperforge-google"
 version = "1.0.0.post38"
 source = { registry = "https://pypi.org/simple" }
@@ -2776,6 +2788,7 @@ server = [
     { name = "fastapi" },
     { name = "httpx" },
     { name = "hyperforge" },
+    { name = "hyperforge-conditional" },
     { name = "hyperforge-google" },
     { name = "hyperforge-mcp" },
     { name = "hyperforge-nucliadb" },
@@ -2853,6 +2866,7 @@ server = [
     { name = "fastapi" },
     { name = "httpx" },
     { name = "hyperforge", specifier = ">=1.0.0.post88" },
+    { name = "hyperforge-conditional", specifier = ">=1.0.0.post27" },
     { name = "hyperforge-google", specifier = ">=1.0.0.post38" },
     { name = "hyperforge-mcp", specifier = ">=1.0.0.post41" },
     { name = "hyperforge-nucliadb", specifier = ">=1.0.0.post46" },

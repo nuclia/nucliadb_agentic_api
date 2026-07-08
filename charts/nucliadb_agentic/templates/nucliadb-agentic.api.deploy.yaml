@@ -54,7 +54,7 @@ spec:
 {{- end }}
       containers:
       - name: nucliadb-agentic-api
-        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadb-agenticApi }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadbAgenticApi }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- with .Values.api.securityContext }}
         securityContext:

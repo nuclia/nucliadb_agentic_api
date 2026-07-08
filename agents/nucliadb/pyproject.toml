@@ -43,8 +43,3 @@ Changelog = "https://github.com/nuclia/nucliadb_agentic_api/blob/main/agents/nuc
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-
-[tool.uv.build-backend]
-
-# Exclude specific files from being packaged
-source-exclude = ["tests/**", "*.pyc"]
