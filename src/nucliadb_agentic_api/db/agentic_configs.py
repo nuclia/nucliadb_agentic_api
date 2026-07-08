@@ -1,6 +1,7 @@
 import datetime
 import json
 from time import time
+from typing import Dict
 
 import databases
 import sqlalchemy as sa
@@ -48,7 +49,7 @@ agentic_config_table = sa.Table(
 )
 
 
-CACHE: LRU[str, AgenticConfigSchema] = LRU(size=1024)
+CACHE: Dict[str, AgenticConfigSchema] = LRU(size=1024)  # type: ignore
 
 
 def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
