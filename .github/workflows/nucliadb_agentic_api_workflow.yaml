@@ -25,16 +25,13 @@ env:
     GCP_WORKLOAD_IDENTITY_PROVIDER: "projects/224545243904/locations/global/workloadIdentityPools/gh-nuclia/providers/gh-nuclia-provider"
     GCP_SERVICE_ACCOUNT: "github-actions@nuclia-internal.iam.gserviceaccount.com"
 
-permissions:
-    id-token: write
-    contents: read
-    actions: read
-    packages: write
-
 jobs:
     test:
         name: Testing
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
         outputs:
             component: ${{ steps.param.outputs.component }}
             hash: ${{ steps.param.outputs.hash }}
@@ -84,98 +81,99 @@ jobs:
               env:
                   PYTHONUNBUFFERED: 1
 
-            # - name: Lint package
-            #   run: |
-            #       make lint
+            - name: Lint package
+              run: |
+                  make lint
 
-            # - name: Test package
-            #   run: |
-            #       make test
-            #   env:
-            #       NUA_KEY: ${{ secrets.NUA_KEY }}
-            #       HEALTH_CHECK_PORT: 8099
-    # build_wheels:
-    #     name: Build wheels
-    #     runs-on: ubuntu-24.04
-    #     if: github.event_name == 'push'
-    #     needs:
-    #         - test
-    #     permissions:
-    #         contents: read
-    #         id-token: write
-    #     steps:
-    #         - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    #           with:
-    #               persist-credentials: false
+            - name: Test package
+              run: |
+                  make test
+              env:
+                  NUA_KEY: ${{ secrets.NUA_KEY }}
+                  HEALTH_CHECK_PORT: 8099
+    build_wheels:
+        name: Build wheels
+        runs-on: ubuntu-24.04
+        if: github.event_name == 'push'
+        needs:
+            - test
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+              with:
+                  persist-credentials: false
 
-    #         - name: Install uv
-    #           uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-    #           with:
-    #               enable-cache: false
-    #               python-version: "3.12"
+            - name: Install uv
+              uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+              with:
+                  enable-cache: false
+                  python-version: "3.12"
 
-    #         - name: Setup env
-    #           run: |
-    #               uv tool install twine
+            - name: Setup env
+              run: |
+                  uv tool install twine
 
-    #         - name: Set dependency versions in requirements
-    #           run: |
-    #               python bump.py --package=${INPUTS_PACKAGE} --build=${{ github.run_number }}
-    #           env:
-    #               INPUTS_PACKAGE: .
+            - name: Set dependency versions in requirements
+              run: |
+                  python bump.py --package=${INPUTS_PACKAGE} --build=${{ github.run_number }}
+              env:
+                  INPUTS_PACKAGE: .
 
-    #         - name: Install package
-    #           run: |
-    #               uv sync
+            - name: Install package
+              run: |
+                  uv sync
 
-    #         - name: Build wheels
-    #           run: uv build ./${INPUTS_PACKAGE}
-    #           env:
-    #               INPUTS_PACKAGE: .
+            - name: Build wheels
+              run: uv build ./${INPUTS_PACKAGE}
+              env:
+                  INPUTS_PACKAGE: .
 
-    #         - name: Publish package to PyPI
-    #           uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+            - name: Publish package to PyPI
+              uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
 
-    # build_and_push_docker_image:
-    #     name: Build and push Docker image
-    #     runs-on: ubuntu-24.04
-    #     if: github.event_name == 'push'
-    #     needs:
-    #         - build_wheels
-    #     permissions:
-    #         contents: read
-    #     steps:
-    #         - name: Checkout repository
-    #           uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    #           with:
-    #               persist-credentials: false
+    build_and_push_docker_image:
+        name: Build and push Docker image
+        runs-on: ubuntu-24.04
+        if: github.event_name == 'push'
+        needs:
+            - build_wheels
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+              with:
+                  persist-credentials: false
 
-    #         - name: Log in to GitHub Container Registry
-    #           env:
-    #               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #               GITHUB_ACTOR: ${{ github.actor }}
-    #           run: echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+            - name: Log in to GitHub Container Registry
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_ACTOR: ${{ github.actor }}
+              run: echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
 
-    #         - name: Build Docker image
-    #           env:
-    #               REPOSITORY_OWNER: ${{ github.repository_owner }}
-    #               IMAGE_SHA_TAG: ${{ github.sha }}
-    #               IMAGE_REF_TAG: ${{ github.ref_name }}
-    #           run: docker build -f NUCLIADB_AGENTIC_API.Dockerfile -t "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_SHA_TAG" -t "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_REF_TAG" .
+            - name: Build Docker image
+              env:
+                  REPOSITORY_OWNER: ${{ github.repository_owner }}
+                  IMAGE_SHA_TAG: ${{ github.sha }}
+                  IMAGE_REF_TAG: ${{ github.ref_name }}
+              run: docker build -f NUCLIADB_AGENTIC_API.Dockerfile -t "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_SHA_TAG" -t "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_REF_TAG" .
 
-    #         - name: Push Docker image
-    #           env:
-    #               REPOSITORY_OWNER: ${{ github.repository_owner }}
-    #               IMAGE_SHA_TAG: ${{ github.sha }}
-    #               IMAGE_REF_TAG: ${{ github.ref_name }}
-    #           run: |
-    #               docker push "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_SHA_TAG"
-    #               docker push "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_REF_TAG"
+            - name: Push Docker image
+              env:
+                  REPOSITORY_OWNER: ${{ github.repository_owner }}
+                  IMAGE_SHA_TAG: ${{ github.sha }}
+                  IMAGE_REF_TAG: ${{ github.ref_name }}
+              run: |
+                  docker push "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_SHA_TAG"
+                  docker push "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_REF_TAG"
     
     build_and_push_internal:
         name: Build and push internal Docker image
         runs-on: nuclia-base
         needs:
+            - build_wheels
             - test
         permissions:
             contents: read
