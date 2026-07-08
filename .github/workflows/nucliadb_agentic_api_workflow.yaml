@@ -307,8 +307,8 @@ jobs:
                   } + {
                     "components": [
                       {
-                        "component": "$component",
-                        "chart-version": "$chart_version",
+                        "component": $component,
+                        "chart-version": $chart_version,
                         "component-type": "regional"
                       }
                     ]
