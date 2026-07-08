@@ -34,7 +34,7 @@ spec:
       serviceAccountName: {{ if kindIs "string" .Values.migrations.serviceAccount }}{{ .Values.migrations.serviceAccount }}{{ else }}{{ .Values.migrations.serviceAccount.name | default "default" }}{{ end }}
       containers:
       - name: pre-upgrade-job
-        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadb-agenticApi }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadbAgenticApi }}:{{ .Values.image.tag }}"
         command: ["/bin/sh", "-c"]
         args: ["cd /app/nucliadb-agentic && alembic upgrade head"]
         imagePullPolicy: {{ .Values.imagePullPolicy }}

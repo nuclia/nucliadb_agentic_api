@@ -70,7 +70,7 @@ spec:
       {{- end }}
       containers:
       - name: nucliadb-agentic-server
-        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadb-agenticServer }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadbAgenticServer }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- with .Values.server.securityContext }}
         securityContext:
@@ -124,7 +124,7 @@ spec:
       {{- with .Values.server.sandbox }}
       {{- if .enabled }}
       - name: sandbox
-        image: "{{ $.Values.containerRegistry }}/{{ $.Values.image.nucliadb-agenticServer }}:{{ $.Values.image.tag }}"
+        image: "{{ $.Values.containerRegistry }}/{{ $.Values.image.nucliadbAgenticServer }}:{{ $.Values.image.tag }}"
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         securityContext:
           runAsUser: {{ .uid }}
