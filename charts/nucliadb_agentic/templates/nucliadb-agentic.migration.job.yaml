@@ -36,7 +36,7 @@ spec:
       - name: pre-upgrade-job
         image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadbAgenticApi }}:{{ .Values.image.tag }}"
         command: ["/bin/sh", "-c"]
-        args: ["cd /app/nucliadb-agentic && alembic upgrade head"]
+        args: ["cd /app && alembic upgrade head"]
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- with .Values.envFrom }}
         envFrom:
