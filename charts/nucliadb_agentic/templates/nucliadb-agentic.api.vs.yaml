@@ -17,10 +17,6 @@ spec:
     - name: nucliadb-agentic_public_api_endpoints
       match:
         - uri:
-            regex: ^/api/v\d+/kb/[^/]+/agent/.*
-          method:
-            regex: "GET|PATCH|DELETE|OPTIONS|POST"
-        - uri:
             regex: ^/api/v\d+/kb/[^/]+/mcp
           method:
             regex: "GET|PATCH|DELETE|OPTIONS|POST"
