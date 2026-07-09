@@ -31,7 +31,7 @@ _AnySource = Union[
     summary="Create a source",
     tags=["Sources"],
 )
-@requires(NucliaDBRoles.MANAGER)
+@requires(NucliaDBRoles.OWNER)
 async def create_source_endpoint(
     request: Request,
     kbid: str,
@@ -105,7 +105,7 @@ async def list_sources_endpoint(
     summary="Update a source",
     tags=["Sources"],
 )
-@requires(NucliaDBRoles.MANAGER)
+@requires(NucliaDBRoles.OWNER)
 async def patch_source_endpoint(
     request: Request,
     kbid: str,
@@ -132,7 +132,7 @@ async def patch_source_endpoint(
     summary="Delete a source",
     tags=["Sources"],
 )
-@requires(NucliaDBRoles.MANAGER)
+@requires(NucliaDBRoles.OWNER)
 async def delete_source_endpoint(
     request: Request,
     kbid: str,
