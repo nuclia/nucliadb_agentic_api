@@ -123,7 +123,7 @@ async def test_agentic_websocket_perplexity(
         f"/api/v1/kb/{eric_dataset}/sources/recipes-kb",
         json=payload,
         headers={
-            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ROLES": "OWNER;READER;WRITER",
             "X-NUCLIADB-ACCOUNT": "nuclia",
         },
     )
@@ -139,7 +139,7 @@ async def test_agentic_websocket_perplexity(
         f"/api/v1/kb/{eric_dataset}/sources/perplexity",
         json=payload,
         headers={
-            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ROLES": "OWNER;READER;WRITER",
             "X-NUCLIADB-ACCOUNT": "nuclia",
         },
     )
@@ -157,7 +157,7 @@ async def test_agentic_websocket_perplexity(
         f"/api/v1/kb/{eric_dataset}/agentic_configs/default",
         json=payload,
         headers={
-            "X-NUCLIADB-ROLES": "MANAGER;READER;WRITER",
+            "X-NUCLIADB-ROLES": "OWNER;READER;WRITER",
             "X-NUCLIADB-ACCOUNT": "nuclia",
         },
     )

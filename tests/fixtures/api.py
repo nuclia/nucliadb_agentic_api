@@ -157,6 +157,6 @@ async def nucliadb_agentic_api_http_client(
     """
     async with AsyncClient(
         base_url=f"http://{nucliadb_agentic_api_http}",
-        headers={"X-NUCLIADB-ROLES": "MANAGER;READER;WRITER"},
+        headers={"X-NUCLIADB-ROLES": "OWNER;READER;WRITER"},
     ) as client:
         yield client
