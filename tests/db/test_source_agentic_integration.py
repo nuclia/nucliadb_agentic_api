@@ -201,7 +201,7 @@ async def _create_app(
 # Cascade-delete tests
 # ---------------------------------------------------------------------------
 
-_MANAGER_READER = [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+_MANAGER_READER = [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
 
 _NUCLIADB_SOURCE = {
     "type": "nucliadb",

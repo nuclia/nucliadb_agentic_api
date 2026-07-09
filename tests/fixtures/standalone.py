@@ -96,7 +96,7 @@ async def nucliadb_ingest_grpc(
 async def nucliadb_reader_manager(
     nucliadb_reader: AsyncClient,
 ) -> AsyncIterator[AsyncClient]:
-    roles = [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+    roles = [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     nucliadb_reader.headers["X-NUCLIADB-ROLES"] = ";".join(
         [role.value for role in roles]
     )
@@ -107,7 +107,7 @@ async def nucliadb_reader_manager(
 async def nucliadb_writer_manager(
     nucliadb_writer: AsyncClient,
 ) -> AsyncIterator[AsyncClient]:
-    roles = [NucliaDBRoles.MANAGER, NucliaDBRoles.WRITER]
+    roles = [NucliaDBRoles.OWNER, NucliaDBRoles.WRITER]
     extra_roles = ["OWNER"]
     nucliadb_writer.headers["X-NUCLIADB-ROLES"] = ";".join(
         [role.value for role in roles] + extra_roles

@@ -161,7 +161,7 @@ GOOGLE_PAYLOAD = {
 async def test_sources_crud_nucliadb(monkeypatch):
     app = await create_app(monkeypatch)
     async with create_api_client(
-        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     ) as client:
         # Create
         resp = await client.post("/kb/kb1/sources/src-nucliadb", json=NUCLIADB_PAYLOAD)
@@ -208,7 +208,7 @@ async def test_sources_crud_nucliadb(monkeypatch):
 async def test_sources_perplexity(monkeypatch):
     app = await create_app(monkeypatch)
     async with create_api_client(
-        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     ) as client:
         resp = await client.post(
             "/kb/kb1/sources/src-perplexity", json=PERPLEXITY_PAYLOAD
@@ -223,7 +223,7 @@ async def test_sources_perplexity(monkeypatch):
 async def test_sources_mcp(monkeypatch):
     app = await create_app(monkeypatch)
     async with create_api_client(
-        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     ) as client:
         resp = await client.post("/kb/kb1/sources/src-mcp", json=MCP_PAYLOAD)
         assert resp.status_code == 201, resp.text
@@ -236,7 +236,7 @@ async def test_sources_mcp(monkeypatch):
 async def test_sources_google(monkeypatch):
     app = await create_app(monkeypatch)
     async with create_api_client(
-        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     ) as client:
         resp = await client.post("/kb/kb1/sources/src-google", json=GOOGLE_PAYLOAD)
         assert resp.status_code == 201, resp.text
@@ -260,7 +260,7 @@ async def test_source_not_found(monkeypatch):
 
 async def test_source_conflict(monkeypatch):
     app = await create_app(monkeypatch)
-    async with create_api_client(app, [NucliaDBRoles.MANAGER]) as client:
+    async with create_api_client(app, [NucliaDBRoles.OWNER]) as client:
         resp = await client.post("/kb/kb1/sources/src-dupe", json=NUCLIADB_PAYLOAD)
         assert resp.status_code == 201, resp.text
 
@@ -270,14 +270,14 @@ async def test_source_conflict(monkeypatch):
 
 async def test_source_patch_not_found(monkeypatch):
     app = await create_app(monkeypatch)
-    async with create_api_client(app, [NucliaDBRoles.MANAGER]) as client:
+    async with create_api_client(app, [NucliaDBRoles.OWNER]) as client:
         resp = await client.patch("/kb/kb1/sources/missing", json=NUCLIADB_PAYLOAD)
         assert resp.status_code == 404
 
 
 async def test_source_delete_not_found(monkeypatch):
     app = await create_app(monkeypatch)
-    async with create_api_client(app, [NucliaDBRoles.MANAGER]) as client:
+    async with create_api_client(app, [NucliaDBRoles.OWNER]) as client:
         resp = await client.delete("/kb/kb1/sources/missing")
         assert resp.status_code == 404
 
@@ -316,7 +316,7 @@ async def test_sources_list_empty(monkeypatch):
 async def test_sources_list_multiple(monkeypatch):
     app = await create_app(monkeypatch)
     async with create_api_client(
-        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     ) as client:
         await client.post("/kb/kb1/sources/src-a", json=NUCLIADB_PAYLOAD)
         await client.post("/kb/kb1/sources/src-b", json=PERPLEXITY_PAYLOAD)
@@ -333,7 +333,7 @@ async def test_sources_list_isolated_by_kb(monkeypatch):
     """Sources in different knowledge boxes must not bleed into each other."""
     app = await create_app(monkeypatch)
     async with create_api_client(
-        app, [NucliaDBRoles.MANAGER, NucliaDBRoles.READER]
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
     ) as client:
         resp = await client.post("/kb/kb-a/sources/src-1", json=NUCLIADB_PAYLOAD)
         assert resp.status_code == 201, resp.text
