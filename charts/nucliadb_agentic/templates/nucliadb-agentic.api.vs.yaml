@@ -38,8 +38,36 @@ spec:
           - exact: "*"
         allowHeaders:
           - "*"
-          # Authorization will be exluded from * in the future, (CORS non-wildcard request-header).
+          # Authorization will be excluded from * in the future, (CORS non-wildcard request-header).
           # Browsers already showing deprecation notices, so it needs to be specified explicitly
+          - "Authorization"
+        allowMethods:
+          - GET
+          - HEAD
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+    - name: nucliadb-agentic_management_endpoints
+      match:
+        - uri:
+            regex: ^/api/v\d+/kb/[^/]+/sources(/.*)?$
+          method:
+            regex: "GET|POST|PUT|PATCH|DELETE|OPTIONS"
+        - uri:
+            regex: ^/api/v\d+/kb/[^/]+/agentic_configs(/.*)?$
+          method:
+            regex: "GET|POST|PUT|PATCH|DELETE|OPTIONS"
+      route:
+        - destination:
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            port:
+              number: 8080
+      corsPolicy:
+        allowOrigins:
+          - exact: "*"
+        allowHeaders:
+          - "*"
           - "Authorization"
         allowMethods:
           - GET
