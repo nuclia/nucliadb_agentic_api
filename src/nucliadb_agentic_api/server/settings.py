@@ -14,3 +14,8 @@ MODULES = [
 
 class Settings(HyperforgeServerSettings):
     load_modules: list[str] = MODULES
+    activate_subject: str = "ndb_agentic.activate"
+    answers_subject: str = (
+        "ndb_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}.answer"
+    )
+    oauth_subject: str = "ndb_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}.oauth.{oauth_uuid}"
