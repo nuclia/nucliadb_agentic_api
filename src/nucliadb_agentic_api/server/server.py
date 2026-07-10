@@ -13,7 +13,7 @@ from nucliadb_telemetry.utils import setup_telemetry
 from nucliadb_utils.settings import AuditSettings
 from sentry_sdk.integrations.excepthook import ExcepthookIntegration
 
-from nucliadb_agentic_api import SERVICE_NAME
+from nucliadb_agentic_api import SERVICE_NAME, logger
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
@@ -101,6 +101,7 @@ def run():  # pragma: no cover
         run_server(settings, tracer, data_manager_settings)
     )
     loop.run_until_complete(session.initialize())
+    logger.info(f"======= Serving on Server to {settings.valkey_url} ======")
     try:
         loop.run_forever()
     finally:
