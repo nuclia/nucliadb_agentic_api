@@ -84,7 +84,7 @@ async def transform_agentic_config(
                 source_config["module"] = "nucliadb_agent"
 
                 if internal_nucliadb and internal_nucliadb_url:
-                    url = internal_nucliadb_url
+                    url = internal_nucliadb_url.format(component="search")
                     key = None
                 elif external_nucliadb_url:
                     url = external_nucliadb_url
