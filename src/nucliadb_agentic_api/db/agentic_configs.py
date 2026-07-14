@@ -271,6 +271,7 @@ class AgenticConfigs:
                     name="google",
                     config=GoogleInnerConfig(
                         credentials=self.settings.hyperforge_google_credentials,
+                        location=self.settings.hyperforge_google_location,
                         vertexai=True,
                     ),
                 )
