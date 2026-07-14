@@ -55,7 +55,9 @@ async def nucliadb_agentic_api_app(
 ):
 
     nucliadb_agentic_settings.internal_nucliadb = True
-    nucliadb_agentic_settings.internal_nucliadb_url = nucliadb.url
+    nucliadb_agentic_settings.internal_nucliadb_url = nucliadb.url.replace(
+        "127.0.0.1", "localhost"
+    )
 
     # Configure ask to connect to a real NucliaDB
     ask_settings.nucliadb_reader_address = nucliadb.url
