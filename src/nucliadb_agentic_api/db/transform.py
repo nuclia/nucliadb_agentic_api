@@ -87,6 +87,7 @@ async def transform_agentic_config(
                 source_config["sources"] = [uid]
                 source_config["module"] = "nucliadb_agent"
 
+                ndb_driver_config: DriverConfig
                 if internal_nucliadb and internal_nucliadb_url:
                     ndb_driver_config = InternalNucliaDBConfig(
                         identifier=uid,
