@@ -88,13 +88,35 @@ async def transform_agentic_config(
                 source_config["module"] = "nucliadb_agent"
 
                 ndb_driver_config: DriverConfig
-                if internal_nucliadb and internal_nucliadb_url:
+                if (
+                    internal_nucliadb
+                    and internal_nucliadb_url
+                    and "localhost" not in internal_nucliadb_url
+                ):
                     ndb_driver_config = InternalNucliaDBConfig(
                         identifier=uid,
                         name="NucliaDB",
                         provider="nucliadb_internal",
                         config=InternalNucliaDBConnection(
-                            url="internal",  # Placeholder, actual URL is handled by the internal driver
+                            url=internal_nucliadb_url,
+                            key=None,
+                            manager="",
+                            description="",
+                            kbid=kbid,
+                            filter_expression=source_obj.filter_expression,
+                            filters=source_obj.resource_filters
+                            if source_obj.resource_filters
+                            else [],
+                        ),
+                    )
+                elif internal_nucliadb and internal_nucliadb_url:
+                    # localhost: use regular driver with SafeTransport
+                    ndb_driver_config = NucliaDBConfig(
+                        identifier=uid,
+                        name="NucliaDB",
+                        provider="nucliadb",
+                        config=NucliaDBConnection(
+                            url=internal_nucliadb_url,
                             key=None,
                             manager="",
                             description="",
