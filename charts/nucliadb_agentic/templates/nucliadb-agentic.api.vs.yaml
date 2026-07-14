@@ -72,6 +72,23 @@ spec:
           - PUT
           - PATCH
           - DELETE
+    - name: ask_websocket_endpoint
+      match:
+        - uri:
+            regex: '^/api/v\d+/kb/[^/]+/ask$'
+          headers:
+            upgrade:
+              exact: websocket
+        - uri:
+            regex: '^/api/v\d+/kb/[^/]+/(resource|slug)/[^/]+/ask$'
+          headers:
+            upgrade:
+              exact: websocket
+      route:
+        - destination:
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            port:
+              number: 8080
     - name: ask_endpoint
       match:
         - uri:
