@@ -270,7 +270,9 @@ class AgenticConfigs:
                     identifier="google",
                     name="google",
                     config=GoogleInnerConfig(
-                        api_key=self.settings.hyperforge_google_key, vertexai=False
+                        credentials=self.settings.hyperforge_google_credentials,
+                        location=self.settings.hyperforge_google_location,
+                        vertexai=True,
                     ),
                 )
             )
