@@ -649,7 +649,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             actual_question_uuid=None,
             question=question,
             source=source_id,
-            agent="basic_ask_title",
+            agent="nucliadb_agent_title",
             title=self.config.title
             if self.config.title
             else f"Title search on {source_id} Knowledge Box",
@@ -982,7 +982,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             actual_question_uuid=question_uuid,
             question=question,
             source=source,
-            agent="basic_ask",
+            agent="nucliadb_agent",
             title=self.config.title
             if self.config.title
             else f"Retrieval on {source} Knowledge Box",
@@ -1034,7 +1034,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         )
 
         await memory.add_step(
-            step_module="basic_ask",
+            step_module="nucliadb_agent",
             step_title=self.step_title("Preparing RAG"),
             step_reason="",
             step_value=ask_request.model_dump_json(
@@ -1250,7 +1250,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 question=question,
                 source=source.id,
                 chunks=[],
-                agent="basic_ask_facets",
+                agent="nucliadb_agent_facets",
                 title=f"Faceted search on {source.id} Knowledge Box",
             )
         catalog_request = CatalogRequest(
@@ -1296,7 +1296,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                         origin_agent=self.config.module,
                     )
                 ],
-                agent="basic_ask_facets",
+                agent="nucliadb_agent_facets",
                 title=f"Faceted search on {source.id} Knowledge Box",
             )
 
@@ -1416,7 +1416,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                         origin_agent=self.config.module,
                     )
                 ],
-                agent="basic_ask_facets",
+                agent="nucliadb_agent_facets",
                 title=f"Faceted search on {source.id} Knowledge Box",
             )
 
@@ -1539,7 +1539,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                     origin_agent=self.config.module,
                 )
             ],
-            agent="basic_ask_catalog",
+            agent="nucliadb_agent_catalog",
             title=f"Catalog search on {source.id} Knowledge Box",
         )
         await memory.add_step(
