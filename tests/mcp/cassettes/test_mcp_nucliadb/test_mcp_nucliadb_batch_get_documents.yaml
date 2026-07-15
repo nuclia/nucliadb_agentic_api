@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 14 Jul 2026 18:43:17 GMT
+      - Wed, 15 Jul 2026 07:33:41 GMT
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
@@ -82,7 +82,7 @@ interactions:
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":40,"output_tokens":11,"timings":{"generative":0.8221868389955489},"input_nuclia_tokens":0.04,"output_nuclia_tokens":0.011}}
+        {"chunk":{"type":"meta","input_tokens":40,"output_tokens":11,"timings":{"generative":0.8818611689930549},"input_nuclia_tokens":0.04,"output_nuclia_tokens":0.011}}
 
         {"chunk":{"normalized_tokens":{"input":0.0396,"output":0.0112,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
@@ -97,17 +97,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Tue, 14 Jul 2026 18:43:18 GMT
+      - Wed, 15 Jul 2026 07:33:42 GMT
       nuclia-learning-id:
-      - 308700d95a5f425ba29f1223e1723b8b
+      - 4a4ffc0defb745ef95af4bd08bdc06bb
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '828'
+      - '887'
       x-nuclia-trace-id:
-      - a920975f2a558b4743bbc7ba416688ec
+      - d2b1be0043c5017923cbc6eae98be10d
     status:
       code: 200
       message: OK
@@ -207,7 +207,7 @@ interactions:
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":327,"output_tokens":93,"timings":{"generative_first_chunk":0.8671916449966375,"generative":0.868702564999694},"input_nuclia_tokens":0.327,"output_nuclia_tokens":0.093}}
+        {"chunk":{"type":"meta","input_tokens":327,"output_tokens":93,"timings":{"generative_first_chunk":1.095597144999374,"generative":1.0970160549995853},"input_nuclia_tokens":0.327,"output_nuclia_tokens":0.093}}
 
         {"chunk":{"normalized_tokens":{"input":0.3272,"output":0.0928,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
@@ -222,17 +222,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Tue, 14 Jul 2026 18:43:19 GMT
+      - Wed, 15 Jul 2026 07:33:43 GMT
       nuclia-learning-id:
-      - 0108f8aa7e914ceeb54a4d2a6b0ede2c
+      - 26db16bafcc24481b857682cfebc0146
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '874'
+      - '1103'
       x-nuclia-trace-id:
-      - deee2a748ae3a1db9830ccaab05b116a
+      - cc4df9ffa5d51f5df5ff76780a899a1c
     status:
       code: 200
       message: OK
@@ -1362,14 +1362,14 @@ interactions:
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":11138,"output_tokens":18,"timings":{"generative_first_chunk":0.9178235400031554,"generative":0.9193685400023242},"input_nuclia_tokens":11.138,"output_nuclia_tokens":0.018}}
+        {"chunk":{"type":"meta","input_tokens":11138,"output_tokens":18,"timings":{"generative_first_chunk":2.0577893489971757,"generative":2.059358477999922},"input_nuclia_tokens":11.138,"output_nuclia_tokens":0.018}}
 
         {"chunk":{"normalized_tokens":{"input":11.1384,"output":0.0176,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -1377,17 +1377,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Tue, 14 Jul 2026 18:43:19 GMT
+      - Wed, 15 Jul 2026 07:33:44 GMT
       nuclia-learning-id:
-      - 017cf450977c4a348ef5ffae7e97163d
+      - 36009cf66d50467b92754e41dcfcb592
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '923'
+      - '2062'
       x-nuclia-trace-id:
-      - 8d46118fd4995fcdfbd51372c8528e8c
+      - a8ff3051e893bfcb7eacb2ecfd5b8ae2
     status:
       code: 200
       message: OK
