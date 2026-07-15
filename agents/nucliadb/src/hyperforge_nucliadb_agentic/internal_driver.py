@@ -62,6 +62,7 @@ class InternalNucliaDBTransport(AsyncHTTPTransport):
 
 class InternalNucliaDBConnection(NucliaDBConnection):
     """Connection config for internal cluster access. Provider is nucliadb_internal."""
+
     pass
 
 
@@ -80,13 +81,13 @@ class InternalNucliaDBConfig(DriverConfig[InternalNucliaDBConnection]):
 class InternalNucliaDBDriver(NucliaDBDriver):
     @classmethod
     async def init(cls, driver: InternalNucliaDBConfig):
-        reader_url = os.environ.get("NUCLIADB_READER_INTERNAL_URL")
-        search_url = os.environ.get("NUCLIADB_SEARCH_INTERNAL_URL")
-        if not reader_url or not search_url:
+        base_url = os.environ.get("INTERNAL_NUCLIADB_URL")
+        if not base_url:
             raise RuntimeError(
-                "NUCLIADB_READER_INTERNAL_URL and NUCLIADB_SEARCH_INTERNAL_URL must be set "
-                "to use the nucliadb_internal driver"
+                "INTERNAL_NUCLIADB_URL must be set to use the nucliadb_internal driver"
             )
+        reader_url = base_url.format(component="reader")
+        search_url = base_url.format(component="search")
         headers = {"X-NUCLIADB-ROLES": "READER"}
         ndb = NucliaDBAsync(
             url=reader_url,

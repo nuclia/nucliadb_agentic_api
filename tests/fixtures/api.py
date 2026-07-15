@@ -58,8 +58,7 @@ async def nucliadb_agentic_api_app(
     nucliadb_url = nucliadb.url.replace("127.0.0.1", "localhost")
     nucliadb_agentic_settings.internal_nucliadb = True
     nucliadb_agentic_settings.internal_nucliadb_url = nucliadb_url
-    os.environ["NUCLIADB_READER_INTERNAL_URL"] = nucliadb_url
-    os.environ["NUCLIADB_SEARCH_INTERNAL_URL"] = nucliadb_url
+    os.environ["INTERNAL_NUCLIADB_URL"] = nucliadb_url
 
     # Configure ask to connect to a real NucliaDB
     ask_settings.nucliadb_reader_address = nucliadb.url
@@ -91,8 +90,7 @@ async def nucliadb_agentic_api_app(
     yield application
 
     await application.shutdown()
-    os.environ.pop("NUCLIADB_READER_INTERNAL_URL", None)
-    os.environ.pop("NUCLIADB_SEARCH_INTERNAL_URL", None)
+    os.environ.pop("INTERNAL_NUCLIADB_URL", None)
 
 
 @pytest.fixture
