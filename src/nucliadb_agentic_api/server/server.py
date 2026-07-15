@@ -7,6 +7,7 @@ from hyperforge.broker.redis import RedisBroker
 from hyperforge.feature_flag import get_flag_service
 from hyperforge.server.cache import ValkeyCache
 from hyperforge.server.run import run_metrics_server
+from hyperforge_nucliadb_agentic.ask.predict import start_predict_engine
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_telemetry.utils import setup_telemetry
@@ -38,6 +39,8 @@ async def run_server(
 ) -> NucliaDBAgenticSessionManager:
     if tracer:
         await setup_telemetry(SERVICE_NAME)
+
+    await start_predict_engine()
 
     audit_settings: AuditSettings = AuditSettings()
     # Connect to Valkey

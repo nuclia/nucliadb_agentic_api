@@ -27,11 +27,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 15 Jul 2026 09:24:06 GMT
+      - Wed, 15 Jul 2026 10:34:23 GMT
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '5'
+      - '4'
     status:
       code: 200
       message: OK
@@ -85,7 +85,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -98,23 +98,21 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"object","object":{"rephrased_question":"Suggest healthy
-        and tasty dessert options.","rules":[],"reason":"The original question ''I
-        want a desert that is healthy and tasty.'' is a statement of desire rather
-        than a clear question. Rephrasing it to ''Suggest healthy and tasty dessert
-        options.'' transforms it into an actionable request that the system can directly
-        address by providing recommendations."}}}
+      string: '{"chunk":{"type":"object","object":{"rephrased_question":"Provide healthy
+        and tasty dessert options.","rules":[],"reason":"The original question was
+        a statement of desire. Rephrasing it as a direct request for ''dessert options''
+        makes it more actionable for a retrieval system."}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":13,"output_tokens":7,"timings":{"generative":0.9653983470052481},"input_nuclia_tokens":0.013,"output_nuclia_tokens":0.007}}
+        {"chunk":{"type":"meta","input_tokens":13,"output_tokens":5,"timings":{"generative":0.7469775560002745},"input_nuclia_tokens":0.013,"output_nuclia_tokens":0.005}}
 
-        {"chunk":{"normalized_tokens":{"input":0.01334,"output":0.00704,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.01334,"output":0.00528,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -122,17 +120,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:06 GMT
+      - Wed, 15 Jul 2026 10:34:23 GMT
       nuclia-learning-id:
-      - 4b14a412319d4abe9893b3c91104c1cc
+      - fcf10a26070c4294953b890977372414
       nuclia-learning-model:
       - gemini-2.5-flash-lite
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '971'
+      - '752'
       x-nuclia-trace-id:
-      - 2b40d33c4406af970f5e74bdb21dec86
+      - 6086757085035014eedf704a913ffe0c
     status:
       code: 200
       message: OK
@@ -144,7 +142,7 @@ interactions:
       information to answer the question.\n\nExtra instructions: When asked about
       a recipe, always recommend the most relevant one from our favorite recipes,
       but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Suggest
+      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
       healthy and tasty dessert options."}], "context": [], "query_context": {}, "query_context_order":
       {}, "truncate": true, "user_prompt": {"prompt": "You are a smart assistant that
       selects tools to gather information needed to answer a user''s question.\nChoose
@@ -156,50 +154,50 @@ interactions:
       tool or tools for the task. Call task_complete when you have enough information."},
       "citations": null, "citation_threshold": null, "generative_model": "chatgpt-4.1",
       "max_tokens": null, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      null, "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      null, "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Search for context in the Knowledge Box by title. Useful for
       specific queries where the title is known.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to search
       for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
       "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Get the labels available in the Knowledge Box as a list of strings.
       Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
+      {"name": "ask_labels__263e48e9-f20c-4316-8419-243e57991b7d", "description":
       "Get the labels available in the Knowledge Box. Useful to filter searches by
       labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
+      false}}, {"name": "facets_count__263e48e9-f20c-4316-8419-243e57991b7d", "description":
       "Perform a faceted count in the Knowledge Box. Useful to get counts of different
       categories or facets within the data.", "parameters": {"type": "object", "properties":
       {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
+      {"name": "catalog_search__263e48e9-f20c-4316-8419-243e57991b7d", "description":
       "Perform a catalog search in the Knowledge Box. Useful to find items based on
       specific criteria or attributes, including labels, file types, or other metadata.",
       "parameters": {"type": "object", "properties": {"question": {"type": "string",
       "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      false}}, {"name": "all_images_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Get all image URLs from a resource in the Knowledge Box filtered
       by a specific title. Useful when the user wants to retrieve images from known
       documents.", "parameters": {"type": "object", "properties": {"title": {"type":
       "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__f4e68b4a-550a-41e2-8360-646cb5ce383a",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__242ab56c-7bb5-4e79-a673-62b7090febc3",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
@@ -225,7 +223,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -238,14 +236,14 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2":[{"function":{"name":"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2","arguments":{"question":"healthy
+      string: '{"chunk":{"type":"tools","tools":{"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d":[{"function":{"name":"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d","arguments":{"question":"healthy
         and tasty dessert recipes"}}}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":412,"output_tokens":75,"timings":{"generative_first_chunk":1.0937291029986227,"generative":1.0952084540040232},"input_nuclia_tokens":0.412,"output_nuclia_tokens":0.075}}
+        {"chunk":{"type":"meta","input_tokens":393,"output_tokens":67,"timings":{"generative_first_chunk":0.8551326289998542,"generative":0.8565133579995745},"input_nuclia_tokens":0.393,"output_nuclia_tokens":0.067}}
 
-        {"chunk":{"normalized_tokens":{"input":0.4116,"output":0.0752,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.3928,"output":0.0672,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -258,17 +256,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:07 GMT
+      - Wed, 15 Jul 2026 10:34:24 GMT
       nuclia-learning-id:
-      - c35607e40b1348c9968df98bf7e06025
+      - 1115418a32564855a8de833ac28153a0
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1101'
+      - '861'
       x-nuclia-trace-id:
-      - f9c369069583906ca48896245edd866e
+      - 641e3c5e8313c86ebe9147fba1f4ff31
     status:
       code: 200
       message: OK
@@ -307,9 +305,9 @@ interactions:
       PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
       provide a filter expression to perform the catalog search. The question is:
       ''healthy and tasty dessert recipes''.\nHere are the available labels in the
-      Knowledge Box:\n- category: yoga, one\n- sections16022026: AuditRep, TaxReconAuditRep,
-      TaxReconciliation, S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity, S_CashFlows,
-      N_GenInfo, N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories, N_PropertyRightOfUse,
+      Knowledge Box:\n- sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation,
+      S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity, S_CashFlows, N_GenInfo,
+      N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories, N_PropertyRightOfUse,
       N_IntangibleAssets, N_InvestmentProp, N_JointVentures, N_FinancialAssets, N_TradePayables,
       N_Borrowings, N_Equity, N_Revenue, N_CostOfSales, N_GenAdminExpens, N_OtherIncomeExpenses,
       N_FinIncomeExpenses, N_Employee, N_Taxation, N_EarningsPerShare, N_SegmentInfo,
@@ -317,16 +315,17 @@ interactions:
       NR_CorpInfo, NR_FinHighlights, NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis,
       NR_DirectorsRep, NR_CorpGov, NR_Schedules, NR_StatDeclarations, NR_Glossary,
       NR_NonRelevant, NR_Form_EstTax, NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344,
-      NR_Form_1323, O_unknown, NR_DepreciationForm, NR_TaxAssmntComp\n- bli: one\n-
-      bla: one\n"}, "citations": false, "citation_threshold": null, "generative_model":
-      "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images": {}, "prefer_markdown":
-      null, "json_schema": {"type": "object", "title": "Catalog Filter Expression
-      Selection", "description": "Response schema for selected filter expression.",
-      "properties": {"reasoning": {"type": "string", "description": "Reasoning behind
-      the selection of the filter expression."}, "filters": {"type": "string", "description":
-      "The filter expression to perform the catalog search as a JSON array."}}, "required":
-      ["filters"]}, "format_prompt": false, "rerank_context": false, "tools": [],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
+      NR_Form_1323, O_unknown, NR_DepreciationForm, NR_TaxAssmntComp\n- category:
+      yoga, one\n- bla: one\n- bli: one\n"}, "citations": false, "citation_threshold":
+      null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
+      {}, "prefer_markdown": null, "json_schema": {"type": "object", "title": "Catalog
+      Filter Expression Selection", "description": "Response schema for selected filter
+      expression.", "properties": {"reasoning": {"type": "string", "description":
+      "Reasoning behind the selection of the filter expression."}, "filters": {"type":
+      "string", "description": "The filter expression to perform the catalog search
+      as a JSON array."}}, "required": ["filters"]}, "format_prompt": false, "rerank_context":
+      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
+      "seed": null}'
     headers:
       Accept:
       - application/x-ndjson
@@ -345,7 +344,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -359,18 +358,18 @@ interactions:
   response:
     body:
       string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy and tasty dessert recipes, which suggests a focus on a specific category
-        related to food or recipes. However, the available labels do not include any
-        specific category for dessert or recipes. Therefore, we will filter for the
-        category ''one'' as it may relate to a general category of interest, and we
-        will not filter by any specific dessert-related labels since they are not
-        available.","filters":"[{\"all\": [\"/l/category/one\"]}]"}}}
+        healthy and tasty dessert recipes, which suggests a focus on the category
+        of recipes. However, the available labels do not include specific dessert
+        or recipe categories. Therefore, we will filter for the category ''one'' as
+        it is the only relevant category available, indicating a general interest
+        in recipes. We will also assume that the dessert aspect is implied within
+        this category.","filters":"[{\"all\": [\"/l/category/one\"]}]"}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":12,"timings":{"generative":2.1155403410011786},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.012}}
+        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":12,"timings":{"generative":1.6492561220002244},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.012}}
 
-        {"chunk":{"normalized_tokens":{"input":0.02931,"output":0.012,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.02931,"output":0.01152,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -383,17 +382,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:08 GMT
+      - Wed, 15 Jul 2026 10:34:25 GMT
       nuclia-learning-id:
-      - 8cf61edd78744f00b7ee6a4b2f9477ee
+      - 4549e12bda794be1b9309075ee74125f
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '2121'
+      - '1654'
       x-nuclia-trace-id:
-      - c6f277002c59b60075620d579c689cf0
+      - 129b913bad8a80312374ab9953554507
     status:
       code: 200
       message: OK
@@ -403,13 +402,13 @@ interactions:
       {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
       search results, please answer the following user question: ''healthy and tasty
       dessert recipes''\n\nCatalog search results for filters [{''all'': [''/l/category/one'']}]
-      in 881bdbf8ba904ba2aeddbc2dead99bb1 Knowledge Box. The results contain titles,
+      in 216bd848cf8e4c2da3e93a8572cf21a2 Knowledge Box. The results contain titles,
       formats, languages, and labels assigned to the resources for each label set.
       If a result does not have a label for a specific label set, it means no label
       was assigned for that label set. The Knowledge Box contains the following label
-      sets (with some example labels): - category: yoga, one\n- sections16022026:
-      AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss,
-      ...\n- bli: one\n- bla: one\n.\n:\n\nCatalog Results\n\n"}, "citations": null,
+      sets (with some example labels): - sections16022026: AuditRep, TaxReconAuditRep,
+      TaxReconciliation, S_FinancialPosition, S_ProfitLoss, ...\n- category: yoga,
+      one\n- bla: one\n- bli: one\n.\n:\n\nCatalog Results\n\n"}, "citations": null,
       "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens":
       2000, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
       "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
@@ -432,7 +431,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -469,9 +468,15 @@ interactions:
 
         {"chunk":{"type":"text","text":" contain"}}
 
+        {"chunk":{"type":"text","text":" any"}}
+
         {"chunk":{"type":"text","text":" specific"}}
 
-        {"chunk":{"type":"text","text":" entries"}}
+        {"chunk":{"type":"text","text":" titles"}}
+
+        {"chunk":{"type":"text","text":" or"}}
+
+        {"chunk":{"type":"text","text":" resources"}}
 
         {"chunk":{"type":"text","text":" related"}}
 
@@ -497,45 +502,41 @@ interactions:
 
         {"chunk":{"type":"text","text":" are"}}
 
+        {"chunk":{"type":"text","text":" primarily"}}
+
         {"chunk":{"type":"text","text":" categorized"}}
 
         {"chunk":{"type":"text","text":" under"}}
 
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" general"}}
-
-        {"chunk":{"type":"text","text":" label"}}
-
-        {"chunk":{"type":"text","text":" without"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" titles"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" descriptions"}}
+        {"chunk":{"type":"text","text":" sections"}}
 
         {"chunk":{"type":"text","text":" that"}}
 
-        {"chunk":{"type":"text","text":" would"}}
+        {"chunk":{"type":"text","text":" do"}}
 
-        {"chunk":{"type":"text","text":" help"}}
+        {"chunk":{"type":"text","text":" not"}}
 
-        {"chunk":{"type":"text","text":" in"}}
+        {"chunk":{"type":"text","text":" pert"}}
 
-        {"chunk":{"type":"text","text":" finding"}}
+        {"chunk":{"type":"text","text":"ain"}}
 
-        {"chunk":{"type":"text","text":" dessert"}}
+        {"chunk":{"type":"text","text":" to"}}
+
+        {"chunk":{"type":"text","text":" cooking"}}
+
+        {"chunk":{"type":"text","text":" or"}}
 
         {"chunk":{"type":"text","text":" recipes"}}
 
         {"chunk":{"type":"text","text":".\n\n"}}
 
-        {"chunk":{"type":"text","text":"To"}}
+        {"chunk":{"type":"text","text":"If"}}
 
-        {"chunk":{"type":"text","text":" find"}}
+        {"chunk":{"type":"text","text":" you''re"}}
+
+        {"chunk":{"type":"text","text":" looking"}}
+
+        {"chunk":{"type":"text","text":" for"}}
 
         {"chunk":{"type":"text","text":" healthy"}}
 
@@ -549,487 +550,6 @@ interactions:
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" might"}}
-
-        {"chunk":{"type":"text","text":" consider"}}
-
-        {"chunk":{"type":"text","text":" searching"}}
-
-        {"chunk":{"type":"text","text":" in"}}
-
-        {"chunk":{"type":"text","text":" dedicated"}}
-
-        {"chunk":{"type":"text","text":" cooking"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" recipe"}}
-
-        {"chunk":{"type":"text","text":" databases"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" websites"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" cook"}}
-
-        {"chunk":{"type":"text","text":"books"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" focus"}}
-
-        {"chunk":{"type":"text","text":" on"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" eating"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" If"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" have"}}
-
-        {"chunk":{"type":"text","text":" any"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" ingredients"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" types"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" desserts"}}
-
-        {"chunk":{"type":"text","text":" in"}}
-
-        {"chunk":{"type":"text","text":" mind"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" I"}}
-
-        {"chunk":{"type":"text","text":" can"}}
-
-        {"chunk":{"type":"text","text":" help"}}
-
-        {"chunk":{"type":"text","text":" suggest"}}
-
-        {"chunk":{"type":"text","text":" some"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" ideas"}}
-
-        {"chunk":{"type":"text","text":"!"}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":12,"timings":{"generative_first_chunk":0.8032943070011243,"generative":2.1486063669999567},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.012}}
-
-        {"chunk":{"normalized_tokens":{"input":0.00561,"output":0.01164,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:11 GMT
-      nuclia-learning-id:
-      - a8439d5a1320412e8e306a942f313912
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '812'
-      x-nuclia-trace-id:
-      - 9b2bfbd515d2755e5cf513f860f03f59
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
-      "You are a smart assistant that selects tools to gather information needed to
-      answer a user''s question.\nChoose the best tool or tools for the task. You
-      may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Suggest
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific entries related
-      to \"healthy and tasty dessert recipes.\" The results are categorized under
-      a general label without specific titles or descriptions that would help in finding
-      dessert recipes.\n\nTo find healthy and tasty dessert recipes, you might consider
-      searching in dedicated cooking or recipe databases, websites, or cookbooks that
-      focus on healthy eating. If you have any specific ingredients or types of desserts
-      in mind, I can help suggest some recipes or ideas! ```\n\n"}], "context": [],
-      "query_context": {}, "query_context_order": {}, "truncate": true, "user_prompt":
-      {"prompt": "You are a smart assistant that selects tools to gather information
-      needed to answer a user''s question.\nChoose the best tool or tools for the
-      task. You may call multiple tools in one turn.\nCall task_complete when you
-      have enough information to answer the question.\n\nExtra instructions: When
-      asked about a recipe, always recommend the most relevant one from our favorite
-      recipes, but if asked about a very specific recipe that is not in our favorites,
-      check the recipes from internet.\n\n\nChoose the best tool or tools for the
-      task. Call task_complete when you have enough information."}, "citations": null,
-      "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
-      null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
-      {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Perform a faceted search in the Knowledge Box. Useful to get
-      counts of different categories or facets within the data.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for images in a resource in the Knowledge Box filtered
-      by a specific title and relevant image information. Useful when the user wants
-      to retrieve selected images from known documents.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to filter
-      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
-      "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__f4e68b4a-550a-41e2-8360-646cb5ce383a",
-      "description": "Performs an internet search using Perplexity Search to get context
-      to answer questions.", "parameters": {"type": "object", "properties": {"question":
-      {"type": "string", "description": "The question to search for on the internet."}},
-      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
-      this tool when you have gathered enough information to answer the question and
-      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '6545'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2":[{"function":{"name":"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2","arguments":{"question":"favorite
-        healthy dessert recipes"}}}]}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":493,"output_tokens":74,"timings":{"generative_first_chunk":1.0968954609998036,"generative":1.0983939719881164},"input_nuclia_tokens":0.493,"output_nuclia_tokens":0.074}}
-
-        {"chunk":{"normalized_tokens":{"input":0.4928,"output":0.0736,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:13 GMT
-      nuclia-learning-id:
-      - e95f186b1b5b4a95a31cae279d777d1b
-      nuclia-learning-model:
-      - chatgpt-4.1
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1104'
-      x-nuclia-trace-id:
-      - be4668955dbdb237cb306a66685e06c0
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-label-selection",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nThe user wants to perform
-      a catalog search in the Knowledge Box based on a question.\n\nYou need to identify
-      the most relevant labels and provide a filter expression to perform the catalog
-      search. The filter expression should be in the format used by NucliaDB.\n\nThe
-      nucliadb format for filter expressions is as follows:\n- Use \"any\" to indicate
-      that any of the properties can match (logical OR).\n- Use \"all\" to indicate
-      that all of the listed labels must match (logical AND).\n- Use \"none\" to indicate
-      that the listed labels should not match (logical NOT).\n\nSequential filters
-      are treated as AND conditions.\n\nFor filtering by labels, use the format \"/l/{labelset}/{label}\".\n\nFor
-      filtering by label sets without specifying a label, use the format \"/l/{labelset}/\".\n\nFor
-      filtering by file types, use the media type prefixed by \"/icon/\".\n\n**Example
-      1:**\nQuestion: ''Find all documents related to technology and health.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''any'': [''/l/topic/technology'',
-      ''/l/topic/health'']}], \"reasoning\": \"The question is about documents related
-      to technology and health, so we create a filter expresion to match any of the
-      labels technology or health in the topic label set.\"}\n\n**Example 2:**\nQuestion:
-      ''Get all PDFs that are research articles.''\nAvailable Labels:\n{\"topic\":
-      [\"technology\", \"health\", \"sports\"], \"category\": [\"research\", \"news\",
-      \"blog\"]}\nAnswer:\n{\"filters\": [{''all'': [''/l/category/research'', ''/icon/application/pdf'']}],
-      \"reasoning\": \"The question specifies research articles in PDF format, so
-      we create a filter expression that requires both the category to be research
-      and the media type to be PDF.\"}\n\n**Example 3:**\nQuestion: ''Show me all
-      documents without a set topic, that are either PDFs or Word format.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''none'': [''/l/topic'']},
-      {''any'': [''/icon/application/pdf'', ''/icon/application/vnd.openxmlformats-officedocument.wordprocessingml.document'']}],
-      \"reasoning\": \"The question asks for documents excluding sports, so we use
-      a ''not'' filter for the topic sports, and an ''any'' filter for the media types
-      PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
-      provide a filter expression to perform the catalog search. The question is:
-      ''favorite healthy dessert recipes''.\nHere are the available labels in the
-      Knowledge Box:\n- category: yoga, one\n- sections16022026: AuditRep, TaxReconAuditRep,
-      TaxReconciliation, S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity, S_CashFlows,
-      N_GenInfo, N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories, N_PropertyRightOfUse,
-      N_IntangibleAssets, N_InvestmentProp, N_JointVentures, N_FinancialAssets, N_TradePayables,
-      N_Borrowings, N_Equity, N_Revenue, N_CostOfSales, N_GenAdminExpens, N_OtherIncomeExpenses,
-      N_FinIncomeExpenses, N_Employee, N_Taxation, N_EarningsPerShare, N_SegmentInfo,
-      N_RelatedParty, N_ContingentLiabil, N_Events, N_OtherNotes, NR_CoverPage, NR_TableOfContents,
-      NR_CorpInfo, NR_FinHighlights, NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis,
-      NR_DirectorsRep, NR_CorpGov, NR_Schedules, NR_StatDeclarations, NR_Glossary,
-      NR_NonRelevant, NR_Form_EstTax, NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344,
-      NR_Form_1323, O_unknown, NR_DepreciationForm, NR_TaxAssmntComp\n- bli: one\n-
-      bla: one\n"}, "citations": false, "citation_threshold": null, "generative_model":
-      "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images": {}, "prefer_markdown":
-      null, "json_schema": {"type": "object", "title": "Catalog Filter Expression
-      Selection", "description": "Response schema for selected filter expression.",
-      "properties": {"reasoning": {"type": "string", "description": "Reasoning behind
-      the selection of the filter expression."}, "filters": {"type": "string", "description":
-      "The filter expression to perform the catalog search as a JSON array."}}, "required":
-      ["filters"]}, "format_prompt": false, "rerank_context": false, "tools": [],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '4420'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy dessert recipes, but the available labels do not include any specific
-        category for recipes or desserts. However, since ''one'' is a category that
-        could potentially relate to healthy options, we will filter for that category.
-        We do not have any specific media types mentioned, so we will not include
-        any media type filters.","filters":"[{\"any\": [\"/l/category/one\"]}]"}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":11,"timings":{"generative":2.057572905003326},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.011}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02928,"output":0.01056,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:15 GMT
-      nuclia-learning-id:
-      - b826e3933c7f406e8f6b085b2d7e2a06
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '2062'
-      x-nuclia-trace-id:
-      - bd3f77b75e5025e72a4aa077dd42e4f6
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-search-answer",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
-      search results, please answer the following user question: ''favorite healthy
-      dessert recipes''\n\nCatalog search results for filters [{''any'': [''/l/category/one'']}]
-      in 881bdbf8ba904ba2aeddbc2dead99bb1 Knowledge Box. The results contain titles,
-      formats, languages, and labels assigned to the resources for each label set.
-      If a result does not have a label for a specific label set, it means no label
-      was assigned for that label set. The Knowledge Box contains the following label
-      sets (with some example labels): - category: yoga, one\n- sections16022026:
-      AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss,
-      ...\n- bli: one\n- bla: one\n.\n:\n\nCatalog Results\n\n"}, "citations": null,
-      "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens":
-      2000, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1219'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"text","text":"It"}}
-
-        {"chunk":{"type":"text","text":" seems"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" catalog"}}
-
-        {"chunk":{"type":"text","text":" search"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" provided"}}
-
-        {"chunk":{"type":"text","text":" do"}}
-
-        {"chunk":{"type":"text","text":" not"}}
-
-        {"chunk":{"type":"text","text":" contain"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" information"}}
-
-        {"chunk":{"type":"text","text":" about"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" However"}}
-
-        {"chunk":{"type":"text","text":","}}
-
         {"chunk":{"type":"text","text":" I"}}
 
         {"chunk":{"type":"text","text":" can"}}
@@ -1040,19 +560,7 @@ interactions:
 
         {"chunk":{"type":"text","text":" popular"}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" ideas"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" might"}}
-
-        {"chunk":{"type":"text","text":" enjoy"}}
+        {"chunk":{"type":"text","text":" options"}}
 
         {"chunk":{"type":"text","text":":\n\n"}}
 
@@ -1130,60 +638,6 @@ interactions:
 
         {"chunk":{"type":"text","text":" **"}}
 
-        {"chunk":{"type":"text","text":"Greek"}}
-
-        {"chunk":{"type":"text","text":" Yog"}}
-
-        {"chunk":{"type":"text","text":"urt"}}
-
-        {"chunk":{"type":"text","text":" Par"}}
-
-        {"chunk":{"type":"text","text":"fait"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Layer"}}
-
-        {"chunk":{"type":"text","text":" Greek"}}
-
-        {"chunk":{"type":"text","text":" yogurt"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" fresh"}}
-
-        {"chunk":{"type":"text","text":" berries"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" sprinkle"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" gran"}}
-
-        {"chunk":{"type":"text","text":"ola"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" nutritious"}}
-
-        {"chunk":{"type":"text","text":" treat"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"3"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
         {"chunk":{"type":"text","text":"Ban"}}
 
         {"chunk":{"type":"text","text":"ana"}}
@@ -1214,9 +668,7 @@ interactions:
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" dairy"}}
-
-        {"chunk":{"type":"text","text":"-free"}}
+        {"chunk":{"type":"text","text":" healthy"}}
 
         {"chunk":{"type":"text","text":" ice"}}
 
@@ -1226,7 +678,7 @@ interactions:
 
         {"chunk":{"type":"text","text":".\n\n"}}
 
-        {"chunk":{"type":"text","text":"4"}}
+        {"chunk":{"type":"text","text":"3"}}
 
         {"chunk":{"type":"text","text":"."}}
 
@@ -1276,13 +728,13 @@ interactions:
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
+        {"chunk":{"type":"text","text":" creamy"}}
 
         {"chunk":{"type":"text","text":" dessert"}}
 
         {"chunk":{"type":"text","text":".\n\n"}}
 
-        {"chunk":{"type":"text","text":"5"}}
+        {"chunk":{"type":"text","text":"4"}}
 
         {"chunk":{"type":"text","text":"."}}
 
@@ -1300,11 +752,7 @@ interactions:
 
         {"chunk":{"type":"text","text":":"}}
 
-        {"chunk":{"type":"text","text":" Make"}}
-
-        {"chunk":{"type":"text","text":" cookies"}}
-
-        {"chunk":{"type":"text","text":" using"}}
+        {"chunk":{"type":"text","text":" Use"}}
 
         {"chunk":{"type":"text","text":" oats"}}
 
@@ -1328,9 +776,63 @@ interactions:
 
         {"chunk":{"type":"text","text":" a"}}
 
-        {"chunk":{"type":"text","text":" wholesome"}}
+        {"chunk":{"type":"text","text":" healthier"}}
 
-        {"chunk":{"type":"text","text":" snack"}}
+        {"chunk":{"type":"text","text":" cookie"}}
+
+        {"chunk":{"type":"text","text":" option"}}
+
+        {"chunk":{"type":"text","text":".\n\n"}}
+
+        {"chunk":{"type":"text","text":"5"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Fruit"}}
+
+        {"chunk":{"type":"text","text":" Salad"}}
+
+        {"chunk":{"type":"text","text":" with"}}
+
+        {"chunk":{"type":"text","text":" Honey"}}
+
+        {"chunk":{"type":"text","text":" Lime"}}
+
+        {"chunk":{"type":"text","text":" Dressing"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" Combine"}}
+
+        {"chunk":{"type":"text","text":" your"}}
+
+        {"chunk":{"type":"text","text":" favorite"}}
+
+        {"chunk":{"type":"text","text":" fruits"}}
+
+        {"chunk":{"type":"text","text":" and"}}
+
+        {"chunk":{"type":"text","text":" drizzle"}}
+
+        {"chunk":{"type":"text","text":" with"}}
+
+        {"chunk":{"type":"text","text":" a"}}
+
+        {"chunk":{"type":"text","text":" mixture"}}
+
+        {"chunk":{"type":"text","text":" of"}}
+
+        {"chunk":{"type":"text","text":" honey"}}
+
+        {"chunk":{"type":"text","text":" and"}}
+
+        {"chunk":{"type":"text","text":" lime"}}
+
+        {"chunk":{"type":"text","text":" juice"}}
 
         {"chunk":{"type":"text","text":".\n\n"}}
 
@@ -1338,11 +840,9 @@ interactions:
 
         {"chunk":{"type":"text","text":" you"}}
 
-        {"chunk":{"type":"text","text":" have"}}
+        {"chunk":{"type":"text","text":" need"}}
 
-        {"chunk":{"type":"text","text":" access"}}
-
-        {"chunk":{"type":"text","text":" to"}}
+        {"chunk":{"type":"text","text":" more"}}
 
         {"chunk":{"type":"text","text":" specific"}}
 
@@ -1350,7 +850,7 @@ interactions:
 
         {"chunk":{"type":"text","text":" or"}}
 
-        {"chunk":{"type":"text","text":" resources"}}
+        {"chunk":{"type":"text","text":" ideas"}}
 
         {"chunk":{"type":"text","text":","}}
 
@@ -1360,40 +860,20 @@ interactions:
 
         {"chunk":{"type":"text","text":" to"}}
 
-        {"chunk":{"type":"text","text":" share"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" I"}}
-
-        {"chunk":{"type":"text","text":" can"}}
-
-        {"chunk":{"type":"text","text":" help"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" find"}}
-
-        {"chunk":{"type":"text","text":" more"}}
-
-        {"chunk":{"type":"text","text":" detailed"}}
-
-        {"chunk":{"type":"text","text":" information"}}
+        {"chunk":{"type":"text","text":" ask"}}
 
         {"chunk":{"type":"text","text":"!"}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":24,"timings":{"generative_first_chunk":0.849596988002304,"generative":3.2974368459981633},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.024}}
+        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":25,"timings":{"generative_first_chunk":0.5684999760123901,"generative":2.8406617010041373},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.025}}
 
-        {"chunk":{"normalized_tokens":{"input":0.00558,"output":0.02388,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.00573,"output":0.02532,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -1401,17 +881,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:17 GMT
+      - Wed, 15 Jul 2026 10:34:28 GMT
       nuclia-learning-id:
-      - 5bc0e4e167484abd93e5e3819a0080eb
+      - 91bf32c2fff044c1b545aa4c1bfde45e
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '856'
+      - '576'
       x-nuclia-trace-id:
-      - d9d785a5a17a7d7009f5188ed84104ae
+      - aeeaf53658b9917eba47e9d61182e40d
     status:
       code: 200
       message: OK
@@ -1423,35 +903,25 @@ interactions:
       information to answer the question.\n\nExtra instructions: When asked about
       a recipe, always recommend the most relevant one from our favorite recipes,
       but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Suggest
+      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
       healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters {''question'': ''healthy
+      of 263e48e9-f20c-4316-8419-243e57991b7d with parameters {''question'': ''healthy
       and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
+      of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with parameters
       {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific entries related
-      to \"healthy and tasty dessert recipes.\" The results are categorized under
-      a general label without specific titles or descriptions that would help in finding
-      dessert recipes.\n\nTo find healthy and tasty dessert recipes, you might consider
-      searching in dedicated cooking or recipe databases, websites, or cookbooks that
-      focus on healthy eating. If you have any specific ingredients or types of desserts
-      in mind, I can help suggest some recipes or ideas! ```\n\n"}, {"author": "NUCLIA",
-      "text": "[catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''favorite healthy dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''favorite healthy dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific information about
-      healthy dessert recipes. However, I can suggest some popular healthy dessert
-      ideas that you might enjoy:\n\n1. **Chia Seed Pudding**: Mix chia seeds with
-      almond milk and a sweetener of your choice. Let it sit overnight and top with
-      fresh fruits.\n\n2. **Greek Yogurt Parfait**: Layer Greek yogurt with fresh
-      berries and a sprinkle of granola for a nutritious treat.\n\n3. **Banana Ice
-      Cream**: Blend frozen bananas until smooth for a creamy, dairy-free ice cream
-      alternative.\n\n4. **Avocado Chocolate Mousse**: Blend ripe avocados with cocoa
-      powder and a sweetener for a rich, healthy dessert.\n\n5. **Oatmeal Cookies**:
-      Make cookies using oats, mashed bananas, and dark chocolate chips for a wholesome
-      snack.\n\nIf you have access to specific recipes or resources, feel free to
-      share, and I can help you find more detailed information! ```\n\n"}], "context":
+      catalog search results you provided do not contain any specific titles or resources
+      related to \"healthy and tasty dessert recipes.\" The results are primarily
+      categorized under sections that do not pertain to cooking or recipes.\n\nIf
+      you''re looking for healthy and tasty dessert recipes, I can suggest some popular
+      options:\n\n1. **Chia Seed Pudding**: Mix chia seeds with almond milk and a
+      sweetener of your choice. Let it sit overnight and top with fresh fruits.\n\n2.
+      **Banana Ice Cream**: Blend frozen bananas until smooth for a creamy, healthy
+      ice cream alternative.\n\n3. **Avocado Chocolate Mousse**: Blend ripe avocados
+      with cocoa powder and a sweetener for a rich, creamy dessert.\n\n4. **Oatmeal
+      Cookies**: Use oats, mashed bananas, and dark chocolate chips for a healthier
+      cookie option.\n\n5. **Fruit Salad with Honey Lime Dressing**: Combine your
+      favorite fruits and drizzle with a mixture of honey and lime juice.\n\nIf you
+      need more specific recipes or ideas, feel free to ask! ```\n\n"}], "context":
       [], "query_context": {}, "query_context_order": {}, "truncate": true, "user_prompt":
       {"prompt": "You are a smart assistant that selects tools to gather information
       needed to answer a user''s question.\nChoose the best tool or tools for the
@@ -1463,50 +933,50 @@ interactions:
       task. Call task_complete when you have enough information."}, "citations": null,
       "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
       null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Search for context in the Knowledge Box by title. Useful for
       specific queries where the title is known.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to search
       for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
       "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Get the labels available in the Knowledge Box as a list of strings.
       Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
+      {"name": "ask_labels__263e48e9-f20c-4316-8419-243e57991b7d", "description":
       "Get the labels available in the Knowledge Box. Useful to filter searches by
       labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
+      false}}, {"name": "facets_count__263e48e9-f20c-4316-8419-243e57991b7d", "description":
       "Perform a faceted count in the Knowledge Box. Useful to get counts of different
       categories or facets within the data.", "parameters": {"type": "object", "properties":
       {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
+      {"name": "catalog_search__263e48e9-f20c-4316-8419-243e57991b7d", "description":
       "Perform a catalog search in the Knowledge Box. Useful to find items based on
       specific criteria or attributes, including labels, file types, or other metadata.",
       "parameters": {"type": "object", "properties": {"question": {"type": "string",
       "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      false}}, {"name": "all_images_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Get all image URLs from a resource in the Knowledge Box filtered
       by a specific title. Useful when the user wants to retrieve images from known
       documents.", "parameters": {"type": "object", "properties": {"title": {"type":
       "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__263e48e9-f20c-4316-8419-243e57991b7d",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__f4e68b4a-550a-41e2-8360-646cb5ce383a",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__242ab56c-7bb5-4e79-a673-62b7090febc3",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
@@ -1522,7 +992,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '7825'
+      - '7009'
       Content-Type:
       - application/json
       Host:
@@ -1532,7 +1002,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -1545,14 +1015,14 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2":[{"function":{"name":"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2","arguments":{"question":"healthy
-        dessert recipes from favorite recipes"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d":[{"function":{"name":"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d","arguments":{"question":"healthy
+        dessert recipes"}}}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":614,"output_tokens":77,"timings":{"generative_first_chunk":1.2633328060037456,"generative":1.2648205169971334},"input_nuclia_tokens":0.614,"output_nuclia_tokens":0.077}}
+        {"chunk":{"type":"meta","input_tokens":516,"output_tokens":64,"timings":{"generative_first_chunk":1.0266156769939698,"generative":1.028807157999836},"input_nuclia_tokens":0.516,"output_nuclia_tokens":0.064}}
 
-        {"chunk":{"normalized_tokens":{"input":0.614,"output":0.0768,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.5164,"output":0.064,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -1565,17 +1035,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:20 GMT
+      - Wed, 15 Jul 2026 10:34:31 GMT
       nuclia-learning-id:
-      - 7acff135161a4265a9deb1c2d3ebb3c4
+      - 96326ceda5eb4e548a7e01d48375cda6
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1271'
+      - '1034'
       x-nuclia-trace-id:
-      - 0873ae6996e2d4498f94a5c1de3c3ee2
+      - d8102fc0951dd79add9c1e26efe16612
     status:
       code: 200
       message: OK
@@ -1613,28 +1083,28 @@ interactions:
       a ''not'' filter for the topic sports, and an ''any'' filter for the media types
       PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
       provide a filter expression to perform the catalog search. The question is:
-      ''healthy dessert recipes from favorite recipes''.\nHere are the available labels
-      in the Knowledge Box:\n- category: yoga, one\n- sections16022026: AuditRep,
-      TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity,
-      S_CashFlows, N_GenInfo, N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories,
-      N_PropertyRightOfUse, N_IntangibleAssets, N_InvestmentProp, N_JointVentures,
-      N_FinancialAssets, N_TradePayables, N_Borrowings, N_Equity, N_Revenue, N_CostOfSales,
-      N_GenAdminExpens, N_OtherIncomeExpenses, N_FinIncomeExpenses, N_Employee, N_Taxation,
-      N_EarningsPerShare, N_SegmentInfo, N_RelatedParty, N_ContingentLiabil, N_Events,
-      N_OtherNotes, NR_CoverPage, NR_TableOfContents, NR_CorpInfo, NR_FinHighlights,
-      NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis, NR_DirectorsRep, NR_CorpGov,
-      NR_Schedules, NR_StatDeclarations, NR_Glossary, NR_NonRelevant, NR_Form_EstTax,
-      NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344, NR_Form_1323, O_unknown,
-      NR_DepreciationForm, NR_TaxAssmntComp\n- bli: one\n- bla: one\n"}, "citations":
-      false, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      {"type": "object", "title": "Catalog Filter Expression Selection", "description":
-      "Response schema for selected filter expression.", "properties": {"reasoning":
-      {"type": "string", "description": "Reasoning behind the selection of the filter
-      expression."}, "filters": {"type": "string", "description": "The filter expression
-      to perform the catalog search as a JSON array."}}, "required": ["filters"]},
-      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
+      ''healthy dessert recipes''.\nHere are the available labels in the Knowledge
+      Box:\n- sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition,
+      S_ProfitLoss, S_ChangesInEquity, S_CashFlows, N_GenInfo, N_PolicyInfo, N_Cash,
+      N_TradeReceivables, N_Inventories, N_PropertyRightOfUse, N_IntangibleAssets,
+      N_InvestmentProp, N_JointVentures, N_FinancialAssets, N_TradePayables, N_Borrowings,
+      N_Equity, N_Revenue, N_CostOfSales, N_GenAdminExpens, N_OtherIncomeExpenses,
+      N_FinIncomeExpenses, N_Employee, N_Taxation, N_EarningsPerShare, N_SegmentInfo,
+      N_RelatedParty, N_ContingentLiabil, N_Events, N_OtherNotes, NR_CoverPage, NR_TableOfContents,
+      NR_CorpInfo, NR_FinHighlights, NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis,
+      NR_DirectorsRep, NR_CorpGov, NR_Schedules, NR_StatDeclarations, NR_Glossary,
+      NR_NonRelevant, NR_Form_EstTax, NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344,
+      NR_Form_1323, O_unknown, NR_DepreciationForm, NR_TaxAssmntComp\n- category:
+      yoga, one\n- bla: one\n- bli: one\n"}, "citations": false, "citation_threshold":
+      null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
+      {}, "prefer_markdown": null, "json_schema": {"type": "object", "title": "Catalog
+      Filter Expression Selection", "description": "Response schema for selected filter
+      expression.", "properties": {"reasoning": {"type": "string", "description":
+      "Reasoning behind the selection of the filter expression."}, "filters": {"type":
+      "string", "description": "The filter expression to perform the catalog search
+      as a JSON array."}}, "required": ["filters"]}, "format_prompt": false, "rerank_context":
+      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
+      "seed": null}'
     headers:
       Accept:
       - application/x-ndjson
@@ -1643,7 +1113,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4433'
+      - '4411'
       Content-Type:
       - application/json
       Host:
@@ -1653,7 +1123,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -1667,22 +1137,23 @@ interactions:
   response:
     body:
       string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy dessert recipes, but the available labels do not include any specific
-        labels related to recipes or desserts. However, since ''one'' is the only
-        category available, we can filter for that category. The filter expression
-        will include the category ''one'' as it may encompass the desired content.","filters":"[{\"all\":
-        [\"/l/category/one\"]}]"}}}
+        healthy dessert recipes, which suggests a focus on food-related content. However,
+        the available labels do not include any specific labels related to recipes
+        or desserts. Therefore, we will create a filter expression that indicates
+        a general search for any content related to the category of ''one'', which
+        may encompass various topics including healthy desserts.","filters":"[{\"any\":
+        [\"/l/category/yoga\", \"/l/category/one\"]}]}"}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":10,"timings":{"generative":2.0449722739995195},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.01}}
+        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":12,"timings":{"generative":1.7859107429994765},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.012}}
 
-        {"chunk":{"normalized_tokens":{"input":0.02934,"output":0.00984,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.02925,"output":0.01152,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -1690,17 +1161,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:21 GMT
+      - Wed, 15 Jul 2026 10:34:31 GMT
       nuclia-learning-id:
-      - 85d12144e0a84312b4519b73a8309dac
+      - bb112adbc40b423b84eeacdc38e5420b
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '2054'
+      - '1792'
       x-nuclia-trace-id:
-      - eebd58a866e2cd8abbe86af0a83f07c3
+      - 540345b7588e449d570da55fbf4750e3
     status:
       code: 200
       message: OK
@@ -1709,18 +1180,47 @@ interactions:
       "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
       {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
       search results, please answer the following user question: ''healthy dessert
-      recipes from favorite recipes''\n\nCatalog search results for filters [{''all'':
-      [''/l/category/one'']}] in 881bdbf8ba904ba2aeddbc2dead99bb1 Knowledge Box. The
-      results contain titles, formats, languages, and labels assigned to the resources
-      for each label set. If a result does not have a label for a specific label set,
-      it means no label was assigned for that label set. The Knowledge Box contains
-      the following label sets (with some example labels): - category: yoga, one\n-
-      sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition,
-      S_ProfitLoss, ...\n- bli: one\n- bla: one\n.\n:\n\nCatalog Results\n\n"}, "citations":
-      null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      null, "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
+      recipes''\n\nCatalog search results for filters [] in 216bd848cf8e4c2da3e93a8572cf21a2
+      Knowledge Box. The results contain titles, formats, languages, and labels assigned
+      to the resources for each label set. If a result does not have a label for a
+      specific label set, it means no label was assigned for that label set. The Knowledge
+      Box contains the following label sets (with some example labels): - sections16022026:
+      AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss,
+      ...\n- category: yoga, one\n- bla: one\n- bli: one\n.\n:\n\nCatalog Results\n\n-
+      Title: carrot-cake-A4.pdf\n  Format: application/pdf\n  Language: en\n\n- Title:
+      chocolate-chip-cookies-A4.pdf\n  Format: application/pdf\n  Language: en\n\n-
+      Title: Zucchini-bread-A4.pdf\n  Format: application/pdf\n  Language: en\n  User
+      defined Labels: category:\"yoga\"\n\n- Title: banana-bread-A4.pdf\n  Format:
+      application/pdf\n  Language: en\n\n- Title: Gingerbread-Cake-A4.pdf\n  Format:
+      application/pdf\n  Language: en\n\n- Title: Sugar-Cookies-A4.pdf\n  Format:
+      application/pdf\n  Language: en\n\n- Title: Singin''in the rain\n  Format: text/plain\n  Language:
+      en\n\n- Title: Singin''in the rain\n  Format: text/plain\n  Language: en\n\n-
+      Title: Singin''in the rain\n  Format: text/plain\n  Language: en\n\n- Title:
+      Singin''in the rain\n  Format: text/plain\n  Language: en\n\n- Title: Singin''in
+      the rain\n  Format: text/plain\n  Language: en\n\n- Title: Star Wars\n  Format:
+      text/plain\n  Language: en\n\n- Title: Star Wars\n  Format: text/plain\n  Language:
+      en\n\n- Title: Star Wars\n  Format: text/plain\n  Language: en\n\n- Title: Star
+      Wars\n  Format: text/plain\n  Language: en\n\n- Title: Star Wars\n  Format:
+      text/plain\n  Language: en\n\n- Title: Star Wars\n  Format: text/plain\n  Language:
+      en\n\n- Title: Star Wars\n  Format: text/plain\n  Language: en\n\n- Title: Carrie
+      Fisher\n  Format: text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format:
+      text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language:
+      en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title:
+      Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format:
+      text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language:
+      en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title:
+      Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format:
+      text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language:
+      en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title:
+      Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format:
+      text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language:
+      en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title:
+      Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format:
+      text/plain\n  Language: en\n\n"}, "citations": null, "citation_threshold": null,
+      "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
+      {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
+      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
+      "seed": null}'
     headers:
       Accept:
       - application/x-ndjson
@@ -1729,7 +1229,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1232'
+      - '3623'
       Content-Type:
       - application/json
       Host:
@@ -1739,7 +1239,7 @@ interactions:
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - e4c79112d72249228d2487b28c10d83e
+      - 5a32aa83b09f48929e811420fa3751d0
       x-origin:
       - RAO
       x-session:
@@ -1752,980 +1252,26 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"text","text":"It"}}
-
-        {"chunk":{"type":"text","text":" seems"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" catalog"}}
-
-        {"chunk":{"type":"text","text":" search"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":" do"}}
-
-        {"chunk":{"type":"text","text":" not"}}
-
-        {"chunk":{"type":"text","text":" provide"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" titles"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" details"}}
-
-        {"chunk":{"type":"text","text":" about"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" from"}}
-
-        {"chunk":{"type":"text","text":" favorite"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" To"}}
-
-        {"chunk":{"type":"text","text":" assist"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" better"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" could"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" please"}}
-
-        {"chunk":{"type":"text","text":" clarify"}}
-
-        {"chunk":{"type":"text","text":" if"}}
-
-        {"chunk":{"type":"text","text":" you"}}
+      string: '{"chunk":{"type":"text","text":"Here"}}
 
         {"chunk":{"type":"text","text":" are"}}
 
-        {"chunk":{"type":"text","text":" looking"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" types"}}
-
-        {"chunk":{"type":"text","text":" of"}}
+        {"chunk":{"type":"text","text":" some"}}
 
         {"chunk":{"type":"text","text":" healthy"}}
 
         {"chunk":{"type":"text","text":" dessert"}}
 
         {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" if"}}
 
         {"chunk":{"type":"text","text":" you"}}
 
-        {"chunk":{"type":"text","text":" have"}}
+        {"chunk":{"type":"text","text":" can"}}
 
-        {"chunk":{"type":"text","text":" any"}}
-
-        {"chunk":{"type":"text","text":" particular"}}
-
-        {"chunk":{"type":"text","text":" ingredients"}}
-
-        {"chunk":{"type":"text","text":" in"}}
-
-        {"chunk":{"type":"text","text":" mind"}}
-
-        {"chunk":{"type":"text","text":"?"}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":6,"timings":{"generative_first_chunk":0.660066194992396,"generative":2.1825577139970846},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.006}}
-
-        {"chunk":{"normalized_tokens":{"input":0.00564,"output":0.00636,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:24 GMT
-      nuclia-learning-id:
-      - 55bda00b13b44299b93bb11ca7ac77ea
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '667'
-      x-nuclia-trace-id:
-      - d475548844bde5ab86dcd821e3878977
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
-      "You are a smart assistant that selects tools to gather information needed to
-      answer a user''s question.\nChoose the best tool or tools for the task. You
-      may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Suggest
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific entries related
-      to \"healthy and tasty dessert recipes.\" The results are categorized under
-      a general label without specific titles or descriptions that would help in finding
-      dessert recipes.\n\nTo find healthy and tasty dessert recipes, you might consider
-      searching in dedicated cooking or recipe databases, websites, or cookbooks that
-      focus on healthy eating. If you have any specific ingredients or types of desserts
-      in mind, I can help suggest some recipes or ideas! ```\n\n"}, {"author": "NUCLIA",
-      "text": "[catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''favorite healthy dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''favorite healthy dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific information about
-      healthy dessert recipes. However, I can suggest some popular healthy dessert
-      ideas that you might enjoy:\n\n1. **Chia Seed Pudding**: Mix chia seeds with
-      almond milk and a sweetener of your choice. Let it sit overnight and top with
-      fresh fruits.\n\n2. **Greek Yogurt Parfait**: Layer Greek yogurt with fresh
-      berries and a sprinkle of granola for a nutritious treat.\n\n3. **Banana Ice
-      Cream**: Blend frozen bananas until smooth for a creamy, dairy-free ice cream
-      alternative.\n\n4. **Avocado Chocolate Mousse**: Blend ripe avocados with cocoa
-      powder and a sweetener for a rich, healthy dessert.\n\n5. **Oatmeal Cookies**:
-      Make cookies using oats, mashed bananas, and dark chocolate chips for a wholesome
-      snack.\n\nIf you have access to specific recipes or resources, feel free to
-      share, and I can help you find more detailed information! ```\n\n"}, {"author":
-      "NUCLIA", "text": "[catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with
-      parameters {''question'': ''healthy dessert recipes from favorite recipes''}]:\n\n\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''healthy dessert recipes from favorite recipes''}\n```
-      It seems that the catalog search results do not provide specific titles or details
-      about healthy dessert recipes from favorite recipes. To assist you better, could
-      you please clarify if you are looking for specific types of healthy dessert
-      recipes or if you have any particular ingredients in mind? ```\n\n"}], "context":
-      [], "query_context": {}, "query_context_order": {}, "truncate": true, "user_prompt":
-      {"prompt": "You are a smart assistant that selects tools to gather information
-      needed to answer a user''s question.\nChoose the best tool or tools for the
-      task. You may call multiple tools in one turn.\nCall task_complete when you
-      have enough information to answer the question.\n\nExtra instructions: When
-      asked about a recipe, always recommend the most relevant one from our favorite
-      recipes, but if asked about a very specific recipe that is not in our favorites,
-      check the recipes from internet.\n\n\nChoose the best tool or tools for the
-      task. Call task_complete when you have enough information."}, "citations": null,
-      "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
-      null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
-      {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Perform a faceted search in the Knowledge Box. Useful to get
-      counts of different categories or facets within the data.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for images in a resource in the Knowledge Box filtered
-      by a specific title and relevant image information. Useful when the user wants
-      to retrieve selected images from known documents.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to filter
-      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
-      "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__f4e68b4a-550a-41e2-8360-646cb5ce383a",
-      "description": "Performs an internet search using Perplexity Search to get context
-      to answer questions.", "parameters": {"type": "object", "properties": {"question":
-      {"type": "string", "description": "The question to search for on the internet."}},
-      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
-      this tool when you have gathered enough information to answer the question and
-      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '8496'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2":[{"function":{"name":"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2","arguments":{"question":"healthy
-        dessert recipes from favorite recipes"}}}]}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":678,"output_tokens":77,"timings":{"generative_first_chunk":1.2006250790000195,"generative":1.202229789996636},"input_nuclia_tokens":0.678,"output_nuclia_tokens":0.077}}
-
-        {"chunk":{"normalized_tokens":{"input":0.6784,"output":0.0768,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:26 GMT
-      nuclia-learning-id:
-      - 1831bf13b81e4f03ad4a40d8fe799a68
-      nuclia-learning-model:
-      - chatgpt-4.1
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1208'
-      x-nuclia-trace-id:
-      - 9ad35d8f0d4f04af759deaa8a44c07fc
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-label-selection",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nThe user wants to perform
-      a catalog search in the Knowledge Box based on a question.\n\nYou need to identify
-      the most relevant labels and provide a filter expression to perform the catalog
-      search. The filter expression should be in the format used by NucliaDB.\n\nThe
-      nucliadb format for filter expressions is as follows:\n- Use \"any\" to indicate
-      that any of the properties can match (logical OR).\n- Use \"all\" to indicate
-      that all of the listed labels must match (logical AND).\n- Use \"none\" to indicate
-      that the listed labels should not match (logical NOT).\n\nSequential filters
-      are treated as AND conditions.\n\nFor filtering by labels, use the format \"/l/{labelset}/{label}\".\n\nFor
-      filtering by label sets without specifying a label, use the format \"/l/{labelset}/\".\n\nFor
-      filtering by file types, use the media type prefixed by \"/icon/\".\n\n**Example
-      1:**\nQuestion: ''Find all documents related to technology and health.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''any'': [''/l/topic/technology'',
-      ''/l/topic/health'']}], \"reasoning\": \"The question is about documents related
-      to technology and health, so we create a filter expresion to match any of the
-      labels technology or health in the topic label set.\"}\n\n**Example 2:**\nQuestion:
-      ''Get all PDFs that are research articles.''\nAvailable Labels:\n{\"topic\":
-      [\"technology\", \"health\", \"sports\"], \"category\": [\"research\", \"news\",
-      \"blog\"]}\nAnswer:\n{\"filters\": [{''all'': [''/l/category/research'', ''/icon/application/pdf'']}],
-      \"reasoning\": \"The question specifies research articles in PDF format, so
-      we create a filter expression that requires both the category to be research
-      and the media type to be PDF.\"}\n\n**Example 3:**\nQuestion: ''Show me all
-      documents without a set topic, that are either PDFs or Word format.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''none'': [''/l/topic'']},
-      {''any'': [''/icon/application/pdf'', ''/icon/application/vnd.openxmlformats-officedocument.wordprocessingml.document'']}],
-      \"reasoning\": \"The question asks for documents excluding sports, so we use
-      a ''not'' filter for the topic sports, and an ''any'' filter for the media types
-      PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
-      provide a filter expression to perform the catalog search. The question is:
-      ''healthy dessert recipes from favorite recipes''.\nHere are the available labels
-      in the Knowledge Box:\n- category: yoga, one\n- sections16022026: AuditRep,
-      TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity,
-      S_CashFlows, N_GenInfo, N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories,
-      N_PropertyRightOfUse, N_IntangibleAssets, N_InvestmentProp, N_JointVentures,
-      N_FinancialAssets, N_TradePayables, N_Borrowings, N_Equity, N_Revenue, N_CostOfSales,
-      N_GenAdminExpens, N_OtherIncomeExpenses, N_FinIncomeExpenses, N_Employee, N_Taxation,
-      N_EarningsPerShare, N_SegmentInfo, N_RelatedParty, N_ContingentLiabil, N_Events,
-      N_OtherNotes, NR_CoverPage, NR_TableOfContents, NR_CorpInfo, NR_FinHighlights,
-      NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis, NR_DirectorsRep, NR_CorpGov,
-      NR_Schedules, NR_StatDeclarations, NR_Glossary, NR_NonRelevant, NR_Form_EstTax,
-      NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344, NR_Form_1323, O_unknown,
-      NR_DepreciationForm, NR_TaxAssmntComp\n- bli: one\n- bla: one\n"}, "citations":
-      false, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      {"type": "object", "title": "Catalog Filter Expression Selection", "description":
-      "Response schema for selected filter expression.", "properties": {"reasoning":
-      {"type": "string", "description": "Reasoning behind the selection of the filter
-      expression."}, "filters": {"type": "string", "description": "The filter expression
-      to perform the catalog search as a JSON array."}}, "required": ["filters"]},
-      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '4433'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy dessert recipes, but the available labels do not include any specific
-        labels related to recipes or desserts. Therefore, we will filter for the category
-        ''one'' which could imply a general category for recipes, while also indicating
-        that we are looking for documents that may not have a specific topic related
-        to healthy desserts.","filters":"[{\"any\": [\"/l/category/one\"]}]"}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":10,"timings":{"generative":1.9734013359993696},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.01}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02934,"output":0.01032,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:27 GMT
-      nuclia-learning-id:
-      - 2688c30293d54cba9224982c891f5b63
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1979'
-      x-nuclia-trace-id:
-      - 24eceab681a9ebb407c882163804d616
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-search-answer",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
-      search results, please answer the following user question: ''healthy dessert
-      recipes from favorite recipes''\n\nCatalog search results for filters [{''any'':
-      [''/l/category/one'']}] in 881bdbf8ba904ba2aeddbc2dead99bb1 Knowledge Box. The
-      results contain titles, formats, languages, and labels assigned to the resources
-      for each label set. If a result does not have a label for a specific label set,
-      it means no label was assigned for that label set. The Knowledge Box contains
-      the following label sets (with some example labels): - category: yoga, one\n-
-      sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition,
-      S_ProfitLoss, ...\n- bli: one\n- bla: one\n.\n:\n\nCatalog Results\n\n"}, "citations":
-      null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      null, "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1232'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"text","text":"It"}}
-
-        {"chunk":{"type":"text","text":" seems"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" catalog"}}
-
-        {"chunk":{"type":"text","text":" search"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":" do"}}
-
-        {"chunk":{"type":"text","text":" not"}}
-
-        {"chunk":{"type":"text","text":" provide"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" titles"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" details"}}
-
-        {"chunk":{"type":"text","text":" about"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
+        {"chunk":{"type":"text","text":" explore"}}
 
         {"chunk":{"type":"text","text":" from"}}
 
-        {"chunk":{"type":"text","text":" favorite"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" To"}}
-
-        {"chunk":{"type":"text","text":" assist"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" better"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" could"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" please"}}
-
-        {"chunk":{"type":"text","text":" clarify"}}
-
-        {"chunk":{"type":"text","text":" if"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" are"}}
-
-        {"chunk":{"type":"text","text":" looking"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" types"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" if"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" have"}}
-
-        {"chunk":{"type":"text","text":" any"}}
-
-        {"chunk":{"type":"text","text":" particular"}}
-
-        {"chunk":{"type":"text","text":" ingredients"}}
-
-        {"chunk":{"type":"text","text":" in"}}
-
-        {"chunk":{"type":"text","text":" mind"}}
-
-        {"chunk":{"type":"text","text":"?"}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":6,"timings":{"generative_first_chunk":0.5022581570083275,"generative":1.213449364004191},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.006}}
-
-        {"chunk":{"normalized_tokens":{"input":0.00564,"output":0.00636,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:30 GMT
-      nuclia-learning-id:
-      - 112509e0ad92477a927e2b0351450f7e
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '509'
-      x-nuclia-trace-id:
-      - 595df7da356fb86a1d8234af111d907a
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
-      "You are a smart assistant that selects tools to gather information needed to
-      answer a user''s question.\nChoose the best tool or tools for the task. You
-      may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Suggest
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific entries related
-      to \"healthy and tasty dessert recipes.\" The results are categorized under
-      a general label without specific titles or descriptions that would help in finding
-      dessert recipes.\n\nTo find healthy and tasty dessert recipes, you might consider
-      searching in dedicated cooking or recipe databases, websites, or cookbooks that
-      focus on healthy eating. If you have any specific ingredients or types of desserts
-      in mind, I can help suggest some recipes or ideas! ```\n\n"}, {"author": "NUCLIA",
-      "text": "[catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''favorite healthy dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with parameters
-      {''question'': ''favorite healthy dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain specific information about
-      healthy dessert recipes. However, I can suggest some popular healthy dessert
-      ideas that you might enjoy:\n\n1. **Chia Seed Pudding**: Mix chia seeds with
-      almond milk and a sweetener of your choice. Let it sit overnight and top with
-      fresh fruits.\n\n2. **Greek Yogurt Parfait**: Layer Greek yogurt with fresh
-      berries and a sprinkle of granola for a nutritious treat.\n\n3. **Banana Ice
-      Cream**: Blend frozen bananas until smooth for a creamy, dairy-free ice cream
-      alternative.\n\n4. **Avocado Chocolate Mousse**: Blend ripe avocados with cocoa
-      powder and a sweetener for a rich, healthy dessert.\n\n5. **Oatmeal Cookies**:
-      Make cookies using oats, mashed bananas, and dark chocolate chips for a wholesome
-      snack.\n\nIf you have access to specific recipes or resources, feel free to
-      share, and I can help you find more detailed information! ```\n\n"}, {"author":
-      "NUCLIA", "text": "[catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with
-      parameters {''question'': ''healthy dessert recipes from favorite recipes''}]:\n\n\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''healthy dessert recipes from favorite recipes''}\n```
-      It seems that the catalog search results do not provide specific titles or details
-      about healthy dessert recipes from favorite recipes. To assist you better, could
-      you please clarify if you are looking for specific types of healthy dessert
-      recipes or if you have any particular ingredients in mind? ```\n\n"}, {"author":
-      "NUCLIA", "text": "[catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2 with
-      parameters {''question'': ''healthy dessert recipes from favorite recipes''}]:\n\n\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''healthy dessert recipes from favorite recipes''}\n```
-      It seems that the catalog search results do not provide specific titles or details
-      about healthy dessert recipes from favorite recipes. To assist you better, could
-      you please clarify if you are looking for specific types of healthy dessert
-      recipes or if you have any particular ingredients in mind? ```\n\n"}], "context":
-      [], "query_context": {}, "query_context_order": {}, "truncate": true, "user_prompt":
-      {"prompt": "You are a smart assistant that selects tools to gather information
-      needed to answer a user''s question.\nChoose the best tool or tools for the
-      task. You may call multiple tools in one turn.\nCall task_complete when you
-      have enough information to answer the question.\n\nExtra instructions: When
-      asked about a recipe, always recommend the most relevant one from our favorite
-      recipes, but if asked about a very specific recipe that is not in our favorites,
-      check the recipes from internet.\n\n\nChoose the best tool or tools for the
-      task. Call task_complete when you have enough information."}, "citations": null,
-      "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
-      null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
-      {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Perform a faceted search in the Knowledge Box. Useful to get
-      counts of different categories or facets within the data.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2",
-      "description": "Search for images in a resource in the Knowledge Box filtered
-      by a specific title and relevant image information. Useful when the user wants
-      to retrieve selected images from known documents.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to filter
-      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
-      "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__f4e68b4a-550a-41e2-8360-646cb5ce383a",
-      "description": "Performs an internet search using Perplexity Search to get context
-      to answer questions.", "parameters": {"type": "object", "properties": {"question":
-      {"type": "string", "description": "The question to search for on the internet."}},
-      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
-      this tool when you have gathered enough information to answer the question and
-      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '9167'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2":[{"function":{"name":"catalog_search__c5a44cbf-6be3-4a87-8b82-0759ae05f1b2","arguments":{"question":"healthy
-        dessert recipes from favorite recipes"}}}]}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":743,"output_tokens":77,"timings":{"generative_first_chunk":1.1170752809994156,"generative":1.118576031003613},"input_nuclia_tokens":0.743,"output_nuclia_tokens":0.077}}
-
-        {"chunk":{"normalized_tokens":{"input":0.7428,"output":0.0768,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:31 GMT
-      nuclia-learning-id:
-      - a27de3bb70ef4e9c98f4b381310da972
-      nuclia-learning-model:
-      - chatgpt-4.1
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1124'
-      x-nuclia-trace-id:
-      - 58cd56e21c5d92a29bc050857162c548
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-label-selection",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nThe user wants to perform
-      a catalog search in the Knowledge Box based on a question.\n\nYou need to identify
-      the most relevant labels and provide a filter expression to perform the catalog
-      search. The filter expression should be in the format used by NucliaDB.\n\nThe
-      nucliadb format for filter expressions is as follows:\n- Use \"any\" to indicate
-      that any of the properties can match (logical OR).\n- Use \"all\" to indicate
-      that all of the listed labels must match (logical AND).\n- Use \"none\" to indicate
-      that the listed labels should not match (logical NOT).\n\nSequential filters
-      are treated as AND conditions.\n\nFor filtering by labels, use the format \"/l/{labelset}/{label}\".\n\nFor
-      filtering by label sets without specifying a label, use the format \"/l/{labelset}/\".\n\nFor
-      filtering by file types, use the media type prefixed by \"/icon/\".\n\n**Example
-      1:**\nQuestion: ''Find all documents related to technology and health.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''any'': [''/l/topic/technology'',
-      ''/l/topic/health'']}], \"reasoning\": \"The question is about documents related
-      to technology and health, so we create a filter expresion to match any of the
-      labels technology or health in the topic label set.\"}\n\n**Example 2:**\nQuestion:
-      ''Get all PDFs that are research articles.''\nAvailable Labels:\n{\"topic\":
-      [\"technology\", \"health\", \"sports\"], \"category\": [\"research\", \"news\",
-      \"blog\"]}\nAnswer:\n{\"filters\": [{''all'': [''/l/category/research'', ''/icon/application/pdf'']}],
-      \"reasoning\": \"The question specifies research articles in PDF format, so
-      we create a filter expression that requires both the category to be research
-      and the media type to be PDF.\"}\n\n**Example 3:**\nQuestion: ''Show me all
-      documents without a set topic, that are either PDFs or Word format.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''none'': [''/l/topic'']},
-      {''any'': [''/icon/application/pdf'', ''/icon/application/vnd.openxmlformats-officedocument.wordprocessingml.document'']}],
-      \"reasoning\": \"The question asks for documents excluding sports, so we use
-      a ''not'' filter for the topic sports, and an ''any'' filter for the media types
-      PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
-      provide a filter expression to perform the catalog search. The question is:
-      ''healthy dessert recipes from favorite recipes''.\nHere are the available labels
-      in the Knowledge Box:\n- category: yoga, one\n- sections16022026: AuditRep,
-      TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity,
-      S_CashFlows, N_GenInfo, N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories,
-      N_PropertyRightOfUse, N_IntangibleAssets, N_InvestmentProp, N_JointVentures,
-      N_FinancialAssets, N_TradePayables, N_Borrowings, N_Equity, N_Revenue, N_CostOfSales,
-      N_GenAdminExpens, N_OtherIncomeExpenses, N_FinIncomeExpenses, N_Employee, N_Taxation,
-      N_EarningsPerShare, N_SegmentInfo, N_RelatedParty, N_ContingentLiabil, N_Events,
-      N_OtherNotes, NR_CoverPage, NR_TableOfContents, NR_CorpInfo, NR_FinHighlights,
-      NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis, NR_DirectorsRep, NR_CorpGov,
-      NR_Schedules, NR_StatDeclarations, NR_Glossary, NR_NonRelevant, NR_Form_EstTax,
-      NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344, NR_Form_1323, O_unknown,
-      NR_DepreciationForm, NR_TaxAssmntComp\n- bli: one\n- bla: one\n"}, "citations":
-      false, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      {"type": "object", "title": "Catalog Filter Expression Selection", "description":
-      "Response schema for selected filter expression.", "properties": {"reasoning":
-      {"type": "string", "description": "Reasoning behind the selection of the filter
-      expression."}, "filters": {"type": "string", "description": "The filter expression
-      to perform the catalog search as a JSON array."}}, "required": ["filters"]},
-      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '4433'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy dessert recipes, but the available labels do not include any specific
-        labels related to recipes or desserts. Therefore, we will filter for the category
-        ''one'' which could imply a focus on a specific type of content, and we will
-        not include any specific sections as they do not relate to the question.","filters":"[{\"all\":
-        [\"/l/category/one\"]}]"}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":10,"timings":{"generative":1.6554892120038858},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.01}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02934,"output":0.0102,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 09:24:32 GMT
-      nuclia-learning-id:
-      - 1ab693830c2446e2bee1794c16b8de27
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1661'
-      x-nuclia-trace-id:
-      - e19e0aee089f236db5c62d3109674d8c
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-search-answer",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
-      search results, please answer the following user question: ''healthy dessert
-      recipes from favorite recipes''\n\nCatalog search results for filters [{''all'':
-      [''/l/category/one'']}] in 881bdbf8ba904ba2aeddbc2dead99bb1 Knowledge Box. The
-      results contain titles, formats, languages, and labels assigned to the resources
-      for each label set. If a result does not have a label for a specific label set,
-      it means no label was assigned for that label set. The Knowledge Box contains
-      the following label sets (with some example labels): - category: yoga, one\n-
-      sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition,
-      S_ProfitLoss, ...\n- bli: one\n- bla: one\n.\n:\n\nCatalog Results\n\n"}, "citations":
-      null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      null, "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1232'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - e4c79112d72249228d2487b28c10d83e
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"text","text":"It"}}
-
-        {"chunk":{"type":"text","text":" seems"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
         {"chunk":{"type":"text","text":" the"}}
 
         {"chunk":{"type":"text","text":" catalog"}}
@@ -2734,87 +1280,321 @@ interactions:
 
         {"chunk":{"type":"text","text":" results"}}
 
-        {"chunk":{"type":"text","text":" you"}}
+        {"chunk":{"type":"text","text":":\n\n"}}
 
-        {"chunk":{"type":"text","text":" provided"}}
+        {"chunk":{"type":"text","text":"1"}}
 
-        {"chunk":{"type":"text","text":" do"}}
+        {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" not"}}
+        {"chunk":{"type":"text","text":" **"}}
 
-        {"chunk":{"type":"text","text":" contain"}}
+        {"chunk":{"type":"text","text":"Car"}}
 
-        {"chunk":{"type":"text","text":" specific"}}
+        {"chunk":{"type":"text","text":"rot"}}
 
-        {"chunk":{"type":"text","text":" information"}}
+        {"chunk":{"type":"text","text":" Cake"}}
 
-        {"chunk":{"type":"text","text":" about"}}
+        {"chunk":{"type":"text","text":"**"}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
+        {"chunk":{"type":"text","text":" -"}}
 
-        {"chunk":{"type":"text","text":" dessert"}}
+        {"chunk":{"type":"text","text":" ["}}
 
-        {"chunk":{"type":"text","text":" recipes"}}
+        {"chunk":{"type":"text","text":"Download"}}
 
-        {"chunk":{"type":"text","text":" or"}}
+        {"chunk":{"type":"text","text":" PDF"}}
 
-        {"chunk":{"type":"text","text":" any"}}
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"car"}}
+
+        {"chunk":{"type":"text","text":"rot"}}
+
+        {"chunk":{"type":"text","text":"-c"}}
+
+        {"chunk":{"type":"text","text":"ake"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n"}}
+
+        {"chunk":{"type":"text","text":"2"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Chocolate"}}
+
+        {"chunk":{"type":"text","text":" Chip"}}
+
+        {"chunk":{"type":"text","text":" Cookies"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":" -"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"ch"}}
+
+        {"chunk":{"type":"text","text":"ocolate"}}
+
+        {"chunk":{"type":"text","text":"-chip"}}
+
+        {"chunk":{"type":"text","text":"-c"}}
+
+        {"chunk":{"type":"text","text":"ookies"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n"}}
+
+        {"chunk":{"type":"text","text":"3"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Z"}}
+
+        {"chunk":{"type":"text","text":"uc"}}
+
+        {"chunk":{"type":"text","text":"chini"}}
+
+        {"chunk":{"type":"text","text":" Bread"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":" -"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"Z"}}
+
+        {"chunk":{"type":"text","text":"uc"}}
+
+        {"chunk":{"type":"text","text":"chini"}}
+
+        {"chunk":{"type":"text","text":"-b"}}
+
+        {"chunk":{"type":"text","text":"read"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")"}}
+
+        {"chunk":{"type":"text","text":" ("}}
+
+        {"chunk":{"type":"text","text":"Note"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" This"}}
+
+        {"chunk":{"type":"text","text":" has"}}
+
+        {"chunk":{"type":"text","text":" a"}}
+
+        {"chunk":{"type":"text","text":" label"}}
 
         {"chunk":{"type":"text","text":" related"}}
 
-        {"chunk":{"type":"text","text":" titles"}}
+        {"chunk":{"type":"text","text":" to"}}
 
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" To"}}
-
-        {"chunk":{"type":"text","text":" assist"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" better"}}
+        {"chunk":{"type":"text","text":" yoga"}}
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" could"}}
+        {"chunk":{"type":"text","text":" which"}}
 
-        {"chunk":{"type":"text","text":" you"}}
+        {"chunk":{"type":"text","text":" may"}}
 
-        {"chunk":{"type":"text","text":" please"}}
+        {"chunk":{"type":"text","text":" indicate"}}
 
-        {"chunk":{"type":"text","text":" provide"}}
+        {"chunk":{"type":"text","text":" a"}}
 
-        {"chunk":{"type":"text","text":" more"}}
+        {"chunk":{"type":"text","text":" healthier"}}
 
-        {"chunk":{"type":"text","text":" details"}}
+        {"chunk":{"type":"text","text":" focus"}}
 
-        {"chunk":{"type":"text","text":" or"}}
+        {"chunk":{"type":"text","text":".)\n"}}
 
-        {"chunk":{"type":"text","text":" specify"}}
+        {"chunk":{"type":"text","text":"4"}}
 
-        {"chunk":{"type":"text","text":" what"}}
+        {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" you''re"}}
+        {"chunk":{"type":"text","text":" **"}}
 
-        {"chunk":{"type":"text","text":" looking"}}
+        {"chunk":{"type":"text","text":"Ban"}}
 
-        {"chunk":{"type":"text","text":" for"}}
+        {"chunk":{"type":"text","text":"ana"}}
 
-        {"chunk":{"type":"text","text":" in"}}
+        {"chunk":{"type":"text","text":" Bread"}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
+        {"chunk":{"type":"text","text":"**"}}
 
-        {"chunk":{"type":"text","text":" dessert"}}
+        {"chunk":{"type":"text","text":" -"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"banana"}}
+
+        {"chunk":{"type":"text","text":"-b"}}
+
+        {"chunk":{"type":"text","text":"read"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n"}}
+
+        {"chunk":{"type":"text","text":"5"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"G"}}
+
+        {"chunk":{"type":"text","text":"inger"}}
+
+        {"chunk":{"type":"text","text":"bread"}}
+
+        {"chunk":{"type":"text","text":" Cake"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":" -"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"G"}}
+
+        {"chunk":{"type":"text","text":"inger"}}
+
+        {"chunk":{"type":"text","text":"bread"}}
+
+        {"chunk":{"type":"text","text":"-C"}}
+
+        {"chunk":{"type":"text","text":"ake"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n"}}
+
+        {"chunk":{"type":"text","text":"6"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Sugar"}}
+
+        {"chunk":{"type":"text","text":" Cookies"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":" -"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"Sugar"}}
+
+        {"chunk":{"type":"text","text":"-C"}}
+
+        {"chunk":{"type":"text","text":"ookies"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n\n"}}
+
+        {"chunk":{"type":"text","text":"Feel"}}
+
+        {"chunk":{"type":"text","text":" free"}}
+
+        {"chunk":{"type":"text","text":" to"}}
+
+        {"chunk":{"type":"text","text":" download"}}
+
+        {"chunk":{"type":"text","text":" any"}}
+
+        {"chunk":{"type":"text","text":" of"}}
+
+        {"chunk":{"type":"text","text":" these"}}
 
         {"chunk":{"type":"text","text":" recipes"}}
 
-        {"chunk":{"type":"text","text":"?"}}
+        {"chunk":{"type":"text","text":" for"}}
+
+        {"chunk":{"type":"text","text":" a"}}
+
+        {"chunk":{"type":"text","text":" healthier"}}
+
+        {"chunk":{"type":"text","text":" dessert"}}
+
+        {"chunk":{"type":"text","text":" option"}}
+
+        {"chunk":{"type":"text","text":"!"}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":6,"timings":{"generative_first_chunk":0.352398301998619,"generative":1.0188633299985668},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.006}}
+        {"chunk":{"type":"meta","input_tokens":25,"output_tokens":20,"timings":{"generative_first_chunk":0.4800409710005624,"generative":3.396572888001174},"input_nuclia_tokens":0.025,"output_nuclia_tokens":0.02}}
 
-        {"chunk":{"normalized_tokens":{"input":0.00564,"output":0.00552,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.02535,"output":0.0204,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -2827,17 +1607,182 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:34 GMT
+      - Wed, 15 Jul 2026 10:34:33 GMT
       nuclia-learning-id:
-      - 9f04bb7cbd2d4f63af5a148bc8aeb4e3
+      - e3f8c67341b548049c5d659eb64bb473
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '361'
+      - '487'
       x-nuclia-trace-id:
-      - 7862898cdcfe81cd13c9fbf5127f9976
+      - cd31a7279fe3eae4d06f3c4d916f488c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
+      "You are a smart assistant that selects tools to gather information needed to
+      answer a user''s question.\nChoose the best tool or tools for the task. You
+      may call multiple tools in one turn.\nCall task_complete when you have enough
+      information to answer the question.\n\nExtra instructions: When asked about
+      a recipe, always recommend the most relevant one from our favorite recipes,
+      but if asked about a very specific recipe that is not in our favorites, check
+      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
+      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
+      of 263e48e9-f20c-4316-8419-243e57991b7d with parameters {''question'': ''healthy
+      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
+      of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with parameters
+      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
+      catalog search results you provided do not contain any specific titles or resources
+      related to \"healthy and tasty dessert recipes.\" The results are primarily
+      categorized under sections that do not pertain to cooking or recipes.\n\nIf
+      you''re looking for healthy and tasty dessert recipes, I can suggest some popular
+      options:\n\n1. **Chia Seed Pudding**: Mix chia seeds with almond milk and a
+      sweetener of your choice. Let it sit overnight and top with fresh fruits.\n\n2.
+      **Banana Ice Cream**: Blend frozen bananas until smooth for a creamy, healthy
+      ice cream alternative.\n\n3. **Avocado Chocolate Mousse**: Blend ripe avocados
+      with cocoa powder and a sweetener for a rich, creamy dessert.\n\n4. **Oatmeal
+      Cookies**: Use oats, mashed bananas, and dark chocolate chips for a healthier
+      cookie option.\n\n5. **Fruit Salad with Honey Lime Dressing**: Combine your
+      favorite fruits and drizzle with a mixture of honey and lime juice.\n\nIf you
+      need more specific recipes or ideas, feel free to ask! ```\n\n"}, {"author":
+      "NUCLIA", "text": "[catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with
+      parameters {''question'': ''healthy dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
+      of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with parameters
+      {''question'': ''healthy dessert recipes''}\n``` Here are some healthy dessert
+      recipes you can explore from the catalog search results:\n\n1. **Carrot Cake**
+      - [Download PDF](carrot-cake-A4.pdf)\n2. **Chocolate Chip Cookies** - [Download
+      PDF](chocolate-chip-cookies-A4.pdf)\n3. **Zucchini Bread** - [Download PDF](Zucchini-bread-A4.pdf)
+      (Note: This has a label related to yoga, which may indicate a healthier focus.)\n4.
+      **Banana Bread** - [Download PDF](banana-bread-A4.pdf)\n5. **Gingerbread Cake**
+      - [Download PDF](Gingerbread-Cake-A4.pdf)\n6. **Sugar Cookies** - [Download
+      PDF](Sugar-Cookies-A4.pdf)\n\nFeel free to download any of these recipes for
+      a healthier dessert option! ```\n\n"}], "context": [], "query_context": {},
+      "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "You
+      are a smart assistant that selects tools to gather information needed to answer
+      a user''s question.\nChoose the best tool or tools for the task. You may call
+      multiple tools in one turn.\nCall task_complete when you have enough information
+      to answer the question.\n\nExtra instructions: When asked about a recipe, always
+      recommend the most relevant one from our favorite recipes, but if asked about
+      a very specific recipe that is not in our favorites, check the recipes from
+      internet.\n\n\nChoose the best tool or tools for the task. Call task_complete
+      when you have enough information."}, "citations": null, "citation_threshold":
+      null, "generative_model": "chatgpt-4.1", "max_tokens": null, "query_context_images":
+      {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
+      false, "tools": [{"name": "search_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
+      "description": "Search for context in the Knowledge Box by title. Useful for
+      specific queries where the title is known.", "parameters": {"type": "object",
+      "properties": {"title": {"type": "string", "description": "The title to search
+      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
+      "string"}, "description": "Filters to apply when searching in the Knowledge
+      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__263e48e9-f20c-4316-8419-243e57991b7d",
+      "description": "Get the labels available in the Knowledge Box as a list of strings.
+      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
+      {"labelset": {"type": "string", "description": "The label set to get the labels
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__263e48e9-f20c-4316-8419-243e57991b7d",
+      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
+      "object", "properties": {"question": {"type": "string", "description": "The
+      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
+      {"name": "ask_labels__263e48e9-f20c-4316-8419-243e57991b7d", "description":
+      "Get the labels available in the Knowledge Box. Useful to filter searches by
+      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
+      false}}, {"name": "facets_count__263e48e9-f20c-4316-8419-243e57991b7d", "description":
+      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
+      categories or facets within the data.", "parameters": {"type": "object", "properties":
+      {"question": {"type": "string", "description": "The question to perform the
+      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__263e48e9-f20c-4316-8419-243e57991b7d",
+      "description": "Perform a faceted search in the Knowledge Box. Useful to get
+      counts of different categories or facets within the data.", "parameters": {"type":
+      "object", "properties": {"question": {"type": "string", "description": "The
+      question to perform the faceted search for."}}, "additionalProperties": false}},
+      {"name": "catalog_search__263e48e9-f20c-4316-8419-243e57991b7d", "description":
+      "Perform a catalog search in the Knowledge Box. Useful to find items based on
+      specific criteria or attributes, including labels, file types, or other metadata.",
+      "parameters": {"type": "object", "properties": {"question": {"type": "string",
+      "description": "The question to perform the catalog search for."}}, "additionalProperties":
+      false}}, {"name": "all_images_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
+      "description": "Get all image URLs from a resource in the Knowledge Box filtered
+      by a specific title. Useful when the user wants to retrieve images from known
+      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
+      "string", "description": "The title to filter the image extraction operation
+      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__263e48e9-f20c-4316-8419-243e57991b7d",
+      "description": "Search for images in a resource in the Knowledge Box filtered
+      by a specific title and relevant image information. Useful when the user wants
+      to retrieve selected images from known documents.", "parameters": {"type": "object",
+      "properties": {"title": {"type": "string", "description": "The title to filter
+      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
+      "items": {"type": "string"}, "description": "Relevant info to query images from
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__242ab56c-7bb5-4e79-a673-62b7090febc3",
+      "description": "Performs an internet search using Perplexity Search to get context
+      to answer questions.", "parameters": {"type": "object", "properties": {"question":
+      {"type": "string", "description": "The question to search for on the internet."}},
+      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
+      this tool when you have gathered enough information to answer the question and
+      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
+      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '7970'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.11.5
+      x-client-ident:
+      - 00000000-0000-0000-0000-000000000002
+      x-message:
+      - 5a32aa83b09f48929e811420fa3751d0
+      x-origin:
+      - RAO
+      x-session:
+      - default_ephemeral
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"tools","tools":{"task_complete":[{"function":{"name":"task_complete","arguments":{}}}]}}}
+
+        {"chunk":{"type":"status","code":"0"}}
+
+        {"chunk":{"type":"meta","input_tokens":622,"output_tokens":18,"timings":{"generative_first_chunk":3.0560499980001623,"generative":3.0575040980002086},"input_nuclia_tokens":0.622,"output_nuclia_tokens":0.018}}
+
+        {"chunk":{"normalized_tokens":{"input":0.622,"output":0.0176,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Wed, 15 Jul 2026 10:34:37 GMT
+      nuclia-learning-id:
+      - f1d73bd1286d4a4eb9c30933707f53cc
+      nuclia-learning-model:
+      - chatgpt-4.1
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '3062'
+      x-nuclia-trace-id:
+      - 9e7a63ec5a4557c94a9ac3d25688ce27
     status:
       code: 200
       message: OK
@@ -2875,49 +1820,33 @@ interactions:
       List the IDs of the blocks relevant to the answer, if any (e.g., [\"block-AB\",
       \"block-CD\"]).\n11. **IMPORTANT** If any extra instructions are provided, you
       MUST follow them carefully when generating the answer field. These instructions
-      may specify the format, style, tools to use, or other requirements for the answer.\n\n<QUESTION>\nSuggest
+      may specify the format, style, tools to use, or other requirements for the answer.\n\n<QUESTION>\nProvide
       healthy and tasty dessert options.\n\n<START OF CONTEXT>\n\nContext:\n\n**block-AA**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
+      Chunk: catalog_search_result-0\nResult of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d
       with parameters {''question'': ''healthy and tasty dessert recipes''}\n``` It
-      seems that the catalog search results you provided do not contain specific entries
-      related to \"healthy and tasty dessert recipes.\" The results are categorized
-      under a general label without specific titles or descriptions that would help
-      in finding dessert recipes.\n\nTo find healthy and tasty dessert recipes, you
-      might consider searching in dedicated cooking or recipe databases, websites,
-      or cookbooks that focus on healthy eating. If you have any specific ingredients
-      or types of desserts in mind, I can help suggest some recipes or ideas! ```\n\n\n---\"\n\n\n**block-AB**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''favorite healthy dessert recipes''}\n``` It
-      seems that the catalog search results you provided do not contain specific information
-      about healthy dessert recipes. However, I can suggest some popular healthy dessert
-      ideas that you might enjoy:\n\n1. **Chia Seed Pudding**: Mix chia seeds with
-      almond milk and a sweetener of your choice. Let it sit overnight and top with
-      fresh fruits.\n\n2. **Greek Yogurt Parfait**: Layer Greek yogurt with fresh
-      berries and a sprinkle of granola for a nutritious treat.\n\n3. **Banana Ice
-      Cream**: Blend frozen bananas until smooth for a creamy, dairy-free ice cream
-      alternative.\n\n4. **Avocado Chocolate Mousse**: Blend ripe avocados with cocoa
-      powder and a sweetener for a rich, healthy dessert.\n\n5. **Oatmeal Cookies**:
-      Make cookies using oats, mashed bananas, and dark chocolate chips for a wholesome
-      snack.\n\nIf you have access to specific recipes or resources, feel free to
-      share, and I can help you find more detailed information! ```\n\n\n---\"\n\n\n**block-AC**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''healthy dessert recipes from favorite recipes''}\n```
-      It seems that the catalog search results do not provide specific titles or details
-      about healthy dessert recipes from favorite recipes. To assist you better, could
-      you please clarify if you are looking for specific types of healthy dessert
-      recipes or if you have any particular ingredients in mind? ```\n\n\n---\"\n\n\n**block-AD**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''healthy dessert recipes from favorite recipes''}\n```
-      It seems that the catalog search results do not provide specific titles or details
-      about healthy dessert recipes from favorite recipes. To assist you better, could
-      you please clarify if you are looking for specific types of healthy dessert
-      recipes or if you have any particular ingredients in mind? ```\n\n\n---\"\n\n\n**block-AE**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of c5a44cbf-6be3-4a87-8b82-0759ae05f1b2
-      with parameters {''question'': ''healthy dessert recipes from favorite recipes''}\n```
-      It seems that the catalog search results you provided do not contain specific
-      information about healthy dessert recipes or any related titles. To assist you
-      better, could you please provide more details or specify what you''re looking
-      for in healthy dessert recipes? ```\n\n\n---\"\n\n\n\n\n<END OF CONTEXT>\n\n"},
+      seems that the catalog search results you provided do not contain any specific
+      titles or resources related to \"healthy and tasty dessert recipes.\" The results
+      are primarily categorized under sections that do not pertain to cooking or recipes.\n\nIf
+      you''re looking for healthy and tasty dessert recipes, I can suggest some popular
+      options:\n\n1. **Chia Seed Pudding**: Mix chia seeds with almond milk and a
+      sweetener of your choice. Let it sit overnight and top with fresh fruits.\n\n2.
+      **Banana Ice Cream**: Blend frozen bananas until smooth for a creamy, healthy
+      ice cream alternative.\n\n3. **Avocado Chocolate Mousse**: Blend ripe avocados
+      with cocoa powder and a sweetener for a rich, creamy dessert.\n\n4. **Oatmeal
+      Cookies**: Use oats, mashed bananas, and dark chocolate chips for a healthier
+      cookie option.\n\n5. **Fruit Salad with Honey Lime Dressing**: Combine your
+      favorite fruits and drizzle with a mixture of honey and lime juice.\n\nIf you
+      need more specific recipes or ideas, feel free to ask! ```\n\n\n---\"\n\n\n**block-AB**\n\n##
+      Chunk: catalog_search_result-0\nResult of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d
+      with parameters {''question'': ''healthy dessert recipes''}\n``` Here are some
+      healthy dessert recipes you can explore from the catalog search results:\n\n1.
+      **Carrot Cake** - [Download PDF](carrot-cake-A4.pdf)\n2. **Chocolate Chip Cookies**
+      - [Download PDF](chocolate-chip-cookies-A4.pdf)\n3. **Zucchini Bread** - [Download
+      PDF](Zucchini-bread-A4.pdf) (Note: This has a label related to yoga, which may
+      indicate a healthier focus.)\n4. **Banana Bread** - [Download PDF](banana-bread-A4.pdf)\n5.
+      **Gingerbread Cake** - [Download PDF](Gingerbread-Cake-A4.pdf)\n6. **Sugar Cookies**
+      - [Download PDF](Sugar-Cookies-A4.pdf)\n\nFeel free to download any of these
+      recipes for a healthier dessert option! ```\n\n\n---\"\n\n\n\n\n<END OF CONTEXT>\n\n"},
       "citations": false, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
       "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
       {"title": "validate_or_answer", "description": "Validate or answer", "parameters":
@@ -2942,7 +1871,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '7470'
+      - '6076'
       Content-Type:
       - application/json
       Host:
@@ -2960,28 +1889,31 @@ interactions:
   response:
     body:
       string: '{"chunk":{"type":"object","object":{"reason":"The context provides
-        a list of healthy dessert options, which directly addresses the user''s request
-        for suggestions. The suggestions are clear and specific, making it easy for
-        the user to understand and consider them.","answer":"1. Chia Seed Pudding:
-        Mix chia seeds with almond milk and a sweetener of your choice. Let it sit
-        overnight and top with fresh fruits. 2. Greek Yogurt Parfait: Layer Greek
-        yogurt with fresh berries and a sprinkle of granola for a nutritious treat.
-        3. Banana Ice Cream: Blend frozen bananas until smooth for a creamy, dairy-free
-        ice cream alternative. 4. Avocado Chocolate Mousse: Blend ripe avocados with
-        cocoa powder and a sweetener for a rich, healthy dessert. 5. Oatmeal Cookies:
-        Make cookies using oats, mashed bananas, and dark chocolate chips for a wholesome
-        snack.","missing_info_query":"","useful":"yes","citations":["block-AB"]}}}
+        a list of healthy and tasty dessert options, including specific recipes and
+        their descriptions. This directly addresses the user''s request for healthy
+        dessert options.","answer":"1. Chia Seed Pudding: Mix chia seeds with almond
+        milk and a sweetener of your choice. Let it sit overnight and top with fresh
+        fruits. 2. Banana Ice Cream: Blend frozen bananas until smooth for a creamy,
+        healthy ice cream alternative. 3. Avocado Chocolate Mousse: Blend ripe avocados
+        with cocoa powder and a sweetener for a rich, creamy dessert. 4. Oatmeal Cookies:
+        Use oats, mashed bananas, and dark chocolate chips for a healthier cookie
+        option. 5. Fruit Salad with Honey Lime Dressing: Combine your favorite fruits
+        and drizzle with a mixture of honey and lime juice. 6. Carrot Cake: [Download
+        PDF](carrot-cake-A4.pdf) 7. Chocolate Chip Cookies: [Download PDF](chocolate-chip-cookies-A4.pdf)
+        8. Zucchini Bread: [Download PDF](Zucchini-bread-A4.pdf) 9. Banana Bread:
+        [Download PDF](banana-bread-A4.pdf) 10. Gingerbread Cake: [Download PDF](Gingerbread-Cake-A4.pdf)
+        11. Sugar Cookies: [Download PDF](Sugar-Cookies-A4.pdf)","missing_info_query":"","useful":"yes","citations":["block-AA","block-AB"]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":45,"output_tokens":23,"timings":{"generative":4.347742302001279},"input_nuclia_tokens":0.045,"output_nuclia_tokens":0.023}}
+        {"chunk":{"type":"meta","input_tokens":37,"output_tokens":36,"timings":{"generative":4.047070903005078},"input_nuclia_tokens":0.037,"output_nuclia_tokens":0.036}}
 
-        {"chunk":{"normalized_tokens":{"input":0.0447,"output":0.02316,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.03657,"output":0.036,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      - h3=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -2989,17 +1921,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:35 GMT
+      - Wed, 15 Jul 2026 10:34:40 GMT
       nuclia-learning-id:
-      - 41e7ed4e1eee41b19d90904b41c38753
+      - baf430f5efa24919b04129b210332e4f
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '4353'
+      - '4052'
       x-nuclia-trace-id:
-      - d5c13930c5bf778d9b9561e943459b3f
+      - e889b8522fdaf8002d2208bfbb602885
     status:
       code: 200
       message: OK
@@ -3013,21 +1945,25 @@ interactions:
       this clearly\n\nAlways follow any additional instructions provided about format,
       style, or domain-specific behavior.", "chat_history": [], "context": [], "query_context":
       {}, "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "\n##
-      Question\nSuggest healthy and tasty dessert options.\n\n## Provided Context\n[START
-      OF CONTEXT]\n## Default Agentic Config - Smart Agent\n\n# Suggest healthy and
+      Question\nProvide healthy and tasty dessert options.\n\n## Provided Context\n[START
+      OF CONTEXT]\n## Default Agentic Config - Smart Agent\n\n# Provide healthy and
       tasty dessert options.\n\n 1. Chia Seed Pudding: Mix chia seeds with almond
       milk and a sweetener of your choice. Let it sit overnight and top with fresh
-      fruits. 2. Greek Yogurt Parfait: Layer Greek yogurt with fresh berries and a
-      sprinkle of granola for a nutritious treat. 3. Banana Ice Cream: Blend frozen
-      bananas until smooth for a creamy, dairy-free ice cream alternative. 4. Avocado
-      Chocolate Mousse: Blend ripe avocados with cocoa powder and a sweetener for
-      a rich, healthy dessert. 5. Oatmeal Cookies: Make cookies using oats, mashed
-      bananas, and dark chocolate chips for a wholesome snack.\n[END OF CONTEXT]\n\n##
+      fruits. 2. Banana Ice Cream: Blend frozen bananas until smooth for a creamy,
+      healthy ice cream alternative. 3. Avocado Chocolate Mousse: Blend ripe avocados
+      with cocoa powder and a sweetener for a rich, creamy dessert. 4. Oatmeal Cookies:
+      Use oats, mashed bananas, and dark chocolate chips for a healthier cookie option.
+      5. Fruit Salad with Honey Lime Dressing: Combine your favorite fruits and drizzle
+      with a mixture of honey and lime juice. 6. Carrot Cake: [Download PDF](carrot-cake-A4.pdf)
+      7. Chocolate Chip Cookies: [Download PDF](chocolate-chip-cookies-A4.pdf) 8.
+      Zucchini Bread: [Download PDF](Zucchini-bread-A4.pdf) 9. Banana Bread: [Download
+      PDF](banana-bread-A4.pdf) 10. Gingerbread Cake: [Download PDF](Gingerbread-Cake-A4.pdf)
+      11. Sugar Cookies: [Download PDF](Sugar-Cookies-A4.pdf)\n[END OF CONTEXT]\n\n##
       Answering Guidelines\n- Carefully read all context; it may be lengthy or detailed\n-
       Do not omit or overlook any relevant information\n- If the context is incomplete
       or insufficient, state: \"Not enough data to answer this.\"\n- Read carefully
       any extra instructions below if provided and use them to answer\n\nNow provide
-      your answer to the question: Suggest healthy and tasty dessert options."}, "citations":
+      your answer to the question: Provide healthy and tasty dessert options."}, "citations":
       null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
       "max_tokens": 5000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
       null, "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
@@ -3040,7 +1976,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2191'
+      - '2541'
       Content-Type:
       - application/json
       Host:
@@ -3149,60 +2085,6 @@ interactions:
 
         {"chunk":{"type":"text","text":" **"}}
 
-        {"chunk":{"type":"text","text":"Greek"}}
-
-        {"chunk":{"type":"text","text":" Yog"}}
-
-        {"chunk":{"type":"text","text":"urt"}}
-
-        {"chunk":{"type":"text","text":" Par"}}
-
-        {"chunk":{"type":"text","text":"fait"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Layer"}}
-
-        {"chunk":{"type":"text","text":" Greek"}}
-
-        {"chunk":{"type":"text","text":" yogurt"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" fresh"}}
-
-        {"chunk":{"type":"text","text":" berries"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" sprinkle"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" gran"}}
-
-        {"chunk":{"type":"text","text":"ola"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" nutritious"}}
-
-        {"chunk":{"type":"text","text":" treat"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"3"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
         {"chunk":{"type":"text","text":"Ban"}}
 
         {"chunk":{"type":"text","text":"ana"}}
@@ -3233,9 +2115,7 @@ interactions:
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" dairy"}}
-
-        {"chunk":{"type":"text","text":"-free"}}
+        {"chunk":{"type":"text","text":" healthy"}}
 
         {"chunk":{"type":"text","text":" ice"}}
 
@@ -3245,7 +2125,7 @@ interactions:
 
         {"chunk":{"type":"text","text":".\n\n"}}
 
-        {"chunk":{"type":"text","text":"4"}}
+        {"chunk":{"type":"text","text":"3"}}
 
         {"chunk":{"type":"text","text":"."}}
 
@@ -3295,13 +2175,13 @@ interactions:
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
+        {"chunk":{"type":"text","text":" creamy"}}
 
         {"chunk":{"type":"text","text":" dessert"}}
 
         {"chunk":{"type":"text","text":".\n\n"}}
 
-        {"chunk":{"type":"text","text":"5"}}
+        {"chunk":{"type":"text","text":"4"}}
 
         {"chunk":{"type":"text","text":"."}}
 
@@ -3319,11 +2199,7 @@ interactions:
 
         {"chunk":{"type":"text","text":":"}}
 
-        {"chunk":{"type":"text","text":" Make"}}
-
-        {"chunk":{"type":"text","text":" cookies"}}
-
-        {"chunk":{"type":"text","text":" using"}}
+        {"chunk":{"type":"text","text":" Use"}}
 
         {"chunk":{"type":"text","text":" oats"}}
 
@@ -3347,22 +2223,320 @@ interactions:
 
         {"chunk":{"type":"text","text":" a"}}
 
-        {"chunk":{"type":"text","text":" wholesome"}}
+        {"chunk":{"type":"text","text":" healthier"}}
 
-        {"chunk":{"type":"text","text":" snack"}}
+        {"chunk":{"type":"text","text":" cookie"}}
+
+        {"chunk":{"type":"text","text":" option"}}
+
+        {"chunk":{"type":"text","text":".\n\n"}}
+
+        {"chunk":{"type":"text","text":"5"}}
 
         {"chunk":{"type":"text","text":"."}}
 
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Fruit"}}
+
+        {"chunk":{"type":"text","text":" Salad"}}
+
+        {"chunk":{"type":"text","text":" with"}}
+
+        {"chunk":{"type":"text","text":" Honey"}}
+
+        {"chunk":{"type":"text","text":" Lime"}}
+
+        {"chunk":{"type":"text","text":" Dressing"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" Combine"}}
+
+        {"chunk":{"type":"text","text":" your"}}
+
+        {"chunk":{"type":"text","text":" favorite"}}
+
+        {"chunk":{"type":"text","text":" fruits"}}
+
+        {"chunk":{"type":"text","text":" and"}}
+
+        {"chunk":{"type":"text","text":" drizzle"}}
+
+        {"chunk":{"type":"text","text":" with"}}
+
+        {"chunk":{"type":"text","text":" a"}}
+
+        {"chunk":{"type":"text","text":" mixture"}}
+
+        {"chunk":{"type":"text","text":" of"}}
+
+        {"chunk":{"type":"text","text":" honey"}}
+
+        {"chunk":{"type":"text","text":" and"}}
+
+        {"chunk":{"type":"text","text":" lime"}}
+
+        {"chunk":{"type":"text","text":" juice"}}
+
+        {"chunk":{"type":"text","text":".\n\n"}}
+
+        {"chunk":{"type":"text","text":"6"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Car"}}
+
+        {"chunk":{"type":"text","text":"rot"}}
+
+        {"chunk":{"type":"text","text":" Cake"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"car"}}
+
+        {"chunk":{"type":"text","text":"rot"}}
+
+        {"chunk":{"type":"text","text":"-c"}}
+
+        {"chunk":{"type":"text","text":"ake"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n\n"}}
+
+        {"chunk":{"type":"text","text":"7"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Chocolate"}}
+
+        {"chunk":{"type":"text","text":" Chip"}}
+
+        {"chunk":{"type":"text","text":" Cookies"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"ch"}}
+
+        {"chunk":{"type":"text","text":"ocolate"}}
+
+        {"chunk":{"type":"text","text":"-chip"}}
+
+        {"chunk":{"type":"text","text":"-c"}}
+
+        {"chunk":{"type":"text","text":"ookies"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n\n"}}
+
+        {"chunk":{"type":"text","text":"8"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Z"}}
+
+        {"chunk":{"type":"text","text":"uc"}}
+
+        {"chunk":{"type":"text","text":"chini"}}
+
+        {"chunk":{"type":"text","text":" Bread"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"Z"}}
+
+        {"chunk":{"type":"text","text":"uc"}}
+
+        {"chunk":{"type":"text","text":"chini"}}
+
+        {"chunk":{"type":"text","text":"-b"}}
+
+        {"chunk":{"type":"text","text":"read"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n\n"}}
+
+        {"chunk":{"type":"text","text":"9"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Ban"}}
+
+        {"chunk":{"type":"text","text":"ana"}}
+
+        {"chunk":{"type":"text","text":" Bread"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"banana"}}
+
+        {"chunk":{"type":"text","text":"-b"}}
+
+        {"chunk":{"type":"text","text":"read"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n\n"}}
+
+        {"chunk":{"type":"text","text":"10"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"G"}}
+
+        {"chunk":{"type":"text","text":"inger"}}
+
+        {"chunk":{"type":"text","text":"bread"}}
+
+        {"chunk":{"type":"text","text":" Cake"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"G"}}
+
+        {"chunk":{"type":"text","text":"inger"}}
+
+        {"chunk":{"type":"text","text":"bread"}}
+
+        {"chunk":{"type":"text","text":"-C"}}
+
+        {"chunk":{"type":"text","text":"ake"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")\n\n"}}
+
+        {"chunk":{"type":"text","text":"11"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":" **"}}
+
+        {"chunk":{"type":"text","text":"Sugar"}}
+
+        {"chunk":{"type":"text","text":" Cookies"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":" ["}}
+
+        {"chunk":{"type":"text","text":"Download"}}
+
+        {"chunk":{"type":"text","text":" PDF"}}
+
+        {"chunk":{"type":"text","text":"]("}}
+
+        {"chunk":{"type":"text","text":"Sugar"}}
+
+        {"chunk":{"type":"text","text":"-C"}}
+
+        {"chunk":{"type":"text","text":"ookies"}}
+
+        {"chunk":{"type":"text","text":"-A"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":".pdf"}}
+
+        {"chunk":{"type":"text","text":")"}}
+
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":11,"output_tokens":18,"timings":{"generative_first_chunk":0.6237857289961539,"generative":2.8253557099960744},"input_nuclia_tokens":0.011,"output_nuclia_tokens":0.018}}
+        {"chunk":{"type":"meta","input_tokens":14,"output_tokens":32,"timings":{"generative_first_chunk":0.45031301300150517,"generative":3.8596078000009584},"input_nuclia_tokens":0.014,"output_nuclia_tokens":0.032}}
 
-        {"chunk":{"normalized_tokens":{"input":0.01086,"output":0.01788,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.01419,"output":0.03216,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      - h3=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -3370,17 +2544,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 09:24:40 GMT
+      - Wed, 15 Jul 2026 10:34:44 GMT
       nuclia-learning-id:
-      - 8c99124fdeff4451ad63ab3716678924
+      - ef095335e7cf4828b74a487ae67e8fa8
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '633'
+      - '457'
       x-nuclia-trace-id:
-      - 8f8299845de4eca3ac8882f40e75d2b6
+      - a80f8cd2a520ac0b955080ba4f26ead1
     status:
       code: 200
       message: OK
