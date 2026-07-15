@@ -27,11 +27,14 @@ async def nucliadb_agentic_api_server(
 
     valkey_host, valkey_port = valkey
     valkey_url = f"redis://{valkey_host}:{valkey_port}"
+    nucliadb_url = nucliadb.url.replace("127.0.0.1", "localhost")
+    os.environ["NUCLIADB_READER_INTERNAL_URL"] = nucliadb_url
+    os.environ["NUCLIADB_SEARCH_INTERNAL_URL"] = nucliadb_url
     settings = ServerSettings(
         valkey_url=valkey_url,
         valkey_cluster_mode=False,
         internal_nucliadb=True,
-        internal_nucliadb_url=nucliadb.url.replace("127.0.0.1", "localhost"),
+        internal_nucliadb_url=nucliadb_url,
         internal_nua=False,
         local_openai=None,
         pubsub_keepalive_seconds=40,
@@ -57,3 +60,5 @@ async def nucliadb_agentic_api_server(
     await session.initialize()
     yield session
     await session.finalize()
+    os.environ.pop("NUCLIADB_READER_INTERNAL_URL", None)
+    os.environ.pop("NUCLIADB_SEARCH_INTERNAL_URL", None)

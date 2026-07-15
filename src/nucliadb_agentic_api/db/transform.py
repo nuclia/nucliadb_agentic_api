@@ -15,6 +15,10 @@ from hyperforge_nucliadb.driver_config import (
     NucliaDBConnection,
 )
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.internal_driver import (
+    InternalNucliaDBConfig,
+    InternalNucliaDBConnection,
+)
 
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.models import AgenticConfigSchema
@@ -83,32 +87,45 @@ async def transform_agentic_config(
                 source_config["sources"] = [uid]
                 source_config["module"] = "nucliadb_agent"
 
+                ndb_driver_config: DriverConfig
                 if internal_nucliadb and internal_nucliadb_url:
-                    url = internal_nucliadb_url.format(component="search")
-                    key = None
+                    ndb_driver_config = InternalNucliaDBConfig(
+                        identifier=uid,
+                        name="NucliaDB",
+                        provider="nucliadb_internal",
+                        config=InternalNucliaDBConnection(
+                            url=internal_nucliadb_url,
+                            key=None,
+                            manager="",
+                            description="",
+                            kbid=kbid,
+                            filter_expression=source_obj.filter_expression,
+                            filters=source_obj.resource_filters
+                            if source_obj.resource_filters
+                            else [],
+                        ),
+                    )
                 elif external_nucliadb_url:
-                    url = external_nucliadb_url
-                    key = external_nucliadb_key
+                    ndb_driver_config = NucliaDBConfig(
+                        identifier=uid,
+                        name="NucliaDB",
+                        provider="nucliadb",
+                        config=NucliaDBConnection(
+                            url=external_nucliadb_url,
+                            key=external_nucliadb_key,
+                            manager="",
+                            description="",
+                            kbid=kbid,
+                            filter_expression=source_obj.filter_expression,
+                            filters=source_obj.resource_filters
+                            if source_obj.resource_filters
+                            else [],
+                        ),
+                    )
                 else:
                     raise ValueError(
                         "No NucliaDB URL configured for internal or external access"
                     )
-                ndb_driver_config = NucliaDBConfig(
-                    identifier=uid,
-                    name="NucliaDB",
-                    provider="nucliadb",
-                    config=NucliaDBConnection(
-                        url=url,
-                        key=key,
-                        manager="",
-                        description="",
-                        kbid=kbid,
-                        filter_expression=source_obj.filter_expression,
-                        filters=source_obj.resource_filters
-                        if source_obj.resource_filters
-                        else [],
-                    ),
-                )  # TODO: pass real config if needed
                 drivers[uid] = ndb_driver_config
                 registered_agents.append(source_config)
             elif source_obj.type == "mcp":

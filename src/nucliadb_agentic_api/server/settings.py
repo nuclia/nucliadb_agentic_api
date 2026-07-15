@@ -9,6 +9,7 @@ MODULES = [
     "hyperforge_mcp",
     "hyperforge_google",
     "hyperforge_perplexity",
+    "hyperforge_nucliadb_agentic.internal_driver",
 ]
 
 
