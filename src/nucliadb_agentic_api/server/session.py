@@ -159,6 +159,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 headers=message.headers,
                 arguments=message.arguments,
                 streaming=message.streaming,
+                chat_history=message.chat_history,
             )
 
             task = create_task(
