@@ -25,6 +25,7 @@ async def test_agentic_config_crud(
         "smart_agent": {
             "mode": "reactive",
             "sources": ["dupe-src"],
+            "history": True,
         },
         "summarize": {"conversational": True},
     }
@@ -52,6 +53,7 @@ async def test_agentic_config_crud(
         "smart_agent": {
             "mode": "reactive",
             "sources": ["dupe-src"],
+            "history": False,
         },
         "summarize": {"conversational": False},
     }
@@ -89,6 +91,7 @@ async def test_agentic_config_create_rejects_unknown_source_id(
         "title": "Agent",
         "smart_agent": {
             "sources": ["nono"],
+            "history": True,
         },
     }
     resp = await nucliadb_agentic_api_http_client.post(
@@ -118,6 +121,7 @@ async def test_agentic_config_patch_rejects_unknown_source_id(
         "smart_agent": {
             "mode": "reactive",
             "sources": ["dupe-src"],
+            "history": True,
         },
     }
     await nucliadb_agentic_api_http_client.post(
