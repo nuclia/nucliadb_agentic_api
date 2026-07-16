@@ -39,7 +39,6 @@ async def transform_agentic_config(
     global_driver = []
 
     title = agentic_config.title if agentic_config.title else "Default Agentic Config"
-    breakpoint()
 
     if agentic_config.rephrase:
         config: Dict[str, Any] = {
