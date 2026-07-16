@@ -39,6 +39,7 @@ async def transform_agentic_config(
     global_driver = []
 
     title = agentic_config.title if agentic_config.title else "Default Agentic Config"
+    breakpoint()
 
     if agentic_config.rephrase:
         config: Dict[str, Any] = {
@@ -51,9 +52,10 @@ async def transform_agentic_config(
         if agentic_config.rephrase.ask_to:
             # Same KB with different layers
             config["kbid"] = agentic_config.rephrase.ask_to
+        if agentic_config.rephrase.history:
+            config["history"] = agentic_config.rephrase.history
 
         config["module"] = "rephrase"
-
         preprocess = [config]
     else:
         preprocess = []
@@ -73,6 +75,10 @@ async def transform_agentic_config(
                 config["planner_model"] = agentic_config.smart_agent.models.planner
             if agentic_config.smart_agent.models.executor:
                 config["executor_model"] = agentic_config.smart_agent.models.executor
+            if agentic_config.smart_agent.history:
+                config["history"] = agentic_config.smart_agent.history
+            if agentic_config.smart_agent.extra_prompt:
+                config["extra_prompt"] = agentic_config.smart_agent.extra_prompt
         registered_agents = []
         for source in agentic_config.smart_agent.sources:
             source_obj = await source_manager.get_source(account, kbid, source)
@@ -173,6 +179,8 @@ async def transform_agentic_config(
             config["system_prompt"] = agentic_config.summarize.system_prompt
         if agentic_config.summarize.conversational:
             config["conversational"] = agentic_config.summarize.conversational
+        if agentic_config.summarize.history:
+            config["history"] = agentic_config.summarize.history
 
         config["module"] = "summarize"
 

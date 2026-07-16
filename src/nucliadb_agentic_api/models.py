@@ -133,6 +133,9 @@ class AgenticRephraseConfiguration(BaseModel):
     ask_to: Optional[str] = None
     prompt: Optional[str] = None
     model: Optional[str] = None
+    history: bool = Field(
+        default=False, description="Whether to use conversation history"
+    )
 
 
 class AgenticSmartAgentMode(str, Enum):
@@ -218,7 +221,7 @@ class AgenticSmartAgentConfiguration(BaseModel):
     models: Optional[AgenticSmartAgentModels] = None
     sources: List[str] = Field(default_factory=list)
     history: bool = Field(
-        default=True, description="Whether to use conversation history"
+        default=False, description="Whether to use conversation history"
     )
 
 
@@ -227,6 +230,9 @@ class AgenticSummarizeConfiguration(BaseModel):
     system_prompt: Optional[str] = None
     conversational: bool = False
     model: Optional[str] = None
+    history: bool = Field(
+        default=False, description="Whether to use conversation history"
+    )
 
 
 class AgenticConfigSchema(BaseModel):
