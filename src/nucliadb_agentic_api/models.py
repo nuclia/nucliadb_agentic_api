@@ -217,6 +217,9 @@ class AgenticSmartAgentConfiguration(BaseModel):
     extra_prompt: Optional[str] = None
     models: Optional[AgenticSmartAgentModels] = None
     sources: List[str] = Field(default_factory=list)
+    history: bool = Field(
+        default=True, description="Whether to use conversation history"
+    )
 
 
 class AgenticSummarizeConfiguration(BaseModel):
