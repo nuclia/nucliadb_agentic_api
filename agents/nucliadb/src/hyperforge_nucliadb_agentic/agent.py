@@ -4,13 +4,26 @@ import json
 from time import time
 from typing import Any, ClassVar, Dict, List, Literal, Optional, cast
 
+from hyperforge import PROMPT_ENVIRONMENT, logger
 from hyperforge.agent import Agent
 from hyperforge.configure import agent
 from hyperforge.context.agent import ContextAgent
 from hyperforge.definition import FunctionDefinition
 from hyperforge.manager import Manager
 from hyperforge.memory import Chunk, Context, QuestionMemory, Source
-from hyperforge_nucliadb_agentic.ask.search.ask import ask
+from hyperforge.models import JSONObject
+from hyperforge_nucliadb.ask.multi import choose_source
+from hyperforge_nucliadb.ask_utils import (
+    combine_catalog_filter_expressions,
+    combine_filter_expressions,
+    to_field_filter_expression,
+    to_resource_filter_expression,
+)
+from hyperforge_nucliadb.driver import (
+    NucliaDBDriver,
+    format_ndb_catalog,
+    format_ndb_labels,
+)
 from nucliadb_models.filters import (
     And,
     CatalogFilterExpression,
@@ -30,32 +43,18 @@ from nucliadb_models.search import (
     NucliaDBClientType,
     ResourceProperties,
 )
+
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
+    CitationsType,
+    FieldExtensionStrategy,
     FullResourceStrategy,
     MetadataExtensionStrategy,
-    FieldExtensionStrategy,
     NeighbouringParagraphsStrategy,
     RagStrategies,
     SyncAskResponse,
-    CitationsType,
 )
-from hyperforge.models import JSONObject
-
-from hyperforge import PROMPT_ENVIRONMENT, logger
-from hyperforge_nucliadb.ask.multi import choose_source
-from hyperforge_nucliadb.ask_utils import (
-    combine_catalog_filter_expressions,
-    combine_filter_expressions,
-    to_field_filter_expression,
-    to_resource_filter_expression,
-)
-from hyperforge_nucliadb.driver import (
-    NucliaDBDriver,
-    format_ndb_catalog,
-    format_ndb_labels,
-)
-
+from hyperforge_nucliadb_agentic.ask.search.ask import ask
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 
 # Example filter expressions for catalog search
@@ -557,7 +556,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                     logger.info("Searching images with info: " + info)
                     find_request = FindRequest(
                         query=info,
-                        filter_expression=filter_expression,
+                        filter_expression=filter_expression,  # type: ignore
                     )
                     response = await nucliadb_driver.find_raw(find_request)
                     images_urls.extend(
@@ -578,7 +577,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                         title=self.config.title
                         if self.config.title
                         else f"Search images on {source_id} Knowledge Box",
-                        image_urls=set(images_urls),
+                        image_urls=set(images_urls),  # type: ignore
                     )
                     contexts.append(context)
                 else:
@@ -607,9 +606,9 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
 
             for resource_id in resource_ids:
                 resource = await nucliadb_driver.get_resource_by_id(
-                    query_params={
-                        "show": ["basic", "extracted"],  # type: ignore
-                        "extracted": ["metadata", "file"],  # type: ignore
+                    query_params={  # type: ignore
+                        "show": ["basic", "extracted"],
+                        "extracted": ["metadata", "file"],
                     },
                     rid=resource_id,
                 )
@@ -650,7 +649,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             actual_question_uuid=None,
             question=question,
             source=source_id,
-            agent="basic_ask_title",
+            agent="nucliadb_agent_title",
             title=self.config.title
             if self.config.title
             else f"Title search on {source_id} Knowledge Box",
@@ -983,22 +982,23 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             actual_question_uuid=question_uuid,
             question=question,
             source=source,
-            agent="basic_ask",
+            agent="nucliadb_agent",
             title=self.config.title
             if self.config.title
             else f"Retrieval on {source} Knowledge Box",
         )
 
+        rag_strategies: list[RagStrategies]
         if full_resource:
-            rag_strategies: list[RagStrategies] = [
+            rag_strategies = [
                 FullResourceStrategy(count=1),
-                MetadataExtensionStrategy(types=["classification_labels", "origin"]),
+                MetadataExtensionStrategy(types=["classification_labels", "origin"]),  # type: ignore
             ]
         else:
-            rag_strategies: list[RagStrategies] = [
+            rag_strategies = [
                 FieldExtensionStrategy(fields=["a/title", "a/summary"]),
                 NeighbouringParagraphsStrategy(before=5, after=5),
-                MetadataExtensionStrategy(types=["classification_labels", "origin"]),
+                MetadataExtensionStrategy(types=["classification_labels", "origin"]),  # type: ignore
             ]
 
         filter_expression = await self.build_filter_expression(
@@ -1034,7 +1034,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         )
 
         await memory.add_step(
-            step_module="basic_ask",
+            step_module="nucliadb_agent",
             step_title=self.step_title("Preparing RAG"),
             step_reason="",
             step_value=ask_request.model_dump_json(
@@ -1250,7 +1250,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 question=question,
                 source=source.id,
                 chunks=[],
-                agent="basic_ask_facets",
+                agent="nucliadb_agent_facets",
                 title=f"Faceted search on {source.id} Knowledge Box",
             )
         catalog_request = CatalogRequest(
@@ -1296,7 +1296,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                         origin_agent=self.config.module,
                     )
                 ],
-                agent="basic_ask_facets",
+                agent="nucliadb_agent_facets",
                 title=f"Faceted search on {source.id} Knowledge Box",
             )
 
@@ -1416,7 +1416,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                         origin_agent=self.config.module,
                     )
                 ],
-                agent="basic_ask_facets",
+                agent="nucliadb_agent_facets",
                 title=f"Faceted search on {source.id} Knowledge Box",
             )
 
@@ -1539,7 +1539,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                     origin_agent=self.config.module,
                 )
             ],
-            agent="basic_ask_catalog",
+            agent="nucliadb_agent_catalog",
             title=f"Catalog search on {source.id} Knowledge Box",
         )
         await memory.add_step(

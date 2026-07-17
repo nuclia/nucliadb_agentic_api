@@ -1,6 +1,7 @@
 import datetime
 import json
 from time import time
+from typing import Dict
 
 import databases
 import sqlalchemy as sa
@@ -23,7 +24,7 @@ from nucliadb_agentic_api.models import AgenticConfigSchema
 # Imported lazily in methods to avoid any load-order sensitivity between the two
 # table modules (both share the same `hyperforge.database.metadata`).
 def _get_sources_table():  # pragma: no cover
-    from nucliadb_agentic_api.db.sources import sources_table  # noqa: PLC0415
+    from nucliadb_agentic_api.db.sources import sources_table
 
     return sources_table
 
@@ -48,7 +49,7 @@ agentic_config_table = sa.Table(
 )
 
 
-CACHE = LRU(size=1024)  # type: ignore
+CACHE: Dict[str, AgenticConfigSchema] = LRU(size=1024)  # type: ignore
 
 
 def _cache_key(account: str, kbid: str, agentic_id: str) -> str:
@@ -269,7 +270,9 @@ class AgenticConfigs:
                     identifier="google",
                     name="google",
                     config=GoogleInnerConfig(
-                        api_key=self.settings.hyperforge_google_key, vertexai=False
+                        credentials=self.settings.hyperforge_google_credentials,
+                        location=self.settings.hyperforge_google_location,
+                        vertexai=True,
                     ),
                 )
             )

@@ -31,6 +31,7 @@ async def test_basic_ask(
     response = await ns.ask(
         query="What is it about?",
         url=f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{article_dataset}",
+        generative_model="chatgpt-azure-4o-mini",
     )
 
     assert b"Agents" in response.answer

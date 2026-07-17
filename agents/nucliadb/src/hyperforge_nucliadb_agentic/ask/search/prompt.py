@@ -508,7 +508,7 @@ async def field_extension_prompt_context(
     resource_title = False
     resource_summary = False
     filters: list[
-        nucliadb_models.filters.Field | nucliadb_models.filters.Generated
+        nucliadb_models.filters.Field | nucliadb_models.filters.Generated  # type: ignore
     ] = []
     # this strategy exposes a way to access resource title and summary using a
     # field id. However, as they are resource properties, we must request it as
@@ -522,14 +522,14 @@ async def field_extension_prompt_context(
             # model already enforces type/name format
             field_type, field_name = name.split("/")
             filters.append(
-                nucliadb_models.filters.Field(
+                nucliadb_models.filters.Field(  # type: ignore
                     type=FIELD_TYPE_STR_TO_NAME[field_type], name=field_name or None
                 )
             )
 
     for da_prefix in strategy.data_augmentation_field_prefixes:
         filters.append(
-            nucliadb_models.filters.Generated(by="data-augmentation", da_task=da_prefix)
+            nucliadb_models.filters.Generated(by="data-augmentation", da_task=da_prefix)  # type: ignore
         )
 
     augmented = await rpc.augment(

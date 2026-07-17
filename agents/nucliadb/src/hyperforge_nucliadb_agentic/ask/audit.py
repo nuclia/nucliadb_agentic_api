@@ -129,7 +129,7 @@ class StreamAuditStorage:
 
     async def reconnected_cb(self):
         # See who we are connected to on reconnect.
-        logger.info(f"Got reconnected to NATS {self.nc.connected_url}")
+        logger.info(f"Got reconnected to NATS {self.nc.connected_url}")  # type: ignore
 
     async def error_cb(self, e):
         logger.error(f"There was an error connecting to NATS audit: {e}", exc_info=True)
@@ -145,12 +145,12 @@ class StreamAuditStorage:
         }
 
         if self.nats_creds:
-            options["user_credentials"] = self.nats_creds
+            options["user_credentials"] = self.nats_creds  # type: ignore
 
         if len(self.nats_servers) > 0:
-            options["servers"] = self.nats_servers
+            options["servers"] = self.nats_servers  # type: ignore
 
-        nc = await nats.connect(**options)
+        nc = await nats.connect(**options)  # type: ignore
         self.nc = get_traced_nats_client(nc, self.service)
 
         self.js = get_traced_jetstream(self.nc, self.service)

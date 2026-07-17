@@ -27,11 +27,13 @@ async def nucliadb_agentic_api_server(
 
     valkey_host, valkey_port = valkey
     valkey_url = f"redis://{valkey_host}:{valkey_port}"
+    nucliadb_url = nucliadb.url.replace("127.0.0.1", "localhost")
+    os.environ["INTERNAL_NUCLIADB_URL"] = nucliadb_url
     settings = ServerSettings(
         valkey_url=valkey_url,
         valkey_cluster_mode=False,
         internal_nucliadb=True,
-        internal_nucliadb_url=nucliadb.url.replace("127.0.0.1", "localhost"),
+        internal_nucliadb_url=nucliadb_url,
         internal_nua=False,
         local_openai=None,
         pubsub_keepalive_seconds=40,
@@ -39,6 +41,7 @@ async def nucliadb_agentic_api_server(
         activate_subject="test_activate",
         answers_subject="test_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
         oauth_subject="test_oauth_agentic.{account}.{agent_id}.{workflow_id}.{session}.{question}",
+        health_check_enabled=False,
     )
     broker = RedisBroker.from_url(
         url=valkey_url,
@@ -56,3 +59,4 @@ async def nucliadb_agentic_api_server(
     await session.initialize()
     yield session
     await session.finalize()
+    os.environ.pop("INTERNAL_NUCLIADB_URL", None)

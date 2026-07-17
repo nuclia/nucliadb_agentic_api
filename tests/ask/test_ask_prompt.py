@@ -17,8 +17,8 @@ from hyperforge_nucliadb_agentic.ask.model import (
 )
 from hyperforge_nucliadb_agentic.ask.search import (
     prompt as chat_prompt,
+    rpc,
 )
-from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.search.metrics import Metrics
 from hyperforge_nucliadb_agentic.ask.utils.ids import ParagraphId
 from nucliadb_models.augment import AugmentedParagraph, AugmentRequest, AugmentResponse

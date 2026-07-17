@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import Tuple
 
-import prometheus_client  # type: ignore
+import prometheus_client
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from hyperforge.api.authentication import RaoAuthenticationBackend
@@ -25,7 +25,7 @@ from mcp.server.streamable_http import (
 from nucliadb_sdk import NucliaDBAsync
 from nucliadb_telemetry.utils import clean_telemetry
 from nucliadb_utils.settings import AuditSettings
-from prometheus_client import CONTENT_TYPE_LATEST  # type: ignore
+from prometheus_client import CONTENT_TYPE_LATEST
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
 

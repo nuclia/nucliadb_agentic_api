@@ -7,13 +7,14 @@ from hyperforge.broker.redis import RedisBroker
 from hyperforge.feature_flag import get_flag_service
 from hyperforge.server.cache import ValkeyCache
 from hyperforge.server.run import run_metrics_server
+from hyperforge_nucliadb_agentic.ask.predict import start_predict_engine
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
 from nucliadb_telemetry.utils import setup_telemetry
 from nucliadb_utils.settings import AuditSettings
 from sentry_sdk.integrations.excepthook import ExcepthookIntegration
 
-from nucliadb_agentic_api import SERVICE_NAME
+from nucliadb_agentic_api import SERVICE_NAME, logger
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
@@ -39,6 +40,8 @@ async def run_server(
     if tracer:
         await setup_telemetry(SERVICE_NAME)
 
+    await start_predict_engine()
+
     audit_settings: AuditSettings = AuditSettings()
     # Connect to Valkey
     broker = RedisBroker.from_url(
@@ -56,7 +59,7 @@ async def run_server(
     session = NucliaDBAgenticSessionManager(
         settings=settings,
         broker=broker,
-        agent_manager=agent_manager,  # type: ignore
+        agent_manager=agent_manager,
         cache=ValkeyCache(broker._client),
         audit_settings=audit_settings,
     )
@@ -82,7 +85,7 @@ def run():  # pragma: no cover
             },
         )
     )
-    tracer = setup_telemetry(SERVICE_NAME)  # type: ignore
+    tracer = setup_telemetry(SERVICE_NAME)
     if settings.sentry_url is not None:
         set_sentry(
             settings.zone,
@@ -92,7 +95,7 @@ def run():  # pragma: no cover
 
     get_flag_service()  # precache the flag service
 
-    data_manager_settings = DataManagerSettings()
+    data_manager_settings = DataManagerSettings()  # type: ignore
     loop = asyncio.get_event_loop()
 
     loop.create_task(run_metrics_server(settings.metrics_port))
@@ -101,6 +104,7 @@ def run():  # pragma: no cover
         run_server(settings, tracer, data_manager_settings)
     )
     loop.run_until_complete(session.initialize())
+    logger.info(f"======= Serving on Server to {settings.valkey_url} ======")
     try:
         loop.run_forever()
     finally:

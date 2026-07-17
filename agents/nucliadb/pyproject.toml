@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.11.19,<0.12"]
+build-backend = "uv_build"
 
 [project]
 name = "hyperforge_nucliadb_agentic"
@@ -18,7 +18,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 requires-python = ">=3.10, <4"
-dependencies = ["hyperforge", "lingua-language-detector", "nucliadb_sdk"]
+dependencies = [
+    "hyperforge>=1.0.0.post76",
+    "lingua-language-detector",
+    "nucliadb_sdk",
+]
 
 [dependency-groups]
 # these dependencies are actually in the src/ folder (under
@@ -38,8 +42,9 @@ Changelog = "https://github.com/nuclia/nucliadb_agentic_api/blob/main/agents/nuc
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+testpaths = ["tests"]
+
 
 [tool.uv.build-backend]
-
-# Exclude specific files from being packaged
-source-exclude = ["tests/**", "*.pyc"]
+# Include additional non-Python asset files
+source-exclude = ["tests/**/*"]

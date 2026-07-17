@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     summary="Create agentic configuration",
     tags=["Agentic configs"],
 )
-@requires(NucliaDBRoles.MANAGER)
+@requires(NucliaDBRoles.OWNER)
 async def create_agentic_config_endpoint(
     request: Request,
     kbid: str,
@@ -94,7 +94,7 @@ async def list_agentic_configs_endpoint(
     summary="Update agentic configuration",
     tags=["Agentic configs"],
 )
-@requires(NucliaDBRoles.MANAGER)
+@requires(NucliaDBRoles.OWNER)
 async def patch_agentic_config_endpoint(
     request: Request,
     kbid: str,

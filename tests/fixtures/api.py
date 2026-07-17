@@ -1,4 +1,5 @@
 import asyncio
+import os
 import socket
 
 import pytest
@@ -54,8 +55,10 @@ async def nucliadb_agentic_api_app(
     ask_predict_configure,
 ):
 
+    nucliadb_url = nucliadb.url.replace("127.0.0.1", "localhost")
     nucliadb_agentic_settings.internal_nucliadb = True
-    nucliadb_agentic_settings.internal_nucliadb_url = nucliadb.url
+    nucliadb_agentic_settings.internal_nucliadb_url = nucliadb_url
+    os.environ["INTERNAL_NUCLIADB_URL"] = nucliadb_url
 
     # Configure ask to connect to a real NucliaDB
     ask_settings.nucliadb_reader_address = nucliadb.url
@@ -87,6 +90,7 @@ async def nucliadb_agentic_api_app(
     yield application
 
     await application.shutdown()
+    os.environ.pop("INTERNAL_NUCLIADB_URL", None)
 
 
 @pytest.fixture
@@ -157,6 +161,6 @@ async def nucliadb_agentic_api_http_client(
     """
     async with AsyncClient(
         base_url=f"http://{nucliadb_agentic_api_http}",
-        headers={"X-NUCLIADB-ROLES": "MANAGER;READER;WRITER"},
+        headers={"X-NUCLIADB-ROLES": "OWNER;READER;WRITER"},
     ) as client:
         yield client

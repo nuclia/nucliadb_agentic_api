@@ -5,16 +5,20 @@ from hyperforge.driver import DriverConfig
 from hyperforge.models import MemoryConfig, Rules
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge.workflows import WorkflowData
-from hyperforge_mcp.config import Transport  # type: ignore
-from hyperforge_mcp.config_driver import (  # type: ignore
+from hyperforge_mcp.config import Transport
+from hyperforge_mcp.config_driver import (
     MCPHTTPDriverConfig,
     MCPHTTPInnerConfig,
 )
-from hyperforge_nucliadb.driver_config import (  # type: ignore
+from hyperforge_nucliadb.driver_config import (
     NucliaDBConfig,
     NucliaDBConnection,
 )
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.internal_driver import (
+    InternalNucliaDBConfig,
+    InternalNucliaDBConnection,
+)
 
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.models import AgenticConfigSchema
@@ -31,7 +35,7 @@ async def transform_agentic_config(
     ask_request: AskRequest | None = None,
     kbid: str = "",
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
-    drivers = {}
+    drivers: Dict[str, DriverConfig] = {}
     global_driver = []
 
     title = agentic_config.title if agentic_config.title else "Default Agentic Config"
@@ -47,9 +51,10 @@ async def transform_agentic_config(
         if agentic_config.rephrase.ask_to:
             # Same KB with different layers
             config["kbid"] = agentic_config.rephrase.ask_to
+        if agentic_config.rephrase.history:
+            config["history"] = agentic_config.rephrase.history
 
         config["module"] = "rephrase"
-
         preprocess = [config]
     else:
         preprocess = []
@@ -69,6 +74,10 @@ async def transform_agentic_config(
                 config["planner_model"] = agentic_config.smart_agent.models.planner
             if agentic_config.smart_agent.models.executor:
                 config["executor_model"] = agentic_config.smart_agent.models.executor
+            if agentic_config.smart_agent.history:
+                config["history"] = agentic_config.smart_agent.history
+            if agentic_config.smart_agent.extra_prompt:
+                config["extra_prompt"] = agentic_config.smart_agent.extra_prompt
         registered_agents = []
         for source in agentic_config.smart_agent.sources:
             source_obj = await source_manager.get_source(account, kbid, source)
@@ -83,32 +92,45 @@ async def transform_agentic_config(
                 source_config["sources"] = [uid]
                 source_config["module"] = "nucliadb_agent"
 
+                ndb_driver_config: DriverConfig
                 if internal_nucliadb and internal_nucliadb_url:
-                    url = internal_nucliadb_url
-                    key = None
+                    ndb_driver_config = InternalNucliaDBConfig(
+                        identifier=uid,
+                        name="NucliaDB",
+                        provider="nucliadb_internal",
+                        config=InternalNucliaDBConnection(
+                            url=internal_nucliadb_url,
+                            key=None,
+                            manager="",
+                            description="",
+                            kbid=kbid,
+                            filter_expression=source_obj.filter_expression,
+                            filters=source_obj.resource_filters
+                            if source_obj.resource_filters
+                            else [],
+                        ),
+                    )
                 elif external_nucliadb_url:
-                    url = external_nucliadb_url
-                    key = external_nucliadb_key
+                    ndb_driver_config = NucliaDBConfig(
+                        identifier=uid,
+                        name="NucliaDB",
+                        provider="nucliadb",
+                        config=NucliaDBConnection(
+                            url=external_nucliadb_url,
+                            key=external_nucliadb_key,
+                            manager="",
+                            description="",
+                            kbid=kbid,
+                            filter_expression=source_obj.filter_expression,
+                            filters=source_obj.resource_filters
+                            if source_obj.resource_filters
+                            else [],
+                        ),
+                    )
                 else:
                     raise ValueError(
                         "No NucliaDB URL configured for internal or external access"
                     )
-                ndb_driver_config = NucliaDBConfig(
-                    identifier=uid,
-                    name="NucliaDB",
-                    provider="nucliadb",
-                    config=NucliaDBConnection(
-                        url=url,
-                        key=key,
-                        manager="",
-                        description="",
-                        kbid=kbid,
-                        filter_expression=source_obj.filter_expression,
-                        filters=source_obj.resource_filters
-                        if source_obj.resource_filters
-                        else [],
-                    ),
-                )  # TODO: pass real config if needed
                 drivers[uid] = ndb_driver_config
                 registered_agents.append(source_config)
             elif source_obj.type == "mcp":
@@ -116,7 +138,7 @@ async def transform_agentic_config(
                 source_config["sources"] = [uid]
                 source_config["transport"] = Transport.HTTP
                 source_config["module"] = "mcp"
-                ndb_driver_config = MCPHTTPDriverConfig(
+                mcp_driver_config = MCPHTTPDriverConfig(
                     identifier=uid,
                     name="MCPHTTP",
                     provider="mcphttp",
@@ -125,7 +147,7 @@ async def transform_agentic_config(
                         headers=source_obj.headers if source_obj.headers else {},
                     ),
                 )  # TODO: pass real config if needed
-                drivers[uid] = ndb_driver_config
+                drivers[uid] = mcp_driver_config
                 registered_agents.append(source_config)
 
             elif source_obj.type == "google":
@@ -156,6 +178,8 @@ async def transform_agentic_config(
             config["system_prompt"] = agentic_config.summarize.system_prompt
         if agentic_config.summarize.conversational:
             config["conversational"] = agentic_config.summarize.conversational
+        if agentic_config.summarize.history:
+            config["history"] = agentic_config.summarize.history
 
         config["module"] = "summarize"
 

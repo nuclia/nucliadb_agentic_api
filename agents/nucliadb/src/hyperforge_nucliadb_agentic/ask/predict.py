@@ -97,7 +97,7 @@ class RephraseResponse:
 
 
 def get_predict() -> "PredictEngine":
-    return get_utility(Utility.PREDICT)  # type: ignore
+    return get_utility(Utility.PREDICT)
 
 
 async def start_predict_engine():

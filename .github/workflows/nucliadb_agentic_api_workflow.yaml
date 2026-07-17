@@ -25,16 +25,13 @@ env:
     GCP_WORKLOAD_IDENTITY_PROVIDER: "projects/224545243904/locations/global/workloadIdentityPools/gh-nuclia/providers/gh-nuclia-provider"
     GCP_SERVICE_ACCOUNT: "github-actions@nuclia-internal.iam.gserviceaccount.com"
 
-permissions:
-    id-token: write
-    contents: read
-    actions: read
-    packages: write
-
 jobs:
     test:
         name: Testing
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
         outputs:
             component: ${{ steps.param.outputs.component }}
             hash: ${{ steps.param.outputs.hash }}
@@ -90,14 +87,14 @@ jobs:
 
             - name: Test package
               run: |
-                  make  test
+                  make test
               env:
                   NUA_KEY: ${{ secrets.NUA_KEY }}
-
+                  HEALTH_CHECK_PORT: 8099
     build_wheels:
         name: Build wheels
         runs-on: ubuntu-24.04
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         needs:
             - test
         permissions:
@@ -139,12 +136,11 @@ jobs:
     build_and_push_docker_image:
         name: Build and push Docker image
         runs-on: ubuntu-24.04
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         needs:
             - build_wheels
         permissions:
             contents: read
-            packages: write
         steps:
             - name: Checkout repository
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -172,3 +168,161 @@ jobs:
               run: |
                   docker push "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_SHA_TAG"
                   docker push "ghcr.io/$REPOSITORY_OWNER/nucliadb_agentic_api:$IMAGE_REF_TAG"
+    
+    build_and_push_internal:
+        name: Build and push internal Docker image
+        runs-on: nuclia-base
+        if: github.event_name == 'push'
+        needs:
+            - test
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+              with:
+                  persist-credentials: false
+
+            - name: Generate a token
+              id: app-token
+              uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+              with:
+                client-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
+                private-key: ${{ secrets.PK_GHAPP_NUCLIABOT }}
+                owner: nuclia
+                repositories: tooling
+                permission-contents: read
+
+            - name: Checkout tooling repository
+              uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+              with:
+                repository: nuclia/tooling
+                ref: main
+                path: tooling
+                token: ${{ steps.app-token.outputs.token }}
+                persist-credentials: false
+
+            - name: Authenticate to Google Cloud
+              id: gcp-auth
+              uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 #v3
+              with:
+                workload_identity_provider: "${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}"
+                service_account: "${{ env.GCP_SERVICE_ACCOUNT }}"
+                token_format: access_token
+
+            - name: Login to Google Artifact Registry
+              uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+              with:
+                registry: europe-west4-docker.pkg.dev
+                username: oauth2accesstoken
+                password: ${{ steps.gcp-auth.outputs.access_token }}
+
+            - name: Build and Push image to registries
+              uses: ./tooling/.github/actions/build-img-regcache
+              with:
+                file: NUCLIADB_AGENTIC_API.Dockerfile
+                image-name: ${{ needs.test.outputs.component }}
+                image-version: ${{ needs.test.outputs.img-version }}
+                aws-ecr-role: ${{ secrets.AWS_ECR_ROLE }}
+                tag-latest: ${{ github.ref == 'refs/heads/main' && 'latest' || 'dev-latest' }}
+                push: true
+                ghapp-nuclia-service-bot-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
+                ghapp-nuclia-service-bot-pk: ${{ secrets.PK_GHAPP_NUCLIABOT }}
+
+            - name: Build and push helm chart
+              uses: ./tooling/.github/actions/build-helm-chart
+              with:
+                component: ${{ needs.test.outputs.component }}
+                chart-version: ${{ needs.test.outputs.chart-version }}
+                image-name: ${{ needs.test.outputs.component }}
+                image-version: ${{ needs.test.outputs.img-version }}
+                hash: ${{ needs.test.outputs.hash }}
+                helm-chart-url: ${{ secrets.HELM_CHART_URL }}
+                chart-dir: "./charts/nucliadb_agentic"
+                helm-version: v3.15.3
+                set-only-tag: true # Skips the standard method of setting the image, and just set the tag value.
+                push-to-artifact-registry: true
+    
+    send-to-promo-queue:
+        name: Send to promo queue
+        runs-on: nuclia-base
+        needs:
+            - build_and_push_internal
+            - test
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Generate a token
+              id: app-token
+              uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+              with:
+                client-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
+                private-key: ${{ secrets.PK_GHAPP_NUCLIABOT }}
+                owner: nuclia
+                repositories: core-apps
+                # POST /repos/{owner}/{repo}/dispatches requires contents: write
+                permission-contents: write
+
+            - name: Create components promotion summary.
+              env:
+                SKIP_ARGO_HEALTH: false
+                ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'stage' || 'dev' }}
+                PROMO_PRODUCTION: ${{ env.PROMO_PRODUCTION }}
+                TEAM: ${{ secrets.TEAM_NAME }}
+                SLACK_TEAM: ${{ secrets.SLACK_TEAM }}
+                COMPONENT: ${{ needs.test.outputs.component }}
+                CHART_VERSION: ${{ needs.test.outputs.chart-version }}
+              run: |
+                MERGED_JSON=$(jq -cs \
+                  --arg environment "$ENVIRONMENT" \
+                  --arg skip_queue "$SKIP_QUEUE" \
+                  --arg skip_argo_health "$SKIP_ARGO_HEALTH" \
+                  --arg team "$TEAM" \
+                  --arg slack_team "$SLACK_TEAM" \
+                  --arg promo_production "$PROMO_PRODUCTION" \
+                  --arg component "$COMPONENT" \
+                  --arg chart_version "$CHART_VERSION" \
+                  --arg commit_sha "${{ github.sha }}" \
+                  '{
+                    skip_promo_queue: ($skip_queue == "true")
+                  } + {
+                    skip_argo_health: ($skip_argo_health == "true")
+                  } + {
+                    environment: $environment
+                  } + {
+                    promo_production: ($promo_production == "true")
+                  } + {
+                    team: $team
+                  } + {
+                    slack_team: $slack_team
+                  } + {
+                    tests: {
+                      "run-e2e": true,
+                      "run-nuclia-e2e": true
+                    }
+                  } + {
+                    "commit-sha": $commit_sha
+                  } + {
+                    "components": [
+                      {
+                        "component": $component,
+                        "chart-version": $chart_version,
+                        "component-type": "regional"
+                      }
+                    ]
+                  }'
+                )
+                
+                echo "JSON_PROMO_SUMMARY=$MERGED_JSON" >> $GITHUB_ENV
+
+            - name: Send to promotion queue
+              id: send-to-promo
+              uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
+              with:
+                token: ${{ steps.app-token.outputs.token }}
+                repository: nuclia/core-apps
+                event-type: promotions
+                client-payload: '${{ env.JSON_PROMO_SUMMARY }}'

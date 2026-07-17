@@ -32,8 +32,7 @@ from nuclia_models.predict.generative_responses import (
     StatusGenerativeResponse,
 )
 from nucliadb_models.search import FindParagraph
-from nucliadb_protos import resources_pb2 as rpb2
-from nucliadb_protos import writer_pb2 as wpb2
+from nucliadb_protos import resources_pb2 as rpb2, writer_pb2 as wpb2
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
 from ..fixtures.predict import DummyPredictEngine
@@ -83,8 +82,8 @@ async def test_ask_reasoning(
         },
     )
     assert resp.status_code == 200, resp.text
-    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore[attr-defined]
-    assert predict.calls[2][1].reasoning is True  # type: ignore[attr-defined]
+    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore
+    assert predict.calls[2][1].reasoning is True  # type: ignore
     results = parse_ask_response(resp)
     reasoning = ""
     answer = ""
@@ -191,7 +190,7 @@ async def test_ask_with_citations(
 ):
     kbid = knowledgebox
 
-    citations = {"foo": [], "bar": []}  # type: ignore
+    citations = {"foo": [], "bar": []}
     citations_gen = CitationsGenerativeResponse(citations=citations)
     citations_chunk = GenerativeChunk(chunk=citations_gen)
 
@@ -351,8 +350,8 @@ async def test_ask_rag_options_full_resource(
     _ = parse_ask_response(resp)
 
     # Make sure the prompt context is properly crafted
-    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore[attr-defined]
-    prompt_context = predict.calls[2][1].query_context  # type: ignore[attr-defined]
+    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore
+    prompt_context = predict.calls[2][1].query_context  # type: ignore
 
     # All fields of the matching resource should be in the prompt context
     assert len(prompt_context) == 6
@@ -405,8 +404,8 @@ async def test_ask_full_resource_rag_strategy_with_exclude(
     assert paragraphs_ids == {f"{resource1}/a/title/0-11", f"{resource2}/a/title/0-11"}
 
     # Make sure the prompt context is properly crafted
-    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore[attr-defined]
-    prompt_context = predict.calls[2][1].query_context  # type: ignore[attr-defined]
+    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore
+    prompt_context = predict.calls[2][1].query_context  # type: ignore
 
     # Both titles have matched but resource 1 has been excluded from full
     # resource, so only the matching paragraph gets in the context
@@ -473,8 +472,8 @@ async def test_ask_rag_options_extend_with_fields(
     _ = parse_ask_response(resp)
 
     # Make sure the prompt context is properly crafted
-    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore[attr-defined]
-    prompt_context = predict.calls[2][1].query_context  # type: ignore[attr-defined]
+    assert predict.calls[2][0] == "chat_query_ndjson"  # type: ignore
+    prompt_context = predict.calls[2][1].query_context  # type: ignore
 
     # Matching paragraphs should be in the prompt
     # context, plus the extended field for each resource
@@ -778,7 +777,7 @@ async def test_ask_handles_stream_errors_on_predict(
     predict.ndjson_answer.pop(-1)
     error_status = StatusGenerativeResponse(code="-1", details="unexpected LLM error")
     status_chunk = GenerativeChunk(chunk=error_status)
-    predict.ndjson_answer.append(status_chunk.model_dump_json() + "\n")
+    predict.ndjson_answer.append(status_chunk.model_dump_json() + "\n")  # type: ignore
 
     # Sync ask
     resp = await nucliadb_agentic_ask_api.post(
@@ -872,9 +871,9 @@ async def test_ask_with_json_schema_output(
     predict_answer = JSONGenerativeResponse(
         object={"answer": "valid answer to", "confidence": 0.5}
     )
-    predict.ndjson_answer = [
+    predict.ndjson_answer = [  # type: ignore
         GenerativeChunk(chunk=predict_answer).model_dump_json() + "\n"
-    ]  # type: ignore
+    ]
 
     resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
@@ -1221,11 +1220,11 @@ async def test_all_rag_strategies_combinations(
     valid_combinations = []
     for i in range(1, len(rag_strategies) + 1):
         for combination in combinations(rag_strategies, i):
-            if valid_combination(list(combination)):  # type: ignore
+            if valid_combination(list(combination)):
                 valid_combinations.append(list(combination))
 
     assert len(valid_combinations) == 19
-    for combination in valid_combinations:  # type: ignore
+    for combination in valid_combinations:
         resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             headers={"X-Synchronous": "True"},

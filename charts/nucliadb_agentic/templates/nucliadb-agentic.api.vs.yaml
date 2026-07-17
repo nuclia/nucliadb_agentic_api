@@ -1,4 +1,4 @@
-apiVersion: networking.istio.io/v1beta1
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: nucliadb-agentic
@@ -14,12 +14,9 @@ spec:
   hosts:
     - "{{ .Values.zone }}.{{ .Values.vs.host }}"
   http:
+    {{- if .Values.vs.enabled }}
     - name: nucliadb-agentic_public_api_endpoints
       match:
-        - uri:
-            regex: ^/api/v\d+/kb/[^/]+/agent/.*
-          method:
-            regex: "GET|PATCH|DELETE|OPTIONS|POST"
         - uri:
             regex: ^/api/v\d+/kb/[^/]+/mcp
           method:
@@ -32,13 +29,13 @@ spec:
         - destination:
             port:
               number: 8080
-            host: " nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
       corsPolicy:
         allowOrigins:
           - exact: "*"
         allowHeaders:
           - "*"
-          # Authorization will be exluded from * in the future, (CORS non-wildcard request-header).
+          # Authorization will be excluded from * in the future, (CORS non-wildcard request-header).
           # Browsers already showing deprecation notices, so it needs to be specified explicitly
           - "Authorization"
         allowMethods:
@@ -48,6 +45,53 @@ spec:
           - PUT
           - PATCH
           - DELETE
+    {{- end }}
+    - name: nucliadb-agentic_management_endpoints
+      match:
+        - uri:
+            regex: ^/api/v\d+/kb/[^/]+/sources(/.*)?$
+          method:
+            regex: "GET|POST|PUT|PATCH|DELETE|OPTIONS"
+        - uri:
+            regex: ^/api/v\d+/kb/[^/]+/agentic_configs(/.*)?$
+          method:
+            regex: "GET|POST|PUT|PATCH|DELETE|OPTIONS"
+      route:
+        - destination:
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            port:
+              number: 8080
+      corsPolicy:
+        allowOrigins:
+          - exact: "*"
+        allowHeaders:
+          - "*"
+          - "Authorization"
+        allowMethods:
+          - GET
+          - HEAD
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+    {{- if .Values.vs.enabled }}
+    - name: ask_websocket_endpoint
+      match:
+        - uri:
+            regex: '^/api/v\d+/kb/[^/]+/ask$'
+          headers:
+            upgrade:
+              exact: websocket
+        - uri:
+            regex: '^/api/v\d+/kb/[^/]+/(resource|slug)/[^/]+/ask$'
+          headers:
+            upgrade:
+              exact: websocket
+      route:
+        - destination:
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            port:
+              number: 8080
     - name: ask_endpoint
       match:
         - uri:
@@ -66,3 +110,15 @@ spec:
       retries:
         attempts: 3
         retryOn: connect-failure,5xx
+    - name: oauth_callback_endpoint
+      match:
+        - uri:
+            regex: ^/api/auth/kb/.+/oauth/.+/callback$
+          method:
+            regex: "GET|OPTIONS"
+      route:
+        - destination:
+            host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
+            port:
+              number: 8080
+    {{- end }}

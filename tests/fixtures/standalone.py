@@ -85,7 +85,7 @@ async def nucliadb_ingest_grpc(
     nucliadb_grpc_address = f"{standalone_nucliadb.host}:{standalone_nucliadb.grpc}"
     channel = aio.insecure_channel(nucliadb_grpc_address)
     stub = WriterStub(channel)
-    yield stub  # type: ignore
+    yield stub
     await channel.close(grace=None)
 
 

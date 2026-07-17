@@ -3,7 +3,7 @@ import pathlib
 import alembic.command
 import alembic.config
 import pytest
-from sqlalchemy_utils import (  # type: ignore
+from sqlalchemy_utils import (
     create_database,
     database_exists,
     drop_database,

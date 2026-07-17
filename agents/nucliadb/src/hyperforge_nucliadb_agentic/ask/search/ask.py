@@ -34,8 +34,7 @@ from nucliadb_utils.exceptions import LimitsExceededError
 from pydantic_core import ValidationError
 from typing_extensions import assert_never
 
-from hyperforge_nucliadb_agentic.ask import logger
-from hyperforge_nucliadb_agentic.ask import predict
+from hyperforge_nucliadb_agentic.ask import logger, predict
 from hyperforge_nucliadb_agentic.ask.audit import ChatAuditor
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     AnswerJsonSchemaTooLong,
@@ -656,7 +655,7 @@ async def ask(
         # early return the ask endpoint without querying the generative model
         return NotEnoughContextAskResult(
             main_results=err.main_query,
-            prequeries_results=err.prequeries,
+            prequeries_results=err.prequeries,  # type: ignore
         )
 
     # parse ask request generation parameters reusing the same fetcher as
@@ -924,7 +923,7 @@ async def retrieval_in_kb(
         len(prequery_result.resources) == 0
         for (_, prequery_result) in prequeries_results or []
     ):
-        raise NoRetrievalResultsError(main_results, prequeries_results)
+        raise NoRetrievalResultsError(main_results, prequeries_results)  # type: ignore
 
     main_query_weight = prequeries.main_query_weight if prequeries is not None else 1.0
     best_matches = compute_best_matches(
@@ -998,7 +997,7 @@ async def retrieval_in_resource(
         len(prequery_result.resources) == 0
         for (_, prequery_result) in prequeries_results or []
     ):
-        raise NoRetrievalResultsError(main_results, prequeries_results)
+        raise NoRetrievalResultsError(main_results, prequeries_results)  # type: ignore
     main_query_weight = prequeries.main_query_weight if prequeries is not None else 1.0
     best_matches = compute_best_matches(
         main_results=main_results,

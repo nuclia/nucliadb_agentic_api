@@ -1,12 +1,21 @@
 FROM python:3.12 AS build
 
-RUN pip install uv &&  apt update -y && apt install -y npm && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    pip install uv && apt update -y && apt install -y npm
 
-# Install dependencies
+# Install dependencies first (cached unless manifests change)
 RUN uv venv /app
 ENV VIRTUAL_ENV=/app
+COPY pyproject.toml uv.lock /app/
+COPY agents/nucliadb/pyproject.toml /app/agents/nucliadb/pyproject.toml
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --active --frozen --directory /app --compile-bytecode --no-install-workspace --link-mode=copy
+
+# Copy source code and reinstall workspace packages
 COPY . /app/.
-RUN uv sync --active --frozen --directory /app --compile-bytecode
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --active --frozen --directory /app --compile-bytecode --link-mode=copy
 
 #
 # Only copy the virtual env to the final image.

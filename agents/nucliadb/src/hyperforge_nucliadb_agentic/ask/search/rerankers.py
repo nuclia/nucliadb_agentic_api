@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod, abstractproperty  # type: ignore
 from dataclasses import dataclass
 
 from nucliadb_models.internal.predict import RerankModel
@@ -40,7 +40,7 @@ class RerankingOptions:
 
 
 class Reranker(ABC):
-    @abstractproperty
+    @abstractproperty  # type: ignore
     def window(self) -> int | None:
         """Number of elements the reranker requests. `None` means no specific
         window is enforced."""

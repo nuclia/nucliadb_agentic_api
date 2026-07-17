@@ -7,9 +7,7 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
 from hyperforge_nucliadb_agentic.ask.search.rpc import __SDK
-from hyperforge_nucliadb_agentic.ask.settings import (
-    settings as ask_settings,
-)
+from hyperforge_nucliadb_agentic.ask.settings import settings as ask_settings
 from nucliadb_models.resource import NucliaDBRoles
 from nucliadb_sdk.tests.fixtures import NucliaFixture
 from nucliadb_utils.settings import AuditSettings, nuclia_settings
@@ -85,7 +83,7 @@ def create_api_client_factory(application: FastAPI) -> Callable[..., AsyncClient
         if root is False:
             client_base_url = f"{client_base_url}/api/v{version}"
 
-        transport = ASGITransport(app=application)  # type: ignore
+        transport = ASGITransport(app=application)
         client = AsyncClient(transport=transport, base_url=client_base_url)
         client.headers["X-NUCLIADB-ROLES"] = ";".join([role.value for role in roles])
         client.headers["X-NUCLIADB-USER"] = user

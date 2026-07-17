@@ -41,7 +41,7 @@ def _answer_obj_to_content(
             EmbeddedResource(
                 type="resource",
                 resource=TextResourceContents(
-                    uri="rao-response://answer/citations",  # type: ignore[arg-type]
+                    uri="rao-response://answer/citations",  # type: ignore
                     text=citations_json,
                     mimeType="application/json",
                 ),
@@ -58,7 +58,7 @@ def _answer_obj_to_content(
                         EmbeddedResource(
                             type="resource",
                             resource=TextResourceContents(
-                                uri=f"rao-response://answer/chunk/{idx}",  # type: ignore[arg-type]
+                                uri=f"rao-response://answer/chunk/{idx}",  # type: ignore
                                 text=chunk_text,
                                 mimeType="text/plain",
                             ),
@@ -72,7 +72,7 @@ def _answer_obj_to_content(
                     EmbeddedResource(
                         type="resource",
                         resource=TextResourceContents(
-                            uri=f"rao-response://answer/structured/{idx}",  # type: ignore[arg-type]
+                            uri=f"rao-response://answer/structured/{idx}",  # type: ignore
                             text=item,
                             mimeType="text/plain",
                         ),
@@ -94,7 +94,7 @@ def _answer_obj_to_content(
             EmbeddedResource(
                 type="resource",
                 resource=TextResourceContents(
-                    uri="rao-response://answer/image-urls",  # type: ignore[arg-type]
+                    uri="rao-response://answer/image-urls",  # type: ignore
                     text=json.dumps(answer.image_urls),
                     mimeType="application/json",
                 ),
@@ -107,7 +107,7 @@ def _answer_obj_to_content(
                 EmbeddedResource(
                     type="resource",
                     resource=TextResourceContents(
-                        uri=f"rao-response://answer/visualization/{idx}",  # type: ignore[arg-type]
+                        uri=f"rao-response://answer/visualization/{idx}",  # type: ignore
                         text=json.dumps(
                             pydantic_core.to_jsonable_python(viz.vega_lite_obj)
                         ),
@@ -160,7 +160,7 @@ def convert_arag_answer_to_content(
             EmbeddedResource(
                 type="resource",
                 resource=TextResourceContents(
-                    uri="rao-response://citations",  # type: ignore[arg-type]
+                    uri="rao-response://citations",  # type: ignore
                     text=citations_json,
                     mimeType="application/json",
                 ),
@@ -173,7 +173,7 @@ def convert_arag_answer_to_content(
             EmbeddedResource(
                 type="resource",
                 resource=TextResourceContents(
-                    uri="rao-response://answer-urls",  # type: ignore[arg-type]
+                    uri="rao-response://answer-urls",  # type: ignore
                     text=json.dumps(msg.answer_urls),
                     mimeType="application/json",
                 ),
@@ -199,7 +199,7 @@ def convert_arag_answer_to_content(
                 EmbeddedResource(
                     type="resource",
                     resource=TextResourceContents(
-                        uri=f"rao-response://context/{context.id}/chunk/{chunk.chunk_id}",  # type: ignore[arg-type]
+                        uri=f"rao-response://context/{context.id}/chunk/{chunk.chunk_id}",  # type: ignore
                         text=chunk.text,
                         mimeType="text/plain",
                         **{"_meta": meta} if meta else {},
@@ -221,7 +221,7 @@ def convert_arag_answer_to_content(
                 EmbeddedResource(
                     type="resource",
                     resource=TextResourceContents(
-                        uri=f"rao-response://context/{context.id}/structured/{idx}",  # type: ignore[arg-type]
+                        uri=f"rao-response://context/{context.id}/structured/{idx}",  # type: ignore
                         text=structured,
                         mimeType="text/plain",
                     ),
@@ -233,7 +233,7 @@ def convert_arag_answer_to_content(
                 EmbeddedResource(
                     type="resource",
                     resource=TextResourceContents(
-                        uri=f"rao-response://context/{context.id}/image-urls",  # type: ignore[arg-type]
+                        uri=f"rao-response://context/{context.id}/image-urls",  # type: ignore
                         text=json.dumps(context.image_urls),
                         mimeType="application/json",
                     ),
@@ -247,7 +247,7 @@ def convert_arag_answer_to_content(
                 EmbeddedResource(
                     type="resource",
                     resource=TextResourceContents(
-                        uri=f"rao-response://visualization/{idx}",  # type: ignore[arg-type]
+                        uri=f"rao-response://visualization/{idx}",  # type: ignore
                         text=json.dumps(
                             pydantic_core.to_jsonable_python(viz.vega_lite_obj)
                         ),

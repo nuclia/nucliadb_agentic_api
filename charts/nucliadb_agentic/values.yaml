@@ -1,8 +1,8 @@
 containerRegistry: europe-west4-docker.pkg.dev/nuclia-internal/nuclia
 
 image:
-  nucliadb-agenticApi: nucliadb-agentic
-  nucliadb-agenticServer: nucliadb-agentic
+  nucliadbAgenticApi: nucliadb-agentic
+  nucliadbAgenticServer: nucliadb-agentic
   tag: TAG_TO_REPLACE
 
 hash: "HASH_VERSION_TO_REPLACE" # Use quotes to force string due https://github.com/kubernetes-sigs/yaml/issues/45
@@ -26,19 +26,7 @@ env:
 
   INTERNAL_NUCLIADB: True
   INTERNAL_NUCLIADB_URL: "{component}.nucliadb.svc.cluster.local:8080"
-  ## Secrets values. Currently not used as they are set through envFrom
-  # POSTGRESQL_DSN:
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: nucliadb-agentic-secrets
-  #       key: nucliadb-agentic.POSTGRESQL_DSN
-  # SENTRY_URL:
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: nucliadb-agentic-secrets
-  #       key: nucliadb-agentic.SENTRY_URL
 
-nats_secret:  # Secret name containing nats creds to mount
 tracing:
   enabled: false
 
@@ -155,30 +143,3 @@ migrations:
     name: default
     labels: {}
     annotations: {}
-
-
-cronjobs:
-  downloads:
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "200Mi"
-    annotations: {}
-    podAnnotations: {}
-    serviceAccount:
-      create: false
-      name: default
-      labels: {}
-      annotations: {}
-  workflowsCleanup:
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "200Mi"
-    annotations: {}
-    podAnnotations: {}
-    serviceAccount:
-      create: false
-      name: default
-      labels: {}
-      annotations: {}
