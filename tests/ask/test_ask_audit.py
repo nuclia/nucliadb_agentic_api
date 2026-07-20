@@ -26,11 +26,14 @@ import nats.js.errors
 import pytest
 from httpx import AsyncClient
 from hyperforge.feature_flag import get_flag_service
+from hyperforge.models import ExternalUsage, Step
 from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nats.aio.client import Client
 from nats.js import JetStreamContext
+from nucliadb_models.search import NucliaDBClientType
 from nucliadb_protos.audit_pb2 import AuditRequest
+from nucliadb_protos.kb_usage_pb2 import KBSource, PredictType, Service
 from nucliadb_utils.settings import audit_settings
 
 
@@ -39,6 +42,53 @@ async def get_audit_messages(sub):
     auditreq = AuditRequest()
     auditreq.ParseFromString(msg[0].data)
     return auditreq
+
+
+async def test_external_usage_is_reported(
+    audit: StreamAuditStorage,
+    knowledgebox: str,
+) -> None:
+    step = Step(
+        original_question_uuid="question",
+        actual_question_uuid="question",
+        module="google",
+        title="Search results",
+        timeit=0.1,
+        input_nuclia_tokens=None,
+        output_nuclia_tokens=None,
+        agent_path="/context/google",
+        external_usage=[
+            ExternalUsage(
+                provider="google",
+                model="gemini-2.5-flash",
+                input_tokens=10,
+                output_tokens=20,
+            )
+        ],
+    )
+
+    assert audit.kb_usage_utility is not None
+    audit.report_step_usage(
+        account_id="account",
+        kbid=knowledgebox,
+        client_type=NucliaDBClientType.API,
+        step=step,
+    )
+
+    usage = audit.kb_usage_utility.queue.get_nowait()
+    assert usage.service == Service.RAO
+    assert usage.account_id == "account"
+    assert usage.kb_id == knowledgebox
+    assert usage.kb_source == KBSource.HOSTED
+    assert len(usage.predicts) == 1
+    predict = usage.predicts[0]
+    assert predict.client == 0
+    assert predict.type == PredictType.QUESTION_ANSWER
+    assert predict.model == "google/gemini-2.5-flash"
+    assert predict.input == 10
+    assert predict.output == 20
+    assert predict.num_predicts == 1
+    assert predict.customer_key is False
 
 
 @pytest.mark.deploy_modes("standalone")
