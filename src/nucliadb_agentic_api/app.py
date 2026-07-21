@@ -76,7 +76,7 @@ class HTTPApplication(FastAPI):
             yield
             await app.shutdown()
 
-        super().__init__(*args, lifespan=lifespan, **kwargs)
+        super().__init__(*args, lifespan=lifespan, strict_content_type=False, **kwargs)
         self.settings = settings
         self.data_manager_settings = data_manager_settings
         self.audit_settings = audit_settings
