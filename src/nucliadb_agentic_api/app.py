@@ -76,7 +76,15 @@ class HTTPApplication(FastAPI):
             yield
             await app.shutdown()
 
-        super().__init__(*args, lifespan=lifespan, **kwargs)
+        super().__init__(
+            *args,
+            lifespan=lifespan,
+            # REVIEW: this is a patch to return to the previous behavior of
+            # FastAPI that doesn't check content types. If all our internal
+            # clients set headers properly, we wouldn't need that
+            strict_content_type=False,
+            **kwargs
+        )
         self.settings = settings
         self.data_manager_settings = data_manager_settings
         self.audit_settings = audit_settings
