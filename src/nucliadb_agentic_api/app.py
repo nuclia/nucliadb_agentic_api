@@ -83,7 +83,7 @@ class HTTPApplication(FastAPI):
             # FastAPI that doesn't check content types. If all our internal
             # clients set headers properly, we wouldn't need that
             strict_content_type=False,
-            **kwargs
+            **kwargs,
         )
         self.settings = settings
         self.data_manager_settings = data_manager_settings

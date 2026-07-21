@@ -43,6 +43,7 @@ from nucliadb_models.search import (
     NucliaDBClientType,
     ResourceProperties,
 )
+from pydantic import ValidationError
 
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
@@ -1001,6 +1002,22 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 MetadataExtensionStrategy(types=["classification_labels", "origin"]),  # type: ignore
             ]
 
+        ask_request_json = memory.arguments.get("ask_request")
+        if ask_request_json:
+            # Preserve the request options from the public ask endpoint while
+            # using the query selected by the SmartAgent for this retrieval.
+            try:
+                ask_request = AskRequest.model_validate_json(
+                    ask_request_json
+                ).model_copy(update={"query": question})
+            except ValidationError as e:
+                logger.error(
+                    f"Failed to validate AskRequest received as memory argument: {e}"
+                )
+                ask_request = None
+        else:
+            ask_request = None
+
         filter_expression = await self.build_filter_expression(
             nucliadb_driver,
             source,
@@ -1008,18 +1025,24 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             and_filters=and_filters,
             or_filters=or_filters,
             resource_filters=resource_filters,
+            filter_expression=ask_request.filter_expression
+            if ask_request is not None
+            else None,
         )
         t0 = time()
 
-        ask_request = AskRequest(
-            query=question,
-            show=[ResourceProperties.BASIC, ResourceProperties.ORIGIN],
-            citations=CitationsType.LLM_FOOTNOTES,
-            generative_model=self.config.generative_model,
-            filter_expression=filter_expression,
-            rag_strategies=rag_strategies,
-            generate_answer=self.config.generate_inner_answer,
-        )
+        if ask_request is None:
+            ask_request = AskRequest(
+                query=question,
+                show=[ResourceProperties.BASIC, ResourceProperties.ORIGIN],
+                citations=CitationsType.LLM_FOOTNOTES,
+                generative_model=self.config.generative_model,
+                filter_expression=filter_expression,
+                rag_strategies=rag_strategies,
+                generate_answer=self.config.generate_inner_answer,
+            )
+        else:
+            ask_request.filter_expression = filter_expression
 
         paragraphs_result = await ask(
             search_sdk=nucliadb_driver.driver,

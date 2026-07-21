@@ -89,6 +89,7 @@ async def transform_agentic_config(
                 # Same KB different
                 uid = uuid4().hex
 
+                source_config["id"] = f"nucliadb-agent-{source}"
                 source_config["sources"] = [uid]
                 source_config["module"] = "nucliadb_agent"
 
@@ -135,6 +136,9 @@ async def transform_agentic_config(
                 registered_agents.append(source_config)
             elif source_obj.type == "mcp":
                 uid = uuid4().hex
+                # See the nucliadb branch above for why this must be
+                # deterministic rather than random.
+                source_config["id"] = f"mcp-agent-{source}"
                 source_config["sources"] = [uid]
                 source_config["transport"] = Transport.HTTP
                 source_config["module"] = "mcp"
@@ -151,11 +155,13 @@ async def transform_agentic_config(
                 registered_agents.append(source_config)
 
             elif source_obj.type == "google":
+                source_config["id"] = f"google-agent-{source}"
                 source_config["module"] = "google"
                 global_driver.append("google")
                 registered_agents.append(source_config)
 
             elif source_obj.type == "perplexity":
+                source_config["id"] = f"perplexity-agent-{source}"
                 source_config["module"] = "perplexity"
                 global_driver.append("perplexity")
                 registered_agents.append(source_config)
