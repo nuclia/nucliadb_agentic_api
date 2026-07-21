@@ -32,6 +32,7 @@ tracing:
 
 zone: provider-region-ordinal
 vs:
+  enabled: true
   gateway: "istio-system/xxxxxx"
   host: "xxxxx.cloud"
 
