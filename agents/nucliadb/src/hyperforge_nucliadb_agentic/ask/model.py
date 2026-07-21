@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from typing import Annotated, Any, Literal, Self  # type: ignore
 
@@ -940,6 +941,10 @@ Using this feature also disables the `citations` parameter. For maximal accuracy
     def fix_legacy_rank_fusion(cls, values):
         """Dirty fix to allow passing "legacy" as rank fusion algorithm but
         convert it to RRF"""
+        if isinstance(values, str):
+            # Body arrived double-serialized (JSON string instead of JSON object),
+            # which can happen when requests are double-proxied through Istio/Envoy.
+            values = json.loads(values)
         if isinstance(values, dict):
             rank_fusion = values.get("rank_fusion")
             if isinstance(rank_fusion, str) and rank_fusion == "legacy":
