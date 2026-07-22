@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
     clean_citation_footnotes_from_answer,
