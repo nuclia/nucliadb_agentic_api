@@ -100,13 +100,6 @@ async def test_agentic_ask_nucliadb_propagates_ask_request(
         debug=True,
     )
 
-    client = AsyncClient(
-        base_url=f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{eric_dataset}",
-        headers={
-            "X-NUCLIADB-ROLES": "OWNER;READER;WRITER",
-            "X-Synchronous": "true",
-        },
-    )
     captured_requests = []
     original_ask_agent = NucliaDBAgent.ask_agent
 
@@ -120,22 +113,29 @@ async def test_agentic_ask_nucliadb_propagates_ask_request(
         )
         return await original_ask_agent(self, *args, **kwargs)
 
-    with patch.object(NucliaDBAgent, "ask_agent", capture_ask_agent):
-        response = await client.post(
-            "/ask", json=ask_request.model_dump(), timeout=1000
-        )
+    async with AsyncClient(
+        base_url=f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{eric_dataset}",
+        headers={
+            "X-NUCLIADB-ROLES": "OWNER;READER;WRITER",
+            "X-Synchronous": "true",
+        },
+    ) as client:
+        with patch.object(NucliaDBAgent, "ask_agent", capture_ask_agent):
+            response = await client.post(
+                "/ask", json=ask_request.model_dump(), timeout=1000
+            )
 
-    assert response.status_code == 200, response.text
-    assert captured_requests
-    for internal_request in captured_requests:
-        assert internal_request.query
-        assert internal_request.top_k == 1
-        assert internal_request.rag_strategies[0].name == "hierarchy"
-        assert internal_request.rag_strategies[0].count == 12
-        assert internal_request.rag_images_strategies[0].name == "page_image"
-        assert internal_request.rag_images_strategies[0].count == 1
-        assert internal_request.generative_model == "gemini-2.5-flash-lite"
-        assert internal_request.debug is True
+        assert response.status_code == 200, response.text
+        assert captured_requests
+        for internal_request in captured_requests:
+            assert internal_request.query
+            assert internal_request.top_k == 1
+            assert internal_request.rag_strategies[0].name == "hierarchy"
+            assert internal_request.rag_strategies[0].count == 12
+            assert internal_request.rag_images_strategies[0].name == "page_image"
+            assert internal_request.rag_images_strategies[0].count == 1
+            assert internal_request.generative_model == "gemini-2.5-flash-lite"
+            assert internal_request.debug is True
 
 
 async def test_agentic_ask_perplexity(
