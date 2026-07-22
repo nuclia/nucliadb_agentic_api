@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 from collections.abc import AsyncGenerator
@@ -73,6 +74,7 @@ predict_observer = metrics.Observer(
 
 RETRIABLE_EXCEPTIONS = (httpx.ConnectError, httpx.ConnectTimeout)
 MAX_TRIES = 2
+_predict_engine_lock = asyncio.Lock()
 
 
 class AnswerStatusCode(str, Enum):
@@ -100,27 +102,34 @@ def get_predict() -> "PredictEngine":
     return get_utility(Utility.PREDICT)
 
 
-async def start_predict_engine():
-    predict_util = PredictEngine(
-        nuclia_settings.nuclia_inner_predict_url,
-        nuclia_settings.nuclia_public_url,
-        nuclia_settings.nuclia_service_account,
-        nuclia_settings.nuclia_zone,
-        nuclia_settings.onprem,
-        nuclia_settings.local_predict,
-        nuclia_settings.local_predict_headers,
-    )
-    await predict_util.initialize()
-    set_utility(Utility.PREDICT, predict_util)
+async def start_predict_engine() -> "PredictEngine":
+    async with _predict_engine_lock:
+        existing = get_predict()
+        if existing is not None:
+            return existing
+
+        predict_util = PredictEngine(
+            nuclia_settings.nuclia_inner_predict_url,
+            nuclia_settings.nuclia_public_url,
+            nuclia_settings.nuclia_service_account,
+            nuclia_settings.nuclia_zone,
+            nuclia_settings.onprem,
+            nuclia_settings.local_predict,
+            nuclia_settings.local_predict_headers,
+        )
+        await predict_util.initialize()
+        set_utility(Utility.PREDICT, predict_util)
+        return predict_util
 
 
 async def stop_predict_engine():
-    predict_util = get_utility(Utility.PREDICT)
-    if predict_util is None:
-        return
+    async with _predict_engine_lock:
+        predict_util = get_utility(Utility.PREDICT)
+        if predict_util is None:
+            return
 
-    clean_utility(Utility.PREDICT)
-    await predict_util.finalize()
+        clean_utility(Utility.PREDICT)
+        await predict_util.finalize()
 
 
 def convert_relations(data: dict[str, list[dict[str, str]]]) -> list[RelationNode]:
