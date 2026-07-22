@@ -5,6 +5,7 @@ Tests are isolated: every external call (NucliaDBDriver, Manager, ask())
 is mocked so that no real network traffic or NucliaDB instance is needed.
 """
 
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -534,7 +535,9 @@ class TestInnerRag:
             return_value=MagicMock(
                 answer="",
                 status="no_retrieval_data",
-                consumption=None,
+                consumption=SimpleNamespace(
+                    normalized_tokens=SimpleNamespace(input=12.5, output=4.5)
+                ),
                 retrieval_results=MagicMock(best_matches=[]),
             )
         )
@@ -559,6 +562,17 @@ class TestInnerRag:
         assert internal_request.rag_images_strategies[0].count == 2
         assert internal_request.generative_model == "requested-model"
         assert internal_request.generate_answer is False
+        assert mock_ask.call_args.kwargs["extra_predict_headers"] == {
+            "X-Show-Consumption": "true"
+        }
+
+        preparation_step, retrieval_step = mock_memory.add_step.await_args_list
+        assert preparation_step.kwargs["timeit"] > 0
+        assert preparation_step.kwargs["input_nuclia_tokens"] == 0.0
+        assert preparation_step.kwargs["output_nuclia_tokens"] == 0.0
+        assert retrieval_step.kwargs["timeit"] > 0
+        assert retrieval_step.kwargs["input_nuclia_tokens"] == 12.5
+        assert retrieval_step.kwargs["output_nuclia_tokens"] == 4.5
 
 
 # ---------------------------------------------------------------------------

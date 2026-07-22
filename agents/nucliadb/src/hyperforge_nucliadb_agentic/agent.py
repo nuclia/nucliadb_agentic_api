@@ -670,17 +670,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             if response.metadata and response.metadata.tokens
             else 0
         )
-
-        input_tokens = (
-            response.metadata.tokens.input_nuclia
-            if response.metadata and response.metadata.tokens
-            else 0
-        )
-        output_tokens = (
-            response.metadata.tokens.output_nuclia
-            if response.metadata and response.metadata.tokens
-            else 0
-        )
         context.chunks = []
         answer = response.answer if response.status == "success" else ""
         if response.citations != {}:
@@ -977,6 +966,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         full_resource: bool = False,
         resource_filters: Optional[List[str]] = None,
     ) -> Context:
+        preparation_t0 = time()
         source = source_obj.id
 
         nucliadb_driver = get_ndb_driver(manager, source)
@@ -1033,8 +1023,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             if ask_request is not None
             else None,
         )
-        t0 = time()
-
         if ask_request is None:
             ask_request = AskRequest(
                 query=question,
@@ -1048,6 +1036,20 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         else:
             ask_request.filter_expression = filter_expression
 
+        await memory.add_step(
+            step_module="nucliadb_agent",
+            step_title=self.step_title("Preparing RAG"),
+            step_reason="",
+            step_value=ask_request.model_dump_json(
+                exclude_none=True, exclude_unset=True
+            ),
+            timeit=time() - preparation_t0,
+            input_nuclia_tokens=0.0,
+            output_nuclia_tokens=0.0,
+            step_agent_path=f"/context/{self.agent_id}",
+        )
+
+        retrieval_t0 = time()
         paragraphs_result = await ask(
             search_sdk=nucliadb_driver.driver,
             reader_sdk=nucliadb_driver.driver,
@@ -1057,21 +1059,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             client_type=NucliaDBClientType.API,
             origin=memory.arguments.get("origin", ""),
             resource=None,
-            extra_predict_headers={},
-        )
-
-        await memory.add_step(
-            step_module="nucliadb_agent",
-            step_title=self.step_title("Preparing RAG"),
-            step_reason="",
-            step_value=ask_request.model_dump_json(
-                exclude_none=True, exclude_unset=True
-            ),
-            timeit=0.0,
-            input_nuclia_tokens=0.0,
-            output_nuclia_tokens=0.0,
-            step_agent_path=f"/context/{self.agent_id}",
-            metadata={"learning_id": paragraphs_result.nuclia_learning_id},
+            extra_predict_headers={"X-Show-Consumption": "true"},
         )
 
         # Hack to send the find results on the agent context
@@ -1131,10 +1119,11 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             step_title=self.step_title("RAG retrieval"),
             step_reason="Got answer" if answer else "No answer",
             step_value=answer if answer else "No answer",
-            timeit=time() - t0,
+            timeit=time() - retrieval_t0,
             input_nuclia_tokens=input_tokens if input_tokens else 0,
             output_nuclia_tokens=output_tokens if output_tokens else 0,
             step_agent_path=f"/context/{self.agent_id}",
+            metadata={"learning_id": paragraphs_result.nuclia_learning_id},
         )
         return context
 
