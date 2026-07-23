@@ -23,7 +23,7 @@ from mcp.server.streamable_http import (
     StreamableHTTPServerTransport,
 )
 from nucliadb_sdk import NucliaDBAsync
-from nucliadb_telemetry.utils import clean_telemetry
+from nucliadb_telemetry.utils import clean_telemetry, setup_telemetry
 from nucliadb_utils.settings import AuditSettings
 from prometheus_client import CONTENT_TYPE_LATEST
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -83,7 +83,7 @@ class HTTPApplication(FastAPI):
             # FastAPI that doesn't check content types. If all our internal
             # clients set headers properly, we wouldn't need that
             strict_content_type=False,
-            **kwargs
+            **kwargs,
         )
         self.settings = settings
         self.data_manager_settings = data_manager_settings
@@ -103,6 +103,7 @@ class HTTPApplication(FastAPI):
         self.add_middleware(AuditMiddleware)
 
     async def startup(self) -> None:
+        await setup_telemetry(SERVICE_NAME)
 
         await start_predict_engine()
         await start_audit_utility(SERVICE_NAME, self.audit_settings)

@@ -4,7 +4,7 @@ from hyperforge.feature_flag import get_flag_service
 from nucliadb_telemetry.fastapi import instrument_app
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
-from nucliadb_telemetry.utils import get_telemetry, setup_telemetry
+from nucliadb_telemetry.utils import get_telemetry
 from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api import SERVICE_NAME
@@ -33,7 +33,6 @@ def run():  # pragma: no cover
             },
         )
     )
-    setup_telemetry(SERVICE_NAME)  # type: ignore
     if settings.sentry_url is not None:
         set_sentry(
             settings.zone,
