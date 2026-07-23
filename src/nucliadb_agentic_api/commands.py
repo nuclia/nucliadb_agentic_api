@@ -1,3 +1,5 @@
+import asyncio
+
 import uvicorn
 from hyperforge import openapi
 from hyperforge.feature_flag import get_flag_service
@@ -15,7 +17,7 @@ from nucliadb_agentic_api.settings import Settings
 from nucliadb_agentic_api.v1.router import router
 
 
-def run():  # pragma: no cover
+def run():
     settings = Settings()
     setup_logging(
         settings=LogSettings(
