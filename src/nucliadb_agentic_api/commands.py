@@ -1,12 +1,10 @@
-import asyncio
-
 import uvicorn
 from hyperforge import openapi
 from hyperforge.feature_flag import get_flag_service
 from nucliadb_telemetry.fastapi import instrument_app
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
-from nucliadb_telemetry.utils import get_telemetry, setup_telemetry
+from nucliadb_telemetry.utils import get_telemetry
 from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api import SERVICE_NAME
@@ -17,7 +15,7 @@ from nucliadb_agentic_api.settings import Settings
 from nucliadb_agentic_api.v1.router import router
 
 
-async def _run():  # pragma: no cover
+def run():
     settings = Settings()
     setup_logging(
         settings=LogSettings(
@@ -35,7 +33,6 @@ async def _run():  # pragma: no cover
             },
         )
     )
-    await setup_telemetry(SERVICE_NAME)
     if settings.sentry_url is not None:
         set_sentry(
             settings.zone,
@@ -60,10 +57,6 @@ async def _run():  # pragma: no cover
         trace_id_on_responses=True,
     )
     uvicorn.run(app, host=settings.http_host, port=settings.http_port)
-
-
-def run():  # pragma: no cover
-    asyncio.run(_run())
 
 
 def extract_openapi():
