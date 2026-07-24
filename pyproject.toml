@@ -76,7 +76,7 @@ server = [
     "hyperforge_google>=1.0.0.post38",
     "hyperforge_perplexity>=1.0.0.post30",
     "pydantic_settings",
-    "mcp>=1.26.0",
+    "mcp>=1.28.0",
     "prometheus_client",
     "mrflagly>=0.2.11",
     "aiodns",
