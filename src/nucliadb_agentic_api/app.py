@@ -118,18 +118,29 @@ class HTTPApplication(FastAPI):
             headers = {"X-NUCLIADB-ROLES": "READER"}
             api_key = None
             nucliadb_url = self.settings.internal_nucliadb_url
+            reader_url = (
+                nucliadb_url.format(component="reader")
+                if nucliadb_url
+                else nucliadb_url
+            )
+            search_url = (
+                nucliadb_url.format(component="search")
+                if nucliadb_url
+                else nucliadb_url
+            )
         else:
-            nucliadb_url = self.settings.external_nucliadb_url
+            reader_url = self.settings.external_nucliadb_url
+            search_url = self.settings.external_nucliadb_url
             api_key = self.settings.external_nucliadb_key
             headers = {}
 
         self.arag_reader = NucliaDBAsync(
-            url=nucliadb_url,
+            url=reader_url,
             api_key=api_key,
             headers=headers,
         )
         self.arag_search = NucliaDBAsync(
-            url=nucliadb_url,
+            url=search_url,
             api_key=api_key,
             headers=headers,
         )
