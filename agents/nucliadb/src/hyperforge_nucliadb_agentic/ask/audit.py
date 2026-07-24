@@ -7,6 +7,7 @@ from typing import cast
 import backoff
 import mmh3
 import nats
+from fastapi import Request
 from hyperforge.feature_flag import Features, has_feature
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
 from nucliadb_models.search import (
@@ -23,7 +24,9 @@ from nucliadb_utils import logger
 from nucliadb_utils.settings import AuditSettings
 from nucliadb_utils.utilities import Utility, clean_utility, get_utility, set_utility
 from opentelemetry.trace import INVALID_SPAN, format_trace_id, get_current_span
-from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.background import BackgroundTask
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.responses import Response
 
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
@@ -58,31 +61,30 @@ def get_request_context() -> RequestContext | None:
     return request_context_var.get()
 
 
-class AuditMiddleware:
-    def __init__(self, app: ASGIApp):
-        self.app = app
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if scope["type"] != "http":
-            await self.app(scope, receive, send)
-            return
-
+class AuditMiddleware(BaseHTTPMiddleware):
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         context = RequestContext()
         token = request_context_var.set(context)
         context.audit_request.time.FromDatetime(datetime.now(tz=timezone.utc))
         context.audit_request.trace_id = get_trace_id() or ""
-        context.path = scope.get("path", "")
+        context.path = request.url.path
 
-        async def audit_send(message: dict) -> None:
-            await send(message)
-            # Enqueue audit when response body is fully sent
-            if message["type"] == "http.response.body" and not message.get("more_body", False):
-                self.enqueue_pending(context)
+        response = await call_next(request)
 
-        try:
-            await self.app(scope, receive, audit_send)
-        finally:
-            request_context_var.reset(token)
+        # This task will run when the response finishes streaming
+        # When dealing with streaming responses, AND if we depend on any state that only will be available once
+        # the request is fully finished, the response we have after the dispatch call_next is not enough, as
+        # there, no iteration of the streaming response has been done yet.
+        response.background = BackgroundTask(self.enqueue_pending, context)
+
+        # It is safe to reset the context here since the asyncio task for generating the streaming response is
+        # already running. If we want to spawn a different task during streaming and we want that task be able
+        # to read the context_var, we need to manually pass the context into that task.
+        request_context_var.reset(token)
+
+        return response
 
     def enqueue_pending(self, context: RequestContext):
         if context.audit_request.kbid:
