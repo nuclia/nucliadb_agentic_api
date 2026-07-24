@@ -741,10 +741,10 @@ async def mcp_handler(
             body_chunks.append(message.get("body", b""))
 
     # Pre-read the body before passing to the MCP transport.
-    # Starlette 1.x's BaseHTTPMiddleware wraps the ASGI receive callable in a way
-    # that breaks when passed to a new Request object (raises ClientDisconnect).
-    # By reading the body here (through FastAPI's working request) and providing a
-    # synthetic receive, we avoid the issue.
+    # Fix for FastAPI/Starlette 1.x
+    # which consumes the ASGI receive callable internally before the route handler runs.
+    # TODO: consider rewriting this handler to use the official StreamableHTTPSessionManager
+    # This does not happen in arag due to older versions of FastAPI/Starlette.
     body_bytes = await request.body()
     body_sent = False
 
