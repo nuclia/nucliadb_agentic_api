@@ -14,6 +14,7 @@ spec:
   hosts:
     - "{{ .Values.zone }}.{{ .Values.vs.host }}"
   http:
+    {{- if .Values.vs.enabled }}
     - name: nucliadb-agentic_public_api_endpoints
       match:
         - uri:
@@ -44,6 +45,7 @@ spec:
           - PUT
           - PATCH
           - DELETE
+    {{- end }}
     - name: nucliadb-agentic_management_endpoints
       match:
         - uri:
@@ -72,6 +74,7 @@ spec:
           - PUT
           - PATCH
           - DELETE
+    {{- if .Values.vs.enabled }}
     - name: ask_websocket_endpoint
       match:
         - uri:
@@ -118,3 +121,4 @@ spec:
             host: "nucliadb-agentic-api.{{ .Release.Namespace }}.svc.cluster.local"
             port:
               number: 8080
+    {{- end }}
