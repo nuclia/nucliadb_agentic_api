@@ -1056,7 +1056,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             )
         )
 
-        paragraphs = await paragraphs_result.model_dump()
+        paragraphs = await paragraphs_result.to_sync_response()
         answer = None
         input_tokens = (
             paragraphs.consumption.normalized_tokens.input
