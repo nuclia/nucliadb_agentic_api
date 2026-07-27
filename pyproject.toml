@@ -30,22 +30,10 @@ where = ["src/"]
 
 [tool.uv]
 default-groups = "all"
-override-dependencies = [
-    "hyperforge==1.0.0",
-]
 
 [tool.uv.sources]
 nucliadb_agentic_api = { workspace = true }
 hyperforge_nucliadb_agentic = { workspace = true }
-hyperforge = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "hyperforge" }
-hyperforge_conditional = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/conditional" }
-hyperforge_google = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/google" }
-hyperforge_mcp = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/mcp" }
-hyperforge_nucliadb = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/nucliadb" }
-hyperforge_perplexity = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/perplexity" }
-hyperforge_rephrase = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/rephrase" }
-hyperforge_smart = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/smart" }
-hyperforge_summarize = { git = "https://github.com/nuclia/hyperforge", rev = "a7986d4e6760b0b24f65f1b0e9ab92e598068026", subdirectory = "agents/summarize" }
 
 [tool.uv.workspace]
 members = [".", "agents/nucliadb"]
