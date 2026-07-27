@@ -275,7 +275,7 @@ async def _tool_search_documents(
         logger.exception("Unexpected error in search_documents")
         raise ResourceError("Search failed" + (f": {e}" if str(e) else "")) from e
 
-    resp = await ask_result.model_dump()
+    resp = await ask_result.to_sync_response()
     document_ids = _get_document_ids(resp.citation_footnote_to_context)
 
     return _build_citation_blocks(resp) + [

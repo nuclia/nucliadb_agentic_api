@@ -378,7 +378,7 @@ class AskResult:
                 metrics=self.metrics.dump(),
             )
 
-    async def model_dump(self) -> SyncAskResponse:
+    async def to_sync_response(self) -> SyncAskResponse:
         # Run the stream to completion to ensure all data is available in memory
         # First, run the stream in memory to get all the data in memory
         async for _ in self._stream():
@@ -458,7 +458,7 @@ class AskResult:
         return response
 
     async def json(self) -> str:
-        response = await self.model_dump()
+        response = await self.to_sync_response()
         return response.model_dump_json(exclude_none=True, by_alias=True)
 
     async def get_relations_results(self) -> Relations:
@@ -551,7 +551,7 @@ class NotEnoughContextAskResult(AskResult):
                 )
             )
 
-    async def json(self) -> str:
+    async def to_sync_response(self) -> SyncAskResponse:
         prequeries = (
             {
                 prequery.id or f"prequery_{index}": prequery_result
@@ -567,7 +567,10 @@ class NotEnoughContextAskResult(AskResult):
             retrieval_results=self.main_results,
             prequeries=prequeries,
             status=AnswerStatusCode.NO_RETRIEVAL_DATA.prettify(),
-        ).model_dump_json()
+        )
+
+    async def json(self) -> str:
+        return (await self.to_sync_response()).model_dump_json()
 
 
 async def rephrase_query(
