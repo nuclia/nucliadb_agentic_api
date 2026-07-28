@@ -23,7 +23,7 @@ from mcp.server.streamable_http import (
     StreamableHTTPServerTransport,
 )
 from nucliadb_sdk import NucliaDBAsync
-from nucliadb_telemetry.utils import clean_telemetry
+from nucliadb_telemetry.utils import clean_telemetry, setup_telemetry
 from nucliadb_utils.settings import AuditSettings
 from prometheus_client import CONTENT_TYPE_LATEST
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -103,6 +103,7 @@ class HTTPApplication(FastAPI):
         self.add_middleware(AuditMiddleware)
 
     async def startup(self) -> None:
+        await setup_telemetry(SERVICE_NAME)
 
         await start_predict_engine()
         await start_audit_utility(SERVICE_NAME, self.audit_settings)
@@ -117,18 +118,29 @@ class HTTPApplication(FastAPI):
             headers = {"X-NUCLIADB-ROLES": "READER"}
             api_key = None
             nucliadb_url = self.settings.internal_nucliadb_url
+            reader_url = (
+                nucliadb_url.format(component="reader")
+                if nucliadb_url
+                else nucliadb_url
+            )
+            search_url = (
+                nucliadb_url.format(component="search")
+                if nucliadb_url
+                else nucliadb_url
+            )
         else:
-            nucliadb_url = self.settings.external_nucliadb_url
+            reader_url = self.settings.external_nucliadb_url
+            search_url = self.settings.external_nucliadb_url
             api_key = self.settings.external_nucliadb_key
             headers = {}
 
         self.arag_reader = NucliaDBAsync(
-            url=nucliadb_url,
+            url=reader_url,
             api_key=api_key,
             headers=headers,
         )
         self.arag_search = NucliaDBAsync(
-            url=nucliadb_url,
+            url=search_url,
             api_key=api_key,
             headers=headers,
         )
