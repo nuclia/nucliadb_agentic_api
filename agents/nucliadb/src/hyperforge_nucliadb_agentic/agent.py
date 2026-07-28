@@ -1092,6 +1092,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             )
         else:
             result_chunks = paragraphs.retrieval_results.best_matches
+        context.citations = result_chunks
         for chunk_id in result_chunks:
             resource_id = chunk_id.split("/")[0]
             resource = paragraphs.retrieval_results.resources[resource_id]
@@ -1106,8 +1107,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                     origin_agent=self.config.module,
                 )
             )
-            # TODO: Save citations properly
-
         # XXX: This answer will be overriden by any call to save_ctx_and_return_missing below
         if answer and paragraphs.status == "success":
             context.summary = answer
