@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from hyperforge.api.v1.interaction import stream_response
 from hyperforge.interaction import AnswerOperation, AragAnswer
 from hyperforge_nucliadb_agentic.agent import JSON_OBJECT_ID
-from hyperforge_nucliadb_agentic.ask.audit import get_audit
+from hyperforge_nucliadb_agentic.ask.audit import get_audit, get_trace_id
 from hyperforge_nucliadb_agentic.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
@@ -138,6 +138,7 @@ class AgenticAskResult(AskResult):
                             kbid=self.kbid,
                             client_type=self.client_type,
                             step=msg.step,
+                            trace_id=get_trace_id(),
                         )
                 await self.queue.put(msg)
             except (RuntimeError, asyncio.QueueFull):

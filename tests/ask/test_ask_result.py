@@ -53,6 +53,10 @@ async def test_step_external_usage_is_reported():
             "nucliadb_agentic_api.agentic.ask_result.get_audit",
             return_value=audit,
         ),
+        patch(
+            "nucliadb_agentic_api.agentic.ask_result.get_trace_id",
+            return_value="trace-id",
+        ),
     ):
         await result.loop()
 
@@ -61,4 +65,5 @@ async def test_step_external_usage_is_reported():
         kbid="kbid",
         client_type=NucliaDBClientType.API,
         step=step,
+        trace_id="trace-id",
     )

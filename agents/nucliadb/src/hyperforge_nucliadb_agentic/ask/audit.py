@@ -216,7 +216,6 @@ class StreamAuditStorage:
         if not predicts or self.kb_usage_utility is None:
             return
 
-        # TODO: correlate this usage with the corresponding audit event.
         self.kb_usage_utility.send_kb_usage(
             service=Service.RAO,
             account_id=account_id,

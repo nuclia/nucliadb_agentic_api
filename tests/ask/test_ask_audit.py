@@ -33,7 +33,12 @@ from nats.aio.client import Client
 from nats.js import JetStreamContext
 from nucliadb_models.search import NucliaDBClientType
 from nucliadb_protos.audit_pb2 import AuditRequest
-from nucliadb_protos.kb_usage_pb2 import KBSource, PredictType, Service
+from nucliadb_protos.kb_usage_pb2 import (
+    ActivityLogMatchType,
+    KBSource,
+    PredictType,
+    Service,
+)
 from nucliadb_utils.settings import audit_settings
 
 
@@ -73,6 +78,7 @@ async def test_external_usage_is_reported(
         kbid=knowledgebox,
         client_type=NucliaDBClientType.API,
         step=step,
+        trace_id="trace-id",
     )
 
     usage = audit.kb_usage_utility.queue.get_nowait()
@@ -80,6 +86,8 @@ async def test_external_usage_is_reported(
     assert usage.account_id == "account"
     assert usage.kb_id == knowledgebox
     assert usage.kb_source == KBSource.HOSTED
+    assert usage.activity_log_match.id == "trace-id"
+    assert usage.activity_log_match.type == ActivityLogMatchType.TRACE_ID
     assert len(usage.predicts) == 1
     predict = usage.predicts[0]
     assert predict.client == 0
