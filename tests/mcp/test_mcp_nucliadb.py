@@ -362,7 +362,7 @@ async def test_text_content_audience_includes_assistant():
     resp.retrieval_results.resources["rid123"] = resource
 
     ask_result_mock = MagicMock()
-    ask_result_mock.model_dump = AsyncMock(return_value=resp)
+    ask_result_mock.to_sync_response = AsyncMock(return_value=resp)
 
     ask_mock = AsyncMock(return_value=ask_result_mock)
 
@@ -443,6 +443,32 @@ async def test_text_content_audience_includes_assistant():
             name="search_documents",
             arguments={"query": "test", "search_configuration": "non-existent-config"},
         )
+
+
+async def test_call_tool_search_documents_without_retrieval_results():
+    from hyperforge_nucliadb_agentic.ask.search.ask import NotEnoughContextAskResult
+
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
+
+    with patch(
+        "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
+        new=AsyncMock(return_value=NotEnoughContextAskResult()),
+    ):
+        results = await call_tool(
+            x_stf_account="account",
+            x_nucliadb_user="user",
+            x_ndb_client=MagicMock(),  # type: ignore
+            x_forwarded_for="",
+            ndb_reader=AsyncMock(),
+            ndb_search=AsyncMock(),
+            kbid="kbid",
+            name="search_documents",
+            arguments={"query": "no matching documents"},
+        )
+
+    assert len(results) == 1
+    assert isinstance(results[0], TextContent)
+    assert results[0].text == "Not enough data to answer this."
 
 
 async def test_call_tool_search_documents_known_exceptions():

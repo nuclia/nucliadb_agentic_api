@@ -296,13 +296,18 @@ class PredictEngine:
         headers = self.get_predict_headers(kbid)
         headers["Accept"] = "application/x-ndjson"
 
-        resp = await self.make_stream_request(
-            "POST",
-            url=self.get_predict_url(CHAT, kbid),
-            json=item.model_dump(),
-            headers={**headers, **(extra_headers or {})},
-            timeout=httpx.Timeout(180.0, read=120.0),
-        )
+        try:
+            resp = await self.make_stream_request(
+                "POST",
+                url=self.get_predict_url(CHAT, kbid),
+                json=item.model_dump(),
+                headers={**headers, **(extra_headers or {})},
+                timeout=httpx.Timeout(30.0, read=None),
+            )
+        except httpx.TimeoutException as exc:
+            raise ProxiedPredictAPIError(
+                status=504, detail="Timeout while connecting to predict"
+            ) from exc
         await self.check_response(kbid, resp, expected_status=200)
         ident = resp.headers.get(NUCLIA_LEARNING_ID_HEADER) or "unknown"
         model = resp.headers.get(NUCLIA_LEARNING_MODEL_HEADER) or "unknown"

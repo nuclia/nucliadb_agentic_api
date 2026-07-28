@@ -133,6 +133,7 @@ class AgenticRephraseConfiguration(BaseModel):
     ask_to: Optional[str] = None
     prompt: Optional[str] = None
     model: Optional[str] = None
+    history: Optional[bool] = None
 
 
 class AgenticSmartAgentMode(str, Enum):
@@ -217,6 +218,7 @@ class AgenticSmartAgentConfiguration(BaseModel):
     extra_prompt: Optional[str] = None
     models: Optional[AgenticSmartAgentModels] = None
     sources: List[str] = Field(default_factory=list)
+    history: Optional[bool] = None
 
 
 class AgenticSummarizeConfiguration(BaseModel):
@@ -224,6 +226,7 @@ class AgenticSummarizeConfiguration(BaseModel):
     system_prompt: Optional[str] = None
     conversational: bool = False
     model: Optional[str] = None
+    history: Optional[bool] = None
 
 
 class AgenticConfigSchema(BaseModel):

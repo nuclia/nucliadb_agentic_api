@@ -20,6 +20,7 @@ async def test_agentic_configs_api(
         "smart_agent": {
             "mode": "reactive",
             "sources": ["dupe-src"],
+            "history": True,
         },
         "summarize": {"conversational": True},
     }
