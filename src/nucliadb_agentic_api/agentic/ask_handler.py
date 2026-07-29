@@ -40,6 +40,7 @@ async def create_agentic_response(
         ask_request=ask_request,
         agentic_config_id=agentic_config_id,
         account=account,
+        client_type=client_type,
         origin=origin,
         resource=resource,
     )
