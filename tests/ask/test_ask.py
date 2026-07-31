@@ -20,10 +20,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
     RagStrategies,
     SyncAskResponse,
 )
-from hyperforge_nucliadb_agentic.ask.predict import (
-    AnswerStatusCode,
-    get_predict,
-)
+from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
     FootnoteCitationsGenerativeResponse,
@@ -35,7 +32,7 @@ from nucliadb_models.search import FindParagraph
 from nucliadb_protos import resources_pb2 as rpb2, writer_pb2 as wpb2
 from nucliadb_protos.writer_pb2_grpc import WriterStub
 
-from ..fixtures.predict import DummyPredictEngine
+from ..fixtures.predict import DummyPredictManager, get_predict
 from .resources import cookie_tale_resource
 from .utils import inject_message
 from .utils.broker_messages import BrokerMessageBuilder
@@ -103,7 +100,7 @@ async def test_ask_handles_predict_errors_while_parsing(
     kbid = knowledgebox
 
     predict = get_predict()
-    with patch.object(predict, "query", side_effect=TimeoutError("my timeout")):
+    with patch.object(predict, "predict_query", side_effect=TimeoutError("my timeout")):
         resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask", json={"query": "query"}
         )
@@ -644,7 +641,7 @@ async def test_ask_max_tokens(
 
     # If the context requested is bigger than the max tokens, it should fail
     predict = get_predict()
-    assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
+    assert isinstance(predict, DummyPredictManager), "dummy is expected in this test"
 
     resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
@@ -771,7 +768,7 @@ async def test_ask_handles_stream_errors_on_predict(
     kbid = knowledgebox
 
     predict = get_predict()
-    assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
+    assert isinstance(predict, DummyPredictManager), "dummy is expected in this test"
     prev = predict.ndjson_answer.copy()
 
     predict.ndjson_answer.pop(-1)
@@ -866,7 +863,7 @@ async def test_ask_with_json_schema_output(
     assert resp.status_code == 200
 
     predict = get_predict()
-    assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
+    assert isinstance(predict, DummyPredictManager), "dummy is expected in this test"
 
     predict_answer = JSONGenerativeResponse(
         object={"answer": "valid answer to", "confidence": 0.5}
@@ -1315,7 +1312,7 @@ async def test_ask_calls_predict_query_once(
     kbid = knowledgebox
 
     predict = get_predict()
-    assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
+    assert isinstance(predict, DummyPredictManager), "dummy is expected in this test"
     assert len(predict.calls) == 0
 
     resp = await nucliadb_agentic_ask_api.post(
@@ -1525,7 +1522,7 @@ async def test_ask_rephrase(
 
     # we rely on dummy predict to return a rephrased query
     predict = get_predict()
-    assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
+    assert isinstance(predict, DummyPredictManager), "dummy is expected in this test"
 
     resp = await nucliadb_agentic_ask_api.post(
         f"/kb/{kbid}/ask",
@@ -1559,17 +1556,17 @@ async def test_ask_query_image(
 ):
     kbid = knowledgebox
     predict = get_predict()
-    assert isinstance(predict, DummyPredictEngine), "dummy is expected in this test"
+    assert isinstance(predict, DummyPredictManager), "dummy is expected in this test"
 
-    # Monkey patch predict.query to modify the rephrased query, this way we get a query that matches the resource title
-    original_query = predict.query
+    # Monkey patch Predict query to return a rephrased query that matches the resource title.
+    original_query = predict.predict_query
 
     async def mock_query(*args, **kwargs):
         resp = await original_query(*args, **kwargs)
         resp.rephrased_query = "title"
         return resp
 
-    with patch.object(predict, "query", side_effect=mock_query):
+    with patch.object(predict, "predict_query", side_effect=mock_query):
         resp = await nucliadb_agentic_ask_api.post(
             f"/kb/{kbid}/ask",
             json={

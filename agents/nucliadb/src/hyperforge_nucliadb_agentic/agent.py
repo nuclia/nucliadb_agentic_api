@@ -1025,6 +1025,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             search_sdk=nucliadb_driver.driver,
             reader_sdk=nucliadb_driver.driver,
             kbid=nucliadb_driver.config.kbid,
+            predict_manager=manager,
             ask_request=ask_request,
             user_id=memory.original_question_uuid,
             client_type=NucliaDBClientType.API,

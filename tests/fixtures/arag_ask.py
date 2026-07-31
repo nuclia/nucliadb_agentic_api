@@ -16,7 +16,7 @@ from nucliadb_agentic_api.app import HTTPApplication
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.settings import Settings
 
-from .predict import DummyPredictEngine
+from .predict import DummyPredictManager
 
 # Nuclia ARAG Ask
 
@@ -25,7 +25,7 @@ from .predict import DummyPredictEngine
 async def nucliadb_agentic_ask_api_server(
     standalone_nucliadb: NucliaFixture,
     audit: StreamAuditStorage,
-    dummy_predict: DummyPredictEngine,
+    dummy_predict: DummyPredictManager,
     nucliadb_agentic_audit_settings: AuditSettings,
     nucliadb_agentic_data_manager_settings: DataManagerSettings,
     valkey_url: str,
@@ -52,6 +52,8 @@ async def nucliadb_agentic_ask_api_server(
             audit_settings=nucliadb_agentic_audit_settings,
         )
         await app.startup()
+        await app.predict_manager.aclose()
+        app.predict_manager = dummy_predict  # type: ignore[assignment]
         yield app
         await app.shutdown()
 

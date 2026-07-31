@@ -1288,8 +1288,8 @@ wheels = [
 
 [[package]]
 name = "hyperforge"
-version = "1.0.0.post184"
-source = { registry = "https://pypi.org/simple" }
+version = "1.0.0"
+source = { git = "https://github.com/nuclia/hyperforge?subdirectory=hyperforge&branch=use-new-nua-client#7af3471c797e8bcd7e3dcb92a6203d6eac921036" }
 dependencies = [
     { name = "aiodns" },
     { name = "alembic" },
@@ -1321,10 +1321,6 @@ dependencies = [
     { name = "types-redis" },
     { name = "uvicorn" },
     { name = "websockets" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/a1/3edfd778dcac7fb24d23c29ddd252ac28c064076c2de1dcc1d0f9be7d409/hyperforge-1.0.0.post184.tar.gz", hash = "sha256:cca231ba9a6a957d26f25a83a5001bf69ff85e2bd3aa3858ac2350d9824f9d70", size = 250207, upload-time = "2026-07-24T09:37:15.475Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/04/4175e2323079f95718f42ab0f3ded29037161de8a5ab8a343f59e1e9b2dd/hyperforge-1.0.0.post184-py3-none-any.whl", hash = "sha256:b29aa6afc446c44cab6a28557c4adcb215e4787849779730753ec9d30164e093", size = 287427, upload-time = "2026-07-24T09:37:13.758Z" },
 ]
 
 [[package]]
@@ -1399,7 +1395,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hyperforge", specifier = ">=1.0.0.post184" },
+    { name = "hyperforge", git = "https://github.com/nuclia/hyperforge?subdirectory=hyperforge&branch=use-new-nua-client" },
     { name = "lingua-language-detector" },
     { name = "nucliadb-sdk" },
 ]
@@ -1441,15 +1437,11 @@ wheels = [
 
 [[package]]
 name = "hyperforge-restricted"
-version = "1.0.0.post47"
-source = { registry = "https://pypi.org/simple" }
+version = "1.0.0"
+source = { git = "https://github.com/nuclia/hyperforge?subdirectory=agents%2Frestricted&branch=use-new-nua-client#7af3471c797e8bcd7e3dcb92a6203d6eac921036" }
 dependencies = [
     { name = "hyperforge" },
     { name = "restrictedpython" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/06/e409c0da07ab73443c132170bbe086f7a8cf4b220901eeb38399cf4abc2e/hyperforge_restricted-1.0.0.post47.tar.gz", hash = "sha256:7a4c4dfdb85a1631e8f6163643df603391233d4b43063a144643b5a11954aa69", size = 16155, upload-time = "2026-07-15T08:29:11.607Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/88/d8/dac3ecf8166f1ef33070cd12c500ac1764269493818cd6cb9defb3b4f1c8/hyperforge_restricted-1.0.0.post47-py3-none-any.whl", hash = "sha256:ca00de905dc76e6303bc72907b2d30967f6831e4f254101827dbb343964428be", size = 17026, upload-time = "2026-07-15T08:29:10.471Z" },
 ]
 
 [[package]]
@@ -2189,8 +2181,8 @@ wheels = [
 
 [[package]]
 name = "nuclia"
-version = "4.11.5"
-source = { registry = "https://pypi.org/simple" }
+version = "4.13.1"
+source = { git = "https://github.com/nuclia/nuclia.py?branch=improve-nua-clint#16618da0290f9cc6489a0322616b4eec4d33e3d5" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backoff" },
@@ -2209,10 +2201,6 @@ dependencies = [
     { name = "tabulate" },
     { name = "tqdm" },
     { name = "websockets" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/30/14/d274a3c4b964458f1fadca12bd87d329607d22c4b24eb7f6650692276732/nuclia-4.11.5.tar.gz", hash = "sha256:a0987100b2b6186399321de1be1ced9d0ee654cdd5abd344611fe977d2f01aba", size = 286122, upload-time = "2026-06-22T09:53:56.632Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/f0/4cce7d66568c081ee27b320e2c5f469db71040014315dcca1c6ad1a2612a/nuclia-4.11.5-py3-none-any.whl", hash = "sha256:c84973675d84c9d6db48806a28a69c8313ce4b3e336f27cc4b8e86ed4b1637ae", size = 117622, upload-time = "2026-06-22T09:53:54.87Z" },
 ]
 
 [[package]]
@@ -2355,7 +2343,7 @@ server = [
     { name = "databases", extras = ["asyncpg"] },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "hyperforge", specifier = ">=1.0.0.post88" },
+    { name = "hyperforge", git = "https://github.com/nuclia/hyperforge?subdirectory=hyperforge&branch=use-new-nua-client" },
     { name = "hyperforge-conditional", specifier = ">=1.0.0.post27" },
     { name = "hyperforge-google", specifier = ">=1.0.0.post38" },
     { name = "hyperforge-mcp", specifier = ">=1.0.0.post41" },
@@ -2370,7 +2358,7 @@ server = [
     { name = "mmh3" },
     { name = "mrflagly", specifier = ">=0.2.11" },
     { name = "nats-py" },
-    { name = "nuclia", specifier = ">=4.11.5" },
+    { name = "nuclia", git = "https://github.com/nuclia/nuclia.py?branch=improve-nua-clint" },
     { name = "nuclia-models", specifier = ">=0.59.0" },
     { name = "nucliadb-protos" },
     { name = "nucliadb-sdk", specifier = ">=6.14.0.post6532" },

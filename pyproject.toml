@@ -34,6 +34,8 @@ default-groups = "all"
 [tool.uv.sources]
 nucliadb_agentic_api = { workspace = true }
 hyperforge_nucliadb_agentic = { workspace = true }
+nuclia = { git = "https://github.com/nuclia/nuclia.py", branch = "improve-nua-clint" }
+hyperforge = { git = "https://github.com/nuclia/hyperforge", branch = "use-new-nua-client", subdirectory = "hyperforge" }
 
 [tool.uv.workspace]
 members = [".", "agents/nucliadb"]

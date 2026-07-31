@@ -1,20 +1,15 @@
 import json
 import os
 import random
-from collections.abc import AsyncGenerator, AsyncIterator
-from unittest.mock import Mock, patch
+from collections.abc import AsyncIterator
 
 import pytest
-from hyperforge_nucliadb_agentic.ask.model import ChatModel, RephraseModel
-from hyperforge_nucliadb_agentic.ask.predict import (
-    NUCLIA_LEARNING_ID_HEADER,
-    PredictEngine,
-    RephraseResponse,
-    convert_relations,
+from nuclia.lib.nua import (
+    PredictQueryRequest,
+    PredictRephraseRequest,
+    PredictRephraseResponse,
 )
-from hyperforge_nucliadb_agentic.ask.predict_models import (
-    QueryModel,
-)
+from nuclia.lib.nua_responses import ChatModel, Token, Tokens
 from nuclia_models.predict.generative_responses import GenerativeChunk
 from nucliadb_models.internal.predict import (
     Ner,
@@ -25,9 +20,6 @@ from nucliadb_models.internal.predict import (
     TokenSearch,
 )
 from nucliadb_protos.utils_pb2 import RelationNode
-from nucliadb_utils.utilities import Utility
-
-from tests.fixtures.utils import global_utility
 
 DUMMY_RELATION_NODE = [
     RelationNode(value="Ferran", ntype=RelationNode.NodeType.ENTITY, subtype="PERSON"),
@@ -40,14 +32,18 @@ DUMMY_REPHRASE_QUERY = "This is a rephrased query"
 DUMMY_LEARNING_ID = "00"
 DUMMY_LEARNING_MODEL = "chatgpt"
 
+_predict: "DummyPredictManager | None" = None
 
-class DummyPredictEngine(PredictEngine):
+
+def get_predict() -> "DummyPredictManager":
+    assert _predict is not None
+    return _predict
+
+
+class DummyPredictManager:
     default_semantic_threshold = 0.7
 
     def __init__(self):
-        self.onprem = True
-        self.cluster_url = "http://localhost:8000"
-        self.public_url = "http://localhost:8000"
         self.calls = []
         self.ndjson_reasoning = [
             b'{"chunk": {"type": "reasoning", "text": "dummy "}}\n',
@@ -61,33 +57,20 @@ class DummyPredictEngine(PredictEngine):
         ]
         self.max_context = 1000
 
-    async def initialize(self):
+    async def aclose(self):
         pass
 
-    async def finalize(self):
-        pass
-
-    def get_predict_headers(self, kbid: str) -> dict[str, str]:
-        return {}
-
-    async def make_request(self, method: str, **request_args):
-        json_data = {"foo": "bar"}
-        response = Mock(status_code=200)
-        response.json = Mock(return_value=json_data)
-        response.content = json.dumps(json_data).encode("utf-8")
-        response.headers = {NUCLIA_LEARNING_ID_HEADER: DUMMY_LEARNING_ID}
-        response.is_stream_consumed = True
-        return response
-
-    async def rephrase_query(self, kbid: str, item: RephraseModel) -> RephraseResponse:
-        self.calls.append(("rephrase_query", item))
-        return RephraseResponse(
+    async def predict_rephrase(
+        self, request: PredictRephraseRequest, *, kbid: str | None = None, **kwargs
+    ) -> PredictRephraseResponse:
+        self.calls.append(("rephrase_query", request))
+        return PredictRephraseResponse(
             rephrased_query=DUMMY_REPHRASE_QUERY, use_chat_history=None
         )
 
-    async def chat_query_ndjson(
-        self, kbid: str, item: ChatModel, extra_headers: dict[str, str] | None = None
-    ) -> tuple[str, str, AsyncGenerator[GenerativeChunk, None]]:
+    async def predict_chat_stream(
+        self, item: ChatModel, *, kbid: str | None = None, **kwargs
+    ) -> tuple[str, str, AsyncIterator[GenerativeChunk]]:
         self.calls.append(("chat_query_ndjson", item))
 
         async def generate():
@@ -97,18 +80,13 @@ class DummyPredictEngine(PredictEngine):
             for chunk in self.ndjson_answer:
                 yield GenerativeChunk.model_validate_json(chunk)
 
-        return (DUMMY_LEARNING_ID, DUMMY_LEARNING_MODEL, generate())
+        return DUMMY_LEARNING_ID, DUMMY_LEARNING_MODEL, generate()
 
-    async def query(self, kbid: str, item: QueryModel) -> QueryInfo:
+    async def predict_query(
+        self, item: PredictQueryRequest, *, kbid: str | None = None, **kwargs
+    ) -> QueryInfo:
         assert item.text is not None
-
-        self.calls.append(
-            (
-                "query",
-                item,
-            )
-        )
-
+        self.calls.append(("query", item))
         response = QueryInfo(
             query=item.text,
             rephrased_query=f"Rephrased: {item.text}"
@@ -122,7 +100,7 @@ class DummyPredictEngine(PredictEngine):
                 tokens=[Ner(text="text", ner="PERSON", start=0, end=2)], time=0.0
             ),
         )
-        assert response.sentence is not None  # for mypy
+        assert response.sentence is not None
         response.sentence.vectors["en-2024-04-24"] = [
             random.random() for _ in range(768)
         ]
@@ -131,43 +109,51 @@ class DummyPredictEngine(PredictEngine):
             random.random() for _ in range(1024)
         ]
         response.sentence.timings["multilingual-2024-05-06"] = 0.7
-
         return response
 
-    async def detect_entities(self, kbid: str, sentence: str) -> list[RelationNode]:
+    async def detect_entities(
+        self, kbid: str | None, sentence: str
+    ) -> list[RelationNode]:
         self.calls.append(("detect_entities", sentence))
-        dummy_data = os.environ.get("TEST_RELATIONS", None)
+        dummy_data = os.environ.get("TEST_RELATIONS")
         if dummy_data is not None:  # pragma: no cover
-            return convert_relations(json.loads(dummy_data))
-        else:
-            return DUMMY_RELATION_NODE
+            return [
+                RelationNode(
+                    value=token["text"],
+                    ntype=RelationNode.NodeType.ENTITY,
+                    subtype=token["ner"],
+                )
+                for token in json.loads(dummy_data)["tokens"]
+            ]
+        return DUMMY_RELATION_NODE
 
-    async def rerank(self, kbid: str, item: RerankModel) -> RerankResponse:
+    async def predict_tokens(
+        self, sentence: str, *, kbid: str | None = None, **kwargs
+    ) -> Tokens:
+        entities = await self.detect_entities(kbid, sentence)
+        return Tokens(
+            tokens=[
+                Token(text=e.value, ner=e.subtype, start=0, end=0) for e in entities
+            ],
+            time=0.0,
+        )
+
+    async def predict_rerank(
+        self, item: RerankModel, *, kbid: str | None = None, **kwargs
+    ) -> RerankResponse:
         self.calls.append(("rerank", (kbid, item)))
-        # as we don't have information about the retrieval scores, return a
-        # random score given by the dict iteration
-        response = RerankResponse(
+        return RerankResponse(
             context_scores={
                 paragraph_id: i for i, paragraph_id in enumerate(item.context.keys())
             }
         )
-        return response
 
 
 @pytest.fixture(scope="function")
-async def dummy_predict() -> AsyncIterator[DummyPredictEngine]:
-    """Mock start_ and stop_ predict engine functions so we don't overwrite the
-    utility. Then, set our own dummy predict utility, accessible from tests
-
-    """
-    with (
-        patch("nucliadb_agentic_api.app.start_predict_engine"),
-        patch("nucliadb_agentic_api.app.stop_predict_engine"),
-    ):
-        predict_util = DummyPredictEngine()
-        await predict_util.initialize()
-
-        with global_utility(Utility.PREDICT, predict_util):
-            yield predict_util
-
-        await predict_util.finalize()
+async def dummy_predict() -> AsyncIterator[DummyPredictManager]:
+    global _predict
+    _predict = DummyPredictManager()
+    try:
+        yield _predict
+    finally:
+        _predict = None

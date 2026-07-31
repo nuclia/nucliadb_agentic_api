@@ -1,17 +1,15 @@
 from abc import ABC, abstractmethod, abstractproperty  # type: ignore
 from dataclasses import dataclass
 
+from hyperforge.manager import Manager
+from nuclia.exceptions import PredictAPIException
 from nucliadb_models.internal.predict import RerankModel
 from nucliadb_models.search import (
     SCORE_TYPE,
 )
 from nucliadb_telemetry.metrics import Observer
 
-from hyperforge_nucliadb_agentic.ask.predict import (
-    ProxiedPredictAPIError,
-    SendToPredictError,
-    get_predict,
-)
+from hyperforge_nucliadb_agentic.ask.predict import SendToPredictError
 
 reranker_observer = Observer("reranker", labels={"type": ""})
 
@@ -106,8 +104,9 @@ class PredictReranker(Reranker):
 
     """
 
-    def __init__(self, window: int):
+    def __init__(self, window: int, predict_manager: Manager):
         self._window = window
+        self.predict_manager = predict_manager
 
     @property
     def window(self) -> int:
@@ -120,8 +119,6 @@ class PredictReranker(Reranker):
         if len(items) == 0:
             return []
 
-        predict = get_predict()
-
         # Conversion to format expected by predict. At the same time,
         # deduplicates paragraphs found in different indices
         context = {item.id: item.content for item in items}
@@ -131,8 +128,10 @@ class PredictReranker(Reranker):
             context=context,
         )
         try:
-            response = await predict.rerank(options.kbid, request)
-        except (SendToPredictError, ProxiedPredictAPIError, TimeoutError):
+            response = await self.predict_manager.predict_rerank(
+                request, kbid=options.kbid
+            )
+        except (SendToPredictError, PredictAPIException, TimeoutError):
             # predict failed, we can't rerank
             reranked = [
                 RankedItem(
