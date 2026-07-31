@@ -5,10 +5,10 @@ Tests are isolated: every external call (NucliaDBDriver, Manager, ask())
 is mocked so that no real network traffic or NucliaDB instance is needed.
 """
 
-from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
     clean_citation_footnotes_from_answer,
@@ -16,6 +16,7 @@ from hyperforge_nucliadb_agentic.agent import (
     get_chunk_text,
 )
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.search.ask import NotEnoughContextAskResult
 
 # ---------------------------------------------------------------------------
 # Construction
@@ -527,19 +528,7 @@ class TestInnerRag:
             generate_answer=False,
         ).model_dump_json()
 
-        ask_result = MagicMock()
-        ask_result.main_results.model_dump.return_value = {}
-        ask_result.nuclia_learning_id = None
-        ask_result.model_dump = AsyncMock(
-            return_value=MagicMock(
-                answer="",
-                status="no_retrieval_data",
-                consumption=SimpleNamespace(
-                    normalized_tokens=SimpleNamespace(input=12.5, output=4.5)
-                ),
-                retrieval_results=MagicMock(best_matches=[]),
-            )
-        )
+        ask_result = NotEnoughContextAskResult()
 
         with patch(
             "hyperforge_nucliadb_agentic.agent.ask",
@@ -570,8 +559,8 @@ class TestInnerRag:
         assert preparation_step.kwargs["input_nuclia_tokens"] == 0.0
         assert preparation_step.kwargs["output_nuclia_tokens"] == 0.0
         assert retrieval_step.kwargs["timeit"] > 0
-        assert retrieval_step.kwargs["input_nuclia_tokens"] == 12.5
-        assert retrieval_step.kwargs["output_nuclia_tokens"] == 4.5
+        assert retrieval_step.kwargs["input_nuclia_tokens"] == 0
+        assert retrieval_step.kwargs["output_nuclia_tokens"] == 0
 
 
 # ---------------------------------------------------------------------------

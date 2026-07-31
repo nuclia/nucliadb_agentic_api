@@ -24,6 +24,7 @@ from nucliadb_telemetry import errors
 from nucliadb_telemetry.utils import get_telemetry
 from nucliadb_utils.settings import AuditSettings
 from opentelemetry import trace
+from pydantic import ValidationError
 
 from nucliadb_agentic_api import logger
 from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
@@ -90,11 +91,6 @@ class NucliaDBAgenticSessionManager(SessionManager):
     async def activate(self, message: StartInteraction):
         topic = None
 
-        ask_request_json = message.arguments.get("ask_request")
-        ask_request = None
-        if ask_request_json:
-            ask_request = AskRequest.model_validate_json(ask_request_json)
-
         logger.info("Activation message received: %s", message)
         observation = activation_observer()
         observation.start()
@@ -115,6 +111,26 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 message.workflow_id,
             )
 
+            ask_request_json = message.arguments.get("ask_request")
+            if ask_request_json is not None:
+                try:
+                    AskRequest.model_validate_json(ask_request_json)
+                except ValidationError:
+                    logger.warning("Invalid ask_request argument")
+                    observation.set_status("error")
+                    await self.callback(
+                        topic,
+                        AragAnswer(
+                            exception=ARAGException(
+                                detail="Invalid ask_request argument"
+                            ),
+                            operation=AnswerOperation.ERROR,
+                        ),
+                    )
+                    await self.send_message(topic, AgentDone())
+                    observation.end()
+                    return
+
             # Get or load session
             config = await self.agent_manager.get_agent_config(
                 account=message.account,
@@ -124,7 +140,9 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 external_nucliadb_url=self.settings.external_nucliadb_url,
                 external_nucliadb_key=self.settings.external_nucliadb_key,
                 workflow_id=message.workflow_id,
-                ask_request=ask_request,
+                # The AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+                # Keep this dormant config path visible until its intended use is known.
+                # ask_request=ask_request,
             )
 
             state = await get_state(

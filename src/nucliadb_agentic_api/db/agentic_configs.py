@@ -8,7 +8,6 @@ import sqlalchemy as sa
 from hyperforge.database import metadata
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
-from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
@@ -19,6 +18,9 @@ from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import AgenticConfigSchema
+
+# Kept for the dormant AskRequest configuration path below.
+# from hyperforge_nucliadb_agentic.ask.model import AskRequest
 
 
 # Imported lazily in methods to avoid any load-order sensitivity between the two
@@ -241,7 +243,9 @@ class AgenticConfigs:
         external_nucliadb_url: str | None = None,
         default_memory: bool = False,
         workflow_id: str = "default",
-        ask_request: AskRequest | None = None,
+        # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+        # Keep this dormant configuration parameter visible until its intended use is known.
+        # ask_request: AskRequest | None = None,
     ) -> RetrievalAgentConfig:
         # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
         # the right one based on these parameters
@@ -257,7 +261,9 @@ class AgenticConfigs:
             internal_nucliadb_url=internal_nucliadb_url,
             external_nucliadb_url=external_nucliadb_url,
             external_nucliadb_key=external_nucliadb_key,
-            ask_request=ask_request,
+            # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+            # Keep this dormant config path visible until its intended use is known.
+            # ask_request=ask_request,
             kbid=kbid,
         )
 
