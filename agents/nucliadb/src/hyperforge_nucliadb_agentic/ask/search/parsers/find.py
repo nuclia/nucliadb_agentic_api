@@ -1,6 +1,5 @@
 from hyperforge.manager import Manager
-from nucliadb_models import retrieval as retrieval_models
-from nucliadb_models import search as search_models
+from nucliadb_models import retrieval as retrieval_models, search as search_models
 from nucliadb_models.common import FieldTypeName, Paragraph
 from nucliadb_models.filters import (
     And,
