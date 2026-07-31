@@ -12,10 +12,9 @@ from nuclia.exceptions import (
 from nuclia.lib.nua import (
     PredictRephraseError,
     PredictRephraseMissingContextError,
-    PredictRephraseRequest,
-    PredictRephraseResponse,
+    RephraseRequest,
 )
-from nuclia.lib.nua_responses import ChatModel, UserPrompt
+from nuclia.lib.nua_responses import ChatModel, RephraseModel, UserPrompt
 from nuclia_models.common.consumption import Consumption
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
@@ -588,8 +587,8 @@ async def rephrase_query(
     user_context: list[str],
     generative_model: str | None = None,
     chat_history_relevance_threshold: float | None = None,
-) -> PredictRephraseResponse:
-    request = PredictRephraseRequest(
+) -> RephraseModel:
+    request = RephraseRequest(
         question=query,
         chat_history=chat_history,
         user_id=user_id,
@@ -597,7 +596,7 @@ async def rephrase_query(
         generative_model=generative_model,
         chat_history_relevance_threshold=chat_history_relevance_threshold,
     )
-    return await predict_manager.predict_rephrase(request, kbid=kbid)
+    return await predict_manager.rephrase(request, kbid=kbid)
 
 
 async def ask(

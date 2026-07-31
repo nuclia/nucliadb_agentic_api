@@ -3,8 +3,9 @@ from collections.abc import AsyncIterator, Iterable
 
 from hyperforge.manager import Manager
 from nuclia.exceptions import PredictAPIException
-from nuclia.lib.nua import PredictRephraseRequest, PredictRephraseResponse
+from nuclia.lib.nua import RephraseRequest
 from nuclia.lib.nua_responses import ChatModel as NuaChatModel
+from nuclia.lib.nua_responses import RephraseModel
 from nuclia_models.predict.generative_responses import (
     GenerativeChunk,
 )
@@ -95,8 +96,8 @@ async def rephrase_query(
     user_context: list[str],
     generative_model: str | None = None,
     chat_history_relevance_threshold: float | None = None,
-) -> PredictRephraseResponse:
-    req = PredictRephraseRequest(
+) -> RephraseModel:
+    req = RephraseRequest(
         question=query,
         chat_history=chat_history,
         user_id=user_id,
@@ -104,7 +105,7 @@ async def rephrase_query(
         generative_model=generative_model,
         chat_history_relevance_threshold=chat_history_relevance_threshold,
     )
-    return await predict_manager.predict_rephrase(req, kbid=kbid)
+    return await predict_manager.rephrase(req, kbid=kbid)
 
 
 async def get_find_results(
@@ -378,11 +379,12 @@ async def get_answer_stream(
     item: NuaChatModel,
     extra_headers: dict[str, str] | None = None,
 ) -> tuple[str, str, AsyncIterator[GenerativeChunk]]:
-    return await predict_manager.predict_chat_stream(
+    response = await predict_manager.generate_stream(
         item,
         kbid=kbid,
         extra_headers=extra_headers,
     )
+    return response.learning_id, response.model, response.stream
 
 
 async def find_retrieval(

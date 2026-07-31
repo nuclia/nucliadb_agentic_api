@@ -1,7 +1,7 @@
 from google.protobuf.json_format import ParseDict
 from hyperforge.manager import Manager
-from nuclia.lib.nua import PredictQueryRequest
-from nucliadb_models.internal.predict import QueryInfo
+from nuclia.lib.nua import QueryRequest
+from nuclia.lib.nua_responses import QueryInfo
 from nucliadb_protos import knowledgebox_pb2, utils_pb2
 from nucliadb_sdk import NucliaDBAsync
 
@@ -57,7 +57,7 @@ class Fetcher:
 
     async def query_information(self) -> QueryInfo:
         if self._query_info is None:
-            item = PredictQueryRequest(
+            item = QueryRequest(
                 text=self.query,
                 semantic_models=[self.user_vectorset] if self.user_vectorset else None,
                 generative_model=self.generative_model,
@@ -66,7 +66,7 @@ class Fetcher:
                 query_image=self.query_image,
             )
             try:
-                self._query_info = await self.predict_manager.predict_query(
+                self._query_info = await self.predict_manager.query_predict(
                     item, kbid=self.kbid
                 )
             except TimeoutError as exc:

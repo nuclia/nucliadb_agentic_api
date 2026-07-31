@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from hyperforge.manager import Manager
-from nuclia.lib.nua_responses import ChatModel, UserPrompt
+from nuclia.lib.nua_responses import ChatModel, RerankModel, UserPrompt
 from nuclia_models.predict.generative_responses import (
     JSONGenerativeResponse,
     MetaGenerativeResponse,
@@ -31,7 +31,6 @@ from nucliadb_models.graph.requests import (
     RelationType,
 )
 from nucliadb_models.graph.responses import GraphSearchResponse
-from nucliadb_models.internal.predict import RerankModel
 from nucliadb_models.metadata import RelationMetadata
 from nucliadb_models.resource import ExtractedDataTypeName
 from nucliadb_models.retrieval import GraphScore
@@ -389,7 +388,7 @@ async def get_graph_results(
                         # the entity by name. e.g: in a query like "2000", predict might detect the number as
                         # a year entity or as a currency entity. We want graph results for both, so we ignore the
                         # subtype just in this case.
-                        tokens = await predict_manager.predict_tokens(query, kbid=kbid)
+                        tokens = await predict_manager.tokens_predict(query, kbid=kbid)
                         entities_to_explore = [
                             RelationNode(
                                 ntype=RelationNode.NodeType.ENTITY,
@@ -611,7 +610,7 @@ async def rank_relations_reranker(
         },
     )
     # Get the rerank scores
-    res = await predict_manager.predict_rerank(rerank_model, kbid=kbid)
+    res = await predict_manager.rerank(rerank_model, kbid=kbid)
 
     # Convert returned scores to a list of (int_idx, score)
     # where int_idx corresponds to indices in unique_triplets
@@ -698,10 +697,11 @@ async def rank_relations_generative(
         generative_model=generative_model,
     )
 
-    ident, model, answer_stream = await predict_manager.predict_chat_stream(
+    response = await predict_manager.generate_stream(
         chat_model,
         kbid=kbid,
     )
+    answer_stream = response.stream
     response_json = None
     status = None
     _ = None

@@ -1289,7 +1289,7 @@ wheels = [
 [[package]]
 name = "hyperforge"
 version = "1.0.0"
-source = { git = "https://github.com/nuclia/hyperforge?subdirectory=hyperforge&branch=use-new-nua-client#7af3471c797e8bcd7e3dcb92a6203d6eac921036" }
+source = { git = "https://github.com/nuclia/hyperforge?subdirectory=hyperforge&branch=use-new-nua-client#2d0e87dcf69e2ff48aaa821723ab766717df42f0" }
 dependencies = [
     { name = "aiodns" },
     { name = "alembic" },
@@ -1438,7 +1438,7 @@ wheels = [
 [[package]]
 name = "hyperforge-restricted"
 version = "1.0.0"
-source = { git = "https://github.com/nuclia/hyperforge?subdirectory=agents%2Frestricted&branch=use-new-nua-client#7af3471c797e8bcd7e3dcb92a6203d6eac921036" }
+source = { git = "https://github.com/nuclia/hyperforge?subdirectory=agents%2Frestricted&branch=use-new-nua-client#2d0e87dcf69e2ff48aaa821723ab766717df42f0" }
 dependencies = [
     { name = "hyperforge" },
     { name = "restrictedpython" },
@@ -2182,7 +2182,7 @@ wheels = [
 [[package]]
 name = "nuclia"
 version = "4.13.1"
-source = { git = "https://github.com/nuclia/nuclia.py?branch=improve-nua-clint#16618da0290f9cc6489a0322616b4eec4d33e3d5" }
+source = { git = "https://github.com/nuclia/nuclia.py?branch=improve-nua-clint#e7f00fa4cd860fdd59d90ee621c9a707ad9e59f1" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backoff" },

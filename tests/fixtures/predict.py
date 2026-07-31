@@ -4,21 +4,20 @@ import random
 from collections.abc import AsyncIterator
 
 import pytest
-from nuclia.lib.nua import (
-    PredictQueryRequest,
-    PredictRephraseRequest,
-    PredictRephraseResponse,
-)
-from nuclia.lib.nua_responses import ChatModel, Token, Tokens
-from nuclia_models.predict.generative_responses import GenerativeChunk
-from nucliadb_models.internal.predict import (
+from nuclia.lib.nua import GenerateStreamResponse, QueryRequest, RephraseRequest
+from nuclia.lib.nua_responses import (
+    ChatModel,
     Ner,
     QueryInfo,
+    RephraseModel,
     RerankModel,
     RerankResponse,
     SentenceSearch,
+    Token,
+    Tokens,
     TokenSearch,
 )
+from nuclia_models.predict.generative_responses import GenerativeChunk
 from nucliadb_protos.utils_pb2 import RelationNode
 
 DUMMY_RELATION_NODE = [
@@ -60,17 +59,17 @@ class DummyPredictManager:
     async def aclose(self):
         pass
 
-    async def predict_rephrase(
-        self, request: PredictRephraseRequest, *, kbid: str | None = None, **kwargs
-    ) -> PredictRephraseResponse:
+    async def rephrase(
+        self, request: RephraseRequest, *, kbid: str | None = None, **kwargs
+    ) -> RephraseModel:
         self.calls.append(("rephrase_query", request))
-        return PredictRephraseResponse(
+        return RephraseModel(
             rephrased_query=DUMMY_REPHRASE_QUERY, use_chat_history=None
         )
 
-    async def predict_chat_stream(
+    async def generate_stream(
         self, item: ChatModel, *, kbid: str | None = None, **kwargs
-    ) -> tuple[str, str, AsyncIterator[GenerativeChunk]]:
+    ) -> GenerateStreamResponse[AsyncIterator[GenerativeChunk]]:
         self.calls.append(("chat_query_ndjson", item))
 
         async def generate():
@@ -80,10 +79,12 @@ class DummyPredictManager:
             for chunk in self.ndjson_answer:
                 yield GenerativeChunk.model_validate_json(chunk)
 
-        return DUMMY_LEARNING_ID, DUMMY_LEARNING_MODEL, generate()
+        return GenerateStreamResponse(
+            DUMMY_LEARNING_ID, DUMMY_LEARNING_MODEL, generate()
+        )
 
-    async def predict_query(
-        self, item: PredictQueryRequest, *, kbid: str | None = None, **kwargs
+    async def query_predict(
+        self, item: QueryRequest, *, kbid: str | None = None, **kwargs
     ) -> QueryInfo:
         assert item.text is not None
         self.calls.append(("query", item))
@@ -127,7 +128,7 @@ class DummyPredictManager:
             ]
         return DUMMY_RELATION_NODE
 
-    async def predict_tokens(
+    async def tokens_predict(
         self, sentence: str, *, kbid: str | None = None, **kwargs
     ) -> Tokens:
         entities = await self.detect_entities(kbid, sentence)
@@ -138,7 +139,7 @@ class DummyPredictManager:
             time=0.0,
         )
 
-    async def predict_rerank(
+    async def rerank(
         self, item: RerankModel, *, kbid: str | None = None, **kwargs
     ) -> RerankResponse:
         self.calls.append(("rerank", (kbid, item)))

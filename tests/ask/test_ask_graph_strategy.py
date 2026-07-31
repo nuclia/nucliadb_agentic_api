@@ -117,7 +117,7 @@ async def test_ask_graph_strategy(
     await assert_ask(data, expected_paragraphs_text, expected_paragraphs_relations)
 
     # Setup a mock to test query entity extraction with predict
-    dummy_predict.predict_tokens = AsyncMock(
+    dummy_predict.tokens_predict = AsyncMock(
         return_value=Tokens(
             tokens=[
                 Token(text="DiCaprio", ner="ACTOR", start=0, end=0),

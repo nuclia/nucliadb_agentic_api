@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from hyperforge.manager import Manager
 from nuclia.exceptions import PredictAPIException
-from nucliadb_models.internal.predict import RerankModel
+from nuclia.lib.nua_responses import RerankModel
 from nucliadb_models.search import (
     SCORE_TYPE,
 )
@@ -128,9 +128,7 @@ class PredictReranker(Reranker):
             context=context,
         )
         try:
-            response = await self.predict_manager.predict_rerank(
-                request, kbid=options.kbid
-            )
+            response = await self.predict_manager.rerank(request, kbid=options.kbid)
         except (SendToPredictError, PredictAPIException, TimeoutError):
             # predict failed, we can't rerank
             reranked = [
