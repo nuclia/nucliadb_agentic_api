@@ -8,13 +8,15 @@ from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
 
 @pytest.mark.parametrize(
-    "ask_request",
+    ("ask_request", "error_detail"),
     [
-        '{"query": "question", "top_k": "invalid"}',
-        "",
+        ('{"query": "question", "top_k": "invalid"}', '"loc":["top_k"]'),
+        ("", "json_invalid"),
     ],
 )
-async def test_activate_rejects_invalid_ask_request_before_loading_config(ask_request):
+async def test_activate_rejects_invalid_ask_request_before_loading_config(
+    ask_request, error_detail
+):
     session = object.__new__(NucliaDBAgenticSessionManager)
     session.question_topic = MagicMock(return_value="answer-topic")
     session.callback = AsyncMock()
@@ -36,5 +38,5 @@ async def test_activate_rejects_invalid_ask_request_before_loading_config(ask_re
     session.callback.assert_awaited_once()
     answer = session.callback.await_args.args[1]
     assert answer.operation == AnswerOperation.ERROR
-    assert answer.exception.detail == "Invalid ask_request argument"
+    assert error_detail in answer.exception.detail
     session.send_message.assert_awaited_once()

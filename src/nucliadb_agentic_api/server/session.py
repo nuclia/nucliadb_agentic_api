@@ -115,15 +115,13 @@ class NucliaDBAgenticSessionManager(SessionManager):
             if ask_request_json is not None:
                 try:
                     AskRequest.model_validate_json(ask_request_json)
-                except ValidationError:
-                    logger.warning("Invalid ask_request argument")
+                except ValidationError as exc:
+                    logger.warning("Invalid ask_request argument: %s", exc)
                     observation.set_status("error")
                     await self.callback(
                         topic,
                         AragAnswer(
-                            exception=ARAGException(
-                                detail="Invalid ask_request argument"
-                            ),
+                            exception=ARAGException(detail=exc.json()),
                             operation=AnswerOperation.ERROR,
                         ),
                     )
