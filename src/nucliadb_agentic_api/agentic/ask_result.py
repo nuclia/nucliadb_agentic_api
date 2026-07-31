@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from hyperforge.api.v1.interaction import stream_response
 from hyperforge.interaction import AnswerOperation, AragAnswer
 from hyperforge_nucliadb_agentic.agent import JSON_OBJECT_ID
+from hyperforge_nucliadb_agentic.ask.audit import get_audit, get_trace_id
 from hyperforge_nucliadb_agentic.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
@@ -44,7 +45,11 @@ from nuclia_models.predict.generative_responses import (
     StatusGenerativeResponse,
     TextGenerativeResponse,
 )
-from nucliadb_models.search import KnowledgeboxFindResults, Relations
+from nucliadb_models.search import (
+    KnowledgeboxFindResults,
+    NucliaDBClientType,
+    Relations,
+)
 from nucliadb_sdk.v2.exceptions import UnprocessableEntity
 from typing_extensions import assert_never
 
@@ -65,6 +70,7 @@ class AgenticAskResult(AskResult):
         ask_request: AskRequest,
         agentic_config_id: str,
         account: str,
+        client_type: NucliaDBClientType,
         app: "HTTPApplication",
         origin: str | None = None,
         generate_inner_answer: bool = True,
@@ -75,6 +81,7 @@ class AgenticAskResult(AskResult):
         self.ask_request = ask_request
         self.agentic_config_id = agentic_config_id
         self.account = account
+        self.client_type = client_type
         self.origin = origin
         self.metrics = AskMetrics()
         self.app = app
@@ -131,6 +138,16 @@ class AgenticAskResult(AskResult):
                 ):
                     self.nuclia_learning_id = msg.step.metadata["learning_id"]
                     self.event_learning_id.set()
+                if msg.step and msg.step.external_usage:
+                    audit = get_audit()
+                    if audit is not None:
+                        audit.report_step_usage(
+                            account_id=self.account,
+                            kbid=self.kbid,
+                            client_type=self.client_type,
+                            step=msg.step,
+                            trace_id=get_trace_id(),
+                        )
                 await self.queue.put(msg)
             except (RuntimeError, asyncio.QueueFull):
                 # WebSocket already closed
