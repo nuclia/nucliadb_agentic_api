@@ -187,6 +187,8 @@ jobs:
                 app-id: ${{ secrets.GHAPP_ID_NUCLIABOT }}
                 private-key: ${{ secrets.PK_GHAPP_NUCLIABOT }}
                 owner: nuclia
+                repositories: docs
+                permission-contents: write
 
             - name: Checkout
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
