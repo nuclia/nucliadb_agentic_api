@@ -4,6 +4,7 @@ from typing import Tuple
 
 import pytest
 from hyperforge.broker.redis import RedisBroker
+from hyperforge.minimal_fixtures import cassette_nua_key
 from hyperforge.server.cache import ValkeyCache
 from nucliadb_sdk.tests.fixtures import NucliaFixture
 from nucliadb_utils.settings import AuditSettings
@@ -13,7 +14,9 @@ from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 from nucliadb_agentic_api.server.settings import Settings as ServerSettings
 
-NUA = os.environ.get("NUA_KEY", "DUMMY")
+NUA = os.environ.get("NUA_KEY") or cassette_nua_key(
+    "https://europe-1.dp.progress.cloud/"
+)
 
 
 @pytest.fixture(scope="function")
