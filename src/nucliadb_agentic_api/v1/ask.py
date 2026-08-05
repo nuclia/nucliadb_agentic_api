@@ -39,7 +39,7 @@ from nucliadb_agentic_api.v1.router import router
     status_code=200,
     summary="Ask Knowledge Box",
     description="Ask questions on a Knowledge Box",
-    tags=["Search"],
+    tags=["Ask"],
     response_model=SyncAskResponse,
 )
 @requires(NucliaDBRoles.READER)
@@ -123,7 +123,7 @@ async def ask_knowledgebox_endpoint(
     status_code=200,
     summary="Ask a resource (by id)",
     description="Ask questions to a resource",
-    tags=["Search"],
+    tags=["Ask"],
     response_model=SyncAskResponse,
 )
 @requires(NucliaDBRoles.READER)
@@ -185,7 +185,7 @@ async def resource_ask_endpoint_by_uuid(
     status_code=200,
     summary="Ask a resource (by slug)",
     description="Ask questions to a resource",
-    tags=["Search"],
+    tags=["Ask"],
     response_model=SyncAskResponse,
 )
 @requires(NucliaDBRoles.READER)
