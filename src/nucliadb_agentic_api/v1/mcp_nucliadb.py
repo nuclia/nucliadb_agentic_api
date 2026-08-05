@@ -621,7 +621,7 @@ async def read_resource(
         )
 
 
-@router.get("/.well-known/oauth-protected-resource/api/v1/kb/{kbid}/mcp")
+@router.get("/.well-known/oauth-protected-resource/api/v1/kb/{kbid}/mcp", tags=["MCP"])
 async def mcp_protected_resource_metadata(
     request: Request,
     kbid: str,
@@ -642,8 +642,8 @@ async def mcp_protected_resource_metadata(
     }
 
 
-@router.get("/api/v1/kb/{kbid}/mcp")
-@router.post("/api/v1/kb/{kbid}/mcp")
+@router.get("/api/v1/kb/{kbid}/mcp", tags=["MCP"])
+@router.post("/api/v1/kb/{kbid}/mcp", tags=["MCP"])
 @requires_one([NucliaDBRoles.READER])
 async def mcp_handler(
     request: Request,
