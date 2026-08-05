@@ -1288,7 +1288,7 @@ wheels = [
 
 [[package]]
 name = "hyperforge"
-version = "1.0.0.post184"
+version = "1.0.0.post222"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiodns" },
@@ -1322,9 +1322,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/a1/3edfd778dcac7fb24d23c29ddd252ac28c064076c2de1dcc1d0f9be7d409/hyperforge-1.0.0.post184.tar.gz", hash = "sha256:cca231ba9a6a957d26f25a83a5001bf69ff85e2bd3aa3858ac2350d9824f9d70", size = 250207, upload-time = "2026-07-24T09:37:15.475Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/ab/b15004723036b071ce53911cc1ebce11fd57cd0101e45f7bab6341ac570d/hyperforge-1.0.0.post222.tar.gz", hash = "sha256:faef3146a46ec86892292da4cc64779443c8f513aa75e9f25e07af5a4d6651aa", size = 253504, upload-time = "2026-08-05T08:46:25.676Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/04/4175e2323079f95718f42ab0f3ded29037161de8a5ab8a343f59e1e9b2dd/hyperforge-1.0.0.post184-py3-none-any.whl", hash = "sha256:b29aa6afc446c44cab6a28557c4adcb215e4787849779730753ec9d30164e093", size = 287427, upload-time = "2026-07-24T09:37:13.758Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/52/675f465b3d0e84753e0f3b7eab47f893ae4efc530a9bcb0e78b9c610424f/hyperforge-1.0.0.post222-py3-none-any.whl", hash = "sha256:fa79730fc72eb971933c4304f634885b0b690f2c69b3a389f5c5f5ff6fa10852", size = 290897, upload-time = "2026-08-05T08:46:23.955Z" },
 ]
 
 [[package]]

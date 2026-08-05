@@ -1,21 +1,20 @@
 import os
 
 import pytest
-from hyperforge.llm import NUAConnection
+from hyperforge.minimal_fixtures import cassette_nua_key
 from nuclia import REGIONAL
+from nuclia.lib.nua import AsyncNuaClient
 from nucliadb_utils.settings import nuclia_settings
 
-NUA_KEY = os.environ.get("NUA_KEY", "DUMMY")
+NUA_KEY = os.environ.get("NUA_KEY") or cassette_nua_key(
+    "https://europe-1.dp.progress.cloud/"
+)
 
 
 @pytest.fixture(scope="session")
 async def ask_predict_configure():
 
-    nua_driver = await NUAConnection.model_validate(
-        {
-            "key": NUA_KEY,
-        }
-    ).connect()
+    nua_driver = AsyncNuaClient(token=NUA_KEY, account="nuclia", region="europe-1")
     if "http" in nua_driver.region:
         url = nua_driver.region.strip("/")
     else:
