@@ -115,3 +115,28 @@ async def patch_agentic_config_endpoint(
     except exceptions.InvalidReference as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return Response(status_code=204)
+
+
+@router.delete(
+    "/api/v1/kb/{kbid}/agentic_configs/{agentic_id}",
+    status_code=204,
+    summary="Delete agentic configuration",
+    tags=["Agentic configs"],
+)
+@requires(NucliaDBRoles.OWNER)
+async def delete_agentic_config_endpoint(
+    request: Request,
+    kbid: str,
+    agentic_id: str,
+    x_nucliadb_account: str = Header(default="", include_in_schema=False),
+) -> Response:
+    app = cast("HTTPApplication", request.app)
+    try:
+        await app.agent_manager.delete_agentic_config(
+            account=x_nucliadb_account,
+            kbid=kbid,
+            agentic_id=agentic_id,
+        )
+    except exceptions.NotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return Response(status_code=204)

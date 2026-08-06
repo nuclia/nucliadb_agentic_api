@@ -93,12 +93,10 @@ async def create_app(monkeypatch) -> HTTPApplication:
         return fake_sources
 
     class _FakeAgentManager:
-        """No-op agent manager satisfying the cascade-delete contract."""
-
-        async def delete_configs_referencing_source(
+        async def configs_referencing_source(
             self, account, kbid, source_id
-        ) -> int:
-            return 0
+        ) -> list[str]:
+            return []
 
     async def startup(self):
         self.source_manager = await Sources.from_settings(

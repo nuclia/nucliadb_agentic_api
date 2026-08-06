@@ -144,3 +144,13 @@ migrations:
     name: default
     labels: {}
     annotations: {}
+
+cleanup:
+  schedule: "0 3 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  serviceAccount:
+    create: false
+    name: default
+    labels: {}
+    annotations: {}

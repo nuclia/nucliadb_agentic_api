@@ -16,6 +16,7 @@ async def test_agentic_config_crud(
         "enabled_domains": ["example.com"],
     }
 
+    # Create the source referenced by the agentic configuration.
     resp = await nucliadb_agentic_api_http_client.post(
         f"/api/v1/kb/{knowledgebox}/sources/dupe-src", json=payload
     )
@@ -30,11 +31,13 @@ async def test_agentic_config_crud(
         "summarize": {"conversational": True},
     }
 
+    # Create an agentic configuration that uses the source.
     resp = await nucliadb_agentic_api_http_client.post(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=payload
     )
     assert resp.status_code == 201, resp.text
 
+    # Retrieve the created configuration by ID.
     resp = await nucliadb_agentic_api_http_client.get(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support"
     )
@@ -42,6 +45,7 @@ async def test_agentic_config_crud(
     assert resp.status_code == 200, resp.text
     assert resp.json() == payload
 
+    # List active configurations in the knowledge box.
     resp = await nucliadb_agentic_api_http_client.get(
         f"/api/v1/kb/{knowledgebox}/agentic_configs"
     )
@@ -57,16 +61,64 @@ async def test_agentic_config_crud(
         },
         "summarize": {"conversational": False},
     }
+    # Update the configuration and verify the new payload persists.
     resp = await nucliadb_agentic_api_http_client.patch(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=updated_payload
     )
     assert resp.status_code == 204, resp.text
 
+    # Retrieve the updated configuration.
     resp = await nucliadb_agentic_api_http_client.get(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support"
     )
     assert resp.status_code == 200, resp.text
     assert resp.json() == updated_payload
+
+    # Reject source deletion while an active configuration references it.
+    resp = await nucliadb_agentic_api_http_client.delete(
+        f"/api/v1/kb/{knowledgebox}/sources/dupe-src"
+    )
+    assert resp.status_code == 409, resp.text
+    assert (
+        resp.json()["detail"] == "Source is in use by agentic configuration(s): support"
+    )
+
+    # Soft-delete the configuration.
+    resp = await nucliadb_agentic_api_http_client.delete(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs/support"
+    )
+    assert resp.status_code == 204, resp.text
+
+    # Soft-deleted configurations are no longer retrievable.
+    resp = await nucliadb_agentic_api_http_client.get(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs/support"
+    )
+    assert resp.status_code == 404, resp.text
+
+    # Soft-deleted configurations are excluded from lists.
+    resp = await nucliadb_agentic_api_http_client.get(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs"
+    )
+    assert resp.status_code == 200, resp.text
+    assert resp.json() == {}
+
+    # Recreate a soft-deleted configuration using the same ID.
+    resp = await nucliadb_agentic_api_http_client.post(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=updated_payload
+    )
+    assert resp.status_code == 201, resp.text
+
+    # Soft-delete the recreated configuration before deleting its source.
+    resp = await nucliadb_agentic_api_http_client.delete(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs/support"
+    )
+    assert resp.status_code == 204, resp.text
+
+    # The source is deletable once no active configuration references it.
+    resp = await nucliadb_agentic_api_http_client.delete(
+        f"/api/v1/kb/{knowledgebox}/sources/dupe-src"
+    )
+    assert resp.status_code == 204, resp.text
 
 
 async def test_agentic_config_not_found(

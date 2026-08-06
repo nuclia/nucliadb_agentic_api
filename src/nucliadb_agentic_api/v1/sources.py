@@ -141,6 +141,16 @@ async def delete_source_endpoint(
 ) -> Response:
     app = cast("HTTPApplication", request.app)
     try:
+        configs = await app.agent_manager.configs_referencing_source(
+            account=x_nucliadb_account,
+            kbid=kbid,
+            source_id=source_id,
+        )
+        if configs:
+            raise exceptions.InUse(
+                "Source is in use by agentic configuration(s): "
+                + ", ".join(sorted(configs))
+            )
         await app.source_manager.delete_source(
             account=x_nucliadb_account,
             kbid=kbid,
@@ -148,11 +158,6 @@ async def delete_source_endpoint(
         )
     except exceptions.NotFound as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
-
-    # Cascade: remove every agentic config that references this source.
-    await app.agent_manager.delete_configs_referencing_source(
-        account=x_nucliadb_account,
-        kbid=kbid,
-        source_id=source_id,
-    )
+    except exceptions.InUse as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     return Response(status_code=204)

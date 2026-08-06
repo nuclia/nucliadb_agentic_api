@@ -8,3 +8,7 @@ class NotFound(Exception):
 
 class InvalidReference(Exception):
     """Raised when a referenced resource does not exist."""
+
+
+class InUse(Exception):
+    """Raised when a resource cannot be deleted while it is referenced."""

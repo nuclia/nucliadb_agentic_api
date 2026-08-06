@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nucliadb-agentic-cleanup
+  labels:
+    app: nucliadb-agentic-cleanup
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  schedule: {{ .Values.cleanup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ .Values.cleanup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cleanup.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: nucliadb-agentic-cleanup
+            app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+            helm.sh/chart: "{{ .Chart.Name }}"
+        spec:
+          restartPolicy: Never
+          serviceAccountName: {{ if kindIs "string" .Values.cleanup.serviceAccount }}{{ .Values.cleanup.serviceAccount }}{{ else }}{{ .Values.cleanup.serviceAccount.name | default "default" }}{{ end }}
+          containers:
+          - name: cleanup
+            image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadbAgenticApi }}:{{ .Values.image.tag }}"
+            command: ["nucliadb-agentic-api-purge-deleted-configs"]
+            imagePullPolicy: {{ .Values.imagePullPolicy }}
+            {{- with .Values.envFrom }}
+            envFrom:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            env:
+              {{- include "toEnv" .Values.env | nindent 14 }}
