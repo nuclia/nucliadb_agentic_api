@@ -8,6 +8,7 @@ from hyperforge.configure import (
 from hyperforge.llm import NUAConnection
 from hyperforge.manager import Manager
 from hyperforge.memory.memory import EphemeralSessionMemory
+from hyperforge.minimal_fixtures import cassette_nua_key
 from hyperforge.models import MemoryConfig, Rule, Rules
 from hyperforge_mcp.agent import MCPAgent
 from hyperforge_mcp.config import MCPAgentConfig, Transport
@@ -17,7 +18,9 @@ from nucliadb_sdk.v2.exceptions import NotFoundError, RateLimitError
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
-NUA_KEY = os.environ.get("NUA_KEY", "DUMMY")
+NUA_KEY = os.environ.get("NUA_KEY") or cassette_nua_key(
+    "https://europe-1.dp.progress.cloud/"
+)
 
 
 def cleanup(request):
