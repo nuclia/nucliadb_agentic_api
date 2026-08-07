@@ -1,37 +1,91 @@
+{{- if .Values.cleanup.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: nucliadb-agentic-cleanup
   labels:
     app: nucliadb-agentic-cleanup
+    role: cronjob
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     helm.sh/chart: "{{ .Chart.Name }}"
+  {{- with .Values.cleanup.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   schedule: {{ .Values.cleanup.schedule | quote }}
-  concurrencyPolicy: Forbid
+  concurrencyPolicy: {{ .Values.cleanup.concurrencyPolicy }}
   successfulJobsHistoryLimit: {{ .Values.cleanup.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.cleanup.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
+      activeDeadlineSeconds: {{ .Values.cleanup.activeDeadlineSeconds }}
+      backoffLimit: {{ .Values.cleanup.backoffLimit }}
       template:
         metadata:
+          {{- with .Values.cleanup.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           labels:
             app: nucliadb-agentic-cleanup
+            role: cronjob
+            version: "{{ .Values.hash }}"
+            chart: "{{ .Chart.Name }}"
+            release: "{{ .Release.Name }}"
+            heritage: "{{ .Release.Service }}"
             app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
             app.kubernetes.io/instance: {{ .Release.Name | quote }}
             helm.sh/chart: "{{ .Chart.Name }}"
         spec:
           restartPolicy: Never
+          {{- with .Values.cleanup.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cleanup.topologySpreadConstraints }}
+          topologySpreadConstraints:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cleanup.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cleanup.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          dnsPolicy: ClusterFirst
           serviceAccountName: {{ if kindIs "string" .Values.cleanup.serviceAccount }}{{ .Values.cleanup.serviceAccount }}{{ else }}{{ .Values.cleanup.serviceAccount.name | default "default" }}{{ end }}
+          {{- with .Values.cleanup.priorityClassName }}
+          priorityClassName: {{ . }}
+          {{- end }}
           containers:
           - name: cleanup
             image: "{{ .Values.containerRegistry }}/{{ .Values.image.nucliadbAgenticApi }}:{{ .Values.image.tag }}"
             command: ["nucliadb-agentic-api-purge-deleted-configs"]
             imagePullPolicy: {{ .Values.imagePullPolicy }}
+            {{- with .Values.cleanup.securityContext }}
+            securityContext:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             {{- with .Values.envFrom }}
             envFrom:
               {{- toYaml . | nindent 14 }}
             {{- end }}
             env:
+              - name: VERSION
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.labels['version']
               {{- include "toEnv" .Values.env | nindent 14 }}
+            {{- with .Values.cleanup.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+{{- end }}
