@@ -223,15 +223,22 @@ class AgenticConfigs:
         cutoff = utc_now() - datetime.timedelta(
             days=self.settings.agentic_config_deletion_retention_days
         )
-        query = (
-            sa.delete(agentic_config_table)
-            .where(
-                agentic_config_table.c.deleted_at.is_not(None),
-                agentic_config_table.c.deleted_at < cutoff,
-            )
-            .returning(agentic_config_table.c.agentic_id)
+        conditions = (
+            agentic_config_table.c.deleted_at.is_not(None),
+            agentic_config_table.c.deleted_at < cutoff,
         )
-        return len(await self.database.fetch_all(query))
+        count_query = (
+            sa.select(sa.func.count())
+            .select_from(agentic_config_table)
+            .where(*conditions)
+        )
+        count = await self.database.fetch_val(count_query)
+        if count == 0:
+            return 0
+
+        delete_query = sa.delete(agentic_config_table).where(*conditions)
+        await self.database.execute(delete_query)
+        return count
 
     async def get_agentic_config(
         self, account: str, kbid: str, agentic_id: str
