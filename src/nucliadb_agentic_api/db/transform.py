@@ -14,7 +14,6 @@ from hyperforge_nucliadb.driver_config import (
     NucliaDBConfig,
     NucliaDBConnection,
 )
-from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from hyperforge_nucliadb_agentic.internal_driver import (
     InternalNucliaDBConfig,
     InternalNucliaDBConnection,
@@ -22,6 +21,9 @@ from hyperforge_nucliadb_agentic.internal_driver import (
 
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.models import AgenticConfigSchema
+
+# Kept for the dormant AskRequest configuration path below.
+# from hyperforge_nucliadb_agentic.ask.model import AskRequest
 
 
 async def transform_agentic_config(
@@ -32,7 +34,9 @@ async def transform_agentic_config(
     internal_nucliadb_url: str | None = None,
     external_nucliadb_url: str | None = None,
     external_nucliadb_key: str | None = None,
-    ask_request: AskRequest | None = None,
+    # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+    # Keep this dormant configuration parameter visible until its intended use is known.
+    # ask_request: AskRequest | None = None,
     kbid: str = "",
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
     drivers: Dict[str, DriverConfig] = {}
@@ -89,6 +93,7 @@ async def transform_agentic_config(
                 # Same KB different
                 uid = uuid4().hex
 
+                source_config["id"] = f"nucliadb-agent-{source}"
                 source_config["sources"] = [uid]
                 source_config["module"] = "nucliadb_agent"
 
@@ -135,6 +140,9 @@ async def transform_agentic_config(
                 registered_agents.append(source_config)
             elif source_obj.type == "mcp":
                 uid = uuid4().hex
+                # See the nucliadb branch above for why this must be
+                # deterministic rather than random.
+                source_config["id"] = f"mcp-agent-{source}"
                 source_config["sources"] = [uid]
                 source_config["transport"] = Transport.HTTP
                 source_config["module"] = "mcp"
@@ -151,11 +159,13 @@ async def transform_agentic_config(
                 registered_agents.append(source_config)
 
             elif source_obj.type == "google":
+                source_config["id"] = f"google-agent-{source}"
                 source_config["module"] = "google"
                 global_driver.append("google")
                 registered_agents.append(source_config)
 
             elif source_obj.type == "perplexity":
+                source_config["id"] = f"perplexity-agent-{source}"
                 source_config["module"] = "perplexity"
                 global_driver.append("perplexity")
                 registered_agents.append(source_config)

@@ -144,3 +144,29 @@ migrations:
     name: default
     labels: {}
     annotations: {}
+
+cleanup:
+  enabled: true
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  activeDeadlineSeconds: 3600
+  backoffLimit: 0
+  annotations: {}
+  podAnnotations: {}
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  securityContext: {}
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "200Mi"
+  serviceAccount:
+    create: false
+    name: default
+    labels: {}
+    annotations: {}

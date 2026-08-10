@@ -15,6 +15,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
     AskRetrievalMatch,
     AskTimings,
     AskTokens,
+    AugmentedContext,
     CitationsAskResponseItem,
     ConsumptionResponseItem,
     FootnoteCitationsAskResponseItem,
@@ -95,6 +96,14 @@ class AgenticAskResult(AskResult):
         self.generate_inner_answer = generate_inner_answer
         self.resource = resource
 
+        # These fields are populated by the native ask result, but the
+        # inherited synchronous serializer also expects them to exist.
+        self.prequeries_results = []
+        self.prompt_context = {}
+        self.prompt_context_order = {}
+        self.augmented_context = AugmentedContext()
+        self.debug_chat_model = None
+
         self._answer_text = ""
         self._reasoning_text: str | None = None
 
@@ -109,7 +118,6 @@ class AgenticAskResult(AskResult):
         self.best_matches: list[RetrievalMatch] = []
 
     async def loop(self):
-
         interaction = interaction_from_ask_request(self.ask_request)
         msg: AragAnswer
         async for msg in stream_response(
@@ -261,7 +269,6 @@ class AgenticAskResult(AskResult):
     async def websocket_to_ask(
         self,
     ) -> AsyncGenerator[TextGenerativeResponse | ReasoningGenerativeResponse, None]:
-
         output_nuclia_tokens = 0.0
         input_nuclia_tokens = 0.0
         timings = {}

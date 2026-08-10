@@ -1,5 +1,4 @@
 import datetime
-import json
 from time import time
 from typing import Dict
 
@@ -8,7 +7,6 @@ import sqlalchemy as sa
 from hyperforge.database import metadata
 from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
-from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
@@ -19,6 +17,9 @@ from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import AgenticConfigSchema
+
+# Kept for the dormant AskRequest configuration path below.
+# from hyperforge_nucliadb_agentic.ask.model import AskRequest
 
 
 # Imported lazily in methods to avoid any load-order sensitivity between the two
@@ -44,6 +45,7 @@ agentic_config_table = sa.Table(
     sa.Column("agentic_id", sa.String, primary_key=True, nullable=False),  # Agentic ID
     sa.Column("created", sa.DateTime, default=sa.func.now()),
     sa.Column("modified", sa.DateTime, onupdate=sa.func.now()),
+    sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True, index=True),
     sa.Column("title", sa.String, nullable=True),
     sa.Column("config", JSONB, nullable=False),
 )
@@ -118,6 +120,7 @@ class AgenticConfigs:
                 agentic_config_table.c.account == account,
                 agentic_config_table.c.kbid == kbid,
                 agentic_config_table.c.agentic_id == agentic_id,
+                agentic_config_table.c.deleted_at.is_(None),
             )
             .returning(agentic_config_table.c.agentic_id)
         )
@@ -133,14 +136,30 @@ class AgenticConfigs:
         if source_ids:
             await self._validate_sources_exist(account, kbid, source_ids)
 
-        query = sa.select(agentic_config_table.c.agentic_id).where(
+        query = sa.select(agentic_config_table.c.deleted_at).where(
             agentic_config_table.c.account == account,
             agentic_config_table.c.kbid == kbid,
             agentic_config_table.c.agentic_id == agentic_id,
         )
         existing = await self.database.fetch_one(query)
         if existing is not None:
-            raise exceptions.Conflict("Agentic configuration already exists")
+            if existing["deleted_at"] is None:
+                raise exceptions.Conflict("Agentic configuration already exists")
+            await self.database.execute(
+                sa.update(agentic_config_table)
+                .values(
+                    title=config.title,
+                    config=_serialize_config(config),
+                    deleted_at=None,
+                )
+                .where(
+                    agentic_config_table.c.account == account,
+                    agentic_config_table.c.kbid == kbid,
+                    agentic_config_table.c.agentic_id == agentic_id,
+                )
+            )
+            CACHE[_cache_key(account, kbid, agentic_id)] = config
+            return
 
         insert_query = sa.insert(agentic_config_table).values(
             account=account,
@@ -170,35 +189,58 @@ class AgenticConfigs:
                 f"Source(s) not found: {', '.join(missing)}"
             )
 
-    async def delete_configs_referencing_source(
-        self, account: str, kbid: str, source_id: str
-    ) -> int:
-        """Delete every agentic config that references source_id in its smart_agent
-        sources list.  Returns the number of deleted configs.
-
-        Uses the JSONB containment operator (@>) to find matching rows:
-            config->'smart_agent'->'sources' @> '[{"source_id": "<id>"}]'
-        """
+    async def delete_agentic_config(
+        self, account: str, kbid: str, agentic_id: str
+    ) -> None:
         query = (
-            sa.delete(agentic_config_table)
+            sa.update(agentic_config_table)
+            .values(deleted_at=utc_now())
             .where(
                 agentic_config_table.c.account == account,
                 agentic_config_table.c.kbid == kbid,
-                agentic_config_table.c.config["smart_agent"]["sources"].op("@>")(
-                    sa.cast(
-                        json.dumps([{"source_id": source_id}]),
-                        JSONB,
-                    )
-                ),
+                agentic_config_table.c.agentic_id == agentic_id,
+                agentic_config_table.c.deleted_at.is_(None),
             )
             .returning(agentic_config_table.c.agentic_id)
         )
-        deleted_rows = await self.database.fetch_all(query)
-        for row in deleted_rows:
-            key = _cache_key(account, kbid, row["agentic_id"])
-            if key in CACHE:
-                del CACHE[key]
-        return len(deleted_rows)
+        deleted = await self.database.fetch_one(query)
+        if deleted is None:
+            raise exceptions.NotFound("Agentic configuration not found")
+        CACHE.pop(_cache_key(account, kbid, agentic_id), None)
+
+    async def configs_referencing_source(
+        self, account: str, kbid: str, source_id: str
+    ) -> list[str]:
+        query = sa.select(agentic_config_table.c.agentic_id).where(
+            agentic_config_table.c.account == account,
+            agentic_config_table.c.kbid == kbid,
+            agentic_config_table.c.deleted_at.is_(None),
+            sa.func.jsonb_exists(
+                agentic_config_table.c.config["smart_agent"]["sources"], source_id
+            ),
+        )
+        return [row["agentic_id"] for row in await self.database.fetch_all(query)]
+
+    async def hard_delete_expired_configs(self) -> int:
+        cutoff = utc_now() - datetime.timedelta(
+            days=self.settings.agentic_config_deletion_retention_days
+        )
+        conditions = (
+            agentic_config_table.c.deleted_at.is_not(None),
+            agentic_config_table.c.deleted_at < cutoff,
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .select_from(agentic_config_table)
+            .where(*conditions)
+        )
+        count = await self.database.fetch_val(count_query)
+        if count == 0:
+            return 0
+
+        delete_query = sa.delete(agentic_config_table).where(*conditions)
+        await self.database.execute(delete_query)
+        return count
 
     async def get_agentic_config(
         self, account: str, kbid: str, agentic_id: str
@@ -209,6 +251,7 @@ class AgenticConfigs:
                 agentic_config_table.c.account == account,
                 agentic_config_table.c.kbid == kbid,
                 agentic_config_table.c.agentic_id == agentic_id,
+                agentic_config_table.c.deleted_at.is_(None),
             )
             row = await self.database.fetch_one(query)
             if not row:
@@ -227,6 +270,7 @@ class AgenticConfigs:
         query = sa.select(agentic_config_table).where(
             agentic_config_table.c.account == account,
             agentic_config_table.c.kbid == kbid,
+            agentic_config_table.c.deleted_at.is_(None),
         )
         rows = await self.database.fetch_all(query)
         return {row["agentic_id"]: _config_from_row(row) for row in rows}
@@ -241,7 +285,9 @@ class AgenticConfigs:
         external_nucliadb_url: str | None = None,
         default_memory: bool = False,
         workflow_id: str = "default",
-        ask_request: AskRequest | None = None,
+        # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+        # Keep this dormant configuration parameter visible until its intended use is known.
+        # ask_request: AskRequest | None = None,
     ) -> RetrievalAgentConfig:
         # For now, we only support one config per KB, so we ignore agent_id and workflow_id, but in the future we can extend this method to support multiple configs per KB and select
         # the right one based on these parameters
@@ -257,7 +303,9 @@ class AgenticConfigs:
             internal_nucliadb_url=internal_nucliadb_url,
             external_nucliadb_url=external_nucliadb_url,
             external_nucliadb_key=external_nucliadb_key,
-            ask_request=ask_request,
+            # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+            # Keep this dormant config path visible until its intended use is known.
+            # ask_request=ask_request,
             kbid=kbid,
         )
 

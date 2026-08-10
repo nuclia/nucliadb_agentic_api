@@ -54,6 +54,7 @@ nucliadb-agentic-api = "nucliadb_agentic_api.commands:run"
 nucliadb-agentic-server = "nucliadb_agentic_api.server.server:run"
 nucliadb-agentic-sandbox = "hyperforge.server.sandbox:run"
 nucliadb-agentic-api-extract-openapi = "nucliadb_agentic_api.commands:extract_openapi"
+nucliadb-agentic-api-purge-deleted-configs = "nucliadb_agentic_api.commands:purge_deleted_agentic_configs"
 
 [dependency-groups]
 

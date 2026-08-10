@@ -160,10 +160,10 @@ async def test_sources_api_not_found(
     assert resp.status_code == 404
 
 
-async def test_delete_source_cascades_agentic_configs(
+async def test_delete_source_rejects_referenced_agentic_configs(
     nucliadb_agentic_api_http_client: AsyncClient, knowledgebox: str
 ):
-    """Integration: deleting a source removes agentic configs that reference it."""
+    """Deleting a referenced source reports every blocking agentic config."""
     kbid = knowledgebox
 
     # Create a source
@@ -190,7 +190,7 @@ async def test_delete_source_cascades_agentic_configs(
         )
         assert resp.status_code == 201, f"{name}: {resp.text}"
 
-    # Create an agentic config that does NOT reference the source (should survive)
+    # Create an unrelated agentic config.
     unrelated_payload = {
         "title": "unrelated",
         "summarize": {"conversational": True},
@@ -200,14 +200,17 @@ async def test_delete_source_cascades_agentic_configs(
     )
     assert resp.status_code == 201, resp.text
 
-    # Delete the source
+    # Deleting the source is rejected and lists the blocking configurations.
     resp = await nucliadb_agentic_api_http_client.delete(
         f"/api/v1/kb/{kbid}/sources/cascade-src"
     )
-    assert resp.status_code == 204, resp.text
+    assert resp.status_code == 409, resp.text
+    assert resp.json()["detail"] == (
+        "Source is in use by agentic configuration(s): agent-cascade-a, agent-cascade-b"
+    )
 
-    # Source is gone
+    # The source remains available after the rejected deletion.
     resp = await nucliadb_agentic_api_http_client.get(
         f"/api/v1/kb/{kbid}/sources/cascade-src"
     )
-    assert resp.status_code == 404
+    assert resp.status_code == 200, resp.text

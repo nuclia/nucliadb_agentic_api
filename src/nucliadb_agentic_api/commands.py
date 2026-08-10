@@ -1,3 +1,5 @@
+import asyncio
+
 import uvicorn
 from hyperforge import openapi
 from hyperforge.feature_flag import get_flag_service
@@ -9,6 +11,7 @@ from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api import SERVICE_NAME
 from nucliadb_agentic_api.app import HTTPApplication
+from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.logging import set_sentry
 from nucliadb_agentic_api.settings import Settings
@@ -63,3 +66,15 @@ def extract_openapi():
     openapi.extract_openapi_command(
         "nucliadb_agentic_api", "NucliaDB Agentic API", router
     )
+
+
+def purge_deleted_agentic_configs():
+    async def purge() -> int:
+        manager = await AgenticConfigs.from_settings(DataManagerSettings())  # type: ignore
+        await manager.initialize()
+        try:
+            return await manager.hard_delete_expired_configs()
+        finally:
+            await manager.finalize()
+
+    asyncio.run(purge())
