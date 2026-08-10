@@ -4,7 +4,8 @@ from collections.abc import AsyncIterator, Iterable
 from hyperforge.manager import Manager
 from nuclia.exceptions import PredictAPIException
 from nuclia.lib.nua import RephraseRequest
-from nuclia.lib.nua_responses import ChatModel as NuaChatModel, RephraseModel
+from nuclia.lib.nua_responses import ChatModel as NuaChatModel
+from nuclia.lib.nua_responses import RephraseModel
 from nuclia_models.predict.generative_responses import (
     GenerativeChunk,
 )

@@ -9,6 +9,7 @@ from typing import Any, List
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 
 # ---------------------------------------------------------------------------

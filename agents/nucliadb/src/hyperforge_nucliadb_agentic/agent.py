@@ -55,7 +55,6 @@ from hyperforge_nucliadb_agentic.ask.model import (
     RagStrategies,
     SyncAskResponse,
 )
-from hyperforge_nucliadb_agentic.ask.predict import start_predict_engine
 from hyperforge_nucliadb_agentic.ask.search.ask import ask
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 
@@ -366,9 +365,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         super().__init__(config, agent_id)
         self.labelsets: Dict[str, List[str]] = {}
         self.synonyms: Dict[str, Dict[str, List[str]]] = {}
-
-    async def preload(self, manager: Manager, memory: QuestionMemory) -> None:
-        await start_predict_engine()
 
     async def ask_labels_list(
         self,

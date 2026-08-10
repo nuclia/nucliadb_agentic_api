@@ -8,6 +8,7 @@ is mocked so that no real network traffic or NucliaDB instance is needed.
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
     clean_citation_footnotes_from_answer,
@@ -46,20 +47,6 @@ class TestNucliaDBAgentInit:
             "search_images",
         }
         assert set(nucliadb_agent.__published_functions__.keys()) == expected
-
-    async def test_preload_initializes_predict_engine(
-        self, nucliadb_agent, mock_manager, mock_memory, monkeypatch
-    ):
-        predict_engine = object()
-        start_predict_engine = AsyncMock(return_value=predict_engine)
-        monkeypatch.setattr(
-            "hyperforge_nucliadb_agentic.agent.start_predict_engine",
-            start_predict_engine,
-        )
-
-        await nucliadb_agent.preload(mock_manager, mock_memory)
-
-        start_predict_engine.assert_awaited_once()
 
 
 # ---------------------------------------------------------------------------

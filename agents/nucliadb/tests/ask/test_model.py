@@ -12,6 +12,8 @@ Covers:
 """
 
 import pytest
+from pydantic import ValidationError
+
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     AskTimings,
@@ -33,7 +35,6 @@ from hyperforge_nucliadb_agentic.ask.model import (
     SyncAskResponse,
     parse_custom_prompt,
 )
-from pydantic import ValidationError
 
 # ---------------------------------------------------------------------------
 # Helpers

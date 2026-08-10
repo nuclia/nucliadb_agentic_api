@@ -3,9 +3,13 @@ from typing import Annotated, Any, Literal, Self  # type: ignore
 
 from nuclia.lib.nua_responses import (
     Author as NuaAuthor,
+)
+from nuclia.lib.nua_responses import (
     CitationsType,
-    Message as ChatContextMessage,
     Reasoning,
+)
+from nuclia.lib.nua_responses import (
+    Message as ChatContextMessage,
 )
 from nuclia_models.common.consumption import Consumption
 from nucliadb_models import (
