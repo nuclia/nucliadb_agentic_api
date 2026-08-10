@@ -1,5 +1,7 @@
 from google.protobuf.json_format import ParseDict
-from nucliadb_models.internal.predict import QueryInfo
+from hyperforge.manager import Manager
+from nuclia.lib.nua import QueryRequest
+from nuclia.lib.nua_responses import QueryInfo
 from nucliadb_protos import knowledgebox_pb2, utils_pb2
 from nucliadb_sdk import NucliaDBAsync
 
@@ -11,9 +13,7 @@ from hyperforge_nucliadb_agentic.ask.model import Image, MaxTokens
 from hyperforge_nucliadb_agentic.ask.predict import (
     SendToPredictError,
     convert_relations,
-    get_predict,
 )
-from hyperforge_nucliadb_agentic.ask.predict_models import QueryModel
 from hyperforge_nucliadb_agentic.ask.search import rpc
 
 
@@ -31,6 +31,7 @@ class Fetcher:
     def __init__(
         self,
         kbid: str,
+        predict_manager: Manager,
         *,
         query: str,
         user_vector: list[float] | None,
@@ -41,6 +42,7 @@ class Fetcher:
         query_image: Image | None,
     ):
         self.kbid = kbid
+        self.predict_manager = predict_manager
         self.query = query
         self.user_vector = user_vector
         self.user_vectorset = vectorset
@@ -55,8 +57,7 @@ class Fetcher:
 
     async def query_information(self) -> QueryInfo:
         if self._query_info is None:
-            predict = get_predict()
-            item = QueryModel(
+            item = QueryRequest(
                 text=self.query,
                 semantic_models=[self.user_vectorset] if self.user_vectorset else None,
                 generative_model=self.generative_model,
@@ -65,7 +66,9 @@ class Fetcher:
                 query_image=self.query_image,
             )
             try:
-                self._query_info = await predict.query(self.kbid, item)
+                self._query_info = await self.predict_manager.query_predict(
+                    item, kbid=self.kbid
+                )
             except TimeoutError as exc:
                 raise SendToPredictError(
                     "timeout while requesting Predict API /query"

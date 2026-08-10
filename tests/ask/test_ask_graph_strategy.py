@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient
 from hyperforge_nucliadb_agentic.ask.model import SyncAskResponse
 from hyperforge_nucliadb_agentic.ask.search import graph_strategy, rpc
-from nucliadb_protos.utils_pb2 import RelationNode
+from nuclia.lib.nua_responses import Token, Tokens
 
 
 @pytest.mark.parametrize("relation_ranking", ["generative", "reranker"])
@@ -117,19 +117,14 @@ async def test_ask_graph_strategy(
     await assert_ask(data, expected_paragraphs_text, expected_paragraphs_relations)
 
     # Setup a mock to test query entity extraction with predict
-    dummy_predict.detect_entities = AsyncMock(
-        return_value=[
-            RelationNode(
-                value="DiCaprio",
-                ntype=RelationNode.NodeType.ENTITY,
-                subtype="ACTOR",
-            ),
-            RelationNode(
-                value="Joseph Gordon-Levitt",
-                ntype=RelationNode.NodeType.ENTITY,
-                subtype="ACTOR",
-            ),
-        ]
+    dummy_predict.tokens_predict = AsyncMock(
+        return_value=Tokens(
+            tokens=[
+                Token(text="DiCaprio", ner="ACTOR", start=0, end=0),
+                Token(text="Joseph Gordon-Levitt", ner="ACTOR", start=0, end=0),
+            ],
+            time=0,
+        )
     )
 
     # Run the same query but with query_entity_detection set to "predict"

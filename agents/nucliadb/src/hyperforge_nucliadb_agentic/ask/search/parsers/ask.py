@@ -1,3 +1,4 @@
+from hyperforge.manager import Manager
 from pydantic import BaseModel
 from typing_extensions import assert_never
 
@@ -50,16 +51,18 @@ async def parse_ask(
     kbid: str,
     item: AskRequest,
     *,
+    predict_manager: Manager,
     fetcher: Fetcher | None = None,
 ) -> Generation:
-    fetcher = fetcher or fetcher_for_ask(kbid, item)
+    fetcher = fetcher or fetcher_for_ask(kbid, item, predict_manager)
     parser = _AskParser(kbid, item, fetcher)
     return await parser.parse()
 
 
-def fetcher_for_ask(kbid: str, item: AskRequest) -> Fetcher:
+def fetcher_for_ask(kbid: str, item: AskRequest, predict_manager: Manager) -> Fetcher:
     return Fetcher(
         kbid=kbid,
+        predict_manager=predict_manager,
         query=item.query,
         user_vector=None,
         vectorset=item.vectorset,

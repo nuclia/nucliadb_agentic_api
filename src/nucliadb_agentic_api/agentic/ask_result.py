@@ -27,8 +27,11 @@ from hyperforge_nucliadb_agentic.ask.model import (
     StatusAskResponseItem,
     TokensDetail,
 )
-from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
-from hyperforge_nucliadb_agentic.ask.search.ask import AskResult, RetrievalMatch
+from hyperforge_nucliadb_agentic.ask.search.ask import (
+    AnswerStatusCode,
+    AskResult,
+    RetrievalMatch,
+)
 from hyperforge_nucliadb_agentic.ask.search.metrics import (
     AskMetrics,
 )

@@ -10,6 +10,7 @@ import anyio
 import pydantic_core
 from fastapi import Header
 from hyperforge.api.authentication import requires_one
+from hyperforge.manager import Manager
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.server.fastmcp.utilities.types import Image
 from mcp.server.lowlevel.helper_types import ReadResourceContents
@@ -34,7 +35,7 @@ from starlette.responses import Response
 from nucliadb_agentic_api import logger
 
 if TYPE_CHECKING:
-    from hyperforge.api.app import HTTPApplication
+    from nucliadb_agentic_api.app import HTTPApplication
 
 from anyio.abc import TaskStatus
 from hyperforge_nucliadb_agentic.ask.exceptions import (
@@ -80,6 +81,7 @@ BATCH_GET_DOCUMENTS_MAX = 20
 
 @dataclass
 class MCPContext:
+    predict_manager: Manager
     ndb_reader: NucliaDBAsync
     ndb_search: NucliaDBAsync
     kbid: str
@@ -249,6 +251,7 @@ async def _tool_search_documents(
             search_sdk=context.ndb_search,
             reader_sdk=context.ndb_reader,
             kbid=context.kbid,
+            predict_manager=context.predict_manager,
             ask_request=ask_request,
             user_id=context.x_nucliadb_user,
             client_type=context.x_ndb_client,
@@ -469,6 +472,7 @@ async def list_tools(description: str) -> list[Tool]:
 
 
 async def call_tool(
+    predict_manager: Manager,
     x_stf_account: str,
     x_nucliadb_user: str,
     x_ndb_client: NucliaDBClientType,
@@ -492,6 +496,7 @@ async def call_tool(
         )
         raise ResourceError(f"Invalid arguments for '{name}': {error_details}") from e
     context = MCPContext(
+        predict_manager=predict_manager,
         ndb_reader=ndb_reader,
         ndb_search=ndb_search,
         kbid=kbid,
@@ -678,6 +683,7 @@ async def mcp_handler(
         list_resources_partial = partial(list_resources, ndb_reader, kbid)
         call_tool_partial = partial(
             call_tool,
+            app.predict_manager,
             x_stf_account,
             x_nucliadb_user,
             x_ndb_client,

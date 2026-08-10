@@ -374,6 +374,7 @@ async def test_text_content_audience_includes_assistant():
         new=ask_mock,
     ):
         results = await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -411,6 +412,7 @@ async def test_text_content_audience_includes_assistant():
         new=ask_mock_no_config,
     ):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -436,6 +438,7 @@ async def test_text_content_audience_includes_assistant():
         ),
     ):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -458,6 +461,7 @@ async def test_call_tool_search_documents_without_retrieval_results():
         new=AsyncMock(return_value=NotEnoughContextAskResult()),
     ):
         results = await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -485,6 +489,7 @@ async def test_call_tool_search_documents_known_exceptions():
     from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     base_args = dict(
+        predict_manager=MagicMock(),
         x_stf_account="account",
         x_nucliadb_user="user",
         x_ndb_client=MagicMock(),
@@ -521,6 +526,7 @@ async def test_call_tool_invalid_arguments():
 
     with pytest.raises(ResourceError, match="Invalid arguments for 'search_documents'"):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -556,6 +562,7 @@ async def test_call_tool_batch_get_documents_partial_failure():
     ndb_reader.get_resource_by_id.side_effect = get_resource_by_id_side_effect
 
     results = await call_tool(
+        predict_manager=MagicMock(),
         x_stf_account="account",
         x_nucliadb_user="user",
         x_ndb_client=MagicMock(),  # type: ignore
@@ -591,6 +598,7 @@ async def test_call_tool_unknown_tool():
 
     with pytest.raises(ResourceError, match="Unknown tool"):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore

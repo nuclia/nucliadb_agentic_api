@@ -1,6 +1,10 @@
 import asyncio
-from collections.abc import AsyncGenerator, Iterable
+from collections.abc import AsyncIterator, Iterable
 
+from hyperforge.manager import Manager
+from nuclia.exceptions import PredictAPIException
+from nuclia.lib.nua import RephraseRequest
+from nuclia.lib.nua_responses import ChatModel as NuaChatModel, RephraseModel
 from nuclia_models.predict.generative_responses import (
     GenerativeChunk,
 )
@@ -38,7 +42,6 @@ from hyperforge_nucliadb_agentic.ask.exceptions import (
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     ChatContextMessage,
-    ChatModel,
     ChatOptions,
     FindRequest,
     KnowledgeboxFindResults,
@@ -48,15 +51,10 @@ from hyperforge_nucliadb_agentic.ask.model import (
     PromptContext,
     PromptContextOrder,
     Relations,
-    RephraseModel,
     TextPosition,
     parse_rephrase_prompt,
 )
-from hyperforge_nucliadb_agentic.ask.predict import (
-    RephraseResponse,
-    SendToPredictError,
-    get_predict,
-)
+from hyperforge_nucliadb_agentic.ask.predict import SendToPredictError
 from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.search.highlight import (
     highlight_paragraph,
@@ -90,17 +88,15 @@ MAX_CONCURRENT_PREQUERIES = 2
 
 async def rephrase_query(
     kbid: str,
+    predict_manager: Manager,
     chat_history: list[ChatContextMessage],
     query: str,
     user_id: str,
     user_context: list[str],
     generative_model: str | None = None,
     chat_history_relevance_threshold: float | None = None,
-) -> RephraseResponse:
-    # NOTE: When moving /ask to RAO, this will need to change to whatever client/utility is used
-    # to call NUA predict (internally or externally in the case of onprem).
-    predict = get_predict()
-    req = RephraseModel(
+) -> RephraseModel:
+    req = RephraseRequest(
         question=query,
         chat_history=chat_history,
         user_id=user_id,
@@ -108,12 +104,13 @@ async def rephrase_query(
         generative_model=generative_model,
         chat_history_relevance_threshold=chat_history_relevance_threshold,
     )
-    return await predict.rephrase_query(kbid, req)
+    return await predict_manager.rephrase(req, kbid=kbid)
 
 
 async def get_find_results(
     *,
     kbid: str,
+    predict_manager: Manager,
     query: str,
     item: AskRequest,
     ndb_client: NucliaDBClientType,
@@ -140,6 +137,7 @@ async def get_find_results(
             with metrics.time("prefilters"):
                 prefilter_queries_results = await run_prequeries(
                     kbid,
+                    predict_manager,
                     prefilters,
                     x_ndb_client=ndb_client,
                     x_nucliadb_user=user,
@@ -167,6 +165,7 @@ async def get_find_results(
             with metrics.time("prequeries"):
                 queries_results = await run_prequeries(
                     kbid,
+                    predict_manager,
                     prequeries,
                     x_ndb_client=ndb_client,
                     x_nucliadb_user=user,
@@ -181,6 +180,7 @@ async def get_find_results(
     with metrics.time("main_query"):
         main_results, fetcher, reranker = await run_main_query(
             kbid,
+            predict_manager,
             query,
             item,
             ndb_client,
@@ -259,6 +259,7 @@ def find_request_from_ask_request(item: AskRequest, query: str) -> FindRequest:
 
 async def run_main_query(
     kbid: str,
+    predict_manager: Manager,
     query: str,
     item: AskRequest,
     ndb_client: NucliaDBClientType,
@@ -273,6 +274,7 @@ async def run_main_query(
 
     find_results, fetcher, reranker = await find_retrieval(
         kbid,
+        predict_manager,
         find_request,
         ndb_client,
         user,
@@ -328,6 +330,7 @@ def sorted_prompt_context_list(
 
 async def run_prequeries(
     kbid: str,
+    predict_manager: Manager,
     prequeries: list[PreQuery],
     x_ndb_client: NucliaDBClientType,
     x_nucliadb_user: str,
@@ -348,6 +351,7 @@ async def run_prequeries(
             prequery_id = prequery.id or f"prequery-{index}"
             find_results, _, _ = await find_retrieval(
                 kbid,
+                predict_manager,
                 prequery.request,
                 x_ndb_client,
                 x_nucliadb_user,
@@ -370,21 +374,21 @@ async def run_prequeries(
 
 async def get_answer_stream(
     kbid: str,
-    item: ChatModel,
+    predict_manager: Manager,
+    item: NuaChatModel,
     extra_headers: dict[str, str] | None = None,
-) -> tuple[str, str, AsyncGenerator[GenerativeChunk, None]]:
-    # NOTE: When moving /ask to RAO, this will need to change to whatever client/utility is used
-    # to call NUA predict (internally or externally in the case of onprem).
-    predict = get_predict()
-    return await predict.chat_query_ndjson(
+) -> tuple[str, str, AsyncIterator[GenerativeChunk]]:
+    response = await predict_manager.generate_stream(
+        item,
         kbid=kbid,
-        item=item,
         extra_headers=extra_headers,
     )
+    return response.learning_id, response.model, response.stream
 
 
 async def find_retrieval(
     kbid: str,
+    predict_manager: Manager,
     find_request: FindRequest,
     x_ndb_client: NucliaDBClientType,
     x_nucliadb_user: str,
@@ -408,9 +412,12 @@ async def find_retrieval(
     with metrics.time("query_parse"):
         try:
             fetcher, retrieval_request, reranker = await parse_find(
-                kbid, find_request, reader_sdk=reader_sdk
+                kbid,
+                find_request,
+                reader_sdk=reader_sdk,
+                predict_manager=predict_manager,
             )
-        except SendToPredictError as exc:
+        except (SendToPredictError, PredictAPIException) as exc:
             raise IncompleteFindResultsError("Predict API error") from exc
 
         query = find_request.query

@@ -2,6 +2,7 @@ import json
 from uuid import UUID
 
 from fastapi import Header, Request, Response
+from hyperforge.manager import Manager
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     AnswerJsonSchemaTooLong,
 )
@@ -108,6 +109,7 @@ async def ask_knowledgebox_endpoint(
         )
 
     return await create_ask_response(
+        predict_manager=request.app.predict_manager,
         kbid=kbid,
         ask_request=item,
         user_id=x_nucliadb_user,
@@ -169,6 +171,7 @@ async def resource_ask_endpoint_by_uuid(
         )
 
     return await create_ask_response(
+        predict_manager=request.app.predict_manager,
         kbid=kbid,
         ask_request=item,
         user_id=x_nucliadb_user,
@@ -238,6 +241,7 @@ async def resource_ask_endpoint_by_slug(
         )
 
     return await create_ask_response(
+        predict_manager=request.app.predict_manager,
         kbid=kbid,
         ask_request=item,
         user_id=x_nucliadb_user,
@@ -251,6 +255,7 @@ async def resource_ask_endpoint_by_slug(
 
 @handled_ask_exceptions
 async def create_ask_response(
+    predict_manager: Manager,
     kbid: str,
     ask_request: AskRequest,
     user_id: str,
@@ -266,6 +271,7 @@ async def create_ask_response(
             search_sdk=rpc.get_sdk("search"),
             reader_sdk=rpc.get_sdk("reader"),
             kbid=kbid,
+            predict_manager=predict_manager,
             ask_request=ask_request,
             user_id=user_id,
             client_type=client_type,
