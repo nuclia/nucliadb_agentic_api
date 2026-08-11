@@ -2567,6 +2567,8 @@ interactions:
 
         {"chunk":{"type":"text","text":"."}}
 
+        {"chunk":{"type":"text","text":"\n\n[1]: block-AA"}}
+
         {"chunk":{"type":"status","code":"0"}}
 
         {"chunk":{"type":"meta","input_tokens":12,"output_tokens":17,"timings":{"generative_first_chunk":0.8319637950044125,"generative":2.6953032599994913},"input_nuclia_tokens":0.012,"output_nuclia_tokens":0.017}}
