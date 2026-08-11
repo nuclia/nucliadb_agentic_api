@@ -28,7 +28,7 @@ async def test_agentic_config_crud(
             "sources": ["dupe-src"],
             "history": True,
         },
-        "summarize": {"conversational": True},
+        "summarize": {"conversational": True, "history": True},
     }
 
     # Create an agentic configuration that uses the source.
@@ -59,7 +59,7 @@ async def test_agentic_config_crud(
             "sources": ["dupe-src"],
             "history": False,
         },
-        "summarize": {"conversational": False},
+        "summarize": {"conversational": False, "history": True},
     }
     # Update the configuration and verify the new payload persists.
     resp = await nucliadb_agentic_api_http_client.patch(

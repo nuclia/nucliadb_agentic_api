@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 from hyperforge_nucliadb_agentic.agent import NucliaDBAgent
-from hyperforge_nucliadb_agentic.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.model import AskRequest, SyncAskResponse
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
@@ -54,11 +54,20 @@ async def test_agentic_ask_nucliadb(
 
     client = AsyncClient(
         base_url=f"{nucliadb_agentic_api_http_client.base_url}/api/v1/kb/{eric_dataset}",
-        headers={"X-NUCLIADB-ROLES": "OWNER;READER;WRITER"},
+        headers={
+            "X-NUCLIADB-ROLES": "OWNER;READER;WRITER",
+            "X-Synchronous": "true",
+        },
     )
     response = await client.post("/ask", json=ask_request.model_dump(), timeout=1000)
     assert response.status_code == 200, response.text
-    assert b"Debbie" in response.content
+    ask_response = SyncAskResponse.model_validate_json(response.content)
+    assert "Debbie" in ask_response.answer
+    assert ask_response.citations
+    assert any(
+        citation["context_id"]
+        for citation in ask_response.citations.values()
+    )
 
 
 async def test_agentic_ask_nucliadb_propagates_ask_request(
