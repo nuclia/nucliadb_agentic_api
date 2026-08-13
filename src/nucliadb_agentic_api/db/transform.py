@@ -161,6 +161,7 @@ async def transform_agentic_config(
                         id=f"perplexity-agent-{source}",
                         title=source_title,
                         domain=source_obj.enabled_domains or [],
+                        prompt=None,
                     )
                 )
 
@@ -170,7 +171,8 @@ async def transform_agentic_config(
             planning_mode=smart_agent.mode.value,
             extra_prompt=smart_agent.extra_prompt,
             history=smart_agent.history if smart_agent.history is not None else False,
-            registered_agents=[agent.model_dump() for agent in registered_agents],
+            # SmartAgentConfig's before-validator accepts serialized agent configs.
+            registered_agents=[agent.model_dump() for agent in registered_agents],  # type: ignore[misc]
         )
         # Only set the models if they are provided; otherwise, leave them as None to use hyperforge's default models. This allows for flexibility in configuration without enforcing specific model choices.
         # TODO: Provide nucliadb agentic api level defaults for models
