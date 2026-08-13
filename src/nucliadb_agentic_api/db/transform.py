@@ -174,7 +174,7 @@ async def transform_agentic_config(
             # SmartAgentConfig's before-validator accepts serialized agent configs.
             registered_agents=[agent.model_dump() for agent in registered_agents],  # type: ignore[misc]
         )
-        # Only set the models if they are provided; otherwise, leave them as None to use hyperforge's default models. This allows for flexibility in configuration without enforcing specific model choices.
+        # Only set the models if they are provided; otherwise, leave them as None to use hyperforge's default models.
         # TODO: Provide nucliadb agentic api level defaults for models
         if models:
             if models.context_validation:
