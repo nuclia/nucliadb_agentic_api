@@ -24,11 +24,13 @@ from nucliadb_protos.audit_pb2 import (
 from nucliadb_protos.kb_usage_pb2 import (
     ActivityLogMatch,
     ActivityLogMatchType,
-    ClientType as KbUsageClientType,
     KBSource,
     Predict,
     PredictType,
     Service,
+)
+from nucliadb_protos.kb_usage_pb2 import (
+    ClientType as KbUsageClientType,
 )
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
@@ -219,7 +221,7 @@ class StreamAuditStorage:
         if not predicts or self.kb_usage_utility is None:
             return
         logger.info(
-            f"Sending KB usage report for account {account_id}, kb {kbid}, step {step.name}, trace_id {trace_id}: {[MessageToJson(p, preserving_proto_field_name=True) for p in predicts]}"
+            f"Sending KB usage report for account {account_id}, kb {kbid}, step {step}, trace_id {trace_id}: {[MessageToJson(p, preserving_proto_field_name=True) for p in predicts]}"
         )
         self.kb_usage_utility.send_kb_usage(
             service=Service.RAO,
