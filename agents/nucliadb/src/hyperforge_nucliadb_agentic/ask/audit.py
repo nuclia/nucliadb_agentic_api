@@ -8,6 +8,7 @@ import backoff
 import mmh3
 import nats
 from fastapi import Request
+from google.protobuf.json_format import MessageToJson
 from hyperforge.feature_flag import Features, has_feature
 from hyperforge.models import ExternalUsage, Step
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
@@ -23,11 +24,13 @@ from nucliadb_protos.audit_pb2 import (
 from nucliadb_protos.kb_usage_pb2 import (
     ActivityLogMatch,
     ActivityLogMatchType,
-    ClientType as KbUsageClientType,
     KBSource,
     Predict,
     PredictType,
     Service,
+)
+from nucliadb_protos.kb_usage_pb2 import (
+    ClientType as KbUsageClientType,
 )
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
@@ -187,7 +190,9 @@ class StreamAuditStorage:
             nats_subject=cast(str, usage_settings.usage_jetstream_subject),
         )
         await self.kb_usage_utility.initialize()
-
+        logger.info(
+            f"Audit utility initialized with {self.nats_servers} and target {self.nats_target}"
+        )
         self.initialized = True
 
     async def finalize(self):
@@ -215,7 +220,9 @@ class StreamAuditStorage:
         ]
         if not predicts or self.kb_usage_utility is None:
             return
-
+        logger.info(
+            f"Sending KB usage report for account {account_id}, kb {kbid}, step {step.name}, trace_id {trace_id}: {[MessageToJson(p, preserving_proto_field_name=True) for p in predicts]}"
+        )
         self.kb_usage_utility.send_kb_usage(
             service=Service.RAO,
             account_id=account_id,
