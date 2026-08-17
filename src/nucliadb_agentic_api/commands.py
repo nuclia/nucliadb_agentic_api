@@ -1,21 +1,24 @@
+import asyncio
+
 import uvicorn
 from hyperforge import openapi
 from hyperforge.feature_flag import get_flag_service
 from nucliadb_telemetry.fastapi import instrument_app
 from nucliadb_telemetry.logs import setup_logging
 from nucliadb_telemetry.settings import LogFormatType, LogLevel, LogSettings
-from nucliadb_telemetry.utils import get_telemetry, setup_telemetry
+from nucliadb_telemetry.utils import get_telemetry
 from nucliadb_utils.settings import AuditSettings
 
 from nucliadb_agentic_api import SERVICE_NAME
 from nucliadb_agentic_api.app import HTTPApplication
+from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
 from nucliadb_agentic_api.db.settings import DataManagerSettings
 from nucliadb_agentic_api.logging import set_sentry
 from nucliadb_agentic_api.settings import Settings
 from nucliadb_agentic_api.v1.router import router
 
 
-def run():  # pragma: no cover
+def run():
     settings = Settings()
     setup_logging(
         settings=LogSettings(
@@ -33,7 +36,6 @@ def run():  # pragma: no cover
             },
         )
     )
-    setup_telemetry(SERVICE_NAME)  # type: ignore
     if settings.sentry_url is not None:
         set_sentry(
             settings.zone,
@@ -64,3 +66,15 @@ def extract_openapi():
     openapi.extract_openapi_command(
         "nucliadb_agentic_api", "NucliaDB Agentic API", router
     )
+
+
+def purge_deleted_agentic_configs():
+    async def purge() -> int:
+        manager = await AgenticConfigs.from_settings(DataManagerSettings())  # type: ignore
+        await manager.initialize()
+        try:
+            return await manager.hard_delete_expired_configs()
+        finally:
+            await manager.finalize()
+
+    asyncio.run(purge())

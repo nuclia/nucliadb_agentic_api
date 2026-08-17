@@ -8,6 +8,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
 from hyperforge_nucliadb_agentic.ask.search.ask import (
     handled_ask_exceptions,
 )
+from nuclia.lib.nua_responses import CitationsType
 from nucliadb_models.search import (
     NucliaDBClientType,
 )
@@ -34,12 +35,15 @@ async def create_agentic_response(
     extra_predict_headers: dict[str, str] | None = None,
 ) -> Response:
     ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
+    if ask_request.citations is None:
+        ask_request.citations = CitationsType.LLM_FOOTNOTES
     ask_result = AgenticAskResult(
         app=app,
         kbid=kbid,
         ask_request=ask_request,
         agentic_config_id=agentic_config_id,
         account=account,
+        client_type=client_type,
         origin=origin,
         resource=resource,
     )

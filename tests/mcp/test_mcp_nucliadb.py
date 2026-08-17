@@ -8,6 +8,7 @@ from hyperforge.configure import (
 from hyperforge.llm import NUAConnection
 from hyperforge.manager import Manager
 from hyperforge.memory.memory import EphemeralSessionMemory
+from hyperforge.minimal_fixtures import cassette_nua_key
 from hyperforge.models import MemoryConfig, Rule, Rules
 from hyperforge_mcp.agent import MCPAgent
 from hyperforge_mcp.config import MCPAgentConfig, Transport
@@ -17,7 +18,9 @@ from nucliadb_sdk.v2.exceptions import NotFoundError, RateLimitError
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
-NUA_KEY = os.environ.get("NUA_KEY", "DUMMY")
+NUA_KEY = os.environ.get("NUA_KEY") or cassette_nua_key(
+    "https://europe-1.dp.progress.cloud/"
+)
 
 
 def cleanup(request):
@@ -362,7 +365,7 @@ async def test_text_content_audience_includes_assistant():
     resp.retrieval_results.resources["rid123"] = resource
 
     ask_result_mock = MagicMock()
-    ask_result_mock.model_dump = AsyncMock(return_value=resp)
+    ask_result_mock.to_sync_response = AsyncMock(return_value=resp)
 
     ask_mock = AsyncMock(return_value=ask_result_mock)
 
@@ -371,6 +374,7 @@ async def test_text_content_audience_includes_assistant():
         new=ask_mock,
     ):
         results = await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -408,6 +412,7 @@ async def test_text_content_audience_includes_assistant():
         new=ask_mock_no_config,
     ):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -433,6 +438,7 @@ async def test_text_content_audience_includes_assistant():
         ),
     ):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -443,6 +449,33 @@ async def test_text_content_audience_includes_assistant():
             name="search_documents",
             arguments={"query": "test", "search_configuration": "non-existent-config"},
         )
+
+
+async def test_call_tool_search_documents_without_retrieval_results():
+    from hyperforge_nucliadb_agentic.ask.search.ask import NotEnoughContextAskResult
+
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
+
+    with patch(
+        "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
+        new=AsyncMock(return_value=NotEnoughContextAskResult()),
+    ):
+        results = await call_tool(
+            predict_manager=MagicMock(),
+            x_stf_account="account",
+            x_nucliadb_user="user",
+            x_ndb_client=MagicMock(),  # type: ignore
+            x_forwarded_for="",
+            ndb_reader=AsyncMock(),
+            ndb_search=AsyncMock(),
+            kbid="kbid",
+            name="search_documents",
+            arguments={"query": "no matching documents"},
+        )
+
+    assert len(results) == 1
+    assert isinstance(results[0], TextContent)
+    assert results[0].text == "Not enough data to answer this."
 
 
 async def test_call_tool_search_documents_known_exceptions():
@@ -456,6 +489,7 @@ async def test_call_tool_search_documents_known_exceptions():
     from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
 
     base_args = dict(
+        predict_manager=MagicMock(),
         x_stf_account="account",
         x_nucliadb_user="user",
         x_ndb_client=MagicMock(),
@@ -492,6 +526,7 @@ async def test_call_tool_invalid_arguments():
 
     with pytest.raises(ResourceError, match="Invalid arguments for 'search_documents'"):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore
@@ -527,6 +562,7 @@ async def test_call_tool_batch_get_documents_partial_failure():
     ndb_reader.get_resource_by_id.side_effect = get_resource_by_id_side_effect
 
     results = await call_tool(
+        predict_manager=MagicMock(),
         x_stf_account="account",
         x_nucliadb_user="user",
         x_ndb_client=MagicMock(),  # type: ignore
@@ -562,6 +598,7 @@ async def test_call_tool_unknown_tool():
 
     with pytest.raises(ResourceError, match="Unknown tool"):
         await call_tool(
+            predict_manager=MagicMock(),
             x_stf_account="account",
             x_nucliadb_user="user",
             x_ndb_client=MagicMock(),  # type: ignore

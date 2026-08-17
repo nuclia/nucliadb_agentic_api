@@ -21,7 +21,7 @@
 import datetime
 import uuid
 from typing import Any
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import nucliadb_models.labels
 import pytest
@@ -436,6 +436,7 @@ async def test_old_filters_parsing(
     item = FindRequest(query="query", **filters)
     fetcher = Fetcher(
         "kbid",
+        predict_manager=MagicMock(),
         query=item.query,
         user_vector=item.vector,
         vectorset=item.vectorset,
@@ -471,6 +472,7 @@ async def test_old_filters_parsing_invalid_combinations(
     item = FindRequest(query="query", **filters)
     fetcher = Fetcher(
         "kbid",
+        predict_manager=MagicMock(),
         query=item.query,
         user_vector=item.vector,
         vectorset=item.vectorset,

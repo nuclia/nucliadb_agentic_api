@@ -5,6 +5,8 @@ from collections.abc import Collection, Iterable
 from dataclasses import dataclass
 from typing import Any
 
+from hyperforge.manager import Manager
+from nuclia.lib.nua_responses import ChatModel, RerankModel, UserPrompt
 from nuclia_models.predict.generative_responses import (
     JSONGenerativeResponse,
     MetaGenerativeResponse,
@@ -29,7 +31,6 @@ from nucliadb_models.graph.requests import (
     RelationType,
 )
 from nucliadb_models.graph.responses import GraphSearchResponse
-from nucliadb_models.internal.predict import RerankModel
 from nucliadb_models.metadata import RelationMetadata
 from nucliadb_models.resource import ExtractedDataTypeName
 from nucliadb_models.retrieval import GraphScore
@@ -51,7 +52,6 @@ from sentry_sdk import capture_exception
 from hyperforge_nucliadb_agentic.ask import logger
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
-    ChatModel,
     FindRequest,
     GraphStrategy,
     KnowledgeboxFindResults,
@@ -60,9 +60,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
     Relations,
     ResourceProperties,
     TextPosition,
-    UserPrompt,
 )
-from hyperforge_nucliadb_agentic.ask.predict import get_predict
 from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.search.hydrator import (
     ResourceHydrationOptions,
@@ -341,6 +339,7 @@ async def get_graph_results(
     *,
     search_sdk: NucliaDBAsync,
     kbid: str,
+    predict_manager: Manager,
     query: str,
     item: AskRequest,
     ndb_client: NucliaDBClientType,
@@ -355,7 +354,6 @@ async def get_graph_results(
     relations = Relations(entities={})
     explored_entities: set[FrozenRelationNode] = set()
     scores: dict[str, list[float]] = {}
-    predict = get_predict()
     entities_to_explore: list[RelationNode] = []
 
     for hop in range(graph_strategy.hops):
@@ -390,9 +388,14 @@ async def get_graph_results(
                         # the entity by name. e.g: in a query like "2000", predict might detect the number as
                         # a year entity or as a currency entity. We want graph results for both, so we ignore the
                         # subtype just in this case.
+                        tokens = await predict_manager.tokens_predict(query, kbid=kbid)
                         entities_to_explore = [
-                            RelationNode(ntype=r.ntype, value=r.value, subtype="")
-                            for r in await predict.detect_entities(kbid, query)
+                            RelationNode(
+                                ntype=RelationNode.NodeType.ENTITY,
+                                value=token.text,
+                                subtype="",
+                            )
+                            for token in tokens.tokens
                         ]
                     except Exception as e:
                         capture_exception(e)
@@ -472,6 +475,7 @@ async def get_graph_results(
                         query,
                         kbid,
                         user,
+                        predict_manager,
                         top_k=graph_strategy.top_k,
                     )
                 elif graph_strategy.relation_ranking == RelationRanking.GENERATIVE:
@@ -480,6 +484,7 @@ async def get_graph_results(
                         query,
                         kbid,
                         user,
+                        predict_manager,
                         top_k=graph_strategy.top_k,
                         generative_model=generative_model,
                     )
@@ -558,6 +563,7 @@ async def rank_relations_reranker(
     query: str,
     kbid: str,
     user: str,
+    predict_manager: Manager,
     top_k: int,
     score_threshold: float = 0.02,
 ) -> tuple[Relations, dict[str, list[float]]]:
@@ -595,7 +601,6 @@ async def rank_relations_reranker(
         triplet_to_orig_indices[key].append(i)
 
     # Build the reranker model input
-    predict = get_predict()
     rerank_model = RerankModel(
         question=query,
         user_id=user,
@@ -605,7 +610,7 @@ async def rank_relations_reranker(
         },
     )
     # Get the rerank scores
-    res = await predict.rerank(kbid, rerank_model)
+    res = await predict_manager.rerank(rerank_model, kbid=kbid)
 
     # Convert returned scores to a list of (int_idx, score)
     # where int_idx corresponds to indices in unique_triplets
@@ -628,6 +633,7 @@ async def rank_relations_generative(
     query: str,
     kbid: str,
     user: str,
+    predict_manager: Manager,
     top_k: int,
     generative_model: str | None = None,
     score_threshold: float = 2,
@@ -670,7 +676,7 @@ async def rank_relations_generative(
             f"Too many relations to evaluate ({len(flat_rels)}), using reranker to reduce"
         )
         return await rank_relations_reranker(
-            relations, query, kbid, user, top_k=max_rels_to_eval
+            relations, query, kbid, user, predict_manager, top_k=max_rels_to_eval
         )
 
     data = {
@@ -679,7 +685,6 @@ async def rank_relations_generative(
     }
     prompt = PROMPT + json.dumps(data, indent=4)
 
-    predict = get_predict()
     chat_model = ChatModel(
         question=prompt,
         user_id=user,
@@ -692,7 +697,11 @@ async def rank_relations_generative(
         generative_model=generative_model,
     )
 
-    ident, model, answer_stream = await predict.chat_query_ndjson(kbid, chat_model)
+    response = await predict_manager.generate_stream(
+        chat_model,
+        kbid=kbid,
+    )
+    answer_stream = response.stream
     response_json = None
     status = None
     _ = None

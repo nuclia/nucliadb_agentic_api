@@ -8,23 +8,21 @@ from hyperforge.api.authentication import RaoAuthenticationBackend
 from hyperforge.broker import Broker
 from hyperforge.broker.redis import RedisBroker
 from hyperforge.driver import Driver
+from hyperforge.manager import Manager
 from hyperforge_nucliadb_agentic.ask.audit import (
     AuditMiddleware,
     start_audit_utility,
     stop_audit_utility,
-)
-from hyperforge_nucliadb_agentic.ask.predict import (
-    start_predict_engine,
-    stop_predict_engine,
 )
 from lru import LRU
 from mcp.server.lowlevel.server import Server as MCPServer
 from mcp.server.streamable_http import (
     StreamableHTTPServerTransport,
 )
+from nuclia.lib.nua import AsyncNuaClient
 from nucliadb_sdk import NucliaDBAsync
-from nucliadb_telemetry.utils import clean_telemetry
-from nucliadb_utils.settings import AuditSettings
+from nucliadb_telemetry.utils import clean_telemetry, setup_telemetry
+from nucliadb_utils.settings import AuditSettings, nuclia_settings
 from prometheus_client import CONTENT_TYPE_LATEST
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
@@ -61,6 +59,7 @@ class HTTPApplication(FastAPI):
     source_manager: Sources
     broker: Broker
     hyperforge_drivers: dict[str, "Driver"]
+    predict_manager: Manager
 
     def __init__(
         self,
@@ -76,7 +75,15 @@ class HTTPApplication(FastAPI):
             yield
             await app.shutdown()
 
-        super().__init__(*args, lifespan=lifespan, **kwargs)
+        super().__init__(
+            *args,
+            lifespan=lifespan,
+            # REVIEW: this is a patch to return to the previous behavior of
+            # FastAPI that doesn't check content types. If all our internal
+            # clients set headers properly, we wouldn't need that
+            strict_content_type=False,
+            **kwargs,
+        )
         self.settings = settings
         self.data_manager_settings = data_manager_settings
         self.audit_settings = audit_settings
@@ -95,9 +102,25 @@ class HTTPApplication(FastAPI):
         self.add_middleware(AuditMiddleware)
 
     async def startup(self) -> None:
+        await setup_telemetry(SERVICE_NAME)
 
-        await start_predict_engine()
         await start_audit_utility(SERVICE_NAME, self.audit_settings)
+
+        if nuclia_settings.onprem:
+            nua = AsyncNuaClient.onprem(
+                nuclia_settings.nuclia_public_url,
+                service_account=nuclia_settings.nuclia_service_account,
+                zone=nuclia_settings.nuclia_zone,
+                local_predict=nuclia_settings.local_predict,
+                local_predict_headers=nuclia_settings.local_predict_headers,
+            )
+        else:
+            nua = AsyncNuaClient.internal(nuclia_settings.nuclia_inner_predict_url)
+        self.predict_manager = await Manager.from_config(
+            drivers=[],
+            nua=nua,
+            send_rao_origin=False,
+        )
 
         self.broker = RedisBroker.from_url(
             url=self.settings.valkey_url,
@@ -154,5 +177,5 @@ class HTTPApplication(FastAPI):
         await self.source_manager.finalize()
         await self.broker.finalize()
         await stop_audit_utility()
-        await stop_predict_engine()
+        await self.predict_manager.aclose()
         await clean_telemetry(SERVICE_NAME)

@@ -1,11 +1,4 @@
-"""Unit tests for cross-cutting source ↔ agentic-config behaviours.
-
-These tests exercise:
-  1. Cascade delete: deleting a source also deletes every agentic config that
-     references it via source_id.
-
-Both managers are faked so no real database is required.
-"""
+"""Unit tests for source deletion guarded by agentic-config references."""
 
 from httpx import ASGITransport, AsyncClient
 from nucliadb_models.resource import NucliaDBRoles
@@ -129,17 +122,14 @@ class FakeAgenticConfigs:
             raise exceptions.NotFound("Agentic configuration not found")
         self.configs[key] = config
 
-    async def delete_configs_referencing_source(self, account, kbid, source_id) -> int:
-        to_delete = [
-            key
-            for key, cfg in self.configs.items()
-            if key[0] == account
-            and key[1] == kbid
+    async def configs_referencing_source(self, account, kbid, source_id) -> list[str]:
+        return [
+            agentic_id
+            for (config_account, config_kbid, agentic_id), cfg in self.configs.items()
+            if config_account == account
+            and config_kbid == kbid
             and source_id in _collect_source_ids(cfg)
         ]
-        for key in to_delete:
-            del self.configs[key]
-        return len(to_delete)
 
 
 # ---------------------------------------------------------------------------
@@ -198,7 +188,7 @@ async def _create_app(
 
 
 # ---------------------------------------------------------------------------
-# Cascade-delete tests
+# Source-reference guard tests
 # ---------------------------------------------------------------------------
 
 _MANAGER_READER = [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
@@ -210,8 +200,8 @@ _NUCLIADB_SOURCE = {
 }
 
 
-async def test_delete_source_cascades_to_agentic_configs(monkeypatch):
-    """Deleting a source removes every agentic config that references it."""
+async def test_delete_source_rejects_referenced_agentic_configs(monkeypatch):
+    """Deleting a referenced source returns its blocking config IDs."""
     fake_sources = FakeSources()
     fake_configs = FakeAgenticConfigs(valid_source_ids={"src-1"})
     app = await _create_app(monkeypatch, fake_sources, fake_configs)
@@ -240,15 +230,20 @@ async def test_delete_source_cascades_to_agentic_configs(monkeypatch):
         resp = await client.post("/kb/kb1/agentic_configs/unrelated", json=unrelated)
         assert resp.status_code == 201, resp.text
 
-        # 4. Delete the source — should cascade-delete agent-a and agent-b
+        # 4. Deleting the source is rejected and identifies both references.
         resp = await client.delete("/kb/kb1/sources/src-1")
-        assert resp.status_code == 204, resp.text
+        assert resp.status_code == 409, resp.text
+        assert resp.json()["detail"] == (
+            "Source is in use by agentic configuration(s): agent-a, agent-b"
+        )
 
-        # 5. Source is gone
+        # 5. The source remains available after the rejected deletion.
         resp = await client.get("/kb/kb1/sources/src-1")
-        assert resp.status_code == 404
+        assert resp.status_code == 200, resp.text
 
-        # 7. Unrelated config is still present
+        # 6. Both referencing and unrelated configs remain present.
+        resp = await client.get("/kb/kb1/agentic_configs/agent-a")
+        assert resp.status_code == 200, resp.text
         resp = await client.get("/kb/kb1/agentic_configs/unrelated")
         assert resp.status_code == 200, resp.text
 
@@ -270,8 +265,8 @@ async def test_delete_source_with_no_referencing_configs(monkeypatch):
         assert resp.status_code == 404
 
 
-async def test_cascade_only_affects_same_kb(monkeypatch):
-    """Cascade delete must not touch configs that live in a different KB."""
+async def test_source_reference_guard_only_checks_same_kb(monkeypatch):
+    """Only references in the source's KB are reported as blockers."""
     fake_sources = FakeSources()
     fake_configs = FakeAgenticConfigs(valid_source_ids={"src-x"})
     app = await _create_app(monkeypatch, fake_sources, fake_configs)
@@ -296,3 +291,9 @@ async def test_cascade_only_affects_same_kb(monkeypatch):
         fake_configs.valid_source_ids.add("src-x")  # already there
         resp = await client.post("/kb/kb-b/agentic_configs/cfg-b", json=cfg_payload)
         assert resp.status_code == 201, resp.text
+
+        resp = await client.delete("/kb/kb-a/sources/src-x")
+        assert resp.status_code == 409, resp.text
+        assert resp.json()["detail"] == (
+            "Source is in use by agentic configuration(s): cfg-a"
+        )

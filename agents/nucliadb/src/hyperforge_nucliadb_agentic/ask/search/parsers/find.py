@@ -1,3 +1,4 @@
+from hyperforge.manager import Manager
 from nucliadb_models import retrieval as retrieval_models, search as search_models
 from nucliadb_models.common import FieldTypeName, Paragraph
 from nucliadb_models.filters import (
@@ -71,13 +72,17 @@ CLASSIFICATION_LABEL_PREFIX = "/l/"
 
 
 async def parse_find(
-    kbid: str, find_request: FindRequest, reader_sdk: NucliaDBAsync
+    kbid: str,
+    find_request: FindRequest,
+    reader_sdk: NucliaDBAsync,
+    predict_manager: Manager,
 ) -> tuple[Fetcher, RetrievalRequest, Reranker]:
     # This is a thin layer to convert a FindRequest into a RetrievalRequest +
     # some bw/c stuff we need while refactoring and decoupling code
 
     fetcher = Fetcher(
         kbid,
+        predict_manager,
         query=find_request.query,
         user_vector=find_request.vector,
         vectorset=find_request.vectorset,
@@ -378,7 +383,10 @@ class FindParser:
             elif self.item.reranker == search_models.RerankerName.PREDICT_RERANKER:
                 # for predict rearnker, by default, we want a x2 factor with a
                 # top of 200 results
-                reranker = PredictReranker(window=min(top_k * 2, 200))
+                reranker = PredictReranker(
+                    window=min(top_k * 2, 200),
+                    predict_manager=self.fetcher.predict_manager,
+                )
 
             else:
                 raise InternalParserError(
@@ -387,7 +395,10 @@ class FindParser:
 
         elif isinstance(self.item.reranker, search_models.PredictReranker):
             user_window = self.item.reranker.window
-            reranker = PredictReranker(window=min(max(user_window or 0, top_k), 200))
+            reranker = PredictReranker(
+                window=min(max(user_window or 0, top_k), 200),
+                predict_manager=self.fetcher.predict_manager,
+            )
 
         else:
             raise InternalParserError(f"Unknown reranker {self.item.reranker}")

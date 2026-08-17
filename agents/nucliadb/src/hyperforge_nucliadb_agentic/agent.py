@@ -43,6 +43,7 @@ from nucliadb_models.search import (
     NucliaDBClientType,
     ResourceProperties,
 )
+from pydantic import ValidationError
 
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
@@ -665,17 +666,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             if response.metadata and response.metadata.tokens
             else 0
         )
-
-        input_tokens = (
-            response.metadata.tokens.input_nuclia
-            if response.metadata and response.metadata.tokens
-            else 0
-        )
-        output_tokens = (
-            response.metadata.tokens.output_nuclia
-            if response.metadata and response.metadata.tokens
-            else 0
-        )
         context.chunks = []
         answer = response.answer if response.status == "success" else ""
         if response.citations != {}:
@@ -972,6 +962,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         full_resource: bool = False,
         resource_filters: Optional[List[str]] = None,
     ) -> Context:
+        preparation_t0 = time()
         source = source_obj.id
 
         nucliadb_driver = get_ndb_driver(manager, source)
@@ -1001,6 +992,22 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 MetadataExtensionStrategy(types=["classification_labels", "origin"]),  # type: ignore
             ]
 
+        ask_request_json = memory.arguments.get("ask_request")
+        if ask_request_json:
+            # Preserve the request options from the public ask endpoint while
+            # using the query selected by the SmartAgent for this retrieval.
+            try:
+                ask_request = AskRequest.model_validate_json(
+                    ask_request_json
+                ).model_copy(update={"query": question})
+            except ValidationError as e:
+                logger.error(
+                    f"Failed to validate AskRequest received as memory argument: {e}"
+                )
+                ask_request = None
+        else:
+            ask_request = None
+
         filter_expression = await self.build_filter_expression(
             nucliadb_driver,
             source,
@@ -1008,30 +1015,22 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             and_filters=and_filters,
             or_filters=or_filters,
             resource_filters=resource_filters,
+            filter_expression=ask_request.filter_expression
+            if ask_request is not None
+            else None,
         )
-        t0 = time()
-
-        ask_request = AskRequest(
-            query=question,
-            show=[ResourceProperties.BASIC, ResourceProperties.ORIGIN],
-            citations=CitationsType.LLM_FOOTNOTES,
-            generative_model=self.config.generative_model,
-            filter_expression=filter_expression,
-            rag_strategies=rag_strategies,
-            generate_answer=self.config.generate_inner_answer,
-        )
-
-        paragraphs_result = await ask(
-            search_sdk=nucliadb_driver.driver,
-            reader_sdk=nucliadb_driver.driver,
-            kbid=nucliadb_driver.config.kbid,
-            ask_request=ask_request,
-            user_id=memory.original_question_uuid,
-            client_type=NucliaDBClientType.API,
-            origin=memory.arguments.get("origin", ""),
-            resource=None,
-            extra_predict_headers={},
-        )
+        if ask_request is None:
+            ask_request = AskRequest(
+                query=question,
+                show=[ResourceProperties.BASIC, ResourceProperties.ORIGIN],
+                citations=CitationsType.LLM_FOOTNOTES,
+                generative_model=self.config.generative_model,
+                filter_expression=filter_expression,
+                rag_strategies=rag_strategies,
+                generate_answer=self.config.generate_inner_answer,
+            )
+        else:
+            ask_request.filter_expression = filter_expression
 
         await memory.add_step(
             step_module="nucliadb_agent",
@@ -1040,11 +1039,24 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             step_value=ask_request.model_dump_json(
                 exclude_none=True, exclude_unset=True
             ),
-            timeit=0.0,
+            timeit=time() - preparation_t0,
             input_nuclia_tokens=0.0,
             output_nuclia_tokens=0.0,
             step_agent_path=f"/context/{self.agent_id}",
-            metadata={"learning_id": paragraphs_result.nuclia_learning_id},
+        )
+
+        retrieval_t0 = time()
+        paragraphs_result = await ask(
+            search_sdk=nucliadb_driver.driver,
+            reader_sdk=nucliadb_driver.driver,
+            kbid=nucliadb_driver.config.kbid,
+            predict_manager=manager,
+            ask_request=ask_request,
+            user_id=memory.original_question_uuid,
+            client_type=NucliaDBClientType.API,
+            origin=memory.arguments.get("origin", ""),
+            resource=None,
+            extra_predict_headers={"X-Show-Consumption": "true"},
         )
 
         # Hack to send the find results on the agent context
@@ -1056,7 +1068,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             )
         )
 
-        paragraphs = await paragraphs_result.model_dump()
+        paragraphs = await paragraphs_result.to_sync_response()
         answer = None
         input_tokens = (
             paragraphs.consumption.normalized_tokens.input
@@ -1077,6 +1089,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             )
         else:
             result_chunks = paragraphs.retrieval_results.best_matches
+        context.citations = result_chunks
         for chunk_id in result_chunks:
             resource_id = chunk_id.split("/")[0]
             resource = paragraphs.retrieval_results.resources[resource_id]
@@ -1091,8 +1104,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                     origin_agent=self.config.module,
                 )
             )
-            # TODO: Save citations properly
-
         # XXX: This answer will be overriden by any call to save_ctx_and_return_missing below
         if answer and paragraphs.status == "success":
             context.summary = answer
@@ -1104,10 +1115,11 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             step_title=self.step_title("RAG retrieval"),
             step_reason="Got answer" if answer else "No answer",
             step_value=answer if answer else "No answer",
-            timeit=time() - t0,
+            timeit=time() - retrieval_t0,
             input_nuclia_tokens=input_tokens if input_tokens else 0,
             output_nuclia_tokens=output_tokens if output_tokens else 0,
             step_agent_path=f"/context/{self.agent_id}",
+            metadata={"learning_id": paragraphs_result.nuclia_learning_id},
         )
         return context
 

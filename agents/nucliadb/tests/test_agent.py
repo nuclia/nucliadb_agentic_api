@@ -5,7 +5,7 @@ Tests are isolated: every external call (NucliaDBDriver, Manager, ask())
 is mocked so that no real network traffic or NucliaDB instance is needed.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from hyperforge_nucliadb_agentic.agent import (
@@ -14,6 +14,8 @@ from hyperforge_nucliadb_agentic.agent import (
     get_catalog_filter_prompt,
     get_chunk_text,
 )
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.search.ask import NotEnoughContextAskResult
 
 # ---------------------------------------------------------------------------
 # Construction
@@ -491,6 +493,59 @@ class TestRetrieve:
         )
 
         assert result == []
+
+
+# ---------------------------------------------------------------------------
+# inner_rag
+# ---------------------------------------------------------------------------
+
+
+class TestInnerRag:
+    async def test_uses_endpoint_ask_request_with_smart_agent_query(
+        self, nucliadb_agent, mock_memory, mock_manager, mock_source
+    ):
+        mock_memory.arguments["ask_request"] = AskRequest(
+            query="original endpoint question",
+            top_k=7,
+            rag_strategies=[{"name": "hierarchy", "count": 12}],  # type: ignore
+            rag_images_strategies=[{"name": "page_image", "count": 2}],  # type: ignore
+            generative_model="requested-model",
+            generate_answer=False,
+        ).model_dump_json()
+
+        ask_result = NotEnoughContextAskResult()
+
+        with patch(
+            "hyperforge_nucliadb_agentic.agent.ask",
+            new=AsyncMock(return_value=ask_result),
+        ) as mock_ask:
+            await nucliadb_agent.inner_rag(
+                source_obj=mock_source,
+                manager=mock_manager,
+                memory=mock_memory,
+                question="SmartAgent retrieval question",
+            )
+
+        internal_request = mock_ask.call_args.kwargs["ask_request"]
+        assert internal_request.query == "SmartAgent retrieval question"
+        assert internal_request.top_k == 7
+        assert internal_request.rag_strategies[0].name == "hierarchy"
+        assert internal_request.rag_strategies[0].count == 12
+        assert internal_request.rag_images_strategies[0].name == "page_image"
+        assert internal_request.rag_images_strategies[0].count == 2
+        assert internal_request.generative_model == "requested-model"
+        assert internal_request.generate_answer is False
+        assert mock_ask.call_args.kwargs["extra_predict_headers"] == {
+            "X-Show-Consumption": "true"
+        }
+
+        preparation_step, retrieval_step = mock_memory.add_step.await_args_list
+        assert preparation_step.kwargs["timeit"] > 0
+        assert preparation_step.kwargs["input_nuclia_tokens"] == 0.0
+        assert preparation_step.kwargs["output_nuclia_tokens"] == 0.0
+        assert retrieval_step.kwargs["timeit"] > 0
+        assert retrieval_step.kwargs["input_nuclia_tokens"] == 0
+        assert retrieval_step.kwargs["output_nuclia_tokens"] == 0
 
 
 # ---------------------------------------------------------------------------

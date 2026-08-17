@@ -10,6 +10,7 @@ import anyio
 import pydantic_core
 from fastapi import Header
 from hyperforge.api.authentication import requires_one
+from hyperforge.manager import Manager
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.server.fastmcp.utilities.types import Image
 from mcp.server.lowlevel.helper_types import ReadResourceContents
@@ -34,7 +35,7 @@ from starlette.responses import Response
 from nucliadb_agentic_api import logger
 
 if TYPE_CHECKING:
-    from hyperforge.api.app import HTTPApplication
+    from nucliadb_agentic_api.app import HTTPApplication
 
 from anyio.abc import TaskStatus
 from hyperforge_nucliadb_agentic.ask.exceptions import (
@@ -80,6 +81,7 @@ BATCH_GET_DOCUMENTS_MAX = 20
 
 @dataclass
 class MCPContext:
+    predict_manager: Manager
     ndb_reader: NucliaDBAsync
     ndb_search: NucliaDBAsync
     kbid: str
@@ -249,6 +251,7 @@ async def _tool_search_documents(
             search_sdk=context.ndb_search,
             reader_sdk=context.ndb_reader,
             kbid=context.kbid,
+            predict_manager=context.predict_manager,
             ask_request=ask_request,
             user_id=context.x_nucliadb_user,
             client_type=context.x_ndb_client,
@@ -275,7 +278,7 @@ async def _tool_search_documents(
         logger.exception("Unexpected error in search_documents")
         raise ResourceError("Search failed" + (f": {e}" if str(e) else "")) from e
 
-    resp = await ask_result.model_dump()
+    resp = await ask_result.to_sync_response()
     document_ids = _get_document_ids(resp.citation_footnote_to_context)
 
     return _build_citation_blocks(resp) + [
@@ -469,6 +472,7 @@ async def list_tools(description: str) -> list[Tool]:
 
 
 async def call_tool(
+    predict_manager: Manager,
     x_stf_account: str,
     x_nucliadb_user: str,
     x_ndb_client: NucliaDBClientType,
@@ -492,6 +496,7 @@ async def call_tool(
         )
         raise ResourceError(f"Invalid arguments for '{name}': {error_details}") from e
     context = MCPContext(
+        predict_manager=predict_manager,
         ndb_reader=ndb_reader,
         ndb_search=ndb_search,
         kbid=kbid,
@@ -621,7 +626,7 @@ async def read_resource(
         )
 
 
-@router.get("/.well-known/oauth-protected-resource/api/v1/kb/{kbid}/mcp")
+@router.get("/.well-known/oauth-protected-resource/api/v1/kb/{kbid}/mcp", tags=["MCP"])
 async def mcp_protected_resource_metadata(
     request: Request,
     kbid: str,
@@ -642,8 +647,8 @@ async def mcp_protected_resource_metadata(
     }
 
 
-@router.get("/api/v1/kb/{kbid}/mcp")
-@router.post("/api/v1/kb/{kbid}/mcp")
+@router.get("/api/v1/kb/{kbid}/mcp", tags=["MCP"])
+@router.post("/api/v1/kb/{kbid}/mcp", tags=["MCP"])
 @requires_one([NucliaDBRoles.READER])
 async def mcp_handler(
     request: Request,
@@ -678,6 +683,7 @@ async def mcp_handler(
         list_resources_partial = partial(list_resources, ndb_reader, kbid)
         call_tool_partial = partial(
             call_tool,
+            app.predict_manager,
             x_stf_account,
             x_nucliadb_user,
             x_ndb_client,
@@ -741,10 +747,10 @@ async def mcp_handler(
             body_chunks.append(message.get("body", b""))
 
     # Pre-read the body before passing to the MCP transport.
-    # Starlette 1.x's BaseHTTPMiddleware wraps the ASGI receive callable in a way
-    # that breaks when passed to a new Request object (raises ClientDisconnect).
-    # By reading the body here (through FastAPI's working request) and providing a
-    # synthetic receive, we avoid the issue.
+    # Fix for FastAPI/Starlette 1.x
+    # which consumes the ASGI receive callable internally before the route handler runs.
+    # TODO: consider rewriting this handler to use the official StreamableHTTPSessionManager
+    # This does not happen in arag due to older versions of FastAPI/Starlette.
     body_bytes = await request.body()
     body_sent = False
 
