@@ -126,8 +126,8 @@ async def nucliadb_agentic_api_http(
 ):
     """Serve the already-started arag_api_app over real HTTP/WebSocket.
 
-    Reuses the same HTTPApplication instance as arag_api_app so that only one
-    PredictEngine (and one session) is created per test. Uvicorn is
+    Reuses the same HTTPApplication instance as arag_api_app so that one
+    Predict Manager is created per test. Uvicorn is
     started with lifespan="off" to avoid calling startup/shutdown a second time.
     """
     http_port = free_port()

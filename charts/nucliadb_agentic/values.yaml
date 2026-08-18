@@ -32,6 +32,7 @@ tracing:
 
 zone: provider-region-ordinal
 vs:
+  enabled: true
   gateway: "istio-system/xxxxxx"
   host: "xxxxx.cloud"
 
@@ -138,6 +139,32 @@ migrations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded
+  serviceAccount:
+    create: false
+    name: default
+    labels: {}
+    annotations: {}
+
+cleanup:
+  enabled: true
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  activeDeadlineSeconds: 3600
+  backoffLimit: 0
+  annotations: {}
+  podAnnotations: {}
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  securityContext: {}
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "200Mi"
   serviceAccount:
     create: false
     name: default

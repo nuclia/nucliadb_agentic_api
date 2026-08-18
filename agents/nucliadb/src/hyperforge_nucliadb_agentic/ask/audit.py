@@ -9,6 +9,7 @@ import mmh3
 import nats
 from fastapi import Request
 from hyperforge.feature_flag import Features, has_feature
+from hyperforge.models import ExternalUsage, Step
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
 from nucliadb_models.search import (
     NucliaDBClientType,
@@ -19,9 +20,19 @@ from nucliadb_protos.audit_pb2 import (
     ChatContext,
     RetrievedContext,
 )
+from nucliadb_protos.kb_usage_pb2 import (
+    ActivityLogMatch,
+    ActivityLogMatchType,
+    ClientType as KbUsageClientType,
+    KBSource,
+    Predict,
+    PredictType,
+    Service,
+)
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
-from nucliadb_utils.settings import AuditSettings
+from nucliadb_utils.nuclia_usage.utils.kb_usage_report import KbUsageReportUtility
+from nucliadb_utils.settings import AuditSettings, usage_settings
 from nucliadb_utils.utilities import Utility, clean_utility, get_utility, set_utility
 from opentelemetry.trace import INVALID_SPAN, format_trace_id, get_current_span
 from starlette.background import BackgroundTask
@@ -36,6 +47,21 @@ from hyperforge_nucliadb_agentic.ask.model import (
 )
 from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
 from hyperforge_nucliadb_agentic.ask.utils.proto import client_type
+
+
+def external_usage_to_predict(
+    event: ExternalUsage, ndb_client_type: NucliaDBClientType
+) -> Predict:
+    return Predict(
+        client=KbUsageClientType.Value(ndb_client_type.name),
+        type=PredictType.QUESTION_ANSWER,
+        model=f"{event.provider}/{event.model}",
+        input=event.input_tokens,
+        output=event.output_tokens,
+        num_predicts=event.requests,
+        image=event.image,
+        customer_key=False,
+    )
 
 
 class RequestContext:
@@ -120,6 +146,7 @@ class StreamAuditStorage:
         self.service = service
         self.task = None
         self.initialized = False
+        self.kb_usage_utility: KbUsageReportUtility | None = None
 
     def get_partition(self, kbid: str):
         return mmh3.hash(kbid, self.seed, signed=False) % self.partitions
@@ -155,16 +182,52 @@ class StreamAuditStorage:
 
         self.js = get_traced_jetstream(self.nc, self.service)
         self.task = asyncio.create_task(self.run())
+        self.kb_usage_utility = KbUsageReportUtility(
+            nats_stream=self.js,
+            nats_subject=cast(str, usage_settings.usage_jetstream_subject),
+        )
+        await self.kb_usage_utility.initialize()
 
         self.initialized = True
 
     async def finalize(self):
+        if self.kb_usage_utility is not None:
+            await self.kb_usage_utility.finalize()
         if self.task is not None:
             self.task.cancel()
         if self.nc:
             await self.nc.flush()
             await self.nc.close()
             self.nc = None
+
+    def report_step_usage(
+        self,
+        *,
+        account_id: str,
+        kbid: str,
+        client_type: NucliaDBClientType,
+        step: Step,
+        trace_id: str | None = None,
+    ) -> None:
+        predicts = [
+            external_usage_to_predict(event, client_type)
+            for event in step.external_usage or []
+        ]
+        if not predicts or self.kb_usage_utility is None:
+            return
+
+        self.kb_usage_utility.send_kb_usage(
+            service=Service.RAO,
+            account_id=account_id,
+            kb_id=kbid,
+            kb_source=KBSource.HOSTED,
+            predicts=predicts,
+            activity_log_match=(
+                ActivityLogMatch(id=trace_id, type=ActivityLogMatchType.TRACE_ID)
+                if trace_id
+                else None
+            ),
+        )
 
     async def run(self):
         while True:

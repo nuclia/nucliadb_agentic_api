@@ -1,9 +1,20 @@
 import dataclasses
 import functools
 import json
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, AsyncIterator
 from typing import cast
 
+from hyperforge.manager import Manager
+from nuclia.exceptions import (
+    PredictAPIException,
+    PredictLimitsExceededError,
+)
+from nuclia.lib.nua import (
+    PredictRephraseError,
+    PredictRephraseMissingContextError,
+    RephraseRequest,
+)
+from nuclia.lib.nua_responses import ChatModel, RephraseModel, UserPrompt
 from nuclia_models.common.consumption import Consumption
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
@@ -34,7 +45,7 @@ from nucliadb_utils.exceptions import LimitsExceededError
 from pydantic_core import ValidationError
 from typing_extensions import assert_never
 
-from hyperforge_nucliadb_agentic.ask import logger, predict
+from hyperforge_nucliadb_agentic.ask import logger
 from hyperforge_nucliadb_agentic.ask.audit import ChatAuditor
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     AnswerJsonSchemaTooLong,
@@ -55,7 +66,6 @@ from hyperforge_nucliadb_agentic.ask.model import (
     AugmentedContext,
     AugmentedContextResponseItem,
     ChatContextMessage,
-    ChatModel,
     ChatOptions,
     CitationsAskResponseItem,
     ConsumptionResponseItem,
@@ -77,21 +87,16 @@ from hyperforge_nucliadb_agentic.ask.model import (
     ReasoningAskResponseItem,
     Relations,
     RelationsAskResponseItem,
-    RephraseModel,
     RetrievalAskResponseItem,
     StatusAskResponseItem,
     SyncAskMetadata,
     SyncAskResponse,
     TokensDetail,
-    UserPrompt,
     parse_custom_prompt,
     parse_rephrase_prompt,
 )
 from hyperforge_nucliadb_agentic.ask.predict import (
     AnswerStatusCode,
-    RephraseMissingContextError,
-    RephraseResponse,
-    get_predict,
 )
 from hyperforge_nucliadb_agentic.ask.search.graph_strategy import (
     get_graph_results,
@@ -154,7 +159,7 @@ class AskResult:
         main_results: KnowledgeboxFindResults,
         prequeries_results: list[PreQueryResult] | None,
         nuclia_learning_id: str | None,
-        predict_answer_stream: AsyncGenerator[GenerativeChunk, None] | None,
+        predict_answer_stream: AsyncIterator[GenerativeChunk] | None,
         prompt_context: PromptContext,
         prompt_context_order: PromptContextOrder,
         auditor: ChatAuditor,
@@ -378,7 +383,7 @@ class AskResult:
                 metrics=self.metrics.dump(),
             )
 
-    async def model_dump(self) -> SyncAskResponse:
+    async def to_sync_response(self) -> SyncAskResponse:
         # Run the stream to completion to ensure all data is available in memory
         # First, run the stream in memory to get all the data in memory
         async for _ in self._stream():
@@ -458,7 +463,7 @@ class AskResult:
         return response
 
     async def json(self) -> str:
-        response = await self.model_dump()
+        response = await self.to_sync_response()
         return response.model_dump_json(exclude_none=True, by_alias=True)
 
     async def get_relations_results(self) -> Relations:
@@ -551,7 +556,7 @@ class NotEnoughContextAskResult(AskResult):
                 )
             )
 
-    async def json(self) -> str:
+    async def to_sync_response(self) -> SyncAskResponse:
         prequeries = (
             {
                 prequery.id or f"prequery_{index}": prequery_result
@@ -567,22 +572,23 @@ class NotEnoughContextAskResult(AskResult):
             retrieval_results=self.main_results,
             prequeries=prequeries,
             status=AnswerStatusCode.NO_RETRIEVAL_DATA.prettify(),
-        ).model_dump_json()
+        )
+
+    async def json(self) -> str:
+        return (await self.to_sync_response()).model_dump_json()
 
 
 async def rephrase_query(
     kbid: str,
+    predict_manager: Manager,
     chat_history: list[ChatContextMessage],
     query: str,
     user_id: str,
     user_context: list[str],
     generative_model: str | None = None,
     chat_history_relevance_threshold: float | None = None,
-) -> RephraseResponse:
-    # NOTE: When moving /ask to RAO, this will need to change to whatever client/utility is used
-    # to call NUA predict (internally or externally in the case of onprem).
-    predict = get_predict()
-    req = RephraseModel(
+) -> RephraseModel:
+    request = RephraseRequest(
         question=query,
         chat_history=chat_history,
         user_id=user_id,
@@ -590,7 +596,7 @@ async def rephrase_query(
         generative_model=generative_model,
         chat_history_relevance_threshold=chat_history_relevance_threshold,
     )
-    return await predict.rephrase_query(kbid, req)
+    return await predict_manager.rephrase(request, kbid=kbid)
 
 
 async def ask(
@@ -598,6 +604,7 @@ async def ask(
     search_sdk: NucliaDBAsync,
     reader_sdk: NucliaDBAsync,
     kbid: str,
+    predict_manager: Manager,
     ask_request: AskRequest,
     user_id: str,
     client_type: NucliaDBClientType,
@@ -617,6 +624,7 @@ async def ask(
             with metrics.time("rephrase"):
                 rephrase_response = await rephrase_query(
                     kbid,
+                    predict_manager,
                     chat_history=chat_history,
                     query=user_query,
                     user_id=user_id,
@@ -630,7 +638,7 @@ async def ask(
                     logger.info("Chat history was ignored for this request")
                     chat_history = []
 
-        except RephraseMissingContextError:
+        except PredictRephraseMissingContextError:
             logger.info("Failed to rephrase ask query, using original")
 
     try:
@@ -639,6 +647,7 @@ async def ask(
                 reader_sdk=reader_sdk,
                 search_sdk=search_sdk,
                 kbid=kbid,
+                predict_manager=predict_manager,
                 # Prefer the rephrased query for retrieval if available
                 main_query=rephrased_query or user_query,
                 ask_request=ask_request,
@@ -660,7 +669,12 @@ async def ask(
 
     # parse ask request generation parameters reusing the same fetcher as
     # retrieval, to avoid multiple round trips to Predict API
-    generation = await parse_ask(kbid, ask_request, fetcher=retrieval_results.fetcher)
+    generation = await parse_ask(
+        kbid,
+        ask_request,
+        predict_manager=predict_manager,
+        fetcher=retrieval_results.fetcher,
+    )
 
     # Now we build the prompt context
     with metrics.time("context_building"):
@@ -710,7 +724,6 @@ async def ask(
         query_context_images=prompt_context_images,
         json_schema=ask_request.answer_json_schema,
         rerank_context=False,
-        top_k=ask_request.top_k,
         reasoning=ask_request.reasoning,
     )
     nuclia_learning_id = None
@@ -723,7 +736,10 @@ async def ask(
                 nuclia_learning_model,
                 predict_answer_stream,
             ) = await get_answer_stream(
-                kbid=kbid, item=chat_model, extra_headers=extra_predict_headers
+                kbid=kbid,
+                predict_manager=predict_manager,
+                item=chat_model,
+                extra_headers=extra_predict_headers,
             )
 
     auditor = ChatAuditor(
@@ -771,11 +787,13 @@ def handled_ask_exceptions(func):
             )
         except LimitsExceededError as exc:
             return HTTPClientError(status_code=exc.status_code, detail=exc.detail)
-        except predict.ProxiedPredictAPIError as err:
+        except PredictLimitsExceededError as err:
             return HTTPClientError(
-                status_code=err.status,
+                status_code=err.code,
                 detail=err.detail,
             )
+        except PredictAPIException as err:
+            return HTTPClientError(status_code=err.code, detail=err.detail)
         except (IncompleteFindResultsError, NucliaDBError):
             msg = "Temporary error on information retrieval. Please try again."
             logger.exception(msg)
@@ -783,12 +801,12 @@ def handled_ask_exceptions(func):
                 status_code=530,
                 detail=msg,
             )
-        except predict.RephraseMissingContextError:
+        except PredictRephraseMissingContextError:
             return HTTPClientError(
                 status_code=412,
                 detail="Unable to rephrase the query with the provided context.",
             )
-        except predict.RephraseError as err:
+        except PredictRephraseError as err:
             msg = f"Temporary error while rephrasing the query. Please try again later. Error: {err}"
             logger.info(msg)
             return HTTPClientError(
@@ -832,6 +850,7 @@ async def retrieval_step(
     reader_sdk: NucliaDBAsync,
     search_sdk: NucliaDBAsync,
     kbid: str,
+    predict_manager: Manager,
     main_query: str,
     ask_request: AskRequest,
     client_type: NucliaDBClientType,
@@ -846,6 +865,7 @@ async def retrieval_step(
     if resource is None:
         return await retrieval_in_kb(
             kbid,
+            predict_manager,
             main_query,
             ask_request,
             client_type,
@@ -858,6 +878,7 @@ async def retrieval_step(
     else:
         return await retrieval_in_resource(
             kbid,
+            predict_manager,
             resource,
             main_query,
             ask_request,
@@ -872,6 +893,7 @@ async def retrieval_step(
 
 async def retrieval_in_kb(
     kbid: str,
+    predict_manager: Manager,
     main_query: str,
     ask_request: AskRequest,
     client_type: NucliaDBClientType,
@@ -886,6 +908,7 @@ async def retrieval_in_kb(
     graph_strategy = parse_graph_strategy(ask_request)
     main_results, prequeries_results, fetcher, reranker = await get_find_results(
         kbid=kbid,
+        predict_manager=predict_manager,
         query=main_query,
         item=ask_request,
         ndb_client=client_type,
@@ -901,6 +924,7 @@ async def retrieval_in_kb(
         graph_results, graph_request = await get_graph_results(
             search_sdk=search_sdk,
             kbid=kbid,
+            predict_manager=predict_manager,
             query=main_query,
             item=ask_request,
             ndb_client=client_type,
@@ -942,6 +966,7 @@ async def retrieval_in_kb(
 
 async def retrieval_in_resource(
     kbid: str,
+    predict_manager: Manager,
     resource: str,
     main_query: str,
     ask_request: AskRequest,
@@ -958,7 +983,7 @@ async def retrieval_in_resource(
         return RetrievalResults(
             main_query=KnowledgeboxFindResults(resources={}, min_score=None),
             prequeries=None,
-            fetcher=fetcher_for_ask(kbid, ask_request),
+            fetcher=fetcher_for_ask(kbid, ask_request, predict_manager),
             main_query_weight=1.0,
         )
 
@@ -983,6 +1008,7 @@ async def retrieval_in_resource(
 
     main_results, prequeries_results, fetcher, _ = await get_find_results(
         kbid=kbid,
+        predict_manager=predict_manager,
         query=main_query,
         item=ask_request,
         ndb_client=client_type,

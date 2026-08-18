@@ -15,20 +15,31 @@ async def test_agentic_configs_api(
         f"/api/v1/kb/{knowledgebox}/sources/dupe-src", json=payload
     )
     assert resp.status_code == 201, resp.text
+    request_payload = {
+        "title": "Support agent",
+        "rephrase": {},
+        "smart_agent": {
+            "mode": "reactive",
+            "sources": ["dupe-src"],
+        },
+        "summarize": {},
+    }
+
+    resp = await nucliadb_agentic_api_http_client.post(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=request_payload
+    )
+    assert resp.status_code == 201, resp.text
+
     payload = {
         "title": "Support agent",
+        "rephrase": {"history": True},
         "smart_agent": {
             "mode": "reactive",
             "sources": ["dupe-src"],
             "history": True,
         },
-        "summarize": {"conversational": True},
+        "summarize": {"conversational": True, "history": True},
     }
-
-    resp = await nucliadb_agentic_api_http_client.post(
-        f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=payload
-    )
-    assert resp.status_code == 201, resp.text
 
     resp = await nucliadb_agentic_api_http_client.get(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support"
@@ -44,7 +55,7 @@ async def test_agentic_configs_api(
 
     updated_payload = {
         "title": "Updated support agent",
-        "summarize": {"conversational": False},
+        "summarize": {"conversational": False, "history": True},
     }
     resp = await nucliadb_agentic_api_http_client.patch(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=updated_payload

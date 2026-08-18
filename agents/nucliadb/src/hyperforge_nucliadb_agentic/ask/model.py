@@ -1,6 +1,12 @@
 from enum import Enum
 from typing import Annotated, Any, Literal, Self  # type: ignore
 
+from nuclia.lib.nua_responses import (
+    Author as NuaAuthor,
+    CitationsType,
+    Message as ChatContextMessage,
+    Reasoning,
+)
 from nuclia_models.common.consumption import Consumption
 from nucliadb_models import (
     DateTime,
@@ -31,23 +37,11 @@ from nucliadb_models.search import (
 from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
-
-class Author(str, Enum):
-    NUCLIA = "NUCLIA"
-    USER = "USER"
-
-
-class ChatContextMessage(BaseModel):
-    author: Author
-    text: str
-
+# Backward-compatible exports for the agentic /ask request schema.
+Author = NuaAuthor
 
 # For bw compatibility
 Message = ChatContextMessage
-
-
-class UserPrompt(BaseModel):
-    prompt: str
 
 
 class MaxTokens(BaseModel):
@@ -61,154 +55,6 @@ class MaxTokens(BaseModel):
         title="Maximum answer tokens",
         description="Use to limit the amount of tokens used in the LLM answer",
     )
-
-
-class Reasoning(BaseModel):
-    display: bool = Field(
-        default=True,
-        description="Whether to display the reasoning steps in the response.",
-    )
-    effort: Literal["none", "minimal", "low", "medium", "high", "xhigh"] = Field(
-        default="medium",
-        description=(
-            "Level of reasoning effort. Used by OpenAI models to control the depth of reasoning. "
-            "This parameter will be automatically mapped to budget_tokens "
-            "if the chosen model does not support effort."
-        ),
-    )
-    budget_tokens: int = Field(
-        default=15_000,
-        description=(
-            "Token budget for reasoning. Used by Anthropic or Google models to limit the number of "
-            "tokens used for reasoning. This parameter will be automatically mapped to effort "
-            "if the chosen model does not support budget_tokens."
-        ),
-    )
-
-
-class CitationsType(str, Enum):
-    NONE = "none"
-    DEFAULT = "default"
-    LLM_FOOTNOTES = "llm_footnotes"
-
-
-class ChatModel(BaseModel):
-    """
-    This is the model for the predict request payload on the chat endpoint
-    """
-
-    question: str = Field(description="Question to ask the generative model")
-    user_id: str
-    retrieval: bool = True
-    system: str | None = Field(
-        default=None,
-        title="System prompt",
-        description="Optional system prompt input by the user",
-    )
-    query_context: dict[str, str] = Field(
-        default={},
-        description="The information retrieval context for the current query",
-    )
-    query_context_order: dict[str, int] | None = Field(
-        default=None,
-        description="The order of the query context elements. This is used to sort the context elements by relevance before sending them to the generative model",
-    )
-    chat_history: list[ChatContextMessage] = Field(
-        default=[], description="The chat conversation history"
-    )
-    truncate: bool = Field(
-        default=True,
-        description="Truncate the chat context in case it doesn't fit the generative input",
-    )
-    user_prompt: UserPrompt | None = Field(
-        default=None, description="Optional custom prompt input by the user"
-    )
-    citations: bool | None | CitationsType = Field(
-        default=None,
-        description="Whether to include citations in the response. "
-        "If set to None or False, no citations will be computed. "
-        "If set to True or 'default', citations will be computed after answer generation and send as a separate `CitationsGenerativeResponse` chunk. "
-        "If set to 'llm_footnotes', citations will be included in the LLM's response as markdown-styled footnotes. A `FootnoteCitationsGenerativeResponse` chunk will also be sent to map footnote ids to context keys in the `query_context`.",
-    )
-    citation_threshold: float | None = Field(
-        default=None,
-        description="If citations is set to True or 'default', this will be the similarity threshold. Value between 0 and 1, lower values will produce more citations. If not set, it will be set to the optimized threshold found by Nuclia.",
-        ge=0.0,
-        le=1.0,
-    )
-    generative_model: str | None = Field(
-        default=None,
-        title="Generative model",
-        description="The generative model to use for the predict chat endpoint. If not provided, the model configured for the Knowledge Box is used.",
-    )
-
-    max_tokens: int | None = Field(
-        default=None, description="Maximum characters to generate"
-    )
-
-    query_context_images: dict[str, Image] = Field(
-        default={},
-        description="The information retrieval context for the current query, each image is a base64 encoded string",
-    )
-
-    prefer_markdown: bool = Field(
-        default=False,
-        description="If set to true, the response will be in markdown format",
-    )
-    json_schema: dict[str, Any] | None = Field(
-        default=None,
-        description="The JSON schema to use for the generative model answers",
-    )
-    rerank_context: bool = Field(
-        default=False,
-        description="Whether to reorder the query context based on a reranker",
-    )
-    top_k: int | None = Field(
-        default=None, description="Number of best elements to get from"
-    )
-
-    format_prompt: bool = Field(
-        default=True,
-        description="If set to false, the prompt given as `user_prompt` will be used as is, without any formatting for question or context. If set to true, the prompt must contain the placeholders {question} and {context} to be replaced by the question and context respectively",
-    )
-    seed: int | None = Field(
-        default=None,
-        description="Seed use for the generative model for a deterministic output.",
-    )
-    reasoning: Reasoning | bool = Field(
-        title="Reasoning options",
-        default=False,
-        description=(
-            "Reasoning options for the generative model. "
-            "Set to True to enable default reasoning, False to disable, or provide a Reasoning object for custom options."
-        ),
-    )
-
-
-class RephraseModel(BaseModel):
-    question: str
-    chat_history: list[ChatContextMessage] = []
-    user_id: str
-    user_context: list[str] = []
-    generative_model: str | None = Field(
-        default=None,
-        title="Generative model",
-        description="The generative model to use for the rephrase endpoint. If not provided, the model configured for the Knowledge Box is used.",
-    )
-    chat_history_relevance_threshold: (
-        Annotated[
-            float,
-            Field(
-                ge=0.0,
-                le=1.0,
-                description="Threshold to determine if the past chat history is relevant to rephrase the user's question. "
-                "0 - Always treat previous messages as relevant (always rephrase)."
-                "1 - Always treat previous messages as irrelevant (never rephrase)."
-                "Values in between adjust the sensitivity.",
-            ),
-        ]
-        | None
-    ) = None
 
 
 class RagStrategyName:
