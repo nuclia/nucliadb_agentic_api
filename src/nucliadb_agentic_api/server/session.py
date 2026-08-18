@@ -231,7 +231,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
                     or answer.step.module in {"google", "perplexity"}
                 ):
                     logger.info(
-                        "[external_usage_audit] Publishing agent step account=%s kb=%s module=%s external_usage=%s",
+                        "[external_usage_audit] Forwarding agent step to broker account=%s kb=%s module=%s external_usage=%s",
                         account_id,
                         agent_id,
                         answer.step.module,
@@ -247,6 +247,16 @@ class NucliaDBAgenticSessionManager(SessionManager):
                         ],
                     )
                 await self.callback(topic, answer)
+                if answer.step is not None and (
+                    answer.step.external_usage
+                    or answer.step.module in {"google", "perplexity"}
+                ):
+                    logger.info(
+                        "[external_usage_audit] Agent step callback completed account=%s kb=%s module=%s",
+                        account_id,
+                        agent_id,
+                        answer.step.module,
+                    )
 
             question_memory.set_callback_fn(callback)
 

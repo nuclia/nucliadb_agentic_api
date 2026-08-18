@@ -120,69 +120,83 @@ class AgenticAskResult(AskResult):
     async def loop(self):
         interaction = interaction_from_ask_request(self.ask_request)
         msg: AragAnswer
-        async for msg in stream_response(
-            self.app,  # type: ignore
-            None,
+        logger.info(
+            "[external_usage_audit] Starting agent response stream account=%s kb=%s workflow=%s",
             self.account,
             self.kbid,
-            "ephemeral",
-            interaction,
-            workflow_id=self.agentic_config_id,
-        ):
-            try:
-                if msg.operation == AnswerOperation.DONE:
-                    await self.queue.put(msg)
-                    self.event_learning_id.set()
-                    break
-                if (
-                    msg.step
-                    and msg.step.metadata
-                    and "learning_id" in msg.step.metadata
-                ):
-                    self.nuclia_learning_id = msg.step.metadata["learning_id"]
-                    self.event_learning_id.set()
-                if msg.step and (
-                    msg.step.external_usage
-                    or msg.step.module in {"google", "perplexity"}
-                ):
-                    logger.info(
-                        "[external_usage_audit] Received agent step account=%s kb=%s module=%s external_usage=%s",
-                        self.account,
-                        self.kbid,
-                        msg.step.module,
-                        [
-                            {
-                                "provider": usage.provider,
-                                "model": usage.model,
-                                "input_tokens": usage.input_tokens,
-                                "output_tokens": usage.output_tokens,
-                                "requests": usage.requests,
-                            }
-                            for usage in msg.step.external_usage or []
-                        ],
-                    )
-                if msg.step and msg.step.external_usage:
-                    audit = get_audit()
-                    if audit is not None:
-                        audit.report_step_usage(
-                            account_id=self.account,
-                            kbid=self.kbid,
-                            client_type=self.client_type,
-                            step=msg.step,
-                            trace_id=get_trace_id(),
-                        )
-                    else:
-                        logger.warning(
-                            "[external_usage_audit] Skipping external usage report because audit utility is unavailable account=%s kb=%s module=%s",
+            self.agentic_config_id,
+        )
+        try:
+            async for msg in stream_response(
+                self.app,  # type: ignore
+                None,
+                self.account,
+                self.kbid,
+                "ephemeral",
+                interaction,
+                workflow_id=self.agentic_config_id,
+            ):
+                try:
+                    if msg.operation == AnswerOperation.DONE:
+                        await self.queue.put(msg)
+                        self.event_learning_id.set()
+                        break
+                    if (
+                        msg.step
+                        and msg.step.metadata
+                        and "learning_id" in msg.step.metadata
+                    ):
+                        self.nuclia_learning_id = msg.step.metadata["learning_id"]
+                        self.event_learning_id.set()
+                    if msg.step and (
+                        msg.step.external_usage
+                        or msg.step.module in {"google", "perplexity"}
+                    ):
+                        logger.info(
+                            "[external_usage_audit] Received agent step account=%s kb=%s module=%s external_usage=%s",
                             self.account,
                             self.kbid,
                             msg.step.module,
+                            [
+                                {
+                                    "provider": usage.provider,
+                                    "model": usage.model,
+                                    "input_tokens": usage.input_tokens,
+                                    "output_tokens": usage.output_tokens,
+                                    "requests": usage.requests,
+                                }
+                                for usage in msg.step.external_usage or []
+                            ],
                         )
-                await self.queue.put(msg)
-            except (RuntimeError, asyncio.QueueFull):
-                # WebSocket already closed
-                self.event_learning_id.set()
-                pass
+                    if msg.step and msg.step.external_usage:
+                        audit = get_audit()
+                        if audit is not None:
+                            audit.report_step_usage(
+                                account_id=self.account,
+                                kbid=self.kbid,
+                                client_type=self.client_type,
+                                step=msg.step,
+                                trace_id=get_trace_id(),
+                            )
+                        else:
+                            logger.warning(
+                                "[external_usage_audit] Skipping external usage report because audit utility is unavailable account=%s kb=%s module=%s",
+                                self.account,
+                                self.kbid,
+                                msg.step.module,
+                            )
+                    await self.queue.put(msg)
+                except (RuntimeError, asyncio.QueueFull):
+                    # WebSocket already closed
+                    self.event_learning_id.set()
+                    pass
+        finally:
+            logger.info(
+                "[external_usage_audit] Agent response stream finished account=%s kb=%s workflow=%s",
+                self.account,
+                self.kbid,
+                self.agentic_config_id,
+            )
 
     async def start(self) -> str:
         self.task = create_task(self.loop())
