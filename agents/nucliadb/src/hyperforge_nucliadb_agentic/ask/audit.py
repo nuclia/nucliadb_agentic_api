@@ -23,11 +23,13 @@ from nucliadb_protos.audit_pb2 import (
 from nucliadb_protos.kb_usage_pb2 import (
     ActivityLogMatch,
     ActivityLogMatchType,
-    ClientType as KbUsageClientType,
     KBSource,
     Predict,
     PredictType,
     Service,
+)
+from nucliadb_protos.kb_usage_pb2 import (
+    ClientType as KbUsageClientType,
 )
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
@@ -187,7 +189,6 @@ class StreamAuditStorage:
             nats_subject=cast(str, usage_settings.usage_jetstream_subject),
         )
         await self.kb_usage_utility.initialize()
-
         self.initialized = True
 
     async def finalize(self):
@@ -214,8 +215,14 @@ class StreamAuditStorage:
             for event in step.external_usage or []
         ]
         if not predicts or self.kb_usage_utility is None:
+            logger.warning(
+                "Skipping KB usage report account=%s kb=%s has_predicts=%s utility_available=%s",
+                account_id,
+                kbid,
+                bool(predicts),
+                self.kb_usage_utility is not None,
+            )
             return
-
         self.kb_usage_utility.send_kb_usage(
             service=Service.RAO,
             account_id=account_id,

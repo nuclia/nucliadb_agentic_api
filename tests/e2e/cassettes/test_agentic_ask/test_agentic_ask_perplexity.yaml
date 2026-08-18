@@ -11,14 +11,14 @@ interactions:
       Host:
       - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.5
+      - nuclia.py/4.14.0
       x-nuclia-nuakey:
       - DUMMY
     method: GET
     uri: https://europe-1.dp.progress.cloud/api/authorizer/info
   response:
     body:
-      string: '{"auth":"nua_key","user":{"identity_type":"nua_key","user_id":"7fe77405-a6de-43cf-ac27-ac09f80b66c6","account_id":"4f9285c7-7151-4431-94e6-3f1fb0d66aca","account_type":"v3enterprise","allow_kb_management":false},"ip_info":null}'
+      string: '{"auth":"nua_key","user":{"identity_type":"nua_key","user_id":"9e1317aa-e212-4a59-b794-afee535458a6","account_id":"07c2de7c-fa77-4374-a461-eea314da9dfd","account_type":"v3enterprise","allow_kb_management":false},"ip_info":null}'
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000
@@ -27,11 +27,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 15 Jul 2026 10:34:23 GMT
+      - Tue, 18 Aug 2026 10:00:17 GMT
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '4'
+      - '135'
     status:
       code: 200
       message: OK
@@ -54,19 +54,22 @@ interactions:
       same question if no rephrasing is needed or possible.\n    - \"rules\": Any
       rules or guidelines that should be followed when generating the answer.\n    -
       \"reason\": Explain why the rephrasing was necessary or beneficial.\nReturn
-      only the JSON object as your response.\n\n\n\nArguments that might be useful
-      for rephrasing or splitting the question:\n# ARGUMENTS\n\n- ask_request: {\"audit_metadata\":null,\"query\":\"I
-      want a desert that is healthy and tasty.\",\"agentic_config_id\":\"default\",\"top_k\":20,\"filter_expression\":null,\"fields\":[],\"filters\":[],\"keyword_filters\":[],\"vectorset\":null,\"min_score\":null,\"features\":[\"semantic\",\"keyword\"],\"range_creation_start\":null,\"range_creation_end\":null,\"range_modification_start\":null,\"range_modification_end\":null,\"show\":[\"basic\"],\"field_type_filter\":[\"text\",\"file\",\"link\",\"conversation\",\"generic\",\"key_value\"],\"extracted\":[],\"context\":null,\"chat_history\":null,\"extra_context\":null,\"extra_context_images\":null,\"query_image\":null,\"autofilter\":false,\"highlight\":false,\"resource_filters\":[],\"prompt\":null,\"rank_fusion\":\"rrf\",\"reranker\":\"predict\",\"citations\":null,\"citation_threshold\":null,\"security\":null,\"show_hidden\":false,\"rag_strategies\":[],\"rag_images_strategies\":[],\"debug\":false,\"generative_model\":null,\"generative_model_seed\":null,\"max_tokens\":null,\"rephrase\":false,\"chat_history_relevance_threshold\":null,\"prefer_markdown\":false,\"answer_json_schema\":null,\"generate_answer\":true,\"search_configuration\":null,\"reasoning\":false}\n\n\n\n#
-      MAIN QUESTION:\nI want a desert that is healthy and tasty."}, "citations": false,
-      "citation_threshold": null, "generative_model": "gemini-2.5-flash-lite", "max_tokens":
-      2000, "query_context_images": {}, "prefer_markdown": null, "json_schema": {"title":
-      "rephrase", "description": "", "type": "object", "properties": {"rephrased_question":
+      only the JSON object as your response.\n\nAdditional context to assist with
+      rephrasing:\n# CONTEXT\n\n- ## Previous questions and answers in this session:\n\n\n\n\n\nArguments
+      that might be useful for rephrasing or splitting the question:\n# ARGUMENTS\n\n-
+      ask_request: {\"audit_metadata\":null,\"query\":\"Give me the recipe for ''Grilled
+      Romaine Caesar Salad''\",\"agentic_config_id\":\"default\",\"top_k\":20,\"filter_expression\":null,\"fields\":[],\"filters\":[],\"keyword_filters\":[],\"vectorset\":null,\"min_score\":null,\"features\":[\"semantic\",\"keyword\"],\"range_creation_start\":null,\"range_creation_end\":null,\"range_modification_start\":null,\"range_modification_end\":null,\"show\":[\"basic\"],\"field_type_filter\":[\"text\",\"file\",\"link\",\"conversation\",\"generic\",\"key_value\"],\"extracted\":[],\"context\":null,\"chat_history\":null,\"extra_context\":null,\"extra_context_images\":null,\"query_image\":null,\"autofilter\":false,\"highlight\":false,\"resource_filters\":[],\"prompt\":null,\"rank_fusion\":\"rrf\",\"reranker\":\"predict\",\"citations\":\"llm_footnotes\",\"citation_threshold\":null,\"security\":null,\"show_hidden\":false,\"rag_strategies\":[],\"rag_images_strategies\":[],\"debug\":false,\"generative_model\":null,\"generative_model_seed\":null,\"max_tokens\":null,\"rephrase\":false,\"chat_history_relevance_threshold\":null,\"prefer_markdown\":false,\"answer_json_schema\":null,\"generate_answer\":true,\"search_configuration\":null,\"reasoning\":false}\n\n\n\n#
+      MAIN QUESTION:\nGive me the recipe for ''Grilled Romaine Caesar Salad''"}, "citations":
+      false, "citation_threshold": null, "generative_model": "gemini-2.5-flash-lite",
+      "max_tokens": 8192, "query_context_images": {}, "prefer_markdown": null, "json_schema":
+      {"title": "rephrase", "description": "", "type": "object", "properties": {"rephrased_question":
       {"type": "string", "description": "Rephrased version of the main question."},
       "rules": {"type": "array", "items": {"type": "string"}, "description": "Rules
       or guidelines to follow when generating the answer."}, "reason": {"type": "string",
       "description": "Reason for rephrasing explaining why it is necessary."}}, "required":
       ["rephrased_question"]}, "format_prompt": false, "rerank_context": false, "tools":
-      [], "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
+      [], "tool_choice": {"type": "required"}, "reasoning": false, "seed": null, "image_generation":
+      false}'
     headers:
       Accept:
       - application/x-ndjson
@@ -75,17 +78,17 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '3537'
+      - '3717'
       Content-Type:
       - application/json
       Host:
       - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.5
+      - nuclia.py/4.14.0
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
+      - c1d381e7334846a888577a18f3b339c7
       x-origin:
       - RAO
       x-session:
@@ -98,16 +101,19 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"object","object":{"rephrased_question":"Provide healthy
-        and tasty dessert options.","rules":[],"reason":"The original question was
-        a statement of desire. Rephrasing it as a direct request for ''dessert options''
-        makes it more actionable for a retrieval system."}}}
+      string: '{"chunk":{"type":"object","object":{"rephrased_question":"Provide the
+        recipe for ''Grilled Romaine Caesar Salad''.","rules":["Ensure the recipe
+        includes all necessary ingredients and step-by-step instructions.","If available,
+        include any specific tips or variations for this grilled version of the salad."],"reason":"The
+        original question is already clear and specific. The rephrased question maintains
+        the original intent while slightly refining the phrasing for a more direct
+        request. Added rules to ensure a comprehensive recipe is provided."}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":13,"output_tokens":5,"timings":{"generative":0.7469775560002745},"input_nuclia_tokens":0.013,"output_nuclia_tokens":0.005}}
+        {"chunk":{"type":"meta","input_tokens":14,"output_tokens":10,"timings":{"generative":0.9358404920003522},"input_nuclia_tokens":0.014,"output_nuclia_tokens":0.01}}
 
-        {"chunk":{"normalized_tokens":{"input":0.01334,"output":0.00528,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.014,"output":0.00952,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -120,17 +126,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 10:34:23 GMT
+      - Tue, 18 Aug 2026 10:00:17 GMT
       nuclia-learning-id:
-      - fcf10a26070c4294953b890977372414
+      - eff4918f11f64cb8a73d6d24042c1003
       nuclia-learning-model:
       - gemini-2.5-flash-lite
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '752'
+      - '941'
       x-nuclia-trace-id:
-      - 6086757085035014eedf704a913ffe0c
+      - a71de3df415b174f93b8b7bc7a979dba
     status:
       code: 200
       message: OK
@@ -139,72 +145,91 @@ interactions:
       "You are a smart assistant that selects tools to gather information needed to
       answer a user''s question.\nChoose the best tool or tools for the task. You
       may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "You are a smart assistant that
-      selects tools to gather information needed to answer a user''s question.\nChoose
-      the best tool or tools for the task. You may call multiple tools in one turn.\nCall
-      task_complete when you have enough information to answer the question.\n\nExtra
+      information to answer the question.\nGuidelines:\n- Prefer finishing as soon
+      as the gathered information is sufficient to answer the question.\n- Do not
+      repeat the exact same tool call with the same arguments unless there is a clear
+      reason that new information will be produced.\n- If a previous tool call already
+      returned useful information for the current question, use that information and
+      call task_complete instead of repeating the same call.\n- Only call another
+      tool when there is a specific missing piece of information that is still needed.\n\nExtra
       instructions: When asked about a recipe, always recommend the most relevant
       one from our favorite recipes, but if asked about a very specific recipe that
-      is not in our favorites, check the recipes from internet.\n\n\nChoose the best
-      tool or tools for the task. Call task_complete when you have enough information."},
-      "citations": null, "citation_threshold": null, "generative_model": "chatgpt-4.1",
-      "max_tokens": null, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      null, "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
+      is not in our favorites, check the recipes from internet.\n", "chat_history":
+      [{"type": "message", "author": "NUCLIA", "text": "The following context from
+      the current session may be relevant to answer the user''s question, or can be
+      used to rephrase the question or guide the model:\n\n## Previous questions and
+      answers in this session:\n"}, {"type": "message", "author": "USER", "text":
+      "Provide the recipe for ''Grilled Romaine Caesar Salad''."}], "context": [],
+      "query_context": {}, "query_context_order": {}, "truncate": true, "user_prompt":
+      {"prompt": "You are a smart assistant that selects tools to gather information
+      needed to answer a user''s question.\nChoose the best tool or tools for the
+      task. You may call multiple tools in one turn.\nCall task_complete when you
+      have enough information to answer the question.\nGuidelines:\n- Prefer finishing
+      as soon as the gathered information is sufficient to answer the question.\n-
+      Do not repeat the exact same tool call with the same arguments unless there
+      is a clear reason that new information will be produced.\n- If a previous tool
+      call already returned useful information for the current question, use that
+      information and call task_complete instead of repeating the same call.\n- Only
+      call another tool when there is a specific missing piece of information that
+      is still needed.\n\nExtra instructions: When asked about a recipe, always recommend
+      the most relevant one from our favorite recipes, but if asked about a very specific
+      recipe that is not in our favorites, check the recipes from internet.\n\n\nChoose
+      the best tool or tools for the task. Call task_complete when you have enough
+      information."}, "citations": null, "citation_threshold": null, "generative_model":
+      "chatgpt-4.1", "max_tokens": null, "query_context_images": {}, "prefer_markdown":
+      null, "json_schema": null, "format_prompt": false, "rerank_context": false,
+      "tools": [{"name": "search_by_title__nucliadb-agent-recipes-kb", "description":
+      "Search for context in the Knowledge Box by title. Useful for specific queries
+      where the title is known.", "parameters": {"type": "object", "properties": {"title":
+      {"type": "string", "description": "The title to search for in the Knowledge
+      Box."}, "filters": {"type": "array", "items": {"type": "string"}, "description":
+      "Filters to apply when searching in the Knowledge Box."}}, "additionalProperties":
+      false}}, {"name": "ask_labels_list__nucliadb-agent-recipes-kb", "description":
+      "Get the labels available in the Knowledge Box as a list of strings. Useful
+      to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__263e48e9-f20c-4316-8419-243e57991b7d",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__nucliadb-agent-recipes-kb",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__263e48e9-f20c-4316-8419-243e57991b7d",
+      {"name": "ask_labels__nucliadb-agent-recipes-kb", "description": "Get the labels
+      available in the Knowledge Box. Useful to filter searches by labels.", "parameters":
+      {"type": "object", "properties": {}, "additionalProperties": false}}, {"name":
+      "facets_count__nucliadb-agent-recipes-kb", "description": "Perform a faceted
+      count in the Knowledge Box. Useful to get counts of different categories or
+      facets within the data.", "parameters": {"type": "object", "properties": {"question":
+      {"type": "string", "description": "The question to perform the faceted count
+      for."}}, "additionalProperties": false}}, {"name": "facets_search__nucliadb-agent-recipes-kb",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__263e48e9-f20c-4316-8419-243e57991b7d",
+      {"name": "catalog_search__nucliadb-agent-recipes-kb", "description": "Perform
+      a catalog search in the Knowledge Box. Useful to find items based on specific
+      criteria or attributes, including labels, file types, or other metadata.", "parameters":
+      {"type": "object", "properties": {"question": {"type": "string", "description":
+      "The question to perform the catalog search for."}}, "additionalProperties":
+      false}}, {"name": "all_images_by_title__nucliadb-agent-recipes-kb", "description":
+      "Get all image URLs from a resource in the Knowledge Box filtered by a specific
+      title. Useful when the user wants to retrieve images from known documents.",
+      "parameters": {"type": "object", "properties": {"title": {"type": "string",
+      "description": "The title to filter the image extraction operation in the Knowledge
+      Box."}}, "additionalProperties": false}}, {"name": "search_images__nucliadb-agent-recipes-kb",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__242ab56c-7bb5-4e79-a673-62b7090febc3",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__perplexity-agent-perplexity",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
       "additionalProperties": false}}, {"name": "task_complete", "description": "Call
       this tool when you have gathered enough information to answer the question and
       no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
+      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null, "image_generation":
+      false}'
     headers:
       Accept:
       - application/x-ndjson
@@ -213,17 +238,17 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '5648'
+      - '6878'
       Content-Type:
       - application/json
       Host:
       - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.5
+      - nuclia.py/4.14.0
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
+      - c1d381e7334846a888577a18f3b339c7
       x-origin:
       - RAO
       x-session:
@@ -236,14 +261,14 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d":[{"function":{"name":"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d","arguments":{"question":"healthy
-        and tasty dessert recipes"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"search_by_title__nucliadb-agent-recipes-kb":[{"function":{"name":"search_by_title__nucliadb-agent-recipes-kb","arguments":{"title":"Grilled
+        Romaine Caesar Salad","filters":[]}},"id":"call_Ord3aptPOtJXg3BpELvx51Qq"}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":393,"output_tokens":67,"timings":{"generative_first_chunk":0.8551326289998542,"generative":0.8565133579995745},"input_nuclia_tokens":0.393,"output_nuclia_tokens":0.067}}
+        {"chunk":{"type":"meta","input_tokens":434,"output_tokens":54,"timings":{"generative_first_chunk":1.0874233270005789,"generative":1.0889584870019462},"input_nuclia_tokens":0.434,"output_nuclia_tokens":0.054}}
 
-        {"chunk":{"normalized_tokens":{"input":0.3928,"output":0.0672,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.4336,"output":0.0544,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -256,642 +281,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 10:34:24 GMT
+      - Tue, 18 Aug 2026 10:00:18 GMT
       nuclia-learning-id:
-      - 1115418a32564855a8de833ac28153a0
+      - 58c7832b78ce4bd695b7c7009ad4dc35
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '861'
+      - '1094'
       x-nuclia-trace-id:
-      - 641e3c5e8313c86ebe9147fba1f4ff31
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-label-selection",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nThe user wants to perform
-      a catalog search in the Knowledge Box based on a question.\n\nYou need to identify
-      the most relevant labels and provide a filter expression to perform the catalog
-      search. The filter expression should be in the format used by NucliaDB.\n\nThe
-      nucliadb format for filter expressions is as follows:\n- Use \"any\" to indicate
-      that any of the properties can match (logical OR).\n- Use \"all\" to indicate
-      that all of the listed labels must match (logical AND).\n- Use \"none\" to indicate
-      that the listed labels should not match (logical NOT).\n\nSequential filters
-      are treated as AND conditions.\n\nFor filtering by labels, use the format \"/l/{labelset}/{label}\".\n\nFor
-      filtering by label sets without specifying a label, use the format \"/l/{labelset}/\".\n\nFor
-      filtering by file types, use the media type prefixed by \"/icon/\".\n\n**Example
-      1:**\nQuestion: ''Find all documents related to technology and health.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''any'': [''/l/topic/technology'',
-      ''/l/topic/health'']}], \"reasoning\": \"The question is about documents related
-      to technology and health, so we create a filter expresion to match any of the
-      labels technology or health in the topic label set.\"}\n\n**Example 2:**\nQuestion:
-      ''Get all PDFs that are research articles.''\nAvailable Labels:\n{\"topic\":
-      [\"technology\", \"health\", \"sports\"], \"category\": [\"research\", \"news\",
-      \"blog\"]}\nAnswer:\n{\"filters\": [{''all'': [''/l/category/research'', ''/icon/application/pdf'']}],
-      \"reasoning\": \"The question specifies research articles in PDF format, so
-      we create a filter expression that requires both the category to be research
-      and the media type to be PDF.\"}\n\n**Example 3:**\nQuestion: ''Show me all
-      documents without a set topic, that are either PDFs or Word format.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''none'': [''/l/topic'']},
-      {''any'': [''/icon/application/pdf'', ''/icon/application/vnd.openxmlformats-officedocument.wordprocessingml.document'']}],
-      \"reasoning\": \"The question asks for documents excluding sports, so we use
-      a ''not'' filter for the topic sports, and an ''any'' filter for the media types
-      PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
-      provide a filter expression to perform the catalog search. The question is:
-      ''healthy and tasty dessert recipes''.\nHere are the available labels in the
-      Knowledge Box:\n- sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation,
-      S_FinancialPosition, S_ProfitLoss, S_ChangesInEquity, S_CashFlows, N_GenInfo,
-      N_PolicyInfo, N_Cash, N_TradeReceivables, N_Inventories, N_PropertyRightOfUse,
-      N_IntangibleAssets, N_InvestmentProp, N_JointVentures, N_FinancialAssets, N_TradePayables,
-      N_Borrowings, N_Equity, N_Revenue, N_CostOfSales, N_GenAdminExpens, N_OtherIncomeExpenses,
-      N_FinIncomeExpenses, N_Employee, N_Taxation, N_EarningsPerShare, N_SegmentInfo,
-      N_RelatedParty, N_ContingentLiabil, N_Events, N_OtherNotes, NR_CoverPage, NR_TableOfContents,
-      NR_CorpInfo, NR_FinHighlights, NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis,
-      NR_DirectorsRep, NR_CorpGov, NR_Schedules, NR_StatDeclarations, NR_Glossary,
-      NR_NonRelevant, NR_Form_EstTax, NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344,
-      NR_Form_1323, O_unknown, NR_DepreciationForm, NR_TaxAssmntComp\n- category:
-      yoga, one\n- bla: one\n- bli: one\n"}, "citations": false, "citation_threshold":
-      null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
-      {}, "prefer_markdown": null, "json_schema": {"type": "object", "title": "Catalog
-      Filter Expression Selection", "description": "Response schema for selected filter
-      expression.", "properties": {"reasoning": {"type": "string", "description":
-      "Reasoning behind the selection of the filter expression."}, "filters": {"type":
-      "string", "description": "The filter expression to perform the catalog search
-      as a JSON array."}}, "required": ["filters"]}, "format_prompt": false, "rerank_context":
-      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
-      "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '4421'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy and tasty dessert recipes, which suggests a focus on the category
-        of recipes. However, the available labels do not include specific dessert
-        or recipe categories. Therefore, we will filter for the category ''one'' as
-        it is the only relevant category available, indicating a general interest
-        in recipes. We will also assume that the dessert aspect is implied within
-        this category.","filters":"[{\"all\": [\"/l/category/one\"]}]"}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":12,"timings":{"generative":1.6492561220002244},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.012}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02931,"output":0.01152,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 10:34:25 GMT
-      nuclia-learning-id:
-      - 4549e12bda794be1b9309075ee74125f
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1654'
-      x-nuclia-trace-id:
-      - 129b913bad8a80312374ab9953554507
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-search-answer",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
-      search results, please answer the following user question: ''healthy and tasty
-      dessert recipes''\n\nCatalog search results for filters [{''all'': [''/l/category/one'']}]
-      in 216bd848cf8e4c2da3e93a8572cf21a2 Knowledge Box. The results contain titles,
-      formats, languages, and labels assigned to the resources for each label set.
-      If a result does not have a label for a specific label set, it means no label
-      was assigned for that label set. The Knowledge Box contains the following label
-      sets (with some example labels): - sections16022026: AuditRep, TaxReconAuditRep,
-      TaxReconciliation, S_FinancialPosition, S_ProfitLoss, ...\n- category: yoga,
-      one\n- bla: one\n- bli: one\n.\n:\n\nCatalog Results\n\n"}, "citations": null,
-      "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens":
-      2000, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1220'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"text","text":"It"}}
-
-        {"chunk":{"type":"text","text":" seems"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" catalog"}}
-
-        {"chunk":{"type":"text","text":" search"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" provided"}}
-
-        {"chunk":{"type":"text","text":" do"}}
-
-        {"chunk":{"type":"text","text":" not"}}
-
-        {"chunk":{"type":"text","text":" contain"}}
-
-        {"chunk":{"type":"text","text":" any"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" titles"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" resources"}}
-
-        {"chunk":{"type":"text","text":" related"}}
-
-        {"chunk":{"type":"text","text":" to"}}
-
-        {"chunk":{"type":"text","text":" \""}}
-
-        {"chunk":{"type":"text","text":"healthy"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" tasty"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":".\""}}
-
-        {"chunk":{"type":"text","text":" The"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":" are"}}
-
-        {"chunk":{"type":"text","text":" primarily"}}
-
-        {"chunk":{"type":"text","text":" categorized"}}
-
-        {"chunk":{"type":"text","text":" under"}}
-
-        {"chunk":{"type":"text","text":" sections"}}
-
-        {"chunk":{"type":"text","text":" that"}}
-
-        {"chunk":{"type":"text","text":" do"}}
-
-        {"chunk":{"type":"text","text":" not"}}
-
-        {"chunk":{"type":"text","text":" pert"}}
-
-        {"chunk":{"type":"text","text":"ain"}}
-
-        {"chunk":{"type":"text","text":" to"}}
-
-        {"chunk":{"type":"text","text":" cooking"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"If"}}
-
-        {"chunk":{"type":"text","text":" you''re"}}
-
-        {"chunk":{"type":"text","text":" looking"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" tasty"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" I"}}
-
-        {"chunk":{"type":"text","text":" can"}}
-
-        {"chunk":{"type":"text","text":" suggest"}}
-
-        {"chunk":{"type":"text","text":" some"}}
-
-        {"chunk":{"type":"text","text":" popular"}}
-
-        {"chunk":{"type":"text","text":" options"}}
-
-        {"chunk":{"type":"text","text":":\n\n"}}
-
-        {"chunk":{"type":"text","text":"1"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Ch"}}
-
-        {"chunk":{"type":"text","text":"ia"}}
-
-        {"chunk":{"type":"text","text":" Seed"}}
-
-        {"chunk":{"type":"text","text":" P"}}
-
-        {"chunk":{"type":"text","text":"udding"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Mix"}}
-
-        {"chunk":{"type":"text","text":" chia"}}
-
-        {"chunk":{"type":"text","text":" seeds"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" almond"}}
-
-        {"chunk":{"type":"text","text":" milk"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" sweet"}}
-
-        {"chunk":{"type":"text","text":"ener"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" your"}}
-
-        {"chunk":{"type":"text","text":" choice"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" Let"}}
-
-        {"chunk":{"type":"text","text":" it"}}
-
-        {"chunk":{"type":"text","text":" sit"}}
-
-        {"chunk":{"type":"text","text":" overnight"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" top"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" fresh"}}
-
-        {"chunk":{"type":"text","text":" fruits"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"2"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Ban"}}
-
-        {"chunk":{"type":"text","text":"ana"}}
-
-        {"chunk":{"type":"text","text":" Ice"}}
-
-        {"chunk":{"type":"text","text":" Cream"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Blend"}}
-
-        {"chunk":{"type":"text","text":" frozen"}}
-
-        {"chunk":{"type":"text","text":" bananas"}}
-
-        {"chunk":{"type":"text","text":" until"}}
-
-        {"chunk":{"type":"text","text":" smooth"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" creamy"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" ice"}}
-
-        {"chunk":{"type":"text","text":" cream"}}
-
-        {"chunk":{"type":"text","text":" alternative"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"3"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Av"}}
-
-        {"chunk":{"type":"text","text":"ocado"}}
-
-        {"chunk":{"type":"text","text":" Chocolate"}}
-
-        {"chunk":{"type":"text","text":" M"}}
-
-        {"chunk":{"type":"text","text":"ousse"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Blend"}}
-
-        {"chunk":{"type":"text","text":" ripe"}}
-
-        {"chunk":{"type":"text","text":" av"}}
-
-        {"chunk":{"type":"text","text":"ocados"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" cocoa"}}
-
-        {"chunk":{"type":"text","text":" powder"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" sweet"}}
-
-        {"chunk":{"type":"text","text":"ener"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" rich"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" creamy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"O"}}
-
-        {"chunk":{"type":"text","text":"at"}}
-
-        {"chunk":{"type":"text","text":"meal"}}
-
-        {"chunk":{"type":"text","text":" Cookies"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Use"}}
-
-        {"chunk":{"type":"text","text":" oats"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" mashed"}}
-
-        {"chunk":{"type":"text","text":" bananas"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" dark"}}
-
-        {"chunk":{"type":"text","text":" chocolate"}}
-
-        {"chunk":{"type":"text","text":" chips"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" healthier"}}
-
-        {"chunk":{"type":"text","text":" cookie"}}
-
-        {"chunk":{"type":"text","text":" option"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"5"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Fruit"}}
-
-        {"chunk":{"type":"text","text":" Salad"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" Honey"}}
-
-        {"chunk":{"type":"text","text":" Lime"}}
-
-        {"chunk":{"type":"text","text":" Dressing"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Combine"}}
-
-        {"chunk":{"type":"text","text":" your"}}
-
-        {"chunk":{"type":"text","text":" favorite"}}
-
-        {"chunk":{"type":"text","text":" fruits"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" drizzle"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" mixture"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" honey"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" lime"}}
-
-        {"chunk":{"type":"text","text":" juice"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
-
-        {"chunk":{"type":"text","text":"If"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" need"}}
-
-        {"chunk":{"type":"text","text":" more"}}
-
-        {"chunk":{"type":"text","text":" specific"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" or"}}
-
-        {"chunk":{"type":"text","text":" ideas"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" feel"}}
-
-        {"chunk":{"type":"text","text":" free"}}
-
-        {"chunk":{"type":"text","text":" to"}}
-
-        {"chunk":{"type":"text","text":" ask"}}
-
-        {"chunk":{"type":"text","text":"!"}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":6,"output_tokens":25,"timings":{"generative_first_chunk":0.5684999760123901,"generative":2.8406617010041373},"input_nuclia_tokens":0.006,"output_nuclia_tokens":0.025}}
-
-        {"chunk":{"normalized_tokens":{"input":0.00573,"output":0.02532,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 10:34:28 GMT
-      nuclia-learning-id:
-      - 91bf32c2fff044c1b545aa4c1bfde45e
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '576'
-      x-nuclia-trace-id:
-      - aeeaf53658b9917eba47e9d61182e40d
+      - 480ab67d7a0cfcdd6a1271fc28d6dca8
     status:
       code: 200
       message: OK
@@ -900,90 +300,463 @@ interactions:
       "You are a smart assistant that selects tools to gather information needed to
       answer a user''s question.\nChoose the best tool or tools for the task. You
       may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of 263e48e9-f20c-4316-8419-243e57991b7d with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain any specific titles or resources
-      related to \"healthy and tasty dessert recipes.\" The results are primarily
-      categorized under sections that do not pertain to cooking or recipes.\n\nIf
-      you''re looking for healthy and tasty dessert recipes, I can suggest some popular
-      options:\n\n1. **Chia Seed Pudding**: Mix chia seeds with almond milk and a
-      sweetener of your choice. Let it sit overnight and top with fresh fruits.\n\n2.
-      **Banana Ice Cream**: Blend frozen bananas until smooth for a creamy, healthy
-      ice cream alternative.\n\n3. **Avocado Chocolate Mousse**: Blend ripe avocados
-      with cocoa powder and a sweetener for a rich, creamy dessert.\n\n4. **Oatmeal
-      Cookies**: Use oats, mashed bananas, and dark chocolate chips for a healthier
-      cookie option.\n\n5. **Fruit Salad with Honey Lime Dressing**: Combine your
-      favorite fruits and drizzle with a mixture of honey and lime juice.\n\nIf you
-      need more specific recipes or ideas, feel free to ask! ```\n\n"}], "context":
+      information to answer the question.\nGuidelines:\n- Prefer finishing as soon
+      as the gathered information is sufficient to answer the question.\n- Do not
+      repeat the exact same tool call with the same arguments unless there is a clear
+      reason that new information will be produced.\n- If a previous tool call already
+      returned useful information for the current question, use that information and
+      call task_complete instead of repeating the same call.\n- Only call another
+      tool when there is a specific missing piece of information that is still needed.\n\nExtra
+      instructions: When asked about a recipe, always recommend the most relevant
+      one from our favorite recipes, but if asked about a very specific recipe that
+      is not in our favorites, check the recipes from internet.\n", "chat_history":
+      [{"type": "message", "author": "NUCLIA", "text": "The following context from
+      the current session may be relevant to answer the user''s question, or can be
+      used to rephrase the question or guide the model:\n\n## Previous questions and
+      answers in this session:\n"}, {"type": "message", "author": "USER", "text":
+      "Provide the recipe for ''Grilled Romaine Caesar Salad''."}, {"type": "message",
+      "author": "NUCLIA", "text": "[search_by_title of nucliadb-agent-recipes-kb with
+      parameters {''title'': ''Grilled Romaine Caesar Salad'', ''filters'': []}]:\n{''f52e1ff4cf6f4a4cafa56b6837d9ccb8'':
+      []}"}], "context": [], "query_context": {}, "query_context_order": {}, "truncate":
+      true, "user_prompt": {"prompt": "You are a smart assistant that selects tools
+      to gather information needed to answer a user''s question.\nChoose the best
+      tool or tools for the task. You may call multiple tools in one turn.\nCall task_complete
+      when you have enough information to answer the question.\nGuidelines:\n- Prefer
+      finishing as soon as the gathered information is sufficient to answer the question.\n-
+      Do not repeat the exact same tool call with the same arguments unless there
+      is a clear reason that new information will be produced.\n- If a previous tool
+      call already returned useful information for the current question, use that
+      information and call task_complete instead of repeating the same call.\n- Only
+      call another tool when there is a specific missing piece of information that
+      is still needed.\n\nExtra instructions: When asked about a recipe, always recommend
+      the most relevant one from our favorite recipes, but if asked about a very specific
+      recipe that is not in our favorites, check the recipes from internet.\n\n\nChoose
+      the best tool or tools for the task. Call task_complete when you have enough
+      information."}, "citations": null, "citation_threshold": null, "generative_model":
+      "chatgpt-4.1", "max_tokens": null, "query_context_images": {}, "prefer_markdown":
+      null, "json_schema": null, "format_prompt": false, "rerank_context": false,
+      "tools": [{"name": "search_by_title__nucliadb-agent-recipes-kb", "description":
+      "Search for context in the Knowledge Box by title. Useful for specific queries
+      where the title is known.", "parameters": {"type": "object", "properties": {"title":
+      {"type": "string", "description": "The title to search for in the Knowledge
+      Box."}, "filters": {"type": "array", "items": {"type": "string"}, "description":
+      "Filters to apply when searching in the Knowledge Box."}}, "additionalProperties":
+      false}}, {"name": "ask_labels_list__nucliadb-agent-recipes-kb", "description":
+      "Get the labels available in the Knowledge Box as a list of strings. Useful
+      to filter searches by labels.", "parameters": {"type": "object", "properties":
+      {"labelset": {"type": "string", "description": "The label set to get the labels
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__nucliadb-agent-recipes-kb",
+      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
+      "object", "properties": {"question": {"type": "string", "description": "The
+      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
+      {"name": "ask_labels__nucliadb-agent-recipes-kb", "description": "Get the labels
+      available in the Knowledge Box. Useful to filter searches by labels.", "parameters":
+      {"type": "object", "properties": {}, "additionalProperties": false}}, {"name":
+      "facets_count__nucliadb-agent-recipes-kb", "description": "Perform a faceted
+      count in the Knowledge Box. Useful to get counts of different categories or
+      facets within the data.", "parameters": {"type": "object", "properties": {"question":
+      {"type": "string", "description": "The question to perform the faceted count
+      for."}}, "additionalProperties": false}}, {"name": "facets_search__nucliadb-agent-recipes-kb",
+      "description": "Perform a faceted search in the Knowledge Box. Useful to get
+      counts of different categories or facets within the data.", "parameters": {"type":
+      "object", "properties": {"question": {"type": "string", "description": "The
+      question to perform the faceted search for."}}, "additionalProperties": false}},
+      {"name": "catalog_search__nucliadb-agent-recipes-kb", "description": "Perform
+      a catalog search in the Knowledge Box. Useful to find items based on specific
+      criteria or attributes, including labels, file types, or other metadata.", "parameters":
+      {"type": "object", "properties": {"question": {"type": "string", "description":
+      "The question to perform the catalog search for."}}, "additionalProperties":
+      false}}, {"name": "all_images_by_title__nucliadb-agent-recipes-kb", "description":
+      "Get all image URLs from a resource in the Knowledge Box filtered by a specific
+      title. Useful when the user wants to retrieve images from known documents.",
+      "parameters": {"type": "object", "properties": {"title": {"type": "string",
+      "description": "The title to filter the image extraction operation in the Knowledge
+      Box."}}, "additionalProperties": false}}, {"name": "search_images__nucliadb-agent-recipes-kb",
+      "description": "Search for images in a resource in the Knowledge Box filtered
+      by a specific title and relevant image information. Useful when the user wants
+      to retrieve selected images from known documents.", "parameters": {"type": "object",
+      "properties": {"title": {"type": "string", "description": "The title to filter
+      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
+      "items": {"type": "string"}, "description": "Relevant info to query images from
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__perplexity-agent-perplexity",
+      "description": "Performs an internet search using Perplexity Search to get context
+      to answer questions.", "parameters": {"type": "object", "properties": {"question":
+      {"type": "string", "description": "The question to search for on the internet."}},
+      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
+      this tool when you have gathered enough information to answer the question and
+      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
+      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null, "image_generation":
+      false}'
+    headers:
+      Accept:
+      - application/x-ndjson
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '7087'
+      Content-Type:
+      - application/json
+      Host:
+      - europe-1.dp.progress.cloud
+      User-Agent:
+      - nuclia.py/4.14.0
+      x-client-ident:
+      - 00000000-0000-0000-0000-000000000002
+      x-message:
+      - c1d381e7334846a888577a18f3b339c7
+      x-origin:
+      - RAO
+      x-session:
+      - default_ephemeral
+      x-show-consumption:
+      - 'true'
+      x-stf-nuakey:
+      - DUMMY
+    method: POST
+    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
+  response:
+    body:
+      string: '{"chunk":{"type":"tools","tools":{"internet_search__perplexity-agent-perplexity":[{"function":{"name":"internet_search__perplexity-agent-perplexity","arguments":{"question":"Grilled
+        Romaine Caesar Salad recipe"}},"id":"call_o5DPofVrUr5YT8NgwXkBNMQb"}]}}}
+
+        {"chunk":{"type":"status","code":"0"}}
+
+        {"chunk":{"type":"meta","input_tokens":459,"output_tokens":46,"timings":{"generative_first_chunk":1.9010558429999946,"generative":1.9027064329993664},"input_nuclia_tokens":0.459,"output_nuclia_tokens":0.046}}
+
+        {"chunk":{"normalized_tokens":{"input":0.4588,"output":0.0464,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+
+        '
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+      access-control-expose-headers:
+      - X-NUCLIA-TRACE-ID
+      content-type:
+      - application/x-ndjson
+      date:
+      - Tue, 18 Aug 2026 10:00:20 GMT
+      nuclia-learning-id:
+      - 77954345cdc64c089d8565871dcb5510
+      nuclia-learning-model:
+      - chatgpt-4.1
+      via:
+      - 1.1 google
+      x-envoy-upstream-service-time:
+      - '1908'
+      x-nuclia-trace-id:
+      - a71de3df415b174f93b8b7bc7a979dba
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "Be precise and concise", "role": "system"},
+      {"content": "Grilled Romaine Caesar Salad recipe", "role": "user"}], "model":
+      "sonar-pro", "return_images": false, "return_related_questions": false, "search_domain_filter":
+      [], "web_search_options": {"search_context_size": "low"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - DUMMY
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '283'
+      Content-Type:
+      - application/json
+      Host:
+      - api.perplexity.ai
+      User-Agent:
+      - AsyncPerplexity/Python 0.38.0
+      X-Source:
+      - perplexity-py
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Async:
+      - async:asyncio
+      X-Stainless-Lang:
+      - python
+      X-Stainless-OS:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.38.0
+      X-Stainless-Runtime:
+      - CPython
+      X-Stainless-Runtime-Version:
+      - 3.14.0
+      X-Title:
+      - Perplexity Python SDK
+      x-stainless-read-timeout:
+      - '900'
+      x-stainless-retry-count:
+      - '0'
+    method: POST
+    uri: https://api.perplexity.ai/chat/completions
+  response:
+    body:
+      string: "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Grilled
+        Romaine Caesar Salad is made by **halving romaine hearts, brushing them with
+        olive oil, and grilling cut-side down until lightly charred**, then topping
+        with Caesar dressing, Parmesan, and croutons.[1][3][8]\\n\\n- **Basic method:**
+        Preheat a grill to medium-high or high, brush romaine halves with olive oil,
+        season with salt and pepper, and grill for about **1\u20133 minutes per side**
+        depending on heat and desired char.[1][3][8][13]\\n- **Dressing:** Many versions
+        use a classic Caesar dressing with ingredients like garlic, anchovy, lemon
+        juice, mustard, olive oil, and Parmesan; some recipes add capers, Worcestershire,
+        or egg yolk for a richer emulsion.[3][5][7][8]\\n- **Serving:** Finish with
+        **Parmesan cheese**, **croutons**, and optionally grilled lemon for extra
+        brightness; some recipes also add bacon, chicken, shrimp, or sausage.[1][2][3][10][11]\\n\\n**Simple
+        recipe**\\n\\n- 2 romaine hearts\\n- 2 tbsp olive oil\\n- Salt and black pepper\\n-
+        1/2 cup Caesar dressing, homemade or store-bought\\n- 1/4 to 1/2 cup grated
+        Parmesan\\n- 1 cup croutons\\n- 1 lemon, halved, optional\\n\\n- Preheat grill
+        to medium-high.\\n- Slice romaine hearts lengthwise, keeping the root intact.\\n-
+        Brush cut sides with olive oil and season with salt and pepper.\\n- Grill
+        cut-side down for about **2 minutes**, until lightly charred but not wilted.[1][3][8]\\n-
+        Flip briefly if needed, then remove.\\n- Drizzle with Caesar dressing.\\n-
+        Top with Parmesan and croutons.\\n- Serve with grilled lemon if using.[1][3]\\n\\nIf
+        you want, I can also give you a **from-scratch Caesar dressing recipe** to
+        go with it.\",\"role\":\"assistant\"}}],\"citations\":[\"https://www.vindulge.com/grilled-caesar-salad/\",\"https://www.thedishwithkris.com/easy-lunches/grilled-romaine-caesar-salad\",\"https://www.amandafrederickson.com/all-recipes/2018/6/25/grilled-romaine-caesar-salad\",\"https://familystylefood.com/grilled-romaine-lettuce-caesar-salad/\",\"https://alexandracooks.com/2020/03/06/grilled-romaine-caesar-salad/\",\"https://itsthyme2cook.com/grilled-romaine-caesar-salad/\",\"https://miciamammas.com/blogs/news/grilled-romaine-caesar-salad\",\"https://townandcountrymarkets.com/recipes/grilled-romaine-caesar\",\"https://www.budgetbytes.com/grilled-romaine-caesar-salad/\",\"https://tasteandsee.com/grilled-romaine-caesar-salad/\",\"https://asador.mx/recipes/grilled-romaine-caesar-salad\",\"https://pamelasalzman.com/grilled-caesar-ish-romaine-salads-recipe/\",\"https://supermancooks.com/grilled-romaine-caesar-salad/\",\"https://meikoandthedish.com/grilled-romaine-smoky-caesar-dressing/\",\"https://healthylittlevittles.com/grilled-romaine-caesar-salad-with-toasted-breadcrumbs/\",\"https://www.foodnetwork.com/recipes/marcela-valladolid/grilled-caesar-salad-3772100\",\"https://themodernproper.com/grilled-romaine-caesar\"],\"created\":1787047229,\"id\":\"ca1bc8b2-38b1-478a-a748-dbd1dc41d392\",\"model\":\"sonar-pro\",\"object\":\"chat.completion\",\"search_results\":[{\"date\":\"2022-06-01\",\"last_updated\":\"2026-08-13\",\"place_metadata\":null,\"snippet\":\"-
+        Place the romaine hearts, lemons, and baguette slices on the grill on direct
+        heat and cook approximately 2 minutes per side, flipping often.\\nStay close,
+        these will all cook at slightly different times.\\nRemove when the bread has
+        a nice toast, the lemons have darkened and have a nice char (see pictu...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad (recipe and video) - Vindulge\",\"url\":\"https://www.vindulge.com/grilled-caesar-salad/\"},{\"date\":\"2025-08-03\",\"last_updated\":\"2026-03-21\",\"place_metadata\":null,\"snippet\":\"**Grilled
+        Romaine Caesar Salad (for 1): INGREDIENTS:**- 1 head of Romaine lettuce -
+        1/4 cup Olive oil - salt and pepper to taste - croutons - Fresh shaved Parmesan
+        - optional: a protein such as shrimp or chicken **PREPARTION:** 1.\\n...\\nSlice
+        the head of Romaine in half, and drizzle it with olive oil ...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad - THE DISH WITH KRIS\",\"url\":\"https://www.thedishwithkris.com/easy-lunches/grilled-romaine-caesar-salad\"},{\"date\":\"2018-06-25\",\"last_updated\":\"2025-02-27\",\"place_metadata\":null,\"snippet\":\"Make
+        the salad dressing by placing the anchovies and garlic on a cutting board.\\nSprinkle
+        with a little salt and using the back of a chef's knife, scrape it over the
+        mixture to make a paste.\\nPlace the paste in a medium bowl and top with the
+        egg yolks, mustard, and olive oil.\\nWhisk well to combine.\\nDr...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad \u2014 Amanda Frederickson\",\"url\":\"https://www.amandafrederickson.com/all-recipes/2018/6/25/grilled-romaine-caesar-salad\"},{\"date\":\"2023-04-14\",\"last_updated\":\"2026-03-06\",\"place_metadata\":null,\"snippet\":\"Remove
+        any outer leaves that are damaged or discolored.\\nCut each romaine heart
+        in half.\\n- Drizzle olive oil over the cut sides of the lettuce, or use a
+        pastry brush.\\nDon't be shy about the quantity of oil \u2014 it adds flavor,
+        color and helps the lettuce to release from the hot pan.\\nSprinkle some salt
+        a...\",\"source\":\"web\",\"title\":\"Grilled Romaine Caesar Salad (Stovetop)
+        - Familystyle Food\",\"url\":\"https://familystylefood.com/grilled-romaine-lettuce-caesar-salad/\"},{\"date\":\"2020-03-06\",\"last_updated\":\"2026-03-26\",\"place_metadata\":null,\"snippet\":\"2.
+        **Make the dressing:** Combine the garlic, shallot, minced anchovy, capers,
+        mustard, lemon juice, salt, and pepper to taste in a small bowl; whisk to
+        combine.\\nSlowly whisk in the oil until emulsified.\\n...\\n3. **Prepare
+        the greens.** Halve the Romaine and radicchio (or Treviso) heads, leaving
+        the c...\",\"source\":\"web\",\"title\":\"Grilled Romaine Caesar Salad\",\"url\":\"https://alexandracooks.com/2020/03/06/grilled-romaine-caesar-salad/\"},{\"date\":\"2021-09-18\",\"last_updated\":\"2026-08-16\",\"place_metadata\":null,\"snippet\":\"Season
+        to taste with salt and pepper.\\nProcess until blended.\\n...\\nGrill 30 \u2013
+        60 seconds on each side, just until starting to color.\\nBrush dressing over
+        the cut-side of the lettuce, making sure the dressing gets between the leaves.\\n(Note
+        \u2013 if desired, reserve a little dressing to drizzle onto the fini...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad - Its Thyme 2 Cook\",\"url\":\"https://itsthyme2cook.com/grilled-romaine-caesar-salad/\"},{\"date\":\"2024-07-24\",\"last_updated\":\"2025-11-03\",\"place_metadata\":null,\"snippet\":\"First,
+        cut the Romaine in half lengthwise.\\nThen cut in half again.\\n...\\nIn a
+        food processor, combine the garlic, anchovies, egg yolk, lemon juice, Dijon
+        mustard, Pecorino, Worcestershire sauce, salt and pepper.\\nBlend very well
+        for about one minute until all of the ingredients are combined very well.\\n...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad - Micia Mammas\",\"url\":\"https://miciamammas.com/blogs/news/grilled-romaine-caesar-salad\"},{\"date\":\"2024-05-22\",\"last_updated\":\"2026-03-13\",\"place_metadata\":null,\"snippet\":\"Preheat
+        grill to medium-high.\\nBrush halved romaine hearts with olive oil on both
+        sides.\\n...\\nTo make the dressing whisk together minced garlic, Dijon, capers,
+        anchovy paste, red wine vinegar, lemon juice, and Worcestershire sauce.\\nSlowly
+        whisk in olive oil.\\nGently stir in grated parmesan cheese.\\nSeas...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad - Recipe - Town \\u0026 Country Markets\",\"url\":\"https://townandcountrymarkets.com/recipes/grilled-romaine-caesar\"},{\"date\":\"2025-08-27\",\"last_updated\":\"2026-08-10\",\"place_metadata\":null,\"snippet\":\"-
+        Cut romaine hearts in half, leaving the root intact but trimmed.\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad - Budget Bytes\",\"url\":\"https://www.budgetbytes.com/grilled-romaine-caesar-salad/\"},{\"date\":null,\"last_updated\":\"2025-11-03\",\"place_metadata\":null,\"snippet\":\"-
+        Heat grill to high heat.\\nSpray chicken sausage and Romaine with grilling
+        spray, and cook the sausage for 3 minutes on each side.\\nGrill the Romaine
+        for 30 to 60 seconds per side, flipping once.\\n- To plate, top each Romaine
+        half with sliced chicken sausage, and add dressing as desired.\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad with Garlic Chicken Sausage\",\"url\":\"https://tasteandsee.com/grilled-romaine-caesar-salad/\"},{\"date\":\"2026-04-17\",\"last_updated\":\"2026-08-06\",\"place_metadata\":null,\"snippet\":\"-
+        3 tablespoons extra virgin olive oil\\n- Salt and freshly ground black pepper
+        to taste\\n- 1/2 cup freshly grated Parmesan cheese\\n- 1 cup croutons\\n-
+        1/2 cup Caesar dressing (store-bought or homemade)\\n- 2 cloves garlic, minced\\n-
+        1 lemon, halved\\n...\\nPreheat your charcoal or gas grill to high heat, aroun...\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad | Asador.mx\",\"url\":\"https://asador.mx/recipes/grilled-romaine-caesar-salad\"},{\"date\":\"2020-08-20\",\"last_updated\":\"2025-02-14\",\"place_metadata\":null,\"snippet\":\"Taste
+        for salt and season accordingly.\\nSet aside.\\n- Preheat grill to medium-high.\\n-
+        Cut large Romaine head through the end into 4 wedges, trying to keep leaves
+        intact.\\nIf using Baby Gems or mini Romaine heads, cut each one in half and
+        wash*.\\nBrush olive oil on the outside of the leaves.\\nSprinkle wit...\",\"source\":\"web\",\"title\":\"Grilled
+        Caesar-ish Romaine Salads Recipe - Pamela Salzman\",\"url\":\"https://pamelasalzman.com/grilled-caesar-ish-romaine-salads-recipe/\"},{\"date\":\"2024-07-05\",\"last_updated\":\"2026-02-28\",\"place_metadata\":null,\"snippet\":\"Whisk
+        until well combined.\\n...\\n2. **Grill the Romaine Leaves:** Brush Romaine
+        with olive oil and place on hot grill for 1 to 2 minutes.\",\"source\":\"web\",\"title\":\"Grilled
+        Caesar Salad Recipe\",\"url\":\"https://supermancooks.com/grilled-romaine-caesar-salad/\"},{\"date\":\"2022-06-29\",\"last_updated\":\"2026-01-31\",\"place_metadata\":null,\"snippet\":\"-
+        Lightly brush all sides of the bread slices and romaine with olive oil.\",\"source\":\"web\",\"title\":\"Best
+        Grilled Caesar Salad Recipe\",\"url\":\"https://meikoandthedish.com/grilled-romaine-smoky-caesar-dressing/\"},{\"date\":\"2023-03-31\",\"last_updated\":\"2026-08-16\",\"place_metadata\":null,\"snippet\":\"Add
+        1-2 tablespoons of olive oil to the pan.\\nCut each head of romaine lettuce
+        in half, wash, shake dry and then place the halves onto the griddle.\",\"source\":\"web\",\"title\":\"Grilled
+        Romaine Caesar Salad with Toasted Breadcrumbs\",\"url\":\"https://healthylittlevittles.com/grilled-romaine-caesar-salad-with-toasted-breadcrumbs/\"},{\"date\":null,\"last_updated\":\"2025-11-03\",\"place_metadata\":null,\"snippet\":\"3/4
+        cup extra-virgin olive oil, plus more for grilling\",\"source\":\"web\",\"title\":\"Grilled
+        Caesar Salad Recipe | Marcela Valladolid - Food Network\",\"url\":\"https://www.foodnetwork.com/recipes/marcela-valladolid/grilled-caesar-salad-3772100\"},{\"date\":\"2025-05-21\",\"last_updated\":\"2026-07-07\",\"place_metadata\":null,\"snippet\":\"-
+        **Grill over medium-low heat**, and whatever you do, resist the urge to move
+        them!\",\"source\":\"web\",\"title\":\"Grilled Romaine Caesar | The Modern
+        Proper\",\"url\":\"https://themodernproper.com/grilled-romaine-caesar\"}],\"usage\":{\"completion_tokens\":434,\"cost\":{\"input_tokens_cost\":0.00004,\"output_tokens_cost\":0.00651,\"request_cost\":0.006,\"total_cost\":0.01255},\"prompt_tokens\":12,\"search_context_size\":\"low\",\"total_tokens\":446}}\n"
+    headers:
+      CF-RAY:
+      - a2d0123439265111-BCN
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 18 Aug 2026 10:00:29 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '11078'
+      set-cookie:
+      - __cf_bm=wbwXL4GJdGinu9T9sYRx8eY.ZD3EquOdpCQX0OtWZn8-1787047222.4310167-1.0.1.1-O6z1_lcjyo5CIuuVGovehdfLUZnsFW7Ewu9QgQCscoX6SuTHGNdwnMwEhSLBse.eGD6Juz34jSrfAVntoH5lsC0jSPb.XO_D3lD6BUtem_gndchnFXL5UtoV4FUOmcPS;
+        HttpOnly; SameSite=None; Secure; Path=/; Domain=perplexity.ai; Expires=Tue,
+        18 Aug 2026 10:30:29 GMT
+      - __cflb=04dToWaRite5R1fQA5HfyWsXiTjNxDHgK3LqzcYNku; HttpOnly; SameSite=None;
+        Secure; Path=/; Expires=Tue, 18 Aug 2026 10:30:29 GMT
+      x-ratelimit-limit:
+      - '17'
+      x-ratelimit-remaining:
+      - '16'
+      x-ratelimit-reset:
+      - '1787047230'
+      x-ratelimit-used:
+      - '1'
+      x-request-id:
+      - ca1bc8b2-38b1-478a-a748-dbd1dc41d392
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
+      "You are a smart assistant that selects tools to gather information needed to
+      answer a user''s question.\nChoose the best tool or tools for the task. You
+      may call multiple tools in one turn.\nCall task_complete when you have enough
+      information to answer the question.\nGuidelines:\n- Prefer finishing as soon
+      as the gathered information is sufficient to answer the question.\n- Do not
+      repeat the exact same tool call with the same arguments unless there is a clear
+      reason that new information will be produced.\n- If a previous tool call already
+      returned useful information for the current question, use that information and
+      call task_complete instead of repeating the same call.\n- Only call another
+      tool when there is a specific missing piece of information that is still needed.\n\nExtra
+      instructions: When asked about a recipe, always recommend the most relevant
+      one from our favorite recipes, but if asked about a very specific recipe that
+      is not in our favorites, check the recipes from internet.\n", "chat_history":
+      [{"type": "message", "author": "NUCLIA", "text": "The following context from
+      the current session may be relevant to answer the user''s question, or can be
+      used to rephrase the question or guide the model:\n\n## Previous questions and
+      answers in this session:\n"}, {"type": "message", "author": "USER", "text":
+      "Provide the recipe for ''Grilled Romaine Caesar Salad''."}, {"type": "message",
+      "author": "NUCLIA", "text": "[search_by_title of nucliadb-agent-recipes-kb with
+      parameters {''title'': ''Grilled Romaine Caesar Salad'', ''filters'': []}]:\n{''f52e1ff4cf6f4a4cafa56b6837d9ccb8'':
+      []}"}, {"type": "message", "author": "NUCLIA", "text": "[internet_search of
+      perplexity-agent-perplexity with parameters {''question'': ''Grilled Romaine
+      Caesar Salad recipe''}]:\n\n\n\n#### Chunk: fa2014d2c05240e2b042099d517e18bc\nResult
+      of running: internet_search of perplexity-agent-perplexity with parameters {''question'':
+      ''Grilled Romaine Caesar Salad recipe''}\nURLs: https://www.vindulge.com/grilled-caesar-salad/,
+      https://www.thedishwithkris.com/easy-lunches/grilled-romaine-caesar-salad, https://www.amandafrederickson.com/all-recipes/2018/6/25/grilled-romaine-caesar-salad,
+      https://familystylefood.com/grilled-romaine-lettuce-caesar-salad/, https://alexandracooks.com/2020/03/06/grilled-romaine-caesar-salad/,
+      https://itsthyme2cook.com/grilled-romaine-caesar-salad/, https://miciamammas.com/blogs/news/grilled-romaine-caesar-salad,
+      https://townandcountrymarkets.com/recipes/grilled-romaine-caesar, https://www.budgetbytes.com/grilled-romaine-caesar-salad/,
+      https://tasteandsee.com/grilled-romaine-caesar-salad/, https://asador.mx/recipes/grilled-romaine-caesar-salad,
+      https://pamelasalzman.com/grilled-caesar-ish-romaine-salads-recipe/, https://supermancooks.com/grilled-romaine-caesar-salad/,
+      https://meikoandthedish.com/grilled-romaine-smoky-caesar-dressing/, https://healthylittlevittles.com/grilled-romaine-caesar-salad-with-toasted-breadcrumbs/,
+      https://www.foodnetwork.com/recipes/marcela-valladolid/grilled-caesar-salad-3772100,
+      https://themodernproper.com/grilled-romaine-caesar\n``` Grilled Romaine Caesar
+      Salad is made by **halving romaine hearts, brushing them with olive oil, and
+      grilling cut-side down until lightly charred**, then topping with Caesar dressing,
+      Parmesan, and croutons.[1][3][8]\n\n- **Basic method:** Preheat a grill to medium-high
+      or high, brush romaine halves with olive oil, season with salt and pepper, and
+      grill for about **1\u20133 minutes per side** depending on heat and desired
+      char.[1][3][8][13]\n- **Dressing:** Many versions use a classic Caesar dressing
+      with ingredients like garlic, anchovy, lemon juice, mustard, olive oil, and
+      Parmesan; some recipes add capers, Worcestershire, or egg yolk for a richer
+      emulsion.[3][5][7][8]\n- **Serving:** Finish with **Parmesan cheese**, **croutons**,
+      and optionally grilled lemon for extra brightness; some recipes also add bacon,
+      chicken, shrimp, or sausage.[1][2][3][10][11]\n\n**Simple recipe**\n\n- 2 romaine
+      hearts\n- 2 tbsp olive oil\n- Salt and black pepper\n- 1/2 cup Caesar dressing,
+      homemade or store-bought\n- 1/4 to 1/2 cup grated Parmesan\n- 1 cup croutons\n-
+      1 lemon, halved, optional\n\n- Preheat grill to medium-high.\n- Slice romaine
+      hearts lengthwise, keeping the root intact.\n- Brush cut sides with olive oil
+      and season with salt and pepper.\n- Grill cut-side down for about **2 minutes**,
+      until lightly charred but not wilted.[1][3][8]\n- Flip briefly if needed, then
+      remove.\n- Drizzle with Caesar dressing.\n- Top with Parmesan and croutons.\n-
+      Serve with grilled lemon if using.[1][3]\n\nIf you want, I can also give you
+      a **from-scratch Caesar dressing recipe** to go with it. ```\n\n"}], "context":
       [], "query_context": {}, "query_context_order": {}, "truncate": true, "user_prompt":
       {"prompt": "You are a smart assistant that selects tools to gather information
       needed to answer a user''s question.\nChoose the best tool or tools for the
       task. You may call multiple tools in one turn.\nCall task_complete when you
-      have enough information to answer the question.\n\nExtra instructions: When
-      asked about a recipe, always recommend the most relevant one from our favorite
-      recipes, but if asked about a very specific recipe that is not in our favorites,
-      check the recipes from internet.\n\n\nChoose the best tool or tools for the
-      task. Call task_complete when you have enough information."}, "citations": null,
-      "citation_threshold": null, "generative_model": "chatgpt-4.1", "max_tokens":
-      null, "query_context_images": {}, "prefer_markdown": null, "json_schema": null,
-      "format_prompt": false, "rerank_context": false, "tools": [{"name": "search_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
+      have enough information to answer the question.\nGuidelines:\n- Prefer finishing
+      as soon as the gathered information is sufficient to answer the question.\n-
+      Do not repeat the exact same tool call with the same arguments unless there
+      is a clear reason that new information will be produced.\n- If a previous tool
+      call already returned useful information for the current question, use that
+      information and call task_complete instead of repeating the same call.\n- Only
+      call another tool when there is a specific missing piece of information that
+      is still needed.\n\nExtra instructions: When asked about a recipe, always recommend
+      the most relevant one from our favorite recipes, but if asked about a very specific
+      recipe that is not in our favorites, check the recipes from internet.\n\n\nChoose
+      the best tool or tools for the task. Call task_complete when you have enough
+      information."}, "citations": null, "citation_threshold": null, "generative_model":
+      "chatgpt-4.1", "max_tokens": null, "query_context_images": {}, "prefer_markdown":
+      null, "json_schema": null, "format_prompt": false, "rerank_context": false,
+      "tools": [{"name": "search_by_title__nucliadb-agent-recipes-kb", "description":
+      "Search for context in the Knowledge Box by title. Useful for specific queries
+      where the title is known.", "parameters": {"type": "object", "properties": {"title":
+      {"type": "string", "description": "The title to search for in the Knowledge
+      Box."}, "filters": {"type": "array", "items": {"type": "string"}, "description":
+      "Filters to apply when searching in the Knowledge Box."}}, "additionalProperties":
+      false}}, {"name": "ask_labels_list__nucliadb-agent-recipes-kb", "description":
+      "Get the labels available in the Knowledge Box as a list of strings. Useful
+      to filter searches by labels.", "parameters": {"type": "object", "properties":
       {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__263e48e9-f20c-4316-8419-243e57991b7d",
+      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__nucliadb-agent-recipes-kb",
       "description": "Search for context in the Knowledge Box.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__263e48e9-f20c-4316-8419-243e57991b7d",
+      {"name": "ask_labels__nucliadb-agent-recipes-kb", "description": "Get the labels
+      available in the Knowledge Box. Useful to filter searches by labels.", "parameters":
+      {"type": "object", "properties": {}, "additionalProperties": false}}, {"name":
+      "facets_count__nucliadb-agent-recipes-kb", "description": "Perform a faceted
+      count in the Knowledge Box. Useful to get counts of different categories or
+      facets within the data.", "parameters": {"type": "object", "properties": {"question":
+      {"type": "string", "description": "The question to perform the faceted count
+      for."}}, "additionalProperties": false}}, {"name": "facets_search__nucliadb-agent-recipes-kb",
       "description": "Perform a faceted search in the Knowledge Box. Useful to get
       counts of different categories or facets within the data.", "parameters": {"type":
       "object", "properties": {"question": {"type": "string", "description": "The
       question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__263e48e9-f20c-4316-8419-243e57991b7d",
+      {"name": "catalog_search__nucliadb-agent-recipes-kb", "description": "Perform
+      a catalog search in the Knowledge Box. Useful to find items based on specific
+      criteria or attributes, including labels, file types, or other metadata.", "parameters":
+      {"type": "object", "properties": {"question": {"type": "string", "description":
+      "The question to perform the catalog search for."}}, "additionalProperties":
+      false}}, {"name": "all_images_by_title__nucliadb-agent-recipes-kb", "description":
+      "Get all image URLs from a resource in the Knowledge Box filtered by a specific
+      title. Useful when the user wants to retrieve images from known documents.",
+      "parameters": {"type": "object", "properties": {"title": {"type": "string",
+      "description": "The title to filter the image extraction operation in the Knowledge
+      Box."}}, "additionalProperties": false}}, {"name": "search_images__nucliadb-agent-recipes-kb",
       "description": "Search for images in a resource in the Knowledge Box filtered
       by a specific title and relevant image information. Useful when the user wants
       to retrieve selected images from known documents.", "parameters": {"type": "object",
       "properties": {"title": {"type": "string", "description": "The title to filter
       the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
       "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__242ab56c-7bb5-4e79-a673-62b7090febc3",
+      the document."}}, "additionalProperties": false}}, {"name": "internet_search__perplexity-agent-perplexity",
       "description": "Performs an internet search using Perplexity Search to get context
       to answer questions.", "parameters": {"type": "object", "properties": {"question":
       {"type": "string", "description": "The question to search for on the internet."}},
       "additionalProperties": false}}, {"name": "task_complete", "description": "Call
       this tool when you have gathered enough information to answer the question and
       no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
+      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null, "image_generation":
+      false}'
     headers:
       Accept:
       - application/x-ndjson
@@ -992,17 +765,17 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '7009'
+      - '10171'
       Content-Type:
       - application/json
       Host:
       - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.5
+      - nuclia.py/4.14.0
       x-client-ident:
       - 00000000-0000-0000-0000-000000000002
       x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
+      - c1d381e7334846a888577a18f3b339c7
       x-origin:
       - RAO
       x-session:
@@ -1015,14 +788,13 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"tools","tools":{"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d":[{"function":{"name":"catalog_search__263e48e9-f20c-4316-8419-243e57991b7d","arguments":{"question":"healthy
-        dessert recipes"}}}]}}}
+      string: '{"chunk":{"type":"tools","tools":{"task_complete":[{"function":{"name":"task_complete","arguments":{}},"id":"call_UZ06AWqPKKxdAbayjUQk1Q6r"}]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":516,"output_tokens":64,"timings":{"generative_first_chunk":1.0266156769939698,"generative":1.028807157999836},"input_nuclia_tokens":0.516,"output_nuclia_tokens":0.064}}
+        {"chunk":{"type":"meta","input_tokens":786,"output_tokens":18,"timings":{"generative_first_chunk":0.8892683939993731,"generative":0.8914708039992547},"input_nuclia_tokens":0.786,"output_nuclia_tokens":0.018}}
 
-        {"chunk":{"normalized_tokens":{"input":0.5164,"output":0.064,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.786,"output":0.0176,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -1035,754 +807,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 10:34:31 GMT
+      - Tue, 18 Aug 2026 10:00:29 GMT
       nuclia-learning-id:
-      - 96326ceda5eb4e548a7e01d48375cda6
+      - 37604ebd591f41598281f9dfdadc03de
       nuclia-learning-model:
       - chatgpt-4.1
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '1034'
+      - '900'
       x-nuclia-trace-id:
-      - d8102fc0951dd79add9c1e26efe16612
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-label-selection",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nThe user wants to perform
-      a catalog search in the Knowledge Box based on a question.\n\nYou need to identify
-      the most relevant labels and provide a filter expression to perform the catalog
-      search. The filter expression should be in the format used by NucliaDB.\n\nThe
-      nucliadb format for filter expressions is as follows:\n- Use \"any\" to indicate
-      that any of the properties can match (logical OR).\n- Use \"all\" to indicate
-      that all of the listed labels must match (logical AND).\n- Use \"none\" to indicate
-      that the listed labels should not match (logical NOT).\n\nSequential filters
-      are treated as AND conditions.\n\nFor filtering by labels, use the format \"/l/{labelset}/{label}\".\n\nFor
-      filtering by label sets without specifying a label, use the format \"/l/{labelset}/\".\n\nFor
-      filtering by file types, use the media type prefixed by \"/icon/\".\n\n**Example
-      1:**\nQuestion: ''Find all documents related to technology and health.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''any'': [''/l/topic/technology'',
-      ''/l/topic/health'']}], \"reasoning\": \"The question is about documents related
-      to technology and health, so we create a filter expresion to match any of the
-      labels technology or health in the topic label set.\"}\n\n**Example 2:**\nQuestion:
-      ''Get all PDFs that are research articles.''\nAvailable Labels:\n{\"topic\":
-      [\"technology\", \"health\", \"sports\"], \"category\": [\"research\", \"news\",
-      \"blog\"]}\nAnswer:\n{\"filters\": [{''all'': [''/l/category/research'', ''/icon/application/pdf'']}],
-      \"reasoning\": \"The question specifies research articles in PDF format, so
-      we create a filter expression that requires both the category to be research
-      and the media type to be PDF.\"}\n\n**Example 3:**\nQuestion: ''Show me all
-      documents without a set topic, that are either PDFs or Word format.''\nAvailable
-      Labels:\n{\"topic\": [\"technology\", \"health\", \"sports\"], \"category\":
-      [\"research\", \"news\", \"blog\"]}\nAnswer:\n{\"filters\": [{''none'': [''/l/topic'']},
-      {''any'': [''/icon/application/pdf'', ''/icon/application/vnd.openxmlformats-officedocument.wordprocessingml.document'']}],
-      \"reasoning\": \"The question asks for documents excluding sports, so we use
-      a ''not'' filter for the topic sports, and an ''any'' filter for the media types
-      PDF or Word.\"}\n\nYour Task:\nBased on the question and the available labels,
-      provide a filter expression to perform the catalog search. The question is:
-      ''healthy dessert recipes''.\nHere are the available labels in the Knowledge
-      Box:\n- sections16022026: AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition,
-      S_ProfitLoss, S_ChangesInEquity, S_CashFlows, N_GenInfo, N_PolicyInfo, N_Cash,
-      N_TradeReceivables, N_Inventories, N_PropertyRightOfUse, N_IntangibleAssets,
-      N_InvestmentProp, N_JointVentures, N_FinancialAssets, N_TradePayables, N_Borrowings,
-      N_Equity, N_Revenue, N_CostOfSales, N_GenAdminExpens, N_OtherIncomeExpenses,
-      N_FinIncomeExpenses, N_Employee, N_Taxation, N_EarningsPerShare, N_SegmentInfo,
-      N_RelatedParty, N_ContingentLiabil, N_Events, N_OtherNotes, NR_CoverPage, NR_TableOfContents,
-      NR_CorpInfo, NR_FinHighlights, NR_ChairmanLetter, NR_CEOLetter, NR_MngmntAnalysis,
-      NR_DirectorsRep, NR_CorpGov, NR_Schedules, NR_StatDeclarations, NR_Glossary,
-      NR_NonRelevant, NR_Form_EstTax, NR_Form_1214, NR_Form_1399, NR_Form_6111, NR_Form_1344,
-      NR_Form_1323, O_unknown, NR_DepreciationForm, NR_TaxAssmntComp\n- category:
-      yoga, one\n- bla: one\n- bli: one\n"}, "citations": false, "citation_threshold":
-      null, "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
-      {}, "prefer_markdown": null, "json_schema": {"type": "object", "title": "Catalog
-      Filter Expression Selection", "description": "Response schema for selected filter
-      expression.", "properties": {"reasoning": {"type": "string", "description":
-      "Reasoning behind the selection of the filter expression."}, "filters": {"type":
-      "string", "description": "The filter expression to perform the catalog search
-      as a JSON array."}}, "required": ["filters"]}, "format_prompt": false, "rerank_context":
-      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
-      "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '4411'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"object","object":{"reasoning":"The question is about
-        healthy dessert recipes, which suggests a focus on food-related content. However,
-        the available labels do not include any specific labels related to recipes
-        or desserts. Therefore, we will create a filter expression that indicates
-        a general search for any content related to the category of ''one'', which
-        may encompass various topics including healthy desserts.","filters":"[{\"any\":
-        [\"/l/category/yoga\", \"/l/category/one\"]}]}"}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":29,"output_tokens":12,"timings":{"generative":1.7859107429994765},"input_nuclia_tokens":0.029,"output_nuclia_tokens":0.012}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02925,"output":0.01152,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 10:34:31 GMT
-      nuclia-learning-id:
-      - bb112adbc40b423b84eeacdc38e5420b
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '1792'
-      x-nuclia-trace-id:
-      - 540345b7588e449d570da55fbf4750e3
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "rao-catalog-search-answer",
-      "system": null, "chat_history": [], "context": [], "query_context": {}, "query_context_order":
-      {}, "truncate": true, "user_prompt": {"prompt": "\nBased on the following catalog
-      search results, please answer the following user question: ''healthy dessert
-      recipes''\n\nCatalog search results for filters [] in 216bd848cf8e4c2da3e93a8572cf21a2
-      Knowledge Box. The results contain titles, formats, languages, and labels assigned
-      to the resources for each label set. If a result does not have a label for a
-      specific label set, it means no label was assigned for that label set. The Knowledge
-      Box contains the following label sets (with some example labels): - sections16022026:
-      AuditRep, TaxReconAuditRep, TaxReconciliation, S_FinancialPosition, S_ProfitLoss,
-      ...\n- category: yoga, one\n- bla: one\n- bli: one\n.\n:\n\nCatalog Results\n\n-
-      Title: carrot-cake-A4.pdf\n  Format: application/pdf\n  Language: en\n\n- Title:
-      chocolate-chip-cookies-A4.pdf\n  Format: application/pdf\n  Language: en\n\n-
-      Title: Zucchini-bread-A4.pdf\n  Format: application/pdf\n  Language: en\n  User
-      defined Labels: category:\"yoga\"\n\n- Title: banana-bread-A4.pdf\n  Format:
-      application/pdf\n  Language: en\n\n- Title: Gingerbread-Cake-A4.pdf\n  Format:
-      application/pdf\n  Language: en\n\n- Title: Sugar-Cookies-A4.pdf\n  Format:
-      application/pdf\n  Language: en\n\n- Title: Singin''in the rain\n  Format: text/plain\n  Language:
-      en\n\n- Title: Singin''in the rain\n  Format: text/plain\n  Language: en\n\n-
-      Title: Singin''in the rain\n  Format: text/plain\n  Language: en\n\n- Title:
-      Singin''in the rain\n  Format: text/plain\n  Language: en\n\n- Title: Singin''in
-      the rain\n  Format: text/plain\n  Language: en\n\n- Title: Star Wars\n  Format:
-      text/plain\n  Language: en\n\n- Title: Star Wars\n  Format: text/plain\n  Language:
-      en\n\n- Title: Star Wars\n  Format: text/plain\n  Language: en\n\n- Title: Star
-      Wars\n  Format: text/plain\n  Language: en\n\n- Title: Star Wars\n  Format:
-      text/plain\n  Language: en\n\n- Title: Star Wars\n  Format: text/plain\n  Language:
-      en\n\n- Title: Star Wars\n  Format: text/plain\n  Language: en\n\n- Title: Carrie
-      Fisher\n  Format: text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format:
-      text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language:
-      en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title:
-      Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format:
-      text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language:
-      en\n\n- Title: Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title:
-      Carrie Fisher\n  Format: text/plain\n  Language: en\n\n- Title: Carrie Fisher\n  Format:
-      text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language:
-      en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title:
-      Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format:
-      text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language:
-      en\n\n- Title: Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title:
-      Debbie Reynolds\n  Format: text/plain\n  Language: en\n\n- Title: Debbie Reynolds\n  Format:
-      text/plain\n  Language: en\n\n"}, "citations": null, "citation_threshold": null,
-      "generative_model": "chatgpt-azure-4o-mini", "max_tokens": 2000, "query_context_images":
-      {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
-      false, "tools": [], "tool_choice": {"type": "required"}, "reasoning": false,
-      "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '3623'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"text","text":"Here"}}
-
-        {"chunk":{"type":"text","text":" are"}}
-
-        {"chunk":{"type":"text","text":" some"}}
-
-        {"chunk":{"type":"text","text":" healthy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" you"}}
-
-        {"chunk":{"type":"text","text":" can"}}
-
-        {"chunk":{"type":"text","text":" explore"}}
-
-        {"chunk":{"type":"text","text":" from"}}
-
-        {"chunk":{"type":"text","text":" the"}}
-
-        {"chunk":{"type":"text","text":" catalog"}}
-
-        {"chunk":{"type":"text","text":" search"}}
-
-        {"chunk":{"type":"text","text":" results"}}
-
-        {"chunk":{"type":"text","text":":\n\n"}}
-
-        {"chunk":{"type":"text","text":"1"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Car"}}
-
-        {"chunk":{"type":"text","text":"rot"}}
-
-        {"chunk":{"type":"text","text":" Cake"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":" -"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"car"}}
-
-        {"chunk":{"type":"text","text":"rot"}}
-
-        {"chunk":{"type":"text","text":"-c"}}
-
-        {"chunk":{"type":"text","text":"ake"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n"}}
-
-        {"chunk":{"type":"text","text":"2"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Chocolate"}}
-
-        {"chunk":{"type":"text","text":" Chip"}}
-
-        {"chunk":{"type":"text","text":" Cookies"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":" -"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"ch"}}
-
-        {"chunk":{"type":"text","text":"ocolate"}}
-
-        {"chunk":{"type":"text","text":"-chip"}}
-
-        {"chunk":{"type":"text","text":"-c"}}
-
-        {"chunk":{"type":"text","text":"ookies"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n"}}
-
-        {"chunk":{"type":"text","text":"3"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Z"}}
-
-        {"chunk":{"type":"text","text":"uc"}}
-
-        {"chunk":{"type":"text","text":"chini"}}
-
-        {"chunk":{"type":"text","text":" Bread"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":" -"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"Z"}}
-
-        {"chunk":{"type":"text","text":"uc"}}
-
-        {"chunk":{"type":"text","text":"chini"}}
-
-        {"chunk":{"type":"text","text":"-b"}}
-
-        {"chunk":{"type":"text","text":"read"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")"}}
-
-        {"chunk":{"type":"text","text":" ("}}
-
-        {"chunk":{"type":"text","text":"Note"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" This"}}
-
-        {"chunk":{"type":"text","text":" has"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" label"}}
-
-        {"chunk":{"type":"text","text":" related"}}
-
-        {"chunk":{"type":"text","text":" to"}}
-
-        {"chunk":{"type":"text","text":" yoga"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" which"}}
-
-        {"chunk":{"type":"text","text":" may"}}
-
-        {"chunk":{"type":"text","text":" indicate"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" healthier"}}
-
-        {"chunk":{"type":"text","text":" focus"}}
-
-        {"chunk":{"type":"text","text":".)\n"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Ban"}}
-
-        {"chunk":{"type":"text","text":"ana"}}
-
-        {"chunk":{"type":"text","text":" Bread"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":" -"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"banana"}}
-
-        {"chunk":{"type":"text","text":"-b"}}
-
-        {"chunk":{"type":"text","text":"read"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n"}}
-
-        {"chunk":{"type":"text","text":"5"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"G"}}
-
-        {"chunk":{"type":"text","text":"inger"}}
-
-        {"chunk":{"type":"text","text":"bread"}}
-
-        {"chunk":{"type":"text","text":" Cake"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":" -"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"G"}}
-
-        {"chunk":{"type":"text","text":"inger"}}
-
-        {"chunk":{"type":"text","text":"bread"}}
-
-        {"chunk":{"type":"text","text":"-C"}}
-
-        {"chunk":{"type":"text","text":"ake"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n"}}
-
-        {"chunk":{"type":"text","text":"6"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Sugar"}}
-
-        {"chunk":{"type":"text","text":" Cookies"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":" -"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"Sugar"}}
-
-        {"chunk":{"type":"text","text":"-C"}}
-
-        {"chunk":{"type":"text","text":"ookies"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n\n"}}
-
-        {"chunk":{"type":"text","text":"Feel"}}
-
-        {"chunk":{"type":"text","text":" free"}}
-
-        {"chunk":{"type":"text","text":" to"}}
-
-        {"chunk":{"type":"text","text":" download"}}
-
-        {"chunk":{"type":"text","text":" any"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" these"}}
-
-        {"chunk":{"type":"text","text":" recipes"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" healthier"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":" option"}}
-
-        {"chunk":{"type":"text","text":"!"}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":25,"output_tokens":20,"timings":{"generative_first_chunk":0.4800409710005624,"generative":3.396572888001174},"input_nuclia_tokens":0.025,"output_nuclia_tokens":0.02}}
-
-        {"chunk":{"normalized_tokens":{"input":0.02535,"output":0.0204,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 10:34:33 GMT
-      nuclia-learning-id:
-      - e3f8c67341b548049c5d659eb64bb473
-      nuclia-learning-model:
-      - chatgpt-azure-4o-mini
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '487'
-      x-nuclia-trace-id:
-      - cd31a7279fe3eae4d06f3c4d916f488c
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"question": "", "retrieval": true, "user_id": "smart_planner-smart", "system":
-      "You are a smart assistant that selects tools to gather information needed to
-      answer a user''s question.\nChoose the best tool or tools for the task. You
-      may call multiple tools in one turn.\nCall task_complete when you have enough
-      information to answer the question.\n\nExtra instructions: When asked about
-      a recipe, always recommend the most relevant one from our favorite recipes,
-      but if asked about a very specific recipe that is not in our favorites, check
-      the recipes from internet.\n", "chat_history": [{"author": "USER", "text": "Provide
-      healthy and tasty dessert options."}, {"author": "NUCLIA", "text": "[catalog_search
-      of 263e48e9-f20c-4316-8419-243e57991b7d with parameters {''question'': ''healthy
-      and tasty dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with parameters
-      {''question'': ''healthy and tasty dessert recipes''}\n``` It seems that the
-      catalog search results you provided do not contain any specific titles or resources
-      related to \"healthy and tasty dessert recipes.\" The results are primarily
-      categorized under sections that do not pertain to cooking or recipes.\n\nIf
-      you''re looking for healthy and tasty dessert recipes, I can suggest some popular
-      options:\n\n1. **Chia Seed Pudding**: Mix chia seeds with almond milk and a
-      sweetener of your choice. Let it sit overnight and top with fresh fruits.\n\n2.
-      **Banana Ice Cream**: Blend frozen bananas until smooth for a creamy, healthy
-      ice cream alternative.\n\n3. **Avocado Chocolate Mousse**: Blend ripe avocados
-      with cocoa powder and a sweetener for a rich, creamy dessert.\n\n4. **Oatmeal
-      Cookies**: Use oats, mashed bananas, and dark chocolate chips for a healthier
-      cookie option.\n\n5. **Fruit Salad with Honey Lime Dressing**: Combine your
-      favorite fruits and drizzle with a mixture of honey and lime juice.\n\nIf you
-      need more specific recipes or ideas, feel free to ask! ```\n\n"}, {"author":
-      "NUCLIA", "text": "[catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with
-      parameters {''question'': ''healthy dessert recipes''}]:\n\n\n\n## Chunk: catalog_search_result-0\nResult
-      of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d with parameters
-      {''question'': ''healthy dessert recipes''}\n``` Here are some healthy dessert
-      recipes you can explore from the catalog search results:\n\n1. **Carrot Cake**
-      - [Download PDF](carrot-cake-A4.pdf)\n2. **Chocolate Chip Cookies** - [Download
-      PDF](chocolate-chip-cookies-A4.pdf)\n3. **Zucchini Bread** - [Download PDF](Zucchini-bread-A4.pdf)
-      (Note: This has a label related to yoga, which may indicate a healthier focus.)\n4.
-      **Banana Bread** - [Download PDF](banana-bread-A4.pdf)\n5. **Gingerbread Cake**
-      - [Download PDF](Gingerbread-Cake-A4.pdf)\n6. **Sugar Cookies** - [Download
-      PDF](Sugar-Cookies-A4.pdf)\n\nFeel free to download any of these recipes for
-      a healthier dessert option! ```\n\n"}], "context": [], "query_context": {},
-      "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "You
-      are a smart assistant that selects tools to gather information needed to answer
-      a user''s question.\nChoose the best tool or tools for the task. You may call
-      multiple tools in one turn.\nCall task_complete when you have enough information
-      to answer the question.\n\nExtra instructions: When asked about a recipe, always
-      recommend the most relevant one from our favorite recipes, but if asked about
-      a very specific recipe that is not in our favorites, check the recipes from
-      internet.\n\n\nChoose the best tool or tools for the task. Call task_complete
-      when you have enough information."}, "citations": null, "citation_threshold":
-      null, "generative_model": "chatgpt-4.1", "max_tokens": null, "query_context_images":
-      {}, "prefer_markdown": null, "json_schema": null, "format_prompt": false, "rerank_context":
-      false, "tools": [{"name": "search_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Search for context in the Knowledge Box by title. Useful for
-      specific queries where the title is known.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to search
-      for in the Knowledge Box."}, "filters": {"type": "array", "items": {"type":
-      "string"}, "description": "Filters to apply when searching in the Knowledge
-      Box."}}, "additionalProperties": false}}, {"name": "ask_labels_list__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Get the labels available in the Knowledge Box as a list of strings.
-      Useful to filter searches by labels.", "parameters": {"type": "object", "properties":
-      {"labelset": {"type": "string", "description": "The label set to get the labels
-      from the Knowledge Box."}}, "additionalProperties": false}}, {"name": "ask_agent__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Search for context in the Knowledge Box.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to search for in the Knowledge Box."}}, "additionalProperties": false}},
-      {"name": "ask_labels__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Get the labels available in the Knowledge Box. Useful to filter searches by
-      labels.", "parameters": {"type": "object", "properties": {}, "additionalProperties":
-      false}}, {"name": "facets_count__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Perform a faceted count in the Knowledge Box. Useful to get counts of different
-      categories or facets within the data.", "parameters": {"type": "object", "properties":
-      {"question": {"type": "string", "description": "The question to perform the
-      faceted count for."}}, "additionalProperties": false}}, {"name": "facets_search__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Perform a faceted search in the Knowledge Box. Useful to get
-      counts of different categories or facets within the data.", "parameters": {"type":
-      "object", "properties": {"question": {"type": "string", "description": "The
-      question to perform the faceted search for."}}, "additionalProperties": false}},
-      {"name": "catalog_search__263e48e9-f20c-4316-8419-243e57991b7d", "description":
-      "Perform a catalog search in the Knowledge Box. Useful to find items based on
-      specific criteria or attributes, including labels, file types, or other metadata.",
-      "parameters": {"type": "object", "properties": {"question": {"type": "string",
-      "description": "The question to perform the catalog search for."}}, "additionalProperties":
-      false}}, {"name": "all_images_by_title__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Get all image URLs from a resource in the Knowledge Box filtered
-      by a specific title. Useful when the user wants to retrieve images from known
-      documents.", "parameters": {"type": "object", "properties": {"title": {"type":
-      "string", "description": "The title to filter the image extraction operation
-      in the Knowledge Box."}}, "additionalProperties": false}}, {"name": "search_images__263e48e9-f20c-4316-8419-243e57991b7d",
-      "description": "Search for images in a resource in the Knowledge Box filtered
-      by a specific title and relevant image information. Useful when the user wants
-      to retrieve selected images from known documents.", "parameters": {"type": "object",
-      "properties": {"title": {"type": "string", "description": "The title to filter
-      the image search operation in the Knowledge Box."}, "image_info": {"type": "array",
-      "items": {"type": "string"}, "description": "Relevant info to query images from
-      the document."}}, "additionalProperties": false}}, {"name": "internet_search__242ab56c-7bb5-4e79-a673-62b7090febc3",
-      "description": "Performs an internet search using Perplexity Search to get context
-      to answer questions.", "parameters": {"type": "object", "properties": {"question":
-      {"type": "string", "description": "The question to search for on the internet."}},
-      "additionalProperties": false}}, {"name": "task_complete", "description": "Call
-      this tool when you have gathered enough information to answer the question and
-      no more tools are needed.", "parameters": {"type": "object", "properties": {}}}],
-      "tool_choice": {"type": "required"}, "reasoning": false, "seed": null}'
-    headers:
-      Accept:
-      - application/x-ndjson
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '7970'
-      Content-Type:
-      - application/json
-      Host:
-      - europe-1.dp.progress.cloud
-      User-Agent:
-      - nuclia.py/4.11.5
-      x-client-ident:
-      - 00000000-0000-0000-0000-000000000002
-      x-message:
-      - 5a32aa83b09f48929e811420fa3751d0
-      x-origin:
-      - RAO
-      x-session:
-      - default_ephemeral
-      x-show-consumption:
-      - 'true'
-      x-stf-nuakey:
-      - DUMMY
-    method: POST
-    uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
-  response:
-    body:
-      string: '{"chunk":{"type":"tools","tools":{"task_complete":[{"function":{"name":"task_complete","arguments":{}}}]}}}
-
-        {"chunk":{"type":"status","code":"0"}}
-
-        {"chunk":{"type":"meta","input_tokens":622,"output_tokens":18,"timings":{"generative_first_chunk":3.0560499980001623,"generative":3.0575040980002086},"input_nuclia_tokens":0.622,"output_nuclia_tokens":0.018}}
-
-        {"chunk":{"normalized_tokens":{"input":0.622,"output":0.0176,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
-
-        '
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Transfer-Encoding:
-      - chunked
-      access-control-expose-headers:
-      - X-NUCLIA-TRACE-ID
-      content-type:
-      - application/x-ndjson
-      date:
-      - Wed, 15 Jul 2026 10:34:37 GMT
-      nuclia-learning-id:
-      - f1d73bd1286d4a4eb9c30933707f53cc
-      nuclia-learning-model:
-      - chatgpt-4.1
-      via:
-      - 1.1 google
-      x-envoy-upstream-service-time:
-      - '3062'
-      x-nuclia-trace-id:
-      - 9e7a63ec5a4557c94a9ac3d25688ce27
+      - 7454ad93c386a9d983810003f9b6ef53
     status:
       code: 200
       message: OK
@@ -1821,48 +856,59 @@ interactions:
       \"block-CD\"]).\n11. **IMPORTANT** If any extra instructions are provided, you
       MUST follow them carefully when generating the answer field. These instructions
       may specify the format, style, tools to use, or other requirements for the answer.\n\n<QUESTION>\nProvide
-      healthy and tasty dessert options.\n\n<START OF CONTEXT>\n\nContext:\n\n**block-AA**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d
-      with parameters {''question'': ''healthy and tasty dessert recipes''}\n``` It
-      seems that the catalog search results you provided do not contain any specific
-      titles or resources related to \"healthy and tasty dessert recipes.\" The results
-      are primarily categorized under sections that do not pertain to cooking or recipes.\n\nIf
-      you''re looking for healthy and tasty dessert recipes, I can suggest some popular
-      options:\n\n1. **Chia Seed Pudding**: Mix chia seeds with almond milk and a
-      sweetener of your choice. Let it sit overnight and top with fresh fruits.\n\n2.
-      **Banana Ice Cream**: Blend frozen bananas until smooth for a creamy, healthy
-      ice cream alternative.\n\n3. **Avocado Chocolate Mousse**: Blend ripe avocados
-      with cocoa powder and a sweetener for a rich, creamy dessert.\n\n4. **Oatmeal
-      Cookies**: Use oats, mashed bananas, and dark chocolate chips for a healthier
-      cookie option.\n\n5. **Fruit Salad with Honey Lime Dressing**: Combine your
-      favorite fruits and drizzle with a mixture of honey and lime juice.\n\nIf you
-      need more specific recipes or ideas, feel free to ask! ```\n\n\n---\"\n\n\n**block-AB**\n\n##
-      Chunk: catalog_search_result-0\nResult of running: catalog_search of 263e48e9-f20c-4316-8419-243e57991b7d
-      with parameters {''question'': ''healthy dessert recipes''}\n``` Here are some
-      healthy dessert recipes you can explore from the catalog search results:\n\n1.
-      **Carrot Cake** - [Download PDF](carrot-cake-A4.pdf)\n2. **Chocolate Chip Cookies**
-      - [Download PDF](chocolate-chip-cookies-A4.pdf)\n3. **Zucchini Bread** - [Download
-      PDF](Zucchini-bread-A4.pdf) (Note: This has a label related to yoga, which may
-      indicate a healthier focus.)\n4. **Banana Bread** - [Download PDF](banana-bread-A4.pdf)\n5.
-      **Gingerbread Cake** - [Download PDF](Gingerbread-Cake-A4.pdf)\n6. **Sugar Cookies**
-      - [Download PDF](Sugar-Cookies-A4.pdf)\n\nFeel free to download any of these
-      recipes for a healthier dessert option! ```\n\n\n---\"\n\n\n\n\n<END OF CONTEXT>\n\n"},
-      "citations": false, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
-      "max_tokens": 2000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
-      {"title": "validate_or_answer", "description": "Validate or answer", "parameters":
-      {"type": "object", "properties": {"reason": {"type": "string", "description":
-      "Reasoning for the answer or validation"}, "answer": {"type": "string", "description":
-      "Partial or complete answer to the user query from the information in the context."},
-      "missing_info_query": {"type": "string", "description": "Query needed to retrieve
-      the missing information in case the context is not enough to answer the question.
-      If the context does not answer the question at all, just return the original
-      question."}, "useful": {"type": "string", "description": "Is the context useful
-      to answer the question?", "enum": ["yes", "no"]}, "citations": {"type": "array",
-      "items": {"type": "string", "description": "Block ID cited in the answer, e.g.
-      block-AB"}, "description": "List of block IDs cited in the answer, if any"}},
-      "required": ["reason", "answer", "missing_info_query", "useful", "citations"]}},
-      "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "required"}, "reasoning": false, "seed": null}'
+      the recipe for ''Grilled Romaine Caesar Salad''.\n\n<START OF CONTEXT>\n\nContext:\n\n**block-AA**\n\n####
+      Chunk: b6b9136e5266462699e0968c8677d3c0\nResult of running: search_by_title
+      of nucliadb-agent-recipes-kb with parameters {''title'': ''Grilled Romaine Caesar
+      Salad'', ''filters'': []}\n``` {''f52e1ff4cf6f4a4cafa56b6837d9ccb8'': []} ```\n\n\n---\"\n\n\n**block-AB**\n\n####
+      Chunk: fa2014d2c05240e2b042099d517e18bc\nResult of running: internet_search
+      of perplexity-agent-perplexity with parameters {''question'': ''Grilled Romaine
+      Caesar Salad recipe''}\nURLs: https://www.vindulge.com/grilled-caesar-salad/,
+      https://www.thedishwithkris.com/easy-lunches/grilled-romaine-caesar-salad, https://www.amandafrederickson.com/all-recipes/2018/6/25/grilled-romaine-caesar-salad,
+      https://familystylefood.com/grilled-romaine-lettuce-caesar-salad/, https://alexandracooks.com/2020/03/06/grilled-romaine-caesar-salad/,
+      https://itsthyme2cook.com/grilled-romaine-caesar-salad/, https://miciamammas.com/blogs/news/grilled-romaine-caesar-salad,
+      https://townandcountrymarkets.com/recipes/grilled-romaine-caesar, https://www.budgetbytes.com/grilled-romaine-caesar-salad/,
+      https://tasteandsee.com/grilled-romaine-caesar-salad/, https://asador.mx/recipes/grilled-romaine-caesar-salad,
+      https://pamelasalzman.com/grilled-caesar-ish-romaine-salads-recipe/, https://supermancooks.com/grilled-romaine-caesar-salad/,
+      https://meikoandthedish.com/grilled-romaine-smoky-caesar-dressing/, https://healthylittlevittles.com/grilled-romaine-caesar-salad-with-toasted-breadcrumbs/,
+      https://www.foodnetwork.com/recipes/marcela-valladolid/grilled-caesar-salad-3772100,
+      https://themodernproper.com/grilled-romaine-caesar\n``` Grilled Romaine Caesar
+      Salad is made by **halving romaine hearts, brushing them with olive oil, and
+      grilling cut-side down until lightly charred**, then topping with Caesar dressing,
+      Parmesan, and croutons.[1][3][8]\n\n- **Basic method:** Preheat a grill to medium-high
+      or high, brush romaine halves with olive oil, season with salt and pepper, and
+      grill for about **1\u20133 minutes per side** depending on heat and desired
+      char.[1][3][8][13]\n- **Dressing:** Many versions use a classic Caesar dressing
+      with ingredients like garlic, anchovy, lemon juice, mustard, olive oil, and
+      Parmesan; some recipes add capers, Worcestershire, or egg yolk for a richer
+      emulsion.[3][5][7][8]\n- **Serving:** Finish with **Parmesan cheese**, **croutons**,
+      and optionally grilled lemon for extra brightness; some recipes also add bacon,
+      chicken, shrimp, or sausage.[1][2][3][10][11]\n\n**Simple recipe**\n\n- 2 romaine
+      hearts\n- 2 tbsp olive oil\n- Salt and black pepper\n- 1/2 cup Caesar dressing,
+      homemade or store-bought\n- 1/4 to 1/2 cup grated Parmesan\n- 1 cup croutons\n-
+      1 lemon, halved, optional\n\n- Preheat grill to medium-high.\n- Slice romaine
+      hearts lengthwise, keeping the root intact.\n- Brush cut sides with olive oil
+      and season with salt and pepper.\n- Grill cut-side down for about **2 minutes**,
+      until lightly charred but not wilted.[1][3][8]\n- Flip briefly if needed, then
+      remove.\n- Drizzle with Caesar dressing.\n- Top with Parmesan and croutons.\n-
+      Serve with grilled lemon if using.[1][3]\n\nIf you want, I can also give you
+      a **from-scratch Caesar dressing recipe** to go with it. ```\n\n\n---\"\n\n\n\n\n<END
+      OF CONTEXT>\n\n"}, "citations": false, "citation_threshold": null, "generative_model":
+      "chatgpt-azure-4o-mini", "max_tokens": 8192, "query_context_images": {}, "prefer_markdown":
+      null, "json_schema": {"title": "validate_or_answer", "description": "Validate
+      or answer", "parameters": {"type": "object", "properties": {"reason": {"type":
+      "string", "description": "Reasoning for the answer or validation"}, "answer":
+      {"type": "string", "description": "Partial or complete answer to the user query
+      from the information in the context."}, "missing_info_query": {"type": "string",
+      "description": "Query needed to retrieve the missing information in case the
+      context is not enough to answer the question. If the context does not answer
+      the question at all, just return the original question."}, "useful": {"type":
+      "string", "description": "Is the context useful to answer the question?", "enum":
+      ["yes", "no"]}, "citations": {"type": "array", "items": {"type": "string", "description":
+      "Block ID cited in the answer, e.g. block-AB"}, "description": "List of block
+      IDs cited in the answer, if any"}}, "required": ["reason", "answer", "missing_info_query",
+      "useful", "citations"]}}, "format_prompt": false, "rerank_context": false, "tools":
+      [], "tool_choice": {"type": "required"}, "reasoning": false, "seed": null, "image_generation":
+      false}'
     headers:
       Accept:
       - application/x-ndjson
@@ -1871,13 +917,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '6076'
+      - '7251'
       Content-Type:
       - application/json
       Host:
       - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.5
+      - nuclia.py/4.14.0
       x-origin:
       - RAO
       x-show-consumption:
@@ -1889,26 +935,23 @@ interactions:
   response:
     body:
       string: '{"chunk":{"type":"object","object":{"reason":"The context provides
-        a list of healthy and tasty dessert options, including specific recipes and
-        their descriptions. This directly addresses the user''s request for healthy
-        dessert options.","answer":"1. Chia Seed Pudding: Mix chia seeds with almond
-        milk and a sweetener of your choice. Let it sit overnight and top with fresh
-        fruits. 2. Banana Ice Cream: Blend frozen bananas until smooth for a creamy,
-        healthy ice cream alternative. 3. Avocado Chocolate Mousse: Blend ripe avocados
-        with cocoa powder and a sweetener for a rich, creamy dessert. 4. Oatmeal Cookies:
-        Use oats, mashed bananas, and dark chocolate chips for a healthier cookie
-        option. 5. Fruit Salad with Honey Lime Dressing: Combine your favorite fruits
-        and drizzle with a mixture of honey and lime juice. 6. Carrot Cake: [Download
-        PDF](carrot-cake-A4.pdf) 7. Chocolate Chip Cookies: [Download PDF](chocolate-chip-cookies-A4.pdf)
-        8. Zucchini Bread: [Download PDF](Zucchini-bread-A4.pdf) 9. Banana Bread:
-        [Download PDF](banana-bread-A4.pdf) 10. Gingerbread Cake: [Download PDF](Gingerbread-Cake-A4.pdf)
-        11. Sugar Cookies: [Download PDF](Sugar-Cookies-A4.pdf)","missing_info_query":"","useful":"yes","citations":["block-AA","block-AB"]}}}
+        a detailed recipe for Grilled Romaine Caesar Salad, including ingredients
+        and preparation steps. It breaks down the process into clear instructions,
+        making it easy to follow.","answer":"**Ingredients:**\n- 2 romaine hearts  \n-
+        2 tbsp olive oil  \n- Salt and black pepper  \n- 1/2 cup Caesar dressing,
+        homemade or store-bought  \n- 1/4 to 1/2 cup grated Parmesan  \n- 1 cup croutons  \n-
+        1 lemon, halved, optional  \n\n**Instructions:**  \n1. Preheat grill to medium-high.  \n2.
+        Slice romaine hearts lengthwise, keeping the root intact.  \n3. Brush cut
+        sides with olive oil and season with salt and pepper.  \n4. Grill cut-side
+        down for about 2 minutes, until lightly charred but not wilted.  \n5. Flip
+        briefly if needed, then remove.  \n6. Drizzle with Caesar dressing.  \n7.
+        Top with Parmesan and croutons.  \n8. Serve with grilled lemon if using.","missing_info_query":"","useful":"yes","citations":["block-AB"]}}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":37,"output_tokens":36,"timings":{"generative":4.047070903005078},"input_nuclia_tokens":0.037,"output_nuclia_tokens":0.036}}
+        {"chunk":{"type":"meta","input_tokens":48,"output_tokens":32,"timings":{"generative":4.170350090999818},"input_nuclia_tokens":0.048,"output_nuclia_tokens":0.032}}
 
-        {"chunk":{"normalized_tokens":{"input":0.03657,"output":0.036,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.04848,"output":0.03216,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
@@ -1921,17 +964,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 10:34:40 GMT
+      - Tue, 18 Aug 2026 10:00:30 GMT
       nuclia-learning-id:
-      - baf430f5efa24919b04129b210332e4f
+      - e33f575344c74bc18530d9f0548671b6
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '4052'
+      - '4176'
       x-nuclia-trace-id:
-      - e889b8522fdaf8002d2208bfbb602885
+      - 4f4d8c296160d1124897da623b936f6e
     status:
       code: 200
       message: OK
@@ -1945,29 +988,51 @@ interactions:
       this clearly\n\nAlways follow any additional instructions provided about format,
       style, or domain-specific behavior.", "chat_history": [], "context": [], "query_context":
       {}, "query_context_order": {}, "truncate": true, "user_prompt": {"prompt": "\n##
-      Question\nProvide healthy and tasty dessert options.\n\n## Provided Context\n[START
-      OF CONTEXT]\n## Default Agentic Config - Smart Agent\n\n# Provide healthy and
-      tasty dessert options.\n\n 1. Chia Seed Pudding: Mix chia seeds with almond
-      milk and a sweetener of your choice. Let it sit overnight and top with fresh
-      fruits. 2. Banana Ice Cream: Blend frozen bananas until smooth for a creamy,
-      healthy ice cream alternative. 3. Avocado Chocolate Mousse: Blend ripe avocados
-      with cocoa powder and a sweetener for a rich, creamy dessert. 4. Oatmeal Cookies:
-      Use oats, mashed bananas, and dark chocolate chips for a healthier cookie option.
-      5. Fruit Salad with Honey Lime Dressing: Combine your favorite fruits and drizzle
-      with a mixture of honey and lime juice. 6. Carrot Cake: [Download PDF](carrot-cake-A4.pdf)
-      7. Chocolate Chip Cookies: [Download PDF](chocolate-chip-cookies-A4.pdf) 8.
-      Zucchini Bread: [Download PDF](Zucchini-bread-A4.pdf) 9. Banana Bread: [Download
-      PDF](banana-bread-A4.pdf) 10. Gingerbread Cake: [Download PDF](Gingerbread-Cake-A4.pdf)
-      11. Sugar Cookies: [Download PDF](Sugar-Cookies-A4.pdf)\n[END OF CONTEXT]\n\n##
-      Answering Guidelines\n- Carefully read all context; it may be lengthy or detailed\n-
-      Do not omit or overlook any relevant information\n- If the context is incomplete
-      or insufficient, state: \"Not enough data to answer this.\"\n- Read carefully
-      any extra instructions below if provided and use them to answer\n\nNow provide
-      your answer to the question: Provide healthy and tasty dessert options."}, "citations":
-      null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
+      Question\nProvide the recipe for ''Grilled Romaine Caesar Salad''.\n\n## Provided
+      Context\n[START OF CONTEXT]\n## [block-AA] Default Agentic Config - Smart Agent\n\n#
+      Provide the recipe for ''Grilled Romaine Caesar Salad''.\n\n **Ingredients:**\n-
+      2 romaine hearts  \n- 2 tbsp olive oil  \n- Salt and black pepper  \n- 1/2 cup
+      Caesar dressing, homemade or store-bought  \n- 1/4 to 1/2 cup grated Parmesan  \n-
+      1 cup croutons  \n- 1 lemon, halved, optional  \n\n**Instructions:**  \n1. Preheat
+      grill to medium-high.  \n2. Slice romaine hearts lengthwise, keeping the root
+      intact.  \n3. Brush cut sides with olive oil and season with salt and pepper.  \n4.
+      Grill cut-side down for about 2 minutes, until lightly charred but not wilted.  \n5.
+      Flip briefly if needed, then remove.  \n6. Drizzle with Caesar dressing.  \n7.
+      Top with Parmesan and croutons.  \n8. Serve with grilled lemon if using.\n[END
+      OF CONTEXT]\n\n## Answering Guidelines\n- Carefully read all context; it may
+      be lengthy or detailed\n- Do not omit or overlook any relevant information\n-
+      If the context is incomplete or insufficient, try to provide a partial answer
+      and encourage the user to clarify their question\n- Read carefully any extra
+      instructions below if provided and use them to answer\n\n## Previous conversation
+      history\n- ## Previous questions and answers in this session:\n\nNow provide
+      your answer to the question: Provide the recipe for ''Grilled Romaine Caesar
+      Salad''.\nYou are given source blocks with IDs like: block-AB, block-BA, block-CD,
+      etc. or block-AB-1, block-BA-2, block-CD-3, etc.\nWhen producing an answer,
+      cite these sources precisely using markdown footnotes.\n\nCITATION RULES\n\n1.
+      In the main body, cite sources only with bracketed Arabic numerals: [1], [2],
+      [3], etc.\n  - Never put a block ID directly in brackets (e.g. NO: [AB], [block-AB],
+      [BA]).\n  - Never mix styles (no superscripts, no inline block names, no [Ref
+      1], etc.).\n2. Numbering is assigned in order of FIRST USE of a unique block
+      ID.\n  - The first time you need info from a block, assign it [1].\n  - The
+      first time you need info from a never-before-used block, assign it the next
+      unused number (e.g. [2]).\n  - If you later cite the SAME block again, REUSE
+      its existing number (do NOT create a new one).\n  - This guarantees there are
+      no duplicate footnote definitions and no gaps.\n3. If facts in a sentence come
+      from different blocks, you may concatenate citations WITH spaces: like [1] [3].
+      Do NOT merge them (no ranges like [1-3]) or output them without spaces (no [1][3]).\n4.
+      At the end, output section consisting ONLY of the unique citation mappings,
+      one per line, in ascending numeric order\n  - Don''t title this section or add
+      any extra text, just the mappings.\n  - No duplicates.\n  - No skipped numbers.\n  -
+      ONLY include blocks actually cited in the body.\n5. Do NOT hallucinate block
+      IDs. Only use those provided in the context.\n\nFORMATTING CONTRACT\n\n* Body:
+      free text with numeric citations as specified.\n* A blank line.\n* References
+      section (if any) exactly as described, no heading.\n\n\nExample format:\n\n---\n\"The
+      OP-1 has a built-in tape feature with 6 minutes of recording time [1] [2]. You
+      can record to any of the 4 individual tracks [1].\"\n\n[1]: block-AB\n[2]: block-FZ-2\n---\n\n"},
+      "citations": null, "citation_threshold": null, "generative_model": "chatgpt-azure-4o-mini",
       "max_tokens": 5000, "query_context_images": {}, "prefer_markdown": null, "json_schema":
       null, "format_prompt": false, "rerank_context": false, "tools": [], "tool_choice":
-      {"type": "auto"}, "reasoning": false, "seed": null}'
+      {"type": "auto"}, "reasoning": false, "seed": null, "image_generation": false}'
     headers:
       Accept:
       - application/x-ndjson
@@ -1976,13 +1041,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2541'
+      - '4318'
       Content-Type:
       - application/json
       Host:
       - europe-1.dp.progress.cloud
       User-Agent:
-      - nuclia.py/4.11.5
+      - nuclia.py/4.14.0
       x-origin:
       - RAO
       x-show-consumption:
@@ -1993,550 +1058,412 @@ interactions:
     uri: https://europe-1.dp.progress.cloud/api/v1/predict/chat
   response:
     body:
-      string: '{"chunk":{"type":"text","text":"Here"}}
+      string: '{"chunk":{"type":"text","text":"The"}}
 
-        {"chunk":{"type":"text","text":" are"}}
+        {"chunk":{"type":"text","text":" recipe"}}
 
-        {"chunk":{"type":"text","text":" some"}}
+        {"chunk":{"type":"text","text":" for"}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
+        {"chunk":{"type":"text","text":" ''"}}
+
+        {"chunk":{"type":"text","text":"Gr"}}
+
+        {"chunk":{"type":"text","text":"illed"}}
+
+        {"chunk":{"type":"text","text":" Roma"}}
+
+        {"chunk":{"type":"text","text":"ine"}}
+
+        {"chunk":{"type":"text","text":" Caesar"}}
+
+        {"chunk":{"type":"text","text":" Salad"}}
+
+        {"chunk":{"type":"text","text":"''"}}
+
+        {"chunk":{"type":"text","text":" is"}}
+
+        {"chunk":{"type":"text","text":" as"}}
+
+        {"chunk":{"type":"text","text":" follows"}}
+
+        {"chunk":{"type":"text","text":":\n\n"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":"Ingredients"}}
+
+        {"chunk":{"type":"text","text":":"}}
+
+        {"chunk":{"type":"text","text":"**\n"}}
+
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"2"}}
+
+        {"chunk":{"type":"text","text":" rom"}}
+
+        {"chunk":{"type":"text","text":"aine"}}
+
+        {"chunk":{"type":"text","text":" hearts"}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
+
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"2"}}
+
+        {"chunk":{"type":"text","text":" tbsp"}}
+
+        {"chunk":{"type":"text","text":" olive"}}
+
+        {"chunk":{"type":"text","text":" oil"}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
+
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" Salt"}}
 
         {"chunk":{"type":"text","text":" and"}}
 
-        {"chunk":{"type":"text","text":" tasty"}}
+        {"chunk":{"type":"text","text":" black"}}
 
-        {"chunk":{"type":"text","text":" dessert"}}
+        {"chunk":{"type":"text","text":" pepper"}}
 
-        {"chunk":{"type":"text","text":" options"}}
+        {"chunk":{"type":"text","text":"  \n"}}
 
-        {"chunk":{"type":"text","text":":\n\n"}}
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"1"}}
+
+        {"chunk":{"type":"text","text":"/"}}
+
+        {"chunk":{"type":"text","text":"2"}}
+
+        {"chunk":{"type":"text","text":" cup"}}
+
+        {"chunk":{"type":"text","text":" Caesar"}}
+
+        {"chunk":{"type":"text","text":" dressing"}}
+
+        {"chunk":{"type":"text","text":","}}
+
+        {"chunk":{"type":"text","text":" homemade"}}
+
+        {"chunk":{"type":"text","text":" or"}}
+
+        {"chunk":{"type":"text","text":" store"}}
+
+        {"chunk":{"type":"text","text":"-b"}}
+
+        {"chunk":{"type":"text","text":"ought"}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
+
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"1"}}
+
+        {"chunk":{"type":"text","text":"/"}}
+
+        {"chunk":{"type":"text","text":"4"}}
+
+        {"chunk":{"type":"text","text":" to"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"1"}}
+
+        {"chunk":{"type":"text","text":"/"}}
+
+        {"chunk":{"type":"text","text":"2"}}
+
+        {"chunk":{"type":"text","text":" cup"}}
+
+        {"chunk":{"type":"text","text":" grated"}}
+
+        {"chunk":{"type":"text","text":" Parmesan"}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
+
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"1"}}
+
+        {"chunk":{"type":"text","text":" cup"}}
+
+        {"chunk":{"type":"text","text":" cr"}}
+
+        {"chunk":{"type":"text","text":"out"}}
+
+        {"chunk":{"type":"text","text":"ons"}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
+
+        {"chunk":{"type":"text","text":"-"}}
+
+        {"chunk":{"type":"text","text":" "}}
+
+        {"chunk":{"type":"text","text":"1"}}
+
+        {"chunk":{"type":"text","text":" lemon"}}
+
+        {"chunk":{"type":"text","text":","}}
+
+        {"chunk":{"type":"text","text":" hal"}}
+
+        {"chunk":{"type":"text","text":"ved"}}
+
+        {"chunk":{"type":"text","text":","}}
+
+        {"chunk":{"type":"text","text":" optional"}}
+
+        {"chunk":{"type":"text","text":"  \n\n"}}
+
+        {"chunk":{"type":"text","text":"**"}}
+
+        {"chunk":{"type":"text","text":"Instructions"}}
+
+        {"chunk":{"type":"text","text":":**"}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"1"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Pre"}}
 
-        {"chunk":{"type":"text","text":"Ch"}}
+        {"chunk":{"type":"text","text":"heat"}}
 
-        {"chunk":{"type":"text","text":"ia"}}
+        {"chunk":{"type":"text","text":" grill"}}
 
-        {"chunk":{"type":"text","text":" Seed"}}
+        {"chunk":{"type":"text","text":" to"}}
 
-        {"chunk":{"type":"text","text":" P"}}
+        {"chunk":{"type":"text","text":" medium"}}
 
-        {"chunk":{"type":"text","text":"udding"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Mix"}}
-
-        {"chunk":{"type":"text","text":" chia"}}
-
-        {"chunk":{"type":"text","text":" seeds"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" almond"}}
-
-        {"chunk":{"type":"text","text":" milk"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" sweet"}}
-
-        {"chunk":{"type":"text","text":"ener"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" your"}}
-
-        {"chunk":{"type":"text","text":" choice"}}
+        {"chunk":{"type":"text","text":"-high"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" Let"}}
-
-        {"chunk":{"type":"text","text":" it"}}
-
-        {"chunk":{"type":"text","text":" sit"}}
-
-        {"chunk":{"type":"text","text":" overnight"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" top"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" fresh"}}
-
-        {"chunk":{"type":"text","text":" fruits"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"2"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Slice"}}
 
-        {"chunk":{"type":"text","text":"Ban"}}
+        {"chunk":{"type":"text","text":" rom"}}
 
-        {"chunk":{"type":"text","text":"ana"}}
+        {"chunk":{"type":"text","text":"aine"}}
 
-        {"chunk":{"type":"text","text":" Ice"}}
+        {"chunk":{"type":"text","text":" hearts"}}
 
-        {"chunk":{"type":"text","text":" Cream"}}
+        {"chunk":{"type":"text","text":" length"}}
 
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Blend"}}
-
-        {"chunk":{"type":"text","text":" frozen"}}
-
-        {"chunk":{"type":"text","text":" bananas"}}
-
-        {"chunk":{"type":"text","text":" until"}}
-
-        {"chunk":{"type":"text","text":" smooth"}}
-
-        {"chunk":{"type":"text","text":" for"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" creamy"}}
+        {"chunk":{"type":"text","text":"wise"}}
 
         {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" healthy"}}
+        {"chunk":{"type":"text","text":" keeping"}}
 
-        {"chunk":{"type":"text","text":" ice"}}
+        {"chunk":{"type":"text","text":" the"}}
 
-        {"chunk":{"type":"text","text":" cream"}}
+        {"chunk":{"type":"text","text":" root"}}
 
-        {"chunk":{"type":"text","text":" alternative"}}
+        {"chunk":{"type":"text","text":" intact"}}
 
-        {"chunk":{"type":"text","text":".\n\n"}}
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"3"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Brush"}}
 
-        {"chunk":{"type":"text","text":"Av"}}
+        {"chunk":{"type":"text","text":" cut"}}
 
-        {"chunk":{"type":"text","text":"ocado"}}
-
-        {"chunk":{"type":"text","text":" Chocolate"}}
-
-        {"chunk":{"type":"text","text":" M"}}
-
-        {"chunk":{"type":"text","text":"ousse"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Blend"}}
-
-        {"chunk":{"type":"text","text":" ripe"}}
-
-        {"chunk":{"type":"text","text":" av"}}
-
-        {"chunk":{"type":"text","text":"ocados"}}
+        {"chunk":{"type":"text","text":" sides"}}
 
         {"chunk":{"type":"text","text":" with"}}
 
-        {"chunk":{"type":"text","text":" cocoa"}}
+        {"chunk":{"type":"text","text":" olive"}}
 
-        {"chunk":{"type":"text","text":" powder"}}
+        {"chunk":{"type":"text","text":" oil"}}
 
         {"chunk":{"type":"text","text":" and"}}
 
-        {"chunk":{"type":"text","text":" a"}}
+        {"chunk":{"type":"text","text":" season"}}
 
-        {"chunk":{"type":"text","text":" sweet"}}
+        {"chunk":{"type":"text","text":" with"}}
 
-        {"chunk":{"type":"text","text":"ener"}}
+        {"chunk":{"type":"text","text":" salt"}}
 
-        {"chunk":{"type":"text","text":" for"}}
+        {"chunk":{"type":"text","text":" and"}}
 
-        {"chunk":{"type":"text","text":" a"}}
+        {"chunk":{"type":"text","text":" pepper"}}
 
-        {"chunk":{"type":"text","text":" rich"}}
+        {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" creamy"}}
-
-        {"chunk":{"type":"text","text":" dessert"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"4"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Grill"}}
 
-        {"chunk":{"type":"text","text":"O"}}
+        {"chunk":{"type":"text","text":" cut"}}
 
-        {"chunk":{"type":"text","text":"at"}}
+        {"chunk":{"type":"text","text":"-side"}}
 
-        {"chunk":{"type":"text","text":"meal"}}
-
-        {"chunk":{"type":"text","text":" Cookies"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Use"}}
-
-        {"chunk":{"type":"text","text":" oats"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" mashed"}}
-
-        {"chunk":{"type":"text","text":" bananas"}}
-
-        {"chunk":{"type":"text","text":","}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" dark"}}
-
-        {"chunk":{"type":"text","text":" chocolate"}}
-
-        {"chunk":{"type":"text","text":" chips"}}
+        {"chunk":{"type":"text","text":" down"}}
 
         {"chunk":{"type":"text","text":" for"}}
 
-        {"chunk":{"type":"text","text":" a"}}
+        {"chunk":{"type":"text","text":" about"}}
 
-        {"chunk":{"type":"text","text":" healthier"}}
+        {"chunk":{"type":"text","text":" "}}
 
-        {"chunk":{"type":"text","text":" cookie"}}
+        {"chunk":{"type":"text","text":"2"}}
 
-        {"chunk":{"type":"text","text":" option"}}
+        {"chunk":{"type":"text","text":" minutes"}}
 
-        {"chunk":{"type":"text","text":".\n\n"}}
+        {"chunk":{"type":"text","text":","}}
+
+        {"chunk":{"type":"text","text":" until"}}
+
+        {"chunk":{"type":"text","text":" lightly"}}
+
+        {"chunk":{"type":"text","text":" char"}}
+
+        {"chunk":{"type":"text","text":"red"}}
+
+        {"chunk":{"type":"text","text":" but"}}
+
+        {"chunk":{"type":"text","text":" not"}}
+
+        {"chunk":{"type":"text","text":" wilt"}}
+
+        {"chunk":{"type":"text","text":"ed"}}
+
+        {"chunk":{"type":"text","text":"."}}
+
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"5"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Flip"}}
 
-        {"chunk":{"type":"text","text":"Fruit"}}
+        {"chunk":{"type":"text","text":" briefly"}}
 
-        {"chunk":{"type":"text","text":" Salad"}}
+        {"chunk":{"type":"text","text":" if"}}
 
-        {"chunk":{"type":"text","text":" with"}}
+        {"chunk":{"type":"text","text":" needed"}}
 
-        {"chunk":{"type":"text","text":" Honey"}}
+        {"chunk":{"type":"text","text":","}}
 
-        {"chunk":{"type":"text","text":" Lime"}}
+        {"chunk":{"type":"text","text":" then"}}
 
-        {"chunk":{"type":"text","text":" Dressing"}}
+        {"chunk":{"type":"text","text":" remove"}}
 
-        {"chunk":{"type":"text","text":"**"}}
+        {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" Combine"}}
-
-        {"chunk":{"type":"text","text":" your"}}
-
-        {"chunk":{"type":"text","text":" favorite"}}
-
-        {"chunk":{"type":"text","text":" fruits"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" drizzle"}}
-
-        {"chunk":{"type":"text","text":" with"}}
-
-        {"chunk":{"type":"text","text":" a"}}
-
-        {"chunk":{"type":"text","text":" mixture"}}
-
-        {"chunk":{"type":"text","text":" of"}}
-
-        {"chunk":{"type":"text","text":" honey"}}
-
-        {"chunk":{"type":"text","text":" and"}}
-
-        {"chunk":{"type":"text","text":" lime"}}
-
-        {"chunk":{"type":"text","text":" juice"}}
-
-        {"chunk":{"type":"text","text":".\n\n"}}
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"6"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Dr"}}
 
-        {"chunk":{"type":"text","text":"Car"}}
+        {"chunk":{"type":"text","text":"izzle"}}
 
-        {"chunk":{"type":"text","text":"rot"}}
+        {"chunk":{"type":"text","text":" with"}}
 
-        {"chunk":{"type":"text","text":" Cake"}}
+        {"chunk":{"type":"text","text":" Caesar"}}
 
-        {"chunk":{"type":"text","text":"**"}}
+        {"chunk":{"type":"text","text":" dressing"}}
 
-        {"chunk":{"type":"text","text":":"}}
+        {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"car"}}
-
-        {"chunk":{"type":"text","text":"rot"}}
-
-        {"chunk":{"type":"text","text":"-c"}}
-
-        {"chunk":{"type":"text","text":"ake"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n\n"}}
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"7"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Top"}}
 
-        {"chunk":{"type":"text","text":"Chocolate"}}
+        {"chunk":{"type":"text","text":" with"}}
 
-        {"chunk":{"type":"text","text":" Chip"}}
+        {"chunk":{"type":"text","text":" Parmesan"}}
 
-        {"chunk":{"type":"text","text":" Cookies"}}
+        {"chunk":{"type":"text","text":" and"}}
 
-        {"chunk":{"type":"text","text":"**"}}
+        {"chunk":{"type":"text","text":" cr"}}
 
-        {"chunk":{"type":"text","text":":"}}
+        {"chunk":{"type":"text","text":"out"}}
 
-        {"chunk":{"type":"text","text":" ["}}
+        {"chunk":{"type":"text","text":"ons"}}
 
-        {"chunk":{"type":"text","text":"Download"}}
+        {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"ch"}}
-
-        {"chunk":{"type":"text","text":"ocolate"}}
-
-        {"chunk":{"type":"text","text":"-chip"}}
-
-        {"chunk":{"type":"text","text":"-c"}}
-
-        {"chunk":{"type":"text","text":"ookies"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n\n"}}
+        {"chunk":{"type":"text","text":"  \n"}}
 
         {"chunk":{"type":"text","text":"8"}}
 
         {"chunk":{"type":"text","text":"."}}
 
-        {"chunk":{"type":"text","text":" **"}}
+        {"chunk":{"type":"text","text":" Serve"}}
 
-        {"chunk":{"type":"text","text":"Z"}}
+        {"chunk":{"type":"text","text":" with"}}
 
-        {"chunk":{"type":"text","text":"uc"}}
+        {"chunk":{"type":"text","text":" grilled"}}
 
-        {"chunk":{"type":"text","text":"chini"}}
+        {"chunk":{"type":"text","text":" lemon"}}
 
-        {"chunk":{"type":"text","text":" Bread"}}
+        {"chunk":{"type":"text","text":" if"}}
 
-        {"chunk":{"type":"text","text":"**"}}
+        {"chunk":{"type":"text","text":" using"}}
 
-        {"chunk":{"type":"text","text":":"}}
+        {"chunk":{"type":"text","text":".\n\n"}}
 
-        {"chunk":{"type":"text","text":" ["}}
+        {"chunk":{"type":"text","text":"["}}
 
-        {"chunk":{"type":"text","text":"Download"}}
+        {"chunk":{"type":"text","text":"1"}}
 
-        {"chunk":{"type":"text","text":" PDF"}}
+        {"chunk":{"type":"text","text":"]:"}}
 
-        {"chunk":{"type":"text","text":"]("}}
+        {"chunk":{"type":"text","text":" block"}}
 
-        {"chunk":{"type":"text","text":"Z"}}
-
-        {"chunk":{"type":"text","text":"uc"}}
-
-        {"chunk":{"type":"text","text":"chini"}}
-
-        {"chunk":{"type":"text","text":"-b"}}
-
-        {"chunk":{"type":"text","text":"read"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n\n"}}
-
-        {"chunk":{"type":"text","text":"9"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Ban"}}
-
-        {"chunk":{"type":"text","text":"ana"}}
-
-        {"chunk":{"type":"text","text":" Bread"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"banana"}}
-
-        {"chunk":{"type":"text","text":"-b"}}
-
-        {"chunk":{"type":"text","text":"read"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n\n"}}
-
-        {"chunk":{"type":"text","text":"10"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"G"}}
-
-        {"chunk":{"type":"text","text":"inger"}}
-
-        {"chunk":{"type":"text","text":"bread"}}
-
-        {"chunk":{"type":"text","text":" Cake"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"G"}}
-
-        {"chunk":{"type":"text","text":"inger"}}
-
-        {"chunk":{"type":"text","text":"bread"}}
-
-        {"chunk":{"type":"text","text":"-C"}}
-
-        {"chunk":{"type":"text","text":"ake"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")\n\n"}}
-
-        {"chunk":{"type":"text","text":"11"}}
-
-        {"chunk":{"type":"text","text":"."}}
-
-        {"chunk":{"type":"text","text":" **"}}
-
-        {"chunk":{"type":"text","text":"Sugar"}}
-
-        {"chunk":{"type":"text","text":" Cookies"}}
-
-        {"chunk":{"type":"text","text":"**"}}
-
-        {"chunk":{"type":"text","text":":"}}
-
-        {"chunk":{"type":"text","text":" ["}}
-
-        {"chunk":{"type":"text","text":"Download"}}
-
-        {"chunk":{"type":"text","text":" PDF"}}
-
-        {"chunk":{"type":"text","text":"]("}}
-
-        {"chunk":{"type":"text","text":"Sugar"}}
-
-        {"chunk":{"type":"text","text":"-C"}}
-
-        {"chunk":{"type":"text","text":"ookies"}}
-
-        {"chunk":{"type":"text","text":"-A"}}
-
-        {"chunk":{"type":"text","text":"4"}}
-
-        {"chunk":{"type":"text","text":".pdf"}}
-
-        {"chunk":{"type":"text","text":")"}}
+        {"chunk":{"type":"text","text":"-AA"}}
 
         {"chunk":{"type":"status","code":"0"}}
 
-        {"chunk":{"type":"meta","input_tokens":14,"output_tokens":32,"timings":{"generative_first_chunk":0.45031301300150517,"generative":3.8596078000009584},"input_nuclia_tokens":0.014,"output_nuclia_tokens":0.032}}
+        {"chunk":{"type":"meta","input_tokens":27,"output_tokens":24,"timings":{"generative_first_chunk":0.542062854001415,"generative":3.3323246719955932},"input_nuclia_tokens":0.027,"output_nuclia_tokens":0.024}}
 
-        {"chunk":{"normalized_tokens":{"input":0.01419,"output":0.03216,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
+        {"chunk":{"normalized_tokens":{"input":0.02736,"output":0.02388,"image":0.0},"customer_key_tokens":{"input":0.0,"output":0.0,"image":0.0},"type":"consumption"}}
 
         '
     headers:
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
       access-control-expose-headers:
@@ -2544,17 +1471,17 @@ interactions:
       content-type:
       - application/x-ndjson
       date:
-      - Wed, 15 Jul 2026 10:34:44 GMT
+      - Tue, 18 Aug 2026 10:00:34 GMT
       nuclia-learning-id:
-      - ef095335e7cf4828b74a487ae67e8fa8
+      - be9c5835fdcb41c599b5e4d6820a6079
       nuclia-learning-model:
       - chatgpt-azure-4o-mini
       via:
       - 1.1 google
       x-envoy-upstream-service-time:
-      - '457'
+      - '550'
       x-nuclia-trace-id:
-      - a80f8cd2a520ac0b955080ba4f26ead1
+      - 80a4215d1e9ba5253e36d9cce25c69c3
     status:
       code: 200
       message: OK
