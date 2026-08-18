@@ -66,10 +66,7 @@ async def test_agentic_ask_nucliadb(
     ask_response = SyncAskResponse.model_validate_json(response.content)
     assert "Debbie" in ask_response.answer
     assert ask_response.citations
-    assert any(
-        citation["context_id"]
-        for citation in ask_response.citations.values()
-    )
+    assert any(citation["context_id"] for citation in ask_response.citations.values())
 
 
 async def test_agentic_ask_nucliadb_propagates_ask_request(
