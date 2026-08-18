@@ -224,7 +224,30 @@ class NucliaDBAgenticSessionManager(SessionManager):
         answer_running.inc()
 
         try:
-            callback = partial(self.callback, topic)
+
+            async def callback(answer: AragAnswer) -> None:
+                if answer.step is not None and (
+                    answer.step.external_usage
+                    or answer.step.module in {"google", "perplexity"}
+                ):
+                    logger.info(
+                        "[external_usage_audit] Publishing agent step account=%s kb=%s module=%s external_usage=%s",
+                        account_id,
+                        agent_id,
+                        answer.step.module,
+                        [
+                            {
+                                "provider": usage.provider,
+                                "model": usage.model,
+                                "input_tokens": usage.input_tokens,
+                                "output_tokens": usage.output_tokens,
+                                "requests": usage.requests,
+                            }
+                            for usage in answer.step.external_usage or []
+                        ],
+                    )
+                await self.callback(topic, answer)
+
             question_memory.set_callback_fn(callback)
 
             feedback = partial(self.feedback, topic)

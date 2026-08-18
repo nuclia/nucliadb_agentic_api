@@ -217,9 +217,21 @@ class StreamAuditStorage:
             for event in step.external_usage or []
         ]
         if not predicts or self.kb_usage_utility is None:
+            logger.warning(
+                "[external_usage_audit] Skipping KB usage report account=%s kb=%s has_predicts=%s utility_available=%s",
+                account_id,
+                kbid,
+                bool(predicts),
+                self.kb_usage_utility is not None,
+            )
             return
         logger.info(
-            f"Sending KB usage report for account {account_id}, kb {kbid}, step {step}, trace_id {trace_id}: {[MessageToJson(p, preserving_proto_field_name=True) for p in predicts]}"
+            "[external_usage_audit] Enqueueing KB usage report account=%s kb=%s module=%s trace_id=%s predicts=%s",
+            account_id,
+            kbid,
+            step.module,
+            trace_id,
+            [MessageToJson(p, preserving_proto_field_name=True) for p in predicts],
         )
         self.kb_usage_utility.send_kb_usage(
             service=Service.RAO,

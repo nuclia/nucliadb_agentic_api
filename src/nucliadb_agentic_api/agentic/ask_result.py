@@ -141,6 +141,26 @@ class AgenticAskResult(AskResult):
                 ):
                     self.nuclia_learning_id = msg.step.metadata["learning_id"]
                     self.event_learning_id.set()
+                if msg.step and (
+                    msg.step.external_usage
+                    or msg.step.module in {"google", "perplexity"}
+                ):
+                    logger.info(
+                        "[external_usage_audit] Received agent step account=%s kb=%s module=%s external_usage=%s",
+                        self.account,
+                        self.kbid,
+                        msg.step.module,
+                        [
+                            {
+                                "provider": usage.provider,
+                                "model": usage.model,
+                                "input_tokens": usage.input_tokens,
+                                "output_tokens": usage.output_tokens,
+                                "requests": usage.requests,
+                            }
+                            for usage in msg.step.external_usage or []
+                        ],
+                    )
                 if msg.step and msg.step.external_usage:
                     audit = get_audit()
                     if audit is not None:
@@ -150,6 +170,13 @@ class AgenticAskResult(AskResult):
                             client_type=self.client_type,
                             step=msg.step,
                             trace_id=get_trace_id(),
+                        )
+                    else:
+                        logger.warning(
+                            "[external_usage_audit] Skipping external usage report because audit utility is unavailable account=%s kb=%s module=%s",
+                            self.account,
+                            self.kbid,
+                            msg.step.module,
                         )
                 await self.queue.put(msg)
             except (RuntimeError, asyncio.QueueFull):
