@@ -13,7 +13,6 @@ from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.utils.responses import (
     HTTPClientError,
 )
-from nucliadb_models.configuration import AskConfig
 from nucliadb_models.resource import NucliaDBRoles
 from nucliadb_models.search import (
     NucliaDBClientType,
@@ -70,29 +69,22 @@ async def websocket_endpoint(
     item = AskRequest(query="")
     item.security = security
 
-    if search_configuration is not None:
-        search_config = await rpc.get_search_configuration(
-            rpc.get_sdk("reader"), kbid, name=search_configuration
+    item.search_configuration = search_configuration
+    try:
+        item = await rpc.apply_ask_search_configuration(
+            rpc.get_sdk("reader"), kbid, item
         )
-        if search_config is None:
-            return HTTPClientError(
-                status_code=400, detail="Search configuration not found"
-            )
-
-        if not isinstance(search_config.config, AskConfig):
-            return HTTPClientError(
-                status_code=400,
-                detail="This search configuration is not valid for `ask`",
-            )
-
-        try:
-            item = AskRequest.model_validate(
-                search_config.config.model_dump(exclude_unset=True)
-                | item.model_dump(exclude_unset=True)
-            )
-        except ValidationError as e:
-            detail = json.loads(e.json())
-            return HTTPClientError(status_code=422, detail=detail)
+    except rpc.SearchConfigurationNotFound:
+        return HTTPClientError(
+            status_code=400, detail="Search configuration not found"
+        )
+    except rpc.InvalidAskSearchConfiguration:
+        return HTTPClientError(
+            status_code=400,
+            detail="This search configuration is not valid for `ask`",
+        )
+    except ValidationError as exc:
+        return HTTPClientError(status_code=422, detail=json.loads(exc.json()))
 
     # Wait for questions
     first_question = True

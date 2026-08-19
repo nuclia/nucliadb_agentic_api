@@ -2,7 +2,7 @@ import base64
 from typing import Literal
 
 from nucliadb_models.augment import AugmentRequest, AugmentResponse
-from nucliadb_models.configuration import SearchConfiguration
+from nucliadb_models.configuration import AskConfig, SearchConfiguration
 from nucliadb_models.graph.requests import GraphNodesSearchRequest, GraphSearchRequest
 from nucliadb_models.graph.responses import (
     GraphNodesSearchResponse,
@@ -25,7 +25,7 @@ from hyperforge_nucliadb_agentic.ask.exceptions import (
     KnowledgeBoxNotFound,
     NucliaDBError,
 )
-from hyperforge_nucliadb_agentic.ask.model import Image
+from hyperforge_nucliadb_agentic.ask.model import AskRequest, Image
 from hyperforge_nucliadb_agentic.ask.settings import settings
 from hyperforge_nucliadb_agentic.ask.utils.ids import FieldId
 
@@ -58,6 +58,36 @@ async def get_search_configuration(
         resp.content
     )
     return config
+
+
+class SearchConfigurationNotFound(Exception):
+    pass
+
+
+class InvalidAskSearchConfiguration(Exception):
+    pass
+
+
+async def apply_ask_search_configuration(
+    reader_sdk: NucliaDBAsync,
+    kbid: str,
+    ask_request: AskRequest,
+) -> AskRequest:
+    if ask_request.search_configuration is None:
+        return ask_request
+
+    search_config = await get_search_configuration(
+        reader_sdk, kbid, name=ask_request.search_configuration
+    )
+    if search_config is None:
+        raise SearchConfigurationNotFound
+    if not isinstance(search_config.config, AskConfig):
+        raise InvalidAskSearchConfiguration
+
+    return AskRequest.model_validate(
+        search_config.config.model_dump(exclude_unset=True)
+        | ask_request.model_dump(exclude_unset=True)
+    )
 
 
 async def find(

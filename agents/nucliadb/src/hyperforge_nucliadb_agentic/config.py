@@ -9,6 +9,10 @@ from pydantic.config import ConfigDict
 class NucliaDBAgentConfig(ContextAgentConfig):
     model_config = ConfigDict(title="Knowledge Box Agent")
     module: Literal["nucliadb_agent"] = "nucliadb_agent"
+    search_config: Optional[str] = Field(
+        default=None,
+        description="ID of an ask search configuration applied to this agent",
+    )
     sources: List[str] = Field(
         default_factory=list,
         json_schema_extra={

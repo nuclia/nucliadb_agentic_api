@@ -8,18 +8,61 @@ is mocked so that no real network traffic or NucliaDB instance is needed.
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
+    choose_sources,
     clean_citation_footnotes_from_answer,
     get_catalog_filter_prompt,
     get_chunk_text,
 )
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from hyperforge_nucliadb_agentic.ask.search.ask import NotEnoughContextAskResult
+from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 
 # ---------------------------------------------------------------------------
 # Construction
 # ---------------------------------------------------------------------------
+
+
+class TestChooseSources:
+    async def test_single_source_does_not_load_routing_metadata(
+        self, mock_memory, mock_manager
+    ):
+        with patch(
+            "hyperforge_nucliadb_agentic.agent.choose_source",
+            new_callable=AsyncMock,
+        ) as choose_source:
+            sources = await choose_sources(
+                mock_memory,
+                mock_manager,
+                ["local-kb"],
+                "question",
+                ident="agent",
+                step_title="Choose sources",
+            )
+
+        assert [source.id for source in sources] == ["local-kb"]
+        choose_source.assert_not_awaited()
+
+    async def test_multiple_sources_use_router(self, mock_memory, mock_manager):
+        expected = [MagicMock()]
+        with patch(
+            "hyperforge_nucliadb_agentic.agent.choose_source",
+            new_callable=AsyncMock,
+            return_value=expected,
+        ) as choose_source:
+            sources = await choose_sources(
+                mock_memory,
+                mock_manager,
+                ["first-kb", "second-kb"],
+                "question",
+                ident="agent",
+                step_title="Choose sources",
+            )
+
+        assert sources == expected
+        choose_source.assert_awaited_once()
 
 
 class TestNucliaDBAgentInit:
@@ -501,6 +544,49 @@ class TestRetrieve:
 
 
 class TestInnerRag:
+    async def test_applies_search_config_and_preserves_source_filter(
+        self, mock_memory, mock_manager, mock_source, mock_nucliadb_driver
+    ):
+        from nucliadb_models.filters import FilterExpression, Label
+
+        config = NucliaDBAgentConfig(
+            sources=["kb-source-1"],
+            search_config="legal-rag",
+        )
+        agent = NucliaDBAgent(config=config, agent_id="rag-agent")
+        source_filter = FilterExpression(
+            field=Label(labelset="document", label="legal")
+        )
+        mock_nucliadb_driver.config.filter_expression = source_filter
+        ask_result = NotEnoughContextAskResult()
+
+        async def apply_config(reader_sdk, kbid, request):
+            assert reader_sdk is mock_nucliadb_driver.driver
+            assert kbid == "test-kbid"
+            assert request.search_configuration == "legal-rag"
+            return request.model_copy(update={"top_k": 3})
+
+        with (
+            patch(
+                "hyperforge_nucliadb_agentic.agent.rpc.apply_ask_search_configuration",
+                new=AsyncMock(side_effect=apply_config),
+            ),
+            patch(
+                "hyperforge_nucliadb_agentic.agent.ask",
+                new=AsyncMock(return_value=ask_result),
+            ) as mock_ask,
+        ):
+            await agent.inner_rag(
+                source_obj=mock_source,
+                manager=mock_manager,
+                memory=mock_memory,
+                question="Which clauses apply?",
+            )
+
+        internal_request = mock_ask.call_args.kwargs["ask_request"]
+        assert internal_request.top_k == 3
+        assert internal_request.filter_expression == source_filter
+
     async def test_uses_endpoint_ask_request_with_smart_agent_query(
         self, nucliadb_agent, mock_memory, mock_manager, mock_source
     ):

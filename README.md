@@ -108,6 +108,7 @@ And sources can be:
 {
   "type": "nucliadb",
   "description": <string>,
+  "search_config": <ask search configuration id>, // optional
   "filter_expression": <filter_expression>, //optional
 }
 
