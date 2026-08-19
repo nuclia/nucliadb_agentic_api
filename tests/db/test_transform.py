@@ -100,7 +100,9 @@ async def test_transform_mcp_source_references_its_driver(load_agents_nucliadb_a
         smart_agent=AgenticSmartAgentConfiguration(sources=["mcp-source"])
     )
     source_manager = AsyncMock()
-    source_manager.get_source.return_value = MCPSourceSchema(uri="https://example.com/mcp")
+    source_manager.get_source.return_value = MCPSourceSchema(
+        uri="https://example.com/mcp"
+    )
 
     retrieval_config, drivers, _ = await transform_agentic_config(
         config,
@@ -328,5 +330,7 @@ def test_history_can_be_disabled_or_unsupported():
     assert disabled.smart_agent is not None and disabled.smart_agent.history is False
     assert disabled.summarize is not None and disabled.summarize.history is False
     assert unsupported.rephrase is not None and unsupported.rephrase.history is None
-    assert unsupported.smart_agent is not None and unsupported.smart_agent.history is None
+    assert (
+        unsupported.smart_agent is not None and unsupported.smart_agent.history is None
+    )
     assert unsupported.summarize is not None and unsupported.summarize.history is None

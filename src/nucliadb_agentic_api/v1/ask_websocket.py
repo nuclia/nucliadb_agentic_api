@@ -5,6 +5,7 @@ from fastapi import Header, Query, WebSocket, WebSocketDisconnect
 from hyperforge.api.authentication import requires
 from hyperforge.api.v1.interaction import WebsocketReceiver, stream_response
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
+from hyperforge_nucliadb_agentic.ask.audit import get_audit, get_trace_id
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
 )
@@ -21,6 +22,7 @@ from nucliadb_models.security import RequestSecurity
 from nucliadb_utils.authentication import NucliaUser
 from pydantic import ValidationError
 
+from nucliadb_agentic_api import logger
 from nucliadb_agentic_api.v1.router import router
 
 
@@ -127,6 +129,23 @@ async def websocket_endpoint(
             interaction,
             workflow_id=agentic_config_id,
         ):
+            if msg.step and msg.step.external_usage:
+                audit = get_audit()
+                if audit is not None:
+                    audit.report_step_usage(
+                        account_id=x_stf_account,
+                        kbid=kbid,
+                        client_type=x_ndb_client,
+                        step=msg.step,
+                        trace_id=get_trace_id(),
+                    )
+                else:
+                    logger.warning(
+                        "Skipping WebSocket external usage report because audit utility is unavailable account=%s kb=%s module=%s",
+                        x_stf_account,
+                        kbid,
+                        msg.step.module,
+                    )
             try:
                 await websocket.send_text(msg.model_dump_json())
             except (RuntimeError, WebSocketDisconnect):

@@ -4,7 +4,9 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 from hyperforge_nucliadb_agentic.agent import NucliaDBAgent
+from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
 from hyperforge_nucliadb_agentic.ask.model import AskRequest, SyncAskResponse
+from pytest_mock import MockerFixture
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
 
@@ -64,10 +66,7 @@ async def test_agentic_ask_nucliadb(
     ask_response = SyncAskResponse.model_validate_json(response.content)
     assert "Debbie" in ask_response.answer
     assert ask_response.citations
-    assert any(
-        citation["context_id"]
-        for citation in ask_response.citations.values()
-    )
+    assert any(citation["context_id"] for citation in ask_response.citations.values())
 
 
 async def test_agentic_ask_nucliadb_propagates_ask_request(
@@ -151,6 +150,7 @@ async def test_agentic_ask_perplexity(
     nucliadb_agentic_api_http_client: AsyncClient,
     nucliadb_agentic_api_server: NucliaDBAgenticSessionManager,
     eric_dataset: str,
+    mocker: MockerFixture,
 ):
     # In this basic test we just want to verify that the ask endpoint is working end-to-end with a simple question, without any agentic config.
     # We use a dataset with a single article to have a predictable answer.
@@ -214,7 +214,7 @@ async def test_agentic_ask_perplexity(
     assert resp.status_code == 201, resp.text
 
     ask_request = AskRequest(
-        query="I want a desert that is healthy and tasty.",
+        query="Give me the recipe for 'Grilled Romaine Caesar Salad'",
         agentic_config_id="default",
     )
 
@@ -225,6 +225,13 @@ async def test_agentic_ask_perplexity(
             "X-NUCLIADB-ACCOUNT": "eric",
         },
     )
+    report_step_usage = mocker.spy(StreamAuditStorage, "report_step_usage")
     response = await client.post("/ask", json=ask_request.model_dump(), timeout=1000)
     assert response.status_code == 200, response.text
-    assert b"Banana" in response.content
+    assert b"parmesan" in response.content.lower()
+    report_step_usage.assert_called_once()
+    _, kwargs = report_step_usage.call_args
+    assert kwargs["account_id"] == "eric"
+    assert kwargs["kbid"] == eric_dataset
+    assert kwargs["step"].external_usage is not None
+    assert kwargs["step"].external_usage[0].provider == "perplexity"

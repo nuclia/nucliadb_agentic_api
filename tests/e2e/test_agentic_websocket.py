@@ -8,6 +8,8 @@ from hyperforge.interaction import (
     AnswerOperation,
     AragAnswer,
 )
+from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
+from pytest_mock import MockerFixture
 from websockets.asyncio.client import connect
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
@@ -102,6 +104,7 @@ async def test_agentic_websocket_perplexity(
     nucliadb_agentic_api_http_client: AsyncClient,
     nucliadb_agentic_api_server: NucliaDBAgenticSessionManager,
     eric_dataset: str,
+    mocker: MockerFixture,
 ):
     # In this basic test we just want to verify that the ask endpoint is working end-to-end with a simple question, without any agentic config.
     # We use a dataset with a single article to have a predictable answer.
@@ -173,12 +176,13 @@ async def test_agentic_websocket_perplexity(
         "X-NUCLIADB-ACCOUNT-TYPE": "basic",
     }
 
+    report_step_usage = mocker.spy(StreamAuditStorage, "report_step_usage")
     async with connect(
         f"ws://{nucliadb_agentic_api_http}/api/v1/kb/{eric_dataset}/ask?agentic_config_id=default&keep_open=true",
         additional_headers=headers,
     ) as websocket:
         initial_message = {
-            "question": "I want a desert that is healthy and tasty.",
+            "question": "Give me the recipe for 'Grilled Romaine Caesar Salad'",
             "operation": InteractionOperation.QUESTION,
         }
         await websocket.send(json.dumps(initial_message))
@@ -201,4 +205,10 @@ async def test_agentic_websocket_perplexity(
                     "No feedback, step, possible_answer, context or generated_text in response"
                 )
 
-        assert "banana" in answers[0].lower() or "fruit" in answers[0].lower()
+        assert "parmesan" in answers[0].lower()
+    report_step_usage.assert_called_once()
+    _, kwargs = report_step_usage.call_args
+    assert kwargs["account_id"] == "nuclia"
+    assert kwargs["kbid"] == eric_dataset
+    assert kwargs["step"].external_usage is not None
+    assert kwargs["step"].external_usage[0].provider == "perplexity"

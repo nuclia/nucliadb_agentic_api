@@ -187,7 +187,6 @@ class StreamAuditStorage:
             nats_subject=cast(str, usage_settings.usage_jetstream_subject),
         )
         await self.kb_usage_utility.initialize()
-
         self.initialized = True
 
     async def finalize(self):
@@ -214,8 +213,14 @@ class StreamAuditStorage:
             for event in step.external_usage or []
         ]
         if not predicts or self.kb_usage_utility is None:
+            logger.warning(
+                "Skipping KB usage report account=%s kb=%s has_predicts=%s utility_available=%s",
+                account_id,
+                kbid,
+                bool(predicts),
+                self.kb_usage_utility is not None,
+            )
             return
-
         self.kb_usage_utility.send_kb_usage(
             service=Service.RAO,
             account_id=account_id,
