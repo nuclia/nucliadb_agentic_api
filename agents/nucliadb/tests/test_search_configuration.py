@@ -1,10 +1,9 @@
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from nucliadb_models.configuration import AskConfig
-
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from hyperforge_nucliadb_agentic.ask.search import rpc
+from nucliadb_models.configuration import AskConfig
 
 
 async def test_ask_request_overrides_search_configuration():

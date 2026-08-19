@@ -8,7 +8,6 @@ is mocked so that no real network traffic or NucliaDB instance is needed.
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
     choose_sources,
