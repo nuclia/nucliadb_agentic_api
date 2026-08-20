@@ -11,6 +11,11 @@ from hyperforge_rephrase.config import RephraseAgentConfig
 from hyperforge_smart.config import SmartAgentConfig
 from hyperforge_summarize.config import SummarizeAgentConfig
 
+from nucliadb_agentic_api.db.agentic_configs import (
+    _config_from_row,
+    _serialize_config,
+)
+from nucliadb_agentic_api.db.sources import _serialize_source, _source_from_row
 from nucliadb_agentic_api.db.transform import transform_agentic_config
 from nucliadb_agentic_api.models import (
     AgenticConfigSchema,
@@ -275,6 +280,52 @@ async def test_transform_legacy_null_smart_models_use_runtime_defaults():
     assert smart.context_validation_model == SmartAgentConfig().context_validation_model
     assert smart.planner_model == SmartAgentConfig().planner_model
     assert smart.executor_model == SmartAgentConfig().executor_model
+
+
+async def test_transform_model_defaults_are_stable_after_config_reload():
+    config = AgenticConfigSchema.model_validate(
+        {"rephrase": {}, "smart_agent": {}, "summarize": {}}
+    )
+    reloaded = _config_from_row({"config": _serialize_config(config)})
+
+    before, _, _ = await transform_agentic_config(
+        config, AsyncMock(), account="account", kbid="kbid"
+    )
+    after, _, _ = await transform_agentic_config(
+        reloaded, AsyncMock(), account="account", kbid="kbid"
+    )
+
+    assert before.preprocess[0].model == after.preprocess[0].model
+    assert before.context[0].context_validation_model == after.context[0].context_validation_model
+    assert before.context[0].planner_model == after.context[0].planner_model
+    assert before.context[0].executor_model == after.context[0].executor_model
+    assert before.generation[0].model == after.generation[0].model
+
+
+async def test_transform_mcp_default_is_stable_after_source_reload(
+    load_agents_nucliadb_agentic,
+):
+    config = AgenticConfigSchema(
+        smart_agent=AgenticSmartAgentConfiguration(sources=["mcp"])
+    )
+    source = MCPSourceSchema(uri="https://example.com/mcp")
+    reloaded = _source_from_row({"config": _serialize_source(source)})
+    source_manager = AsyncMock()
+
+    source_manager.get_source.return_value = source
+    before, _, _ = await transform_agentic_config(
+        config, source_manager, account="account", kbid="kbid"
+    )
+    source_manager.get_source.return_value = reloaded
+    after, _, _ = await transform_agentic_config(
+        config, source_manager, account="account", kbid="kbid"
+    )
+
+    before_mcp = before.context[0].registered_agents[0]
+    after_mcp = after.context[0].registered_agents[0]
+    assert isinstance(before_mcp, MCPAgentConfig)
+    assert isinstance(after_mcp, MCPAgentConfig)
+    assert before_mcp.tool_choice_model == after_mcp.tool_choice_model
 
 
 async def test_transform_wires_sources_and_internal_nucliadb_driver(

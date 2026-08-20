@@ -28,7 +28,7 @@ async def test_agentic_config_crud(
             "models": {
                 "context_validation": {
                     "_type": "llm_config",
-                    "model_id": "chatgpt-4.1",
+                    "model_id": "chatgpt-azure-4o-mini",
                 },
                 "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
                 "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
@@ -71,7 +71,7 @@ async def test_agentic_config_crud(
             "models": {
                 "context_validation": {
                     "_type": "llm_config",
-                    "model_id": "chatgpt-4.1",
+                    "model_id": "chatgpt-azure-4o-mini",
                 },
                 "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
                 "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},

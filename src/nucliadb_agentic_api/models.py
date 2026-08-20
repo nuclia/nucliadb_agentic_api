@@ -144,7 +144,7 @@ class AgenticSmartAgentMode(str, Enum):
 
 class AgenticSmartAgentModels(BaseModel):
     context_validation: LLMField | None = Field(
-        default=LLMConfig(model_id=llm_defaults.smart)
+        default=LLMConfig(model_id=llm_defaults.default)
     )
     planner: LLMField | None = Field(default=LLMConfig(model_id=llm_defaults.smart))
     executor: LLMField | None = Field(default=LLMConfig(model_id=llm_defaults.smart))

@@ -43,7 +43,7 @@ async def test_agentic_configs_api(
             "models": {
                 "context_validation": {
                     "_type": "llm_config",
-                    "model_id": "chatgpt-4.1",
+                    "model_id": "chatgpt-azure-4o-mini",
                 },
                 "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
                 "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
@@ -101,6 +101,12 @@ async def test_agentic_config_schema_exposes_llm_defaults(
         definitions["AgenticRephraseConfiguration"]["properties"]["model"]["default"][
             "model_id"
         ]
+        == "chatgpt-azure-4o-mini"
+    )
+    assert (
+        definitions["AgenticSmartAgentModels"]["properties"][
+            "context_validation"
+        ]["default"]["model_id"]
         == "chatgpt-azure-4o-mini"
     )
     assert (

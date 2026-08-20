@@ -63,7 +63,7 @@ async def transform_agentic_config(
             kb=rephrase.ask_to,
             history=rephrase.history if rephrase.history is not None else False,
         )
-        if "model" in rephrase.model_fields_set and rephrase.model is not None:
+        if rephrase.model is not None:
             rephrase_config.model = rephrase.model
         preprocess.append(rephrase_config)
 
@@ -146,10 +146,7 @@ async def transform_agentic_config(
                     transport=Transport.HTTP,
                     valid_headers=source_obj.valid_headers or [],
                 )
-                if (
-                    "tool_choice_model" in source_obj.model_fields_set
-                    and source_obj.tool_choice_model is not None
-                ):
+                if source_obj.tool_choice_model is not None:
                     mcp_agent_config.tool_choice_model = source_obj.tool_choice_model
                 registered_agents.append(mcp_agent_config)
 
@@ -179,15 +176,12 @@ async def transform_agentic_config(
             registered_agents=[agent.model_dump() for agent in registered_agents],  # type: ignore[misc]
         )
         models = smart_agent.models
-        if "models" in smart_agent.model_fields_set and models is not None:
-            if (
-                "context_validation" in models.model_fields_set
-                and models.context_validation is not None
-            ):
+        if models is not None:
+            if models.context_validation is not None:
                 smart_config.context_validation_model = models.context_validation
-            if "planner" in models.model_fields_set and models.planner is not None:
+            if models.planner is not None:
                 smart_config.planner_model = models.planner
-            if "executor" in models.model_fields_set and models.executor is not None:
+            if models.executor is not None:
                 smart_config.executor_model = models.executor
         context.append(smart_config)
 
@@ -202,7 +196,7 @@ async def transform_agentic_config(
             force_chunk_level_citations=False,
             history=summarize.history if summarize.history is not None else False,
         )
-        if "model" in summarize.model_fields_set and summarize.model is not None:
+        if summarize.model is not None:
             summarize_config.model = summarize.model
         generation.append(summarize_config)
 
