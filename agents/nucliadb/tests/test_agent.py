@@ -538,8 +538,66 @@ class TestRetrieve:
 
 
 # ---------------------------------------------------------------------------
-# inner_rag
+# prepare_ask_request and inner_rag
 # ---------------------------------------------------------------------------
+
+
+class TestPrepareAskRequest:
+    async def test_uses_agent_defaults(
+        self, nucliadb_agent, mock_nucliadb_driver
+    ):
+        request = await nucliadb_agent.prepare_ask_request(
+            mock_nucliadb_driver,
+            "runtime question",
+            None,
+            [],
+        )
+
+        assert request.query == "runtime question"
+        assert request.show == ["basic", "origin"]
+        assert request.citations == "llm_footnotes"
+        assert request.generative_model == nucliadb_agent.config.generative_model
+        assert request.rag_strategies == []
+        assert request.generate_answer is nucliadb_agent.config.generate_inner_answer
+
+    async def test_public_ask_overrides_search_config_and_runtime_query_wins(
+        self, mock_nucliadb_driver
+    ):
+        agent = NucliaDBAgent(
+            config=NucliaDBAgentConfig(
+                sources=["kb-source-1"],
+                search_config="source-rag",
+                generative_model="agent-model",
+            ),
+            agent_id="rag-agent",
+        )
+        public_request = AskRequest(
+            query="public question",
+            top_k=7,
+            generative_model=None,
+        )
+
+        async def apply_config(reader_sdk, kbid, request):
+            assert request.search_configuration == "source-rag"
+            return AskRequest.model_validate(
+                {"top_k": 1, "generative_model": "config-model"}
+                | request.model_dump(exclude_unset=True)
+            )
+
+        with patch(
+            "hyperforge_nucliadb_agentic.agent.rpc.apply_ask_search_configuration",
+            new=AsyncMock(side_effect=apply_config),
+        ):
+            request = await agent.prepare_ask_request(
+                mock_nucliadb_driver,
+                "runtime question",
+                public_request.model_dump_json(exclude_unset=True),
+                [],
+            )
+
+        assert request.query == "runtime question"
+        assert request.top_k == 7
+        assert request.generative_model is None
 
 
 class TestInnerRag:
