@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 
 from hyperforge.driver import DriverConfig
+from hyperforge.llm_config import LLMConfig, LLMField, llm_defaults
 from hyperforge.models import Rules
 from nucliadb_models import FilterExpression, TextFormat
 from pydantic import BaseModel, Field
@@ -132,7 +133,7 @@ class InteractionRequest(BaseModel):
 class AgenticRephraseConfiguration(BaseModel):
     ask_to: Optional[str] = None
     prompt: Optional[str] = None
-    model: Optional[str] = None
+    model: LLMField | None = Field(default=LLMConfig(model_id=llm_defaults.default))
     history: Optional[bool] = True
 
 
@@ -142,9 +143,11 @@ class AgenticSmartAgentMode(str, Enum):
 
 
 class AgenticSmartAgentModels(BaseModel):
-    context_validation: Optional[str] = None
-    planner: Optional[str] = None
-    executor: Optional[str] = None
+    context_validation: LLMField | None = Field(
+        default=LLMConfig(model_id=llm_defaults.smart)
+    )
+    planner: LLMField | None = Field(default=LLMConfig(model_id=llm_defaults.smart))
+    executor: LLMField | None = Field(default=LLMConfig(model_id=llm_defaults.smart))
 
 
 class NucliaDBAgenticSource(BaseModel):
@@ -188,7 +191,9 @@ class MCPAgenticSource(BaseModel):
     description: Optional[str] = None
     uri: str
     headers: Optional[Dict[str, Any]] = None
-    tool_choice_model: Optional[str] = None
+    tool_choice_model: LLMField | None = Field(
+        default=LLMConfig(model_id=llm_defaults.smart)
+    )
     valid_headers: Optional[List[str]] = None
 
 
@@ -216,7 +221,7 @@ AgenticSource = Annotated[
 class AgenticSmartAgentConfiguration(BaseModel):
     mode: AgenticSmartAgentMode = AgenticSmartAgentMode.REACTIVE
     extra_prompt: Optional[str] = None
-    models: Optional[AgenticSmartAgentModels] = None
+    models: AgenticSmartAgentModels = Field(default_factory=AgenticSmartAgentModels)
     sources: List[str] = Field(default_factory=list)
     history: Optional[bool] = True
 
@@ -225,7 +230,7 @@ class AgenticSummarizeConfiguration(BaseModel):
     user_prompt: Optional[str] = None
     system_prompt: Optional[str] = None
     conversational: bool = True
-    model: Optional[str] = None
+    model: LLMField | None = Field(default=LLMConfig(model_id=llm_defaults.default))
     history: Optional[bool] = True
 
 
@@ -292,8 +297,8 @@ class MCPSourceSchema(BaseModel):
         default=None,
         description="HTTP headers forwarded with every MCP request",
     )
-    tool_choice_model: Optional[str] = Field(
-        default=None,
+    tool_choice_model: LLMField | None = Field(
+        default=LLMConfig(model_id=llm_defaults.smart),
         description="Model used for MCP tool selection",
     )
     valid_headers: Optional[List[str]] = Field(

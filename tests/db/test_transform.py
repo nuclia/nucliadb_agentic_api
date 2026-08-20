@@ -150,7 +150,12 @@ async def test_transform_applies_explicit_configuration(load_agents_nucliadb_age
     assert isinstance(rephrase, RephraseAgentConfig)
     assert isinstance(smart, SmartAgentConfig)
     assert isinstance(summarize, SummarizeAgentConfig)
-    assert (rephrase.title, rephrase.model, rephrase.rules, rephrase.kb) == (
+    assert (
+        rephrase.title,
+        rephrase.model.model_id,
+        rephrase.rules,
+        rephrase.kb,
+    ) == (
         "Configured - Retrieval",
         "rephrase-model",
         ["Rephrase this"],
@@ -160,9 +165,9 @@ async def test_transform_applies_explicit_configuration(load_agents_nucliadb_age
         smart.title,
         smart.planning_mode,
         smart.extra_prompt,
-        smart.context_validation_model,
-        smart.planner_model,
-        smart.executor_model,
+        smart.context_validation_model.model_id,
+        smart.planner_model.model_id,
+        smart.executor_model.model_id,
     ) == (
         "Configured - Smart Agent",
         "plan_execute",
@@ -173,7 +178,7 @@ async def test_transform_applies_explicit_configuration(load_agents_nucliadb_age
     )
     assert (
         summarize.title,
-        summarize.model,
+        summarize.model.model_id,
         summarize.prompt,
         summarize.system_prompt,
     ) == (
@@ -189,6 +194,56 @@ async def test_transform_uses_runtime_model_defaults():
         rephrase=AgenticRephraseConfiguration(),
         smart_agent=AgenticSmartAgentConfiguration(),
         summarize=AgenticSummarizeConfiguration(),
+    )
+
+    retrieval_config, _, _ = await transform_agentic_config(
+        config, AsyncMock(), account="account", kbid="kbid"
+    )
+
+    rephrase = retrieval_config.preprocess[0]
+    smart = retrieval_config.context[0]
+    summarize = retrieval_config.generation[0]
+    assert isinstance(rephrase, RephraseAgentConfig)
+    assert isinstance(smart, SmartAgentConfig)
+    assert isinstance(summarize, SummarizeAgentConfig)
+    assert rephrase.model == RephraseAgentConfig().model
+    assert smart.context_validation_model == SmartAgentConfig().context_validation_model
+    assert smart.planner_model == SmartAgentConfig().planner_model
+    assert smart.executor_model == SmartAgentConfig().executor_model
+    assert summarize.model == SummarizeAgentConfig().model
+
+
+async def test_transform_only_overrides_explicit_smart_models():
+    config = AgenticConfigSchema(
+        smart_agent=AgenticSmartAgentConfiguration(
+            models=AgenticSmartAgentModels(planner="planner-model")
+        )
+    )
+
+    retrieval_config, _, _ = await transform_agentic_config(
+        config, AsyncMock(), account="account", kbid="kbid"
+    )
+
+    smart = retrieval_config.context[0]
+    assert isinstance(smart, SmartAgentConfig)
+    assert smart.context_validation_model == SmartAgentConfig().context_validation_model
+    assert smart.planner_model.model_id == "planner-model"
+    assert smart.executor_model == SmartAgentConfig().executor_model
+
+
+async def test_transform_legacy_null_models_use_runtime_defaults():
+    config = AgenticConfigSchema.model_validate(
+        {
+            "rephrase": {"model": None},
+            "smart_agent": {
+                "models": {
+                    "context_validation": None,
+                    "planner": None,
+                    "executor": None,
+                }
+            },
+            "summarize": {"model": None},
+        }
     )
 
     retrieval_config, _, _ = await transform_agentic_config(
@@ -270,7 +325,7 @@ async def test_transform_wires_sources_and_internal_nucliadb_driver(
     assert kb_driver.config.filter_expression is not None
     assert mcp_driver.config.uri == "https://example.com/mcp"
     assert mcp_driver.config.headers == {"Authorization": "Bearer token"}
-    assert mcp_agent.tool_choice_model == "tool-model"
+    assert mcp_agent.tool_choice_model.model_id == "tool-model"
     assert mcp_agent.valid_headers == ["X-Request-ID"]
     assert perplexity_agent.domain == ["example.com"]
     assert global_drivers == ["google", "perplexity"]

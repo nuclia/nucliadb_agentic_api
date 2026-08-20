@@ -8,6 +8,7 @@ is mocked so that no real network traffic or NucliaDB instance is needed.
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from hyperforge.llm_config import LLMConfig
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
     choose_sources,
@@ -543,9 +544,7 @@ class TestRetrieve:
 
 
 class TestPrepareAskRequest:
-    async def test_uses_agent_defaults(
-        self, nucliadb_agent, mock_nucliadb_driver
-    ):
+    async def test_uses_agent_defaults(self, nucliadb_agent, mock_nucliadb_driver):
         request = await nucliadb_agent.prepare_ask_request(
             mock_nucliadb_driver,
             "runtime question",
@@ -556,7 +555,10 @@ class TestPrepareAskRequest:
         assert request.query == "runtime question"
         assert request.show == ["basic", "origin"]
         assert request.citations == "llm_footnotes"
-        assert request.generative_model == nucliadb_agent.config.generative_model
+        assert (
+            request.generative_model == nucliadb_agent.config.generative_model.model_id
+        )
+        assert request.reasoning is False
         assert request.rag_strategies == []
         assert request.generate_answer is nucliadb_agent.config.generate_inner_answer
 
@@ -598,6 +600,49 @@ class TestPrepareAskRequest:
         assert request.query == "runtime question"
         assert request.top_k == 7
         assert request.generative_model is None
+
+    async def test_uses_model_reasoning_as_fallback(self, mock_nucliadb_driver):
+        agent = NucliaDBAgent(
+            config=NucliaDBAgentConfig(
+                sources=["kb-source-1"],
+                generative_model=LLMConfig(
+                    model_id="reasoning-model",
+                    advanced_reasoning={"effort": "high", "budget_tokens": 20_000},
+                ),
+            ),
+            agent_id="rag-agent",
+        )
+
+        request = await agent.prepare_ask_request(
+            mock_nucliadb_driver, "runtime question", None, []
+        )
+
+        assert request.reasoning is not False
+        assert request.reasoning.effort == "high"
+        assert request.reasoning.budget_tokens == 20_000
+
+    async def test_public_ask_reasoning_overrides_model_reasoning(
+        self, mock_nucliadb_driver
+    ):
+        agent = NucliaDBAgent(
+            config=NucliaDBAgentConfig(
+                sources=["kb-source-1"],
+                generative_model=LLMConfig(
+                    model_id="reasoning-model", reasoning="enabled"
+                ),
+            ),
+            agent_id="rag-agent",
+        )
+        public_request = AskRequest(query="public question", reasoning=False)
+
+        request = await agent.prepare_ask_request(
+            mock_nucliadb_driver,
+            "runtime question",
+            public_request.model_dump_json(exclude_unset=True),
+            [],
+        )
+
+        assert request.reasoning is False
 
 
 class TestInnerRag:
