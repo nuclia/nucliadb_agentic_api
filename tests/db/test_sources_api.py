@@ -15,6 +15,7 @@ async def test_sources_api(
     payload = {
         "type": "nucliadb",
         "description": "My KB source",
+        "search_config": "default-rag",
         "labels": ["important", "verified"],
     }
 
@@ -40,6 +41,7 @@ async def test_sources_api(
     updated = {
         "type": "nucliadb",
         "description": "Updated KB source",
+        "search_config": "focused-rag",
         "labels": ["updated"],
     }
     resp = await nucliadb_agentic_api_http_client.patch(

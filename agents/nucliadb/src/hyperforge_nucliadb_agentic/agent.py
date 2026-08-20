@@ -55,8 +55,30 @@ from hyperforge_nucliadb_agentic.ask.model import (
     RagStrategies,
     SyncAskResponse,
 )
+from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.search.ask import ask
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
+
+
+async def choose_sources(
+    memory: QuestionMemory,
+    manager: Manager,
+    sources: List[str],
+    question: str,
+    ident: str,
+    step_title: str,
+) -> list[Source]:
+    if len(sources) == 1:
+        return [Source.model_construct(id=sources[0])]
+    return await choose_source(
+        memory,
+        manager,
+        sources,
+        question,
+        ident=ident,
+        step_title=step_title,
+    )
+
 
 # Example filter expressions for catalog search
 EXAMPLE_FILTER_EXP1 = [
@@ -746,7 +768,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 or_filters = [f"/l/{labelset}/{lv}" for lv in label_values]
 
         # Choose sources based on the question/s and the in
-        chosen_sources = await choose_source(
+        chosen_sources = await choose_sources(
             memory,
             manager,
             sources,
@@ -783,7 +805,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
     ) -> List[tuple[str, str]]:
         sources = self.config.sources
         # Choose sources based on the question/s and the in
-        chosen_sources = await choose_source(
+        chosen_sources = await choose_sources(
             memory,
             manager,
             sources,
@@ -949,6 +971,57 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         else:
             return combine_catalog_filter_expressions(to_combine, operator="and")
 
+    async def prepare_ask_request(
+        self,
+        nucliadb_driver: NucliaDBDriver,
+        question: str,
+        ask_request_json: str | None,
+        rag_strategies: list[RagStrategies],
+    ) -> AskRequest:
+        """Apply agent defaults, search config, public ASK overrides, and runtime query."""
+        # Load explicit options from the public ASK request.
+        ask_request: AskRequest | None = None
+        if ask_request_json:
+            try:
+                ask_request = AskRequest.model_validate_json(ask_request_json)
+            except ValidationError as e:
+                logger.error(
+                    f"Failed to validate AskRequest received as memory argument: {e}"
+                )
+
+        # The SmartAgent query always wins.
+        if ask_request is None:
+            ask_request = AskRequest(query=question)
+        else:
+            ask_request = ask_request.model_copy(update={"query": question})
+
+        # Search config fills fields not explicitly set by the public ASK.
+        if self.config.search_config is not None:
+            ask_request = ask_request.model_copy(
+                update={"search_configuration": self.config.search_config}
+            )
+            ask_request = await rpc.apply_ask_search_configuration(
+                nucliadb_driver.driver,
+                nucliadb_driver.config.kbid,
+                ask_request,
+            )
+
+        # Agent defaults fill any remaining fields.
+        fallback_values = {
+            "show": [ResourceProperties.BASIC, ResourceProperties.ORIGIN],
+            "citations": CitationsType.LLM_FOOTNOTES,
+            "generative_model": self.config.generative_model,
+            "rag_strategies": rag_strategies,
+            "generate_answer": self.config.generate_inner_answer,
+        }
+        return ask_request.model_copy(
+            update={
+                field: value
+                for field, value in fallback_values.items()
+                if field not in ask_request.model_fields_set
+            }
+        )
+
     async def inner_rag(
         self,
         source_obj: Source,
@@ -992,21 +1065,12 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 MetadataExtensionStrategy(types=["classification_labels", "origin"]),  # type: ignore
             ]
 
-        ask_request_json = memory.arguments.get("ask_request")
-        if ask_request_json:
-            # Preserve the request options from the public ask endpoint while
-            # using the query selected by the SmartAgent for this retrieval.
-            try:
-                ask_request = AskRequest.model_validate_json(
-                    ask_request_json
-                ).model_copy(update={"query": question})
-            except ValidationError as e:
-                logger.error(
-                    f"Failed to validate AskRequest received as memory argument: {e}"
-                )
-                ask_request = None
-        else:
-            ask_request = None
+        ask_request = await self.prepare_ask_request(
+            nucliadb_driver,
+            question,
+            memory.arguments.get("ask_request"),
+            rag_strategies,
+        )
 
         filter_expression = await self.build_filter_expression(
             nucliadb_driver,
@@ -1015,22 +1079,9 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             and_filters=and_filters,
             or_filters=or_filters,
             resource_filters=resource_filters,
-            filter_expression=ask_request.filter_expression
-            if ask_request is not None
-            else None,
+            filter_expression=ask_request.filter_expression,
         )
-        if ask_request is None:
-            ask_request = AskRequest(
-                query=question,
-                show=[ResourceProperties.BASIC, ResourceProperties.ORIGIN],
-                citations=CitationsType.LLM_FOOTNOTES,
-                generative_model=self.config.generative_model,
-                filter_expression=filter_expression,
-                rag_strategies=rag_strategies,
-                generate_answer=self.config.generate_inner_answer,
-            )
-        else:
-            ask_request.filter_expression = filter_expression
+        ask_request.filter_expression = filter_expression
 
         await memory.add_step(
             step_module="nucliadb_agent",
@@ -1174,7 +1225,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
     ) -> List[Context]:
         sources = self.config.sources
         # Perform catalog faceted search
-        chosen_sources = await choose_source(
+        chosen_sources = await choose_sources(
             memory,
             manager,
             sources,
@@ -1333,7 +1384,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
     ) -> List[Context]:
         sources = self.config.sources
         # Perform catalog faceted search
-        chosen_sources = await choose_source(
+        chosen_sources = await choose_sources(
             memory,
             manager,
             sources,
@@ -1453,7 +1504,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
     ) -> List[Context]:
         sources = self.config.sources
         # Perform catalog search
-        chosen_sources = await choose_source(
+        chosen_sources = await choose_sources(
             memory,
             manager,
             sources,

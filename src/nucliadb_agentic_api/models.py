@@ -252,6 +252,11 @@ class NucliaDBSourceSchema(BaseModel):
     type: Literal["nucliadb"] = "nucliadb"
     description: Optional[str] = None
 
+    search_config: str | None = Field(
+        default=None,
+        description="ID of an ask search configuration applied to this source",
+    )
+
     filter_expression: FilterExpression | None = Field(
         default=None,
         title="Filter expression",

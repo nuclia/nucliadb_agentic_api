@@ -79,7 +79,6 @@ async def transform_agentic_config(
             if source_obj.type == "nucliadb":
                 # Same KB different
                 uid = uuid4().hex
-
                 ndb_driver_config: DriverConfig
                 if internal_nucliadb and internal_nucliadb_url:
                     ndb_driver_config = InternalNucliaDBConfig(
@@ -122,7 +121,10 @@ async def transform_agentic_config(
                 drivers[uid] = ndb_driver_config
                 registered_agents.append(
                     NucliaDBAgentConfig(
-                        id=f"nucliadb-agent-{source}", title=source_title, sources=[uid]
+                        id=f"nucliadb-agent-{source}",
+                        title=source_title,
+                        sources=[uid],
+                        search_config=source_obj.search_config,
                     )
                 )
             elif source_obj.type == "mcp":
