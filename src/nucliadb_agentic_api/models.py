@@ -221,7 +221,9 @@ AgenticSource = Annotated[
 class AgenticSmartAgentConfiguration(BaseModel):
     mode: AgenticSmartAgentMode = AgenticSmartAgentMode.REACTIVE
     extra_prompt: Optional[str] = None
-    models: AgenticSmartAgentModels = Field(default_factory=AgenticSmartAgentModels)
+    models: AgenticSmartAgentModels | None = Field(
+        default_factory=AgenticSmartAgentModels
+    )
     sources: List[str] = Field(default_factory=list)
     history: Optional[bool] = True
 

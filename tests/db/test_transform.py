@@ -263,6 +263,22 @@ async def test_transform_legacy_null_models_use_runtime_defaults():
     assert summarize.model == SummarizeAgentConfig().model
 
 
+async def test_transform_legacy_null_smart_models_use_runtime_defaults():
+    config = AgenticConfigSchema.model_validate(
+        {"smart_agent": {"models": None}}
+    )
+
+    retrieval_config, _, _ = await transform_agentic_config(
+        config, AsyncMock(), account="account", kbid="kbid"
+    )
+
+    smart = retrieval_config.context[0]
+    assert isinstance(smart, SmartAgentConfig)
+    assert smart.context_validation_model == SmartAgentConfig().context_validation_model
+    assert smart.planner_model == SmartAgentConfig().planner_model
+    assert smart.executor_model == SmartAgentConfig().executor_model
+
+
 async def test_transform_wires_sources_and_internal_nucliadb_driver(
     load_agents_nucliadb_agentic,
 ):

@@ -1013,8 +1013,8 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             "generative_model": self.config.generative_model.model_id,
             "rag_strategies": rag_strategies,
             "generate_answer": self.config.generate_inner_answer,
+            "reasoning": build_reasoning(self.config.generative_model),
         }
-        fallback_values["reasoning"] = build_reasoning(self.config.generative_model)
         return ask_request.model_copy(
             update={
                 field: value

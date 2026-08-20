@@ -170,7 +170,6 @@ async def transform_agentic_config(
                     )
                 )
 
-        models = smart_agent.models
         smart_config = SmartAgentConfig(
             title=f"{title} - Smart Agent",
             planning_mode=smart_agent.mode.value,
@@ -179,7 +178,8 @@ async def transform_agentic_config(
             # SmartAgentConfig's before-validator accepts serialized agent configs.
             registered_agents=[agent.model_dump() for agent in registered_agents],  # type: ignore[misc]
         )
-        if "models" in smart_agent.model_fields_set:
+        models = smart_agent.models
+        if "models" in smart_agent.model_fields_set and models is not None:
             if (
                 "context_validation" in models.model_fields_set
                 and models.context_validation is not None
