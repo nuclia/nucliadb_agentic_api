@@ -264,9 +264,7 @@ async def test_transform_legacy_null_models_use_runtime_defaults():
 
 
 async def test_transform_legacy_null_smart_models_use_runtime_defaults():
-    config = AgenticConfigSchema.model_validate(
-        {"smart_agent": {"models": None}}
-    )
+    config = AgenticConfigSchema.model_validate({"smart_agent": {"models": None}})
 
     retrieval_config, _, _ = await transform_agentic_config(
         config, AsyncMock(), account="account", kbid="kbid"

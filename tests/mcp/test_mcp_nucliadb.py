@@ -162,6 +162,8 @@ async def test_mcp_nucliadb_get_document(
             source="mcphttp-01",
             context_validation_model="claude-4-5-haiku",
             prune_context=False,
+            max_tool_result_kb=256,
+            max_tool_result_item_kb=128,
         )
     )
     memory = EphemeralSessionMemory.from_config(
@@ -220,6 +222,8 @@ async def test_mcp_nucliadb_batch_get_documents(
             source="mcphttp-01",
             context_validation_model="claude-4-5-haiku",
             prune_context=False,
+            max_tool_result_kb=256,
+            max_tool_result_item_kb=128,
         )
     )
     memory = EphemeralSessionMemory.from_config(

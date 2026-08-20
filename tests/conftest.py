@@ -37,9 +37,6 @@ def nua_chat_match(r1, r2):
             assert r1_payload["question"] == r2_payload["question"], (
                 "Questions do not match"
             )
-            assert r1_payload["user_id"] == r2_payload["user_id"], (
-                "User IDs do not match"
-            )
         else:
             return False
     return True

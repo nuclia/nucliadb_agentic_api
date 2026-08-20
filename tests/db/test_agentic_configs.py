@@ -25,10 +25,22 @@ async def test_agentic_config_crud(
         "title": "Support agent",
         "smart_agent": {
             "mode": "reactive",
+            "models": {
+                "context_validation": {
+                    "_type": "llm_config",
+                    "model_id": "chatgpt-4.1",
+                },
+                "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+                "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+            },
             "sources": ["dupe-src"],
             "history": True,
         },
-        "summarize": {"conversational": True, "history": True},
+        "summarize": {
+            "conversational": True,
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "history": True,
+        },
     }
 
     # Create an agentic configuration that uses the source.
@@ -56,10 +68,22 @@ async def test_agentic_config_crud(
         "title": "Updated support agent",
         "smart_agent": {
             "mode": "reactive",
+            "models": {
+                "context_validation": {
+                    "_type": "llm_config",
+                    "model_id": "chatgpt-4.1",
+                },
+                "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+                "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+            },
             "sources": ["dupe-src"],
             "history": False,
         },
-        "summarize": {"conversational": False, "history": True},
+        "summarize": {
+            "conversational": False,
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "history": True,
+        },
     }
     # Update the configuration and verify the new payload persists.
     resp = await nucliadb_agentic_api_http_client.patch(
