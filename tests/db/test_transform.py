@@ -296,7 +296,10 @@ async def test_transform_model_defaults_are_stable_after_config_reload():
     )
 
     assert before.preprocess[0].model == after.preprocess[0].model
-    assert before.context[0].context_validation_model == after.context[0].context_validation_model
+    assert (
+        before.context[0].context_validation_model
+        == after.context[0].context_validation_model
+    )
     assert before.context[0].planner_model == after.context[0].planner_model
     assert before.context[0].executor_model == after.context[0].executor_model
     assert before.generation[0].model == after.generation[0].model

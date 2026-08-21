@@ -104,9 +104,9 @@ async def test_agentic_config_schema_exposes_llm_defaults(
         == "chatgpt-azure-4o-mini"
     )
     assert (
-        definitions["AgenticSmartAgentModels"]["properties"][
-            "context_validation"
-        ]["default"]["model_id"]
+        definitions["AgenticSmartAgentModels"]["properties"]["context_validation"][
+            "default"
+        ]["model_id"]
         == "chatgpt-azure-4o-mini"
     )
     assert (
