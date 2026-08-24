@@ -32,13 +32,28 @@ async def test_agentic_configs_api(
 
     payload = {
         "title": "Support agent",
-        "rephrase": {"history": True},
+        "rephrase": {
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "history": True,
+        },
         "smart_agent": {
             "mode": "reactive",
             "sources": ["dupe-src"],
             "history": True,
+            "models": {
+                "context_validation": {
+                    "_type": "llm_config",
+                    "model_id": "chatgpt-azure-4o-mini",
+                },
+                "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+                "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+            },
         },
-        "summarize": {"conversational": True, "history": True},
+        "summarize": {
+            "conversational": True,
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "history": True,
+        },
     }
 
     resp = await nucliadb_agentic_api_http_client.get(
@@ -55,7 +70,11 @@ async def test_agentic_configs_api(
 
     updated_payload = {
         "title": "Updated support agent",
-        "summarize": {"conversational": False, "history": True},
+        "summarize": {
+            "conversational": False,
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "history": True,
+        },
     }
     resp = await nucliadb_agentic_api_http_client.patch(
         f"/api/v1/kb/{knowledgebox}/agentic_configs/support", json=updated_payload
@@ -67,6 +86,35 @@ async def test_agentic_configs_api(
     )
     assert resp.status_code == 200, resp.text
     assert resp.json() == updated_payload
+
+
+async def test_agentic_config_schema_exposes_llm_defaults(
+    nucliadb_agentic_api_http_client: AsyncClient, knowledgebox: str
+):
+    response = await nucliadb_agentic_api_http_client.get(
+        f"/api/v1/kb/{knowledgebox}/agentic_configs/schema"
+    )
+
+    assert response.status_code == 200, response.text
+    definitions = response.json()["$defs"]
+    assert (
+        definitions["AgenticRephraseConfiguration"]["properties"]["model"]["default"][
+            "model_id"
+        ]
+        == "chatgpt-azure-4o-mini"
+    )
+    assert (
+        definitions["AgenticSmartAgentModels"]["properties"]["context_validation"][
+            "default"
+        ]["model_id"]
+        == "chatgpt-azure-4o-mini"
+    )
+    assert (
+        definitions["AgenticSmartAgentModels"]["properties"]["planner"]["default"][
+            "model_id"
+        ]
+        == "chatgpt-4.1"
+    )
 
 
 async def test_agentic_config_source_validation(

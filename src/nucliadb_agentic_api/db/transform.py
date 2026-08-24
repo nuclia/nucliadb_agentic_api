@@ -63,7 +63,7 @@ async def transform_agentic_config(
             kb=rephrase.ask_to,
             history=rephrase.history if rephrase.history is not None else False,
         )
-        if rephrase.model:
+        if rephrase.model is not None:
             rephrase_config.model = rephrase.model
         preprocess.append(rephrase_config)
 
@@ -139,16 +139,16 @@ async def transform_agentic_config(
                     ),
                 )  # TODO: pass real config if needed
                 drivers[uid] = mcp_driver_config
-                registered_agents.append(
-                    MCPAgentConfig(
-                        id=f"mcp-agent-{source}",
-                        title=source_title,
-                        source=uid,
-                        transport=Transport.HTTP,
-                        tool_choice_model=source_obj.tool_choice_model or "chatgpt-4.1",
-                        valid_headers=source_obj.valid_headers or [],
-                    )
+                mcp_agent_config = MCPAgentConfig(
+                    id=f"mcp-agent-{source}",
+                    title=source_title,
+                    source=uid,
+                    transport=Transport.HTTP,
+                    valid_headers=source_obj.valid_headers or [],
                 )
+                if source_obj.tool_choice_model is not None:
+                    mcp_agent_config.tool_choice_model = source_obj.tool_choice_model
+                registered_agents.append(mcp_agent_config)
 
             elif source_obj.type == "google":
                 global_driver.append("google")
@@ -167,7 +167,6 @@ async def transform_agentic_config(
                     )
                 )
 
-        models = smart_agent.models
         smart_config = SmartAgentConfig(
             title=f"{title} - Smart Agent",
             planning_mode=smart_agent.mode.value,
@@ -176,14 +175,13 @@ async def transform_agentic_config(
             # SmartAgentConfig's before-validator accepts serialized agent configs.
             registered_agents=[agent.model_dump() for agent in registered_agents],  # type: ignore[misc]
         )
-        # Only set the models if they are provided; otherwise, leave them as None to use hyperforge's default models.
-        # TODO: Provide nucliadb agentic api level defaults for models
-        if models:
-            if models.context_validation:
+        models = smart_agent.models
+        if models is not None:
+            if models.context_validation is not None:
                 smart_config.context_validation_model = models.context_validation
-            if models.planner:
+            if models.planner is not None:
                 smart_config.planner_model = models.planner
-            if models.executor:
+            if models.executor is not None:
                 smart_config.executor_model = models.executor
         context.append(smart_config)
 
@@ -198,7 +196,7 @@ async def transform_agentic_config(
             force_chunk_level_citations=False,
             history=summarize.history if summarize.history is not None else False,
         )
-        if summarize.model:
+        if summarize.model is not None:
             summarize_config.model = summarize.model
         generation.append(summarize_config)
 

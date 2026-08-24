@@ -75,9 +75,7 @@ async def websocket_endpoint(
             rpc.get_sdk("reader"), kbid, item
         )
     except rpc.SearchConfigurationNotFound:
-        return HTTPClientError(
-            status_code=400, detail="Search configuration not found"
-        )
+        return HTTPClientError(status_code=400, detail="Search configuration not found")
     except rpc.InvalidAskSearchConfiguration:
         return HTTPClientError(
             status_code=400,
@@ -110,7 +108,7 @@ async def websocket_endpoint(
             interaction.headers[header] = header_value
 
         item.query = interaction.question
-        interaction.arguments["ask_request"] = item.model_dump_json()
+        interaction.arguments["ask_request"] = item.model_dump_json(exclude_unset=True)
 
         async for msg in stream_response(
             websocket.app,

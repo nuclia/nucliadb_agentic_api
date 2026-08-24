@@ -53,9 +53,7 @@ async def test_search_configuration_supplies_unspecified_ask_parameters():
         (AsyncMock(config=object()), rpc.InvalidAskSearchConfiguration),
     ],
 )
-async def test_rejects_unusable_search_configuration(
-    search_config, expected_error
-):
+async def test_rejects_unusable_search_configuration(search_config, expected_error):
     with (
         patch.object(
             rpc,

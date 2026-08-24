@@ -16,7 +16,7 @@ class TestNucliaDBAgentConfigDefaults:
 
     def test_default_generative_model(self):
         cfg = NucliaDBAgentConfig()
-        assert cfg.generative_model == "chatgpt-azure-4o-mini"
+        assert cfg.generative_model.model_id == "chatgpt-azure-4o-mini"
 
     def test_generate_inner_answer_defaults_to_true(self):
         cfg = NucliaDBAgentConfig()
@@ -35,7 +35,7 @@ class TestNucliaDBAgentConfigCustomisation:
 
     def test_set_generative_model(self):
         cfg = NucliaDBAgentConfig(generative_model="gpt-4o")
-        assert cfg.generative_model == "gpt-4o"
+        assert cfg.generative_model.model_id == "gpt-4o"
 
     def test_disable_inner_answer(self):
         cfg = NucliaDBAgentConfig(generate_inner_answer=False)

@@ -9,7 +9,7 @@ from hyperforge.agent import Agent
 from hyperforge.configure import agent
 from hyperforge.context.agent import ContextAgent
 from hyperforge.definition import FunctionDefinition
-from hyperforge.manager import Manager
+from hyperforge.manager import Manager, build_reasoning
 from hyperforge.memory import Chunk, Context, QuestionMemory, Source
 from hyperforge.models import JSONObject
 from hyperforge_nucliadb.ask.multi import choose_source
@@ -1010,9 +1010,10 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         fallback_values = {
             "show": [ResourceProperties.BASIC, ResourceProperties.ORIGIN],
             "citations": CitationsType.LLM_FOOTNOTES,
-            "generative_model": self.config.generative_model,
+            "generative_model": self.config.generative_model.model_id,
             "rag_strategies": rag_strategies,
             "generate_answer": self.config.generate_inner_answer,
+            "reasoning": build_reasoning(self.config.generative_model),
         }
         return ask_request.model_copy(
             update={

@@ -141,6 +141,7 @@ MCP_PAYLOAD = {
     "type": "mcp",
     "description": "Internal tools",
     "uri": "http://mcp.internal:8080",
+    "tool_choice_model": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
 }
 
 GOOGLE_PAYLOAD = {

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import Header, HTTPException, Request, Response
 from nucliadb_models.resource import NucliaDBRoles
@@ -10,6 +10,20 @@ from nucliadb_agentic_api.v1.router import router
 
 if TYPE_CHECKING:
     from nucliadb_agentic_api.app import HTTPApplication
+
+
+@router.get(
+    "/api/v1/kb/{kbid}/agentic_configs/schema",
+    status_code=200,
+    summary="Get agentic configuration schema",
+    tags=["Agentic configs"],
+)
+@requires(NucliaDBRoles.READER)
+async def get_agentic_config_schema_endpoint(
+    request: Request,
+    kbid: str,
+) -> dict[str, Any]:
+    return AgenticConfigSchema.model_json_schema()
 
 
 @router.post(

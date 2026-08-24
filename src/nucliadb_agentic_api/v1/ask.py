@@ -72,9 +72,7 @@ async def ask_knowledgebox_endpoint(
             rpc.get_sdk("reader"), kbid, item
         )
     except rpc.SearchConfigurationNotFound:
-        return HTTPClientError(
-            status_code=400, detail="Search configuration not found"
-        )
+        return HTTPClientError(status_code=400, detail="Search configuration not found")
     except rpc.InvalidAskSearchConfiguration:
         return HTTPClientError(
             status_code=400,

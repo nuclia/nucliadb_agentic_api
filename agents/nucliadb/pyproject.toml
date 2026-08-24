@@ -19,7 +19,7 @@ classifiers = [
 ]
 requires-python = ">=3.12, <4"
 dependencies = [
-    "hyperforge>=1.0.0.post184",
+    "hyperforge>=1.0.0.post245",
     "lingua-language-detector",
     "nucliadb_sdk",
 ]

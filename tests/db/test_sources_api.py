@@ -89,6 +89,10 @@ async def test_sources_api_all_types(
             "type": "mcp",
             "description": "MCP source",
             "uri": "http://mcp.internal:8080",
+            "tool_choice_model": {
+                "_type": "llm_config",
+                "model_id": "chatgpt-4.1",
+            },
         },
         "src-google": {
             "type": "google",
