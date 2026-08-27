@@ -2387,13 +2387,13 @@ server = [
 
 [[package]]
 name = "nucliadb-models"
-version = "6.15.1.post6894"
+version = "6.15.1.post6923"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/61/0f63c3582b410ead933b15a53945ebcd0d60e94598360787d48c37ed4c6c/nucliadb_models-6.15.1.post6894-py3-none-any.whl", hash = "sha256:61a2a52b8e9f48eff8bf36e99b5d3ce5eced37576e01bfd48f1777cb0f044fe5", size = 82074, upload-time = "2026-07-27T07:27:05.231Z" },
+    { url = "https://files.pythonhosted.org/packages/96/be/53735ab8a992bc7d6f6cf6bb891f476b71dbda85669417466375b1827c83/nucliadb_models-6.15.1.post6923-py3-none-any.whl", hash = "sha256:8a8e4fa86ec9f6c2caa28d4a75a40a8aec4d65940ad1ca93b93868ce62fb8d90", size = 82132, upload-time = "2026-08-03T10:13:35.184Z" },
 ]
 
 [[package]]
@@ -2409,7 +2409,7 @@ wheels = [
 
 [[package]]
 name = "nucliadb-sdk"
-version = "6.15.1.post6894"
+version = "6.15.1.post6923"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -2419,7 +2419,7 @@ dependencies = [
     { name = "pydantic" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ef/1d/aa7aff8d6c0f6a0362a38863bb5c834e38e6fd5f224cfd5bb3dee0594d20/nucliadb_sdk-6.15.1.post6894-py3-none-any.whl", hash = "sha256:f01bace149d633edf1a88c1fd95d350d96f30b2b5c1626a3ed5de33cc2d23611", size = 18239, upload-time = "2026-07-27T07:27:08.728Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/2e/0d260ea541924877ee1b3bf76c3113d9a2fefa1f6ec407cae095f627e6d6/nucliadb_sdk-6.15.1.post6923-py3-none-any.whl", hash = "sha256:96fb8dff8664be63ea9d08f080eee738fb31c1a90d85fe4a324a5d377be376ec", size = 18237, upload-time = "2026-08-03T10:13:38.53Z" },
 ]
 
 [[package]]
