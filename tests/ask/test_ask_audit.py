@@ -26,7 +26,7 @@ import nats.js.errors
 import pytest
 from httpx import AsyncClient
 from hyperforge.feature_flag import get_flag_service
-from hyperforge.models import ExternalUsage, Step
+from hyperforge.models import ExternalUsage, ExternalUsageType, Step
 from hyperforge_nucliadb_agentic.ask.audit import (
     StreamAuditStorage,
     external_usage_to_predict,
@@ -55,6 +55,7 @@ async def get_audit_messages(sub):
 def test_external_usage_to_predict() -> None:
     predicts = external_usage_to_predict(
         ExternalUsage(
+            type=ExternalUsageType.INTERNET_SEARCH,
             provider="google",
             model="gemini-2.5-flash",
             input_tokens=10,
@@ -78,7 +79,11 @@ def test_external_usage_to_predict() -> None:
 
 def test_search_only_external_usage_to_predict() -> None:
     predicts = external_usage_to_predict(
-        ExternalUsage(provider="perplexity", model="search"),
+        ExternalUsage(
+            type=ExternalUsageType.INTERNET_SEARCH,
+            provider="perplexity",
+            model="search",
+        ),
         NucliaDBClientType.API,
     )
 
@@ -102,6 +107,7 @@ async def test_external_usage_is_reported(
         agent_path="/context/google",
         external_usage=[
             ExternalUsage(
+                type=ExternalUsageType.INTERNET_SEARCH,
                 provider="google",
                 model="gemini-2.5-flash",
                 input_tokens=10,

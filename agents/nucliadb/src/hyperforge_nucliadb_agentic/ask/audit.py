@@ -9,7 +9,7 @@ import mmh3
 import nats
 from fastapi import Request
 from hyperforge.feature_flag import Features, has_feature
-from hyperforge.models import ExternalUsage, Step
+from hyperforge.models import ExternalUsage, ExternalUsageType, Step
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
 from nucliadb_models.search import (
     NucliaDBClientType,
@@ -48,6 +48,10 @@ from hyperforge_nucliadb_agentic.ask.model import (
 from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
 from hyperforge_nucliadb_agentic.ask.utils.proto import client_type
 
+EXTERNAL_USAGE_PREDICT_TYPES = {
+    ExternalUsageType.INTERNET_SEARCH: PredictType.INTERNET_SEARCH,
+}
+
 
 def external_usage_to_predict(
     event: ExternalUsage, ndb_client_type: NucliaDBClientType
@@ -56,7 +60,7 @@ def external_usage_to_predict(
     predicts = [
         Predict(
             client=client,
-            type=PredictType.INTERNET_SEARCH,
+            type=EXTERNAL_USAGE_PREDICT_TYPES[event.type],
             num_predicts=event.requests,
             customer_key=False,
         )
