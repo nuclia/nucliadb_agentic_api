@@ -2398,13 +2398,13 @@ wheels = [
 
 [[package]]
 name = "nucliadb-protos"
-version = "7.1.0.post7073"
+version = "7.1.0.post7082"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "protobuf" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/ac/5fde0737337394fecab475024b0b11cd839be7321985b7d4871e8ec7c89d/nucliadb_protos-7.1.0.post7073-py3-none-any.whl", hash = "sha256:44dd83a6a9ec518937e6b89f1a1a8385ff0d3ce142c334e673fb0cbcb3dcb68f", size = 89948, upload-time = "2026-08-27T14:05:59.134Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/1d/4f0c53ecd0d896f01a58d4b63d9bded8e7fe78d190a7590a1dc14a30c397/nucliadb_protos-7.1.0.post7082-py3-none-any.whl", hash = "sha256:ec84b93e115f93eeaad4e397afe166ed7f13f50d03cba147b473bbf966c90459", size = 89984, upload-time = "2026-08-31T08:29:19.984Z" },
 ]
 
 [[package]]

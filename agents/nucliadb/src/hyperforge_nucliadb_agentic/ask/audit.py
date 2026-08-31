@@ -9,7 +9,7 @@ import mmh3
 import nats
 from fastapi import Request
 from hyperforge.feature_flag import Features, has_feature
-from hyperforge.models import ExternalUsage, ExternalUsageType, Step
+from hyperforge.models import ExternalUsage, Step
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
 from nucliadb_models.search import (
     NucliaDBClientType,
@@ -48,37 +48,21 @@ from hyperforge_nucliadb_agentic.ask.model import (
 from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
 from hyperforge_nucliadb_agentic.ask.utils.proto import client_type
 
-EXTERNAL_USAGE_PREDICT_TYPES = {
-    ExternalUsageType.INTERNET_SEARCH: PredictType.INTERNET_SEARCH,
-}
-
 
 def external_usage_to_predict(
     event: ExternalUsage, ndb_client_type: NucliaDBClientType
-) -> list[Predict]:
-    client = KbUsageClientType.Value(ndb_client_type.name)
-    predicts = [
-        Predict(
-            client=client,
-            type=EXTERNAL_USAGE_PREDICT_TYPES[event.type],
-            num_predicts=event.requests,
-            customer_key=False,
-        )
-    ]
-    if event.input_tokens or event.output_tokens or event.image:
-        predicts.append(
-            Predict(
-                client=client,
-                type=PredictType.QUESTION_ANSWER,
-                model=event.model,
-                input=event.input_tokens,
-                output=event.output_tokens,
-                num_predicts=1,
-                image=event.image,
-                customer_key=False,
-            )
-        )
-    return predicts
+) -> Predict:
+    return Predict(
+        client=KbUsageClientType.Value(ndb_client_type.name),
+        type=PredictType.QUESTION_ANSWER,
+        model=event.model,
+        input=event.input_tokens,
+        output=event.output_tokens,
+        num_predicts=1,
+        image=event.image,
+        customer_key=False,
+        external_requests=event.requests,
+    )
 
 
 class RequestContext:
@@ -226,9 +210,8 @@ class StreamAuditStorage:
         trace_id: str | None = None,
     ) -> None:
         predicts = [
-            predict
+            external_usage_to_predict(event, client_type)
             for event in step.external_usage or []
-            for predict in external_usage_to_predict(event, client_type)
         ]
         if not predicts or self.kb_usage_utility is None:
             logger.warning(
