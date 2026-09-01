@@ -23,11 +23,13 @@ from nucliadb_protos.audit_pb2 import (
 from nucliadb_protos.kb_usage_pb2 import (
     ActivityLogMatch,
     ActivityLogMatchType,
-    ClientType as KbUsageClientType,
     KBSource,
     Predict,
     PredictType,
     Service,
+)
+from nucliadb_protos.kb_usage_pb2 import (
+    ClientType as KbUsageClientType,
 )
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
@@ -57,30 +59,19 @@ def external_usage_to_predict(
     event: ExternalUsage, ndb_client_type: NucliaDBClientType
 ) -> list[Predict]:
     client = KbUsageClientType.Value(ndb_client_type.name)
-    predicts = [
+    return [
         Predict(
             client=client,
             type=EXTERNAL_USAGE_PREDICT_TYPES[event.operation],
             # Accounting uses model to identify the external service used.
             model=event.provider,
+            input=event.input_tokens,
+            output=event.output_tokens,
+            image=event.image,
             external_requests=event.requests,
             customer_key=False,
         )
     ]
-    if event.input_tokens or event.output_tokens or event.image:
-        predicts.append(
-            Predict(
-                client=client,
-                type=PredictType.QUESTION_ANSWER,
-                model=event.model,
-                input=event.input_tokens,
-                output=event.output_tokens,
-                num_predicts=1,
-                image=event.image,
-                customer_key=False,
-            )
-        )
-    return predicts
 
 
 class RequestContext:

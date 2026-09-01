@@ -65,16 +65,14 @@ def test_external_usage_to_predict() -> None:
         NucliaDBClientType.API,
     )
 
-    assert len(predicts) == 2
-    search, generation = predicts
+    assert len(predicts) == 1
+    search = predicts[0]
     assert search.type == PredictType.INTERNET_SEARCH
     assert search.external_requests == 2
     assert search.model == "google"
-    assert generation.type == PredictType.QUESTION_ANSWER
-    assert generation.model == "gemini-2.5-flash"
-    assert generation.input == 10
-    assert generation.output == 20
-    assert generation.num_predicts == 1
+    assert search.input == 10
+    assert search.output == 20
+    assert search.image == 0
 
 
 def test_search_only_external_usage_to_predict() -> None:
@@ -91,6 +89,9 @@ def test_search_only_external_usage_to_predict() -> None:
     assert predicts[0].type == PredictType.INTERNET_SEARCH
     assert predicts[0].model == "perplexity"
     assert predicts[0].external_requests == 1
+    assert predicts[0].input == 0
+    assert predicts[0].output == 0
+    assert predicts[0].image == 0
 
 
 async def test_external_usage_is_reported(
@@ -133,20 +134,16 @@ async def test_external_usage_is_reported(
     assert usage.kb_source == KBSource.HOSTED
     assert usage.activity_log_match.id == "trace-id"
     assert usage.activity_log_match.type == ActivityLogMatchType.TRACE_ID
-    assert len(usage.predicts) == 2
-    search, generation = usage.predicts
+    assert len(usage.predicts) == 1
+    search = usage.predicts[0]
     assert search.client == 0
     assert search.type == PredictType.INTERNET_SEARCH
     assert search.model == "google"
     assert search.external_requests == 1
+    assert search.input == 10
+    assert search.output == 20
+    assert search.image == 0
     assert search.customer_key is False
-    assert generation.client == 0
-    assert generation.type == PredictType.QUESTION_ANSWER
-    assert generation.model == "gemini-2.5-flash"
-    assert generation.input == 10
-    assert generation.output == 20
-    assert generation.num_predicts == 1
-    assert generation.customer_key is False
 
 
 @pytest.mark.deploy_modes("standalone")
