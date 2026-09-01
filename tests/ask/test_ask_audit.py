@@ -26,8 +26,11 @@ import nats.js.errors
 import pytest
 from httpx import AsyncClient
 from hyperforge.feature_flag import get_flag_service
-from hyperforge.models import ExternalUsage, Step
-from hyperforge_nucliadb_agentic.ask.audit import StreamAuditStorage
+from hyperforge.models import ExternalUsage, ExternalUsageOperation, Step
+from hyperforge_nucliadb_agentic.ask.audit import (
+    StreamAuditStorage,
+    external_usage_to_predict,
+)
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nats.aio.client import Client
 from nats.js import JetStreamContext
@@ -49,6 +52,48 @@ async def get_audit_messages(sub):
     return auditreq
 
 
+def test_external_usage_to_predict() -> None:
+    predicts = external_usage_to_predict(
+        ExternalUsage(
+            operation=ExternalUsageOperation.INTERNET_SEARCH,
+            provider="google",
+            model="gemini-2.5-flash",
+            input_tokens=10,
+            output_tokens=20,
+            requests=2,
+        ),
+        NucliaDBClientType.API,
+    )
+
+    assert len(predicts) == 1
+    search = predicts[0]
+    assert search.type == PredictType.INTERNET_SEARCH
+    assert search.external_requests == 2
+    assert search.model == "google"
+    assert search.input == 10
+    assert search.output == 20
+    assert search.image == 0
+
+
+def test_search_only_external_usage_to_predict() -> None:
+    predicts = external_usage_to_predict(
+        ExternalUsage(
+            operation=ExternalUsageOperation.INTERNET_SEARCH,
+            provider="perplexity",
+            model="search",
+        ),
+        NucliaDBClientType.API,
+    )
+
+    assert len(predicts) == 1
+    assert predicts[0].type == PredictType.INTERNET_SEARCH
+    assert predicts[0].model == "perplexity"
+    assert predicts[0].external_requests == 1
+    assert predicts[0].input == 0
+    assert predicts[0].output == 0
+    assert predicts[0].image == 0
+
+
 async def test_external_usage_is_reported(
     audit: StreamAuditStorage,
     knowledgebox: str,
@@ -64,6 +109,7 @@ async def test_external_usage_is_reported(
         agent_path="/context/google",
         external_usage=[
             ExternalUsage(
+                operation=ExternalUsageOperation.INTERNET_SEARCH,
                 provider="google",
                 model="gemini-2.5-flash",
                 input_tokens=10,
@@ -89,14 +135,15 @@ async def test_external_usage_is_reported(
     assert usage.activity_log_match.id == "trace-id"
     assert usage.activity_log_match.type == ActivityLogMatchType.TRACE_ID
     assert len(usage.predicts) == 1
-    predict = usage.predicts[0]
-    assert predict.client == 0
-    assert predict.type == PredictType.QUESTION_ANSWER
-    assert predict.model == "google/gemini-2.5-flash"
-    assert predict.input == 10
-    assert predict.output == 20
-    assert predict.num_predicts == 1
-    assert predict.customer_key is False
+    search = usage.predicts[0]
+    assert search.client == 0
+    assert search.type == PredictType.INTERNET_SEARCH
+    assert search.model == "google"
+    assert search.external_requests == 1
+    assert search.input == 10
+    assert search.output == 20
+    assert search.image == 0
+    assert search.customer_key is False
 
 
 @pytest.mark.deploy_modes("standalone")

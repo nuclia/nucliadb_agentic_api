@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from hyperforge.interaction import AnswerOperation, AragAnswer
-from hyperforge.models import ExternalUsage, Step
+from hyperforge.models import ExternalUsage, ExternalUsageOperation, Step
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from nucliadb_models.search import NucliaDBClientType
 
@@ -22,6 +22,7 @@ async def test_step_external_usage_is_reported():
         agent_path="/context/google",
         external_usage=[
             ExternalUsage(
+                operation=ExternalUsageOperation.INTERNET_SEARCH,
                 provider="google",
                 model="gemini-2.5-flash",
                 input_tokens=10,

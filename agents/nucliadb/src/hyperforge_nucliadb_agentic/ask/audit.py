@@ -9,7 +9,7 @@ import mmh3
 import nats
 from fastapi import Request
 from hyperforge.feature_flag import Features, has_feature
-from hyperforge.models import ExternalUsage, Step
+from hyperforge.models import ExternalUsage, ExternalUsageOperation, Step
 from nucliadb_models.retrieval import RawQuery, RetrievalRequest
 from nucliadb_models.search import (
     NucliaDBClientType,
@@ -48,20 +48,28 @@ from hyperforge_nucliadb_agentic.ask.model import (
 from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
 from hyperforge_nucliadb_agentic.ask.utils.proto import client_type
 
+EXTERNAL_USAGE_PREDICT_TYPES = {
+    ExternalUsageOperation.INTERNET_SEARCH: PredictType.INTERNET_SEARCH,
+}
+
 
 def external_usage_to_predict(
     event: ExternalUsage, ndb_client_type: NucliaDBClientType
-) -> Predict:
-    return Predict(
-        client=KbUsageClientType.Value(ndb_client_type.name),
-        type=PredictType.QUESTION_ANSWER,
-        model=f"{event.provider}/{event.model}",
-        input=event.input_tokens,
-        output=event.output_tokens,
-        num_predicts=event.requests,
-        image=event.image,
-        customer_key=False,
-    )
+) -> list[Predict]:
+    client = KbUsageClientType.Value(ndb_client_type.name)
+    return [
+        Predict(
+            client=client,
+            type=EXTERNAL_USAGE_PREDICT_TYPES[event.operation],
+            # Accounting uses model to identify the external service used.
+            model=event.provider,
+            input=event.input_tokens,
+            output=event.output_tokens,
+            image=event.image,
+            external_requests=event.requests,
+            customer_key=False,
+        )
+    ]
 
 
 class RequestContext:
@@ -209,8 +217,9 @@ class StreamAuditStorage:
         trace_id: str | None = None,
     ) -> None:
         predicts = [
-            external_usage_to_predict(event, client_type)
+            predict
             for event in step.external_usage or []
+            for predict in external_usage_to_predict(event, client_type)
         ]
         if not predicts or self.kb_usage_utility is None:
             logger.warning(
