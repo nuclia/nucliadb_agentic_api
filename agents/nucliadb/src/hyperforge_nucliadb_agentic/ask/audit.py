@@ -23,13 +23,11 @@ from nucliadb_protos.audit_pb2 import (
 from nucliadb_protos.kb_usage_pb2 import (
     ActivityLogMatch,
     ActivityLogMatchType,
+    ClientType as KbUsageClientType,
     KBSource,
     Predict,
     PredictType,
     Service,
-)
-from nucliadb_protos.kb_usage_pb2 import (
-    ClientType as KbUsageClientType,
 )
 from nucliadb_telemetry.jetstream import get_traced_jetstream, get_traced_nats_client
 from nucliadb_utils import logger
