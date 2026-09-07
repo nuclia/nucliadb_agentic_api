@@ -61,8 +61,8 @@ def external_usage_to_predict(
         Predict(
             client=client,
             type=EXTERNAL_USAGE_PREDICT_TYPES[event.operation],
-            # Accounting uses model to identify the external service used.
-            model=event.provider,
+            # Accounting uses the provider-specific model for billing.
+            model=event.model,
             input=event.input_tokens,
             output=event.output_tokens,
             image=event.image,

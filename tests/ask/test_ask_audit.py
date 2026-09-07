@@ -69,7 +69,7 @@ def test_external_usage_to_predict() -> None:
     search = predicts[0]
     assert search.type == PredictType.INTERNET_SEARCH
     assert search.external_requests == 2
-    assert search.model == "google"
+    assert search.model == "gemini-2.5-flash"
     assert search.input == 10
     assert search.output == 20
     assert search.image == 0
@@ -87,10 +87,31 @@ def test_search_only_external_usage_to_predict() -> None:
 
     assert len(predicts) == 1
     assert predicts[0].type == PredictType.INTERNET_SEARCH
-    assert predicts[0].model == "perplexity"
+    assert predicts[0].model == "search"
     assert predicts[0].external_requests == 1
     assert predicts[0].input == 0
     assert predicts[0].output == 0
+    assert predicts[0].image == 0
+
+
+def test_perplexity_answer_external_usage_to_predict() -> None:
+    predicts = external_usage_to_predict(
+        ExternalUsage(
+            operation=ExternalUsageOperation.INTERNET_SEARCH,
+            provider="perplexity",
+            model="sonar-pro",
+            input_tokens=10,
+            output_tokens=20,
+        ),
+        NucliaDBClientType.API,
+    )
+
+    assert len(predicts) == 1
+    assert predicts[0].type == PredictType.INTERNET_SEARCH
+    assert predicts[0].model == "sonar-pro"
+    assert predicts[0].external_requests == 1
+    assert predicts[0].input == 10
+    assert predicts[0].output == 20
     assert predicts[0].image == 0
 
 
@@ -138,7 +159,7 @@ async def test_external_usage_is_reported(
     search = usage.predicts[0]
     assert search.client == 0
     assert search.type == PredictType.INTERNET_SEARCH
-    assert search.model == "google"
+    assert search.model == "gemini-2.5-flash"
     assert search.external_requests == 1
     assert search.input == 10
     assert search.output == 20
