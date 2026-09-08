@@ -65,14 +65,22 @@ def test_external_usage_to_predict() -> None:
         NucliaDBClientType.API,
     )
 
-    assert len(predicts) == 1
-    search = predicts[0]
+    assert len(predicts) == 2
+    search, generation = predicts
+    assert generation.type == PredictType.QUESTION_ANSWER
+    assert generation.model == "gemini-2.5-flash"
+    assert generation.input == 10
+    assert generation.output == 20
+    assert generation.image == 0
+    assert generation.num_predicts == 1
+    assert generation.external_requests == 0
     assert search.type == PredictType.INTERNET_SEARCH
     assert search.external_requests == 2
-    assert search.model == "gemini-2.5-flash"
-    assert search.input == 10
-    assert search.output == 20
+    assert search.model == "google"
+    assert search.input == 0
+    assert search.output == 0
     assert search.image == 0
+    assert search.num_predicts == 0
 
 
 def test_search_only_external_usage_to_predict() -> None:
@@ -86,12 +94,14 @@ def test_search_only_external_usage_to_predict() -> None:
     )
 
     assert len(predicts) == 1
-    assert predicts[0].type == PredictType.INTERNET_SEARCH
-    assert predicts[0].model == "search"
-    assert predicts[0].external_requests == 1
-    assert predicts[0].input == 0
-    assert predicts[0].output == 0
-    assert predicts[0].image == 0
+    search = predicts[0]
+    assert search.type == PredictType.INTERNET_SEARCH
+    assert search.model == "perplexity"
+    assert search.external_requests == 1
+    assert search.input == 0
+    assert search.output == 0
+    assert search.image == 0
+    assert search.num_predicts == 0
 
 
 def test_perplexity_answer_external_usage_to_predict() -> None:
@@ -106,13 +116,22 @@ def test_perplexity_answer_external_usage_to_predict() -> None:
         NucliaDBClientType.API,
     )
 
-    assert len(predicts) == 1
-    assert predicts[0].type == PredictType.INTERNET_SEARCH
-    assert predicts[0].model == "sonar-pro"
-    assert predicts[0].external_requests == 1
-    assert predicts[0].input == 10
-    assert predicts[0].output == 20
-    assert predicts[0].image == 0
+    assert len(predicts) == 2
+    search, generation = predicts
+    assert generation.type == PredictType.QUESTION_ANSWER
+    assert generation.model == "sonar-pro"
+    assert generation.external_requests == 0
+    assert generation.input == 10
+    assert generation.output == 20
+    assert generation.image == 0
+    assert generation.num_predicts == 1
+    assert search.type == PredictType.INTERNET_SEARCH
+    assert search.model == "perplexity"
+    assert search.external_requests == 1
+    assert search.input == 0
+    assert search.output == 0
+    assert search.image == 0
+    assert search.num_predicts == 0
 
 
 async def test_external_usage_is_reported(
@@ -155,15 +174,25 @@ async def test_external_usage_is_reported(
     assert usage.kb_source == KBSource.HOSTED
     assert usage.activity_log_match.id == "trace-id"
     assert usage.activity_log_match.type == ActivityLogMatchType.TRACE_ID
-    assert len(usage.predicts) == 1
-    search = usage.predicts[0]
+    assert len(usage.predicts) == 2
+    search, generation = usage.predicts
+    assert generation.client == 0
+    assert generation.type == PredictType.QUESTION_ANSWER
+    assert generation.model == "gemini-2.5-flash"
+    assert generation.external_requests == 0
+    assert generation.input == 10
+    assert generation.output == 20
+    assert generation.image == 0
+    assert generation.num_predicts == 1
+    assert generation.customer_key is False
     assert search.client == 0
     assert search.type == PredictType.INTERNET_SEARCH
-    assert search.model == "gemini-2.5-flash"
+    assert search.model == "google"
     assert search.external_requests == 1
-    assert search.input == 10
-    assert search.output == 20
+    assert search.input == 0
+    assert search.output == 0
     assert search.image == 0
+    assert search.num_predicts == 0
     assert search.customer_key is False
 
 

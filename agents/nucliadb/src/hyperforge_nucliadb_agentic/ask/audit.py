@@ -57,19 +57,29 @@ def external_usage_to_predict(
     event: ExternalUsage, ndb_client_type: NucliaDBClientType
 ) -> list[Predict]:
     client = KbUsageClientType.Value(ndb_client_type.name)
-    return [
+    predicts = [
         Predict(
             client=client,
             type=EXTERNAL_USAGE_PREDICT_TYPES[event.operation],
-            # Accounting uses the provider-specific model for billing.
-            model=event.model,
-            input=event.input_tokens,
-            output=event.output_tokens,
-            image=event.image,
+            model=event.provider,
             external_requests=event.requests,
             customer_key=False,
         )
     ]
+    if event.input_tokens or event.output_tokens or event.image:
+        predicts.append(
+            Predict(
+                client=client,
+                type=PredictType.QUESTION_ANSWER,
+                model=event.model,
+                input=event.input_tokens,
+                output=event.output_tokens,
+                image=event.image,
+                num_predicts=1,
+                customer_key=False,
+            )
+        )
+    return predicts
 
 
 class RequestContext:
