@@ -2,6 +2,7 @@ import os
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from httpx import AsyncHTTPTransport
 from hyperforge.configure import (
     get_driver_config_instance,
 )
@@ -68,6 +69,12 @@ RULES: Rules = Rules(
         Rule(prompt="Be polite"),
     ]
 )
+
+
+@pytest.fixture
+async def disable_safe_transport():
+    with patch("hyperforge_mcp.http.SafeTransport", AsyncHTTPTransport):
+        yield
 
 
 async def test_mcp_nucliadb_generation_client(
