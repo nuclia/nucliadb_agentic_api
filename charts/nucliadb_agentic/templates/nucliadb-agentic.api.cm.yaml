@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nucliadb-agentic-api
+  labels:
+    app: nucliadb-agentic-api
+    version: "{{ .Values.hash }}"
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- if .Values.tracing.enabled }}
+  {{- if .Values.tracing.otlp_collector_endpoint }}
+  OTLP_COLLECTOR_ENDPOINT: {{ .Values.tracing.otlp_collector_endpoint | quote }}
+  {{- else }}
+  JAEGER_ENABLED: "true"
+  {{- end }}
+{{- end }}

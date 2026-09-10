@@ -29,6 +29,7 @@ env:
 
 tracing:
   enabled: false
+  otlp_collector_endpoint: ""
 
 zone: provider-region-ordinal
 vs:
