@@ -1416,7 +1416,7 @@ wheels = [
 
 [[package]]
 name = "hyperforge"
-version = "1.0.0.post330"
+version = "1.0.0.post346"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "a2a-sdk", extra = ["grpc", "http-server"] },
@@ -1454,9 +1454,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/34/20/73d1b737b93fd3053f64a9e7097215435217c8492355b18efa4cb204b908/hyperforge-1.0.0.post330.tar.gz", hash = "sha256:2b8d711ac91366214af1115c3171e7cf62ab6cf6a1985ba6567feb96296898f9", size = 303323, upload-time = "2026-09-08T20:05:38.626Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/92/7d28ba047a2a8b64e1d747ac811853fa1354b968fe7f1b299b6ef70486de/hyperforge-1.0.0.post346.tar.gz", hash = "sha256:9839a7dfa120ac762bd2e66c3cd5c13bcac9af8c139b9c24266b170b492cab4b", size = 303275, upload-time = "2026-09-10T12:31:33.045Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/00/772918c9dfd089c254dfabd7283af06cac6200d9bbb7e3b934501f5d8edd/hyperforge-1.0.0.post330-py3-none-any.whl", hash = "sha256:e6fa27387e458e01e1f1749747726c2827663fd8b4fee4c346553da1221932ba", size = 352900, upload-time = "2026-09-08T20:05:36.851Z" },
+    { url = "https://files.pythonhosted.org/packages/df/cf/4c113ffb5506216aa668f180d9a754bfe972127cf2424d97079a179cc5f0/hyperforge-1.0.0.post346-py3-none-any.whl", hash = "sha256:5364a116616f9a5b95f8fb205cf6449bcdc260e026d013380b60a39bc2aada6f", size = 352834, upload-time = "2026-09-10T12:31:31.318Z" },
 ]
 
 [[package]]
@@ -2498,7 +2498,7 @@ server = [
     { name = "databases", extras = ["asyncpg"] },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "hyperforge", specifier = ">=1.0.0.post330" },
+    { name = "hyperforge", specifier = ">=1.0.0.post346" },
     { name = "hyperforge-conditional", specifier = ">=1.0.0.post27" },
     { name = "hyperforge-google", specifier = ">=1.0.0.post81" },
     { name = "hyperforge-mcp", specifier = ">=1.0.0.post95" },
