@@ -77,8 +77,10 @@ spec:
           timeoutSeconds: 10
           periodSeconds: 20
         command: ["nucliadb-agentic-api"]
-        {{- with .Values.envFrom }}
         envFrom:
+          - configMapRef:
+              name: nucliadb-agentic-api
+        {{- with .Values.envFrom }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
         env:
