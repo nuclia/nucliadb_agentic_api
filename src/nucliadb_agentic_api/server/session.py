@@ -218,6 +218,22 @@ class NucliaDBAgenticSessionManager(SessionManager):
         question_memory: QuestionMemory,
     ):
         error = None
+        generated_learning_id: str | None = None
+        answer_learning_id: str | None = None
+
+        execute_raw = state.manager.execute_raw
+
+        async def execute_raw_with_learning_id(*args, **kwargs):
+            nonlocal answer_learning_id, generated_learning_id
+            result = await execute_raw(*args, **kwargs)
+            response = result[0]
+            if response.learning_id:
+                generated_learning_id = response.learning_id
+                if kwargs.get("memory") is question_memory:
+                    answer_learning_id = response.learning_id
+            return result
+
+        state.manager.execute_raw = execute_raw_with_learning_id  # type: ignore[method-assign]
 
         keepalive = create_task(self.keep_alive(topic))
         observation = answer_observer()
@@ -257,6 +273,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
             error = ARAGException(detail=str(e))
             observation.set_status("error")
         finally:
+            state.manager.execute_raw = execute_raw  # type: ignore[method-assign]
             try:
                 await state.manager.aclose()
             except Exception as e:
@@ -282,15 +299,19 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 else None,
             ),
         )
-        learning_id = next(
-            (
-                step.metadata["learning_id"]
-                for step in reversed(question_memory.steps)
-                if step.metadata and step.metadata.get("learning_id")
-            ),
-            None,
-        )
-        if learning_id is not None:
+        learning_id = answer_learning_id
+        if learning_id is None and error is None:
+            learning_id = next(
+                (
+                    step.metadata["learning_id"]
+                    for step in reversed(question_memory.steps)
+                    if step.metadata and step.metadata.get("learning_id")
+                ),
+                None,
+            )
+        if learning_id is None:
+            learning_id = generated_learning_id
+        if learning_id is not None and error is None:
             await self.callback(
                 topic,
                 AragAnswer(
