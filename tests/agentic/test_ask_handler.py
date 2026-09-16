@@ -16,13 +16,13 @@ async def test_citation_defaults(citations, expected):
     ask_request = AskRequest(query="question", citations=citations)
     ask_result = AsyncMock()
     ask_result.start.return_value = "learning-id"
-    ask_result.json.return_value = "{}"
+    ask_result.json.return_value = '{"learning_id":"learning-id"}'
 
     with patch(
         "nucliadb_agentic_api.agentic.ask_handler.AgenticAskResult",
         return_value=ask_result,
     ) as result_class:
-        await create_agentic_response(
+        response = await create_agentic_response(
             app=AsyncMock(),
             kbid="kbid",
             account="account",
@@ -35,3 +35,6 @@ async def test_citation_defaults(citations, expected):
         )
 
     assert result_class.call_args.kwargs["ask_request"].citations == expected
+    assert response.headers["NUCLIA-LEARNING-ID"] == "learning-id"
+    assert response.headers["Access-Control-Expose-Headers"] == "NUCLIA-LEARNING-ID"
+    assert response.body == b'{"learning_id":"learning-id"}'

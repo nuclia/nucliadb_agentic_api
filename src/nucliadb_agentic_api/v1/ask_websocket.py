@@ -110,6 +110,7 @@ async def websocket_endpoint(
         item.query = interaction.question
         interaction.arguments["ask_request"] = item.model_dump_json(exclude_unset=True)
 
+        learning_id = "unknown"
         async for msg in stream_response(
             websocket.app,
             receiver,
@@ -119,6 +120,8 @@ async def websocket_endpoint(
             interaction,
             workflow_id=agentic_config_id,
         ):
+            if msg.step and msg.step.metadata:
+                learning_id = msg.step.metadata.get("learning_id", learning_id)
             if msg.step and msg.step.external_usage:
                 audit = get_audit()
                 if audit is not None:
@@ -137,7 +140,12 @@ async def websocket_endpoint(
                         msg.step.module,
                     )
             try:
-                await websocket.send_text(msg.model_dump_json())
+                if msg.operation == AnswerOperation.DONE:
+                    payload = msg.model_dump(mode="json")
+                    payload["learning_id"] = learning_id
+                    await websocket.send_json(payload)
+                else:
+                    await websocket.send_text(msg.model_dump_json())
             except (RuntimeError, WebSocketDisconnect):
                 # WebSocket already closed
                 pass

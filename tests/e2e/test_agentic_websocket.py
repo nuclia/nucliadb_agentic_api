@@ -79,13 +79,19 @@ async def test_agentic_websocket_nucliadb(
         await websocket.send(json.dumps(initial_message))
 
         answers = []
+        learning_id = None
         async for message in websocket:
             print(message)
+            payload = json.loads(message)
             response = AragAnswer.model_validate_json(message)
+            if response.step and response.step.metadata:
+                learning_id = response.step.metadata.get("learning_id", learning_id)
             if response.operation == AnswerOperation.ANSWER:
                 if response.answer:
                     answers.append(response.answer)
             elif response.operation == AnswerOperation.DONE:
+                assert learning_id is not None
+                assert payload["learning_id"] == learning_id
                 break
             elif response.operation == AnswerOperation.ERROR:
                 assert False, (
@@ -188,13 +194,19 @@ async def test_agentic_websocket_perplexity(
         await websocket.send(json.dumps(initial_message))
 
         answers = []
+        learning_id = None
         async for message in websocket:
             print(message)
+            payload = json.loads(message)
             response = AragAnswer.model_validate_json(message)
+            if response.step and response.step.metadata:
+                learning_id = response.step.metadata.get("learning_id", learning_id)
             if response.operation == AnswerOperation.ANSWER:
                 if response.answer:
                     answers.append(response.answer)
             elif response.operation == AnswerOperation.DONE:
+                assert learning_id is not None
+                assert payload["learning_id"] == learning_id
                 break
             elif response.operation == AnswerOperation.ERROR:
                 assert False, (
