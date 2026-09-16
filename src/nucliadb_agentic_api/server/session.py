@@ -10,6 +10,7 @@ from hyperforge.configure import GLOBAL_REGISTRY, load_all_configurations, scan
 from hyperforge.engine import State, get_state
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
 from hyperforge.memory import QuestionMemory
+from hyperforge.models import Step
 from hyperforge.pubsub import AgentDone, StartInteraction
 from hyperforge.server.cache import Cache
 from hyperforge.server.session import SessionManager
@@ -281,6 +282,31 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 else None,
             ),
         )
+        learning_id = next(
+            (
+                step.metadata["learning_id"]
+                for step in reversed(question_memory.steps)
+                if step.metadata and step.metadata.get("learning_id")
+            ),
+            None,
+        )
+        if learning_id is not None:
+            await self.callback(
+                topic,
+                AragAnswer(
+                    step=Step(
+                        original_question_uuid=question_memory.original_question_uuid,
+                        actual_question_uuid=question_memory.actual_question_uuid,
+                        module="_learning_id",
+                        title="",
+                        agent_path="",
+                        timeit=0,
+                        input_nuclia_tokens=None,
+                        output_nuclia_tokens=None,
+                        metadata={"learning_id": learning_id},
+                    )
+                ),
+            )
         await self.send_message(
             topic,
             AgentDone(),

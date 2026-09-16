@@ -122,6 +122,8 @@ async def websocket_endpoint(
         ):
             if msg.step and msg.step.metadata:
                 learning_id = msg.step.metadata.get("learning_id", learning_id)
+                if msg.step.module == "_learning_id":
+                    continue
             if msg.step and msg.step.external_usage:
                 audit = get_audit()
                 if audit is not None:

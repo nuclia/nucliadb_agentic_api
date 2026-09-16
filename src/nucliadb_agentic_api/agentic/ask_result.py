@@ -141,6 +141,8 @@ class AgenticAskResult(AskResult):
                 ):
                     self.nuclia_learning_id = msg.step.metadata["learning_id"]
                     self.event_learning_id.set()
+                    if msg.step.module == "_learning_id":
+                        continue
                 if msg.step and msg.step.external_usage:
                     audit = get_audit()
                     if audit is not None:
