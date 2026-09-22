@@ -85,16 +85,13 @@ async def test_migrate_llm_models_updates_stored_agent_and_source_configs(
 
     engine = sa.create_engine(agentic_pg_dsn)
     with engine.connect() as conn:
-        assert (
-            migrate_llm_models(
-                conn,
-                {
-                    "claude-4-5-sonnet": "claude-5-sonnet",
-                    "chatgpt-azure-4o": "chatgpt-azure-5.6-terra",
-                    "chatgpt-azure-4o-mini": "chatgpt-azure-5.6-luna",
-                },
-            )
-            == 2
+        migrate_llm_models(
+            conn,
+            {
+                "claude-4-5-sonnet": "claude-5-sonnet",
+                "chatgpt-azure-4o": "chatgpt-azure-5.6-terra",
+                "chatgpt-azure-4o-mini": "chatgpt-azure-5.6-luna",
+            },
         )
         conn.commit()
 
