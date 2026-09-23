@@ -69,7 +69,7 @@ async def test_migrate_llm_models_updates_stored_agent_and_source_configs(
                 )
             ),
             summarize=AgenticSummarizeConfiguration(
-                model=LLMConfig(model_id="chatgpt-azure-4o")
+                model=LLMConfig(model_id="chatgpt-azure-o3-mini")
             ),
         ),
     )
@@ -91,6 +91,7 @@ async def test_migrate_llm_models_updates_stored_agent_and_source_configs(
                 "claude-4-5-sonnet": "claude-5-sonnet",
                 "chatgpt-azure-4o": "chatgpt-azure-5.6-terra",
                 "chatgpt-azure-4o-mini": "chatgpt-azure-5.6-luna",
+                "chatgpt-azure-o3-mini": "chatgpt-azure-5.6-luna",
             },
         )
         conn.commit()
@@ -114,7 +115,7 @@ async def test_migrate_llm_models_updates_stored_agent_and_source_configs(
     assert stored_agent.smart_agent.models.executor.model_id == "chatgpt-azure-5.6-luna"
     assert stored_agent.summarize is not None
     assert stored_agent.summarize.model is not None
-    assert stored_agent.summarize.model.model_id == "chatgpt-azure-5.6-terra"
+    assert stored_agent.summarize.model.model_id == "chatgpt-azure-5.6-luna"
     assert isinstance(stored_source, MCPSourceSchema)
     assert stored_source.tool_choice_model is not None
     assert stored_source.tool_choice_model.model_id == "chatgpt-azure-5.6-luna"
