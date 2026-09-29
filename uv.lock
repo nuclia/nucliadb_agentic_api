@@ -13,10 +13,6 @@ members = [
     "hyperforge-nucliadb-agentic",
     "nucliadb-agentic-api",
 ]
-constraints = [
-    { name = "anyio", specifier = ">=4.15.1" },
-    { name = "restrictedpython", specifier = ">=8.5" },
-]
 
 [[package]]
 name = "a2a-sdk"
