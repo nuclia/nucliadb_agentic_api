@@ -30,6 +30,10 @@ where = ["src/"]
 
 [tool.uv]
 default-groups = "all"
+constraint-dependencies = [
+    "anyio>=4.15.1",
+    "RestrictedPython>=8.5",
+]
 
 [tool.uv.sources]
 nucliadb_agentic_api = { workspace = true }
