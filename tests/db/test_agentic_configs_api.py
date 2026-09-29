@@ -33,7 +33,7 @@ async def test_agentic_configs_api(
     payload = {
         "title": "Support agent",
         "rephrase": {
-            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-5.6-luna"},
             "history": True,
         },
         "smart_agent": {
@@ -43,15 +43,21 @@ async def test_agentic_configs_api(
             "models": {
                 "context_validation": {
                     "_type": "llm_config",
-                    "model_id": "chatgpt-azure-4o-mini",
+                    "model_id": "chatgpt-azure-5.6-luna",
                 },
-                "planner": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
-                "executor": {"_type": "llm_config", "model_id": "chatgpt-4.1"},
+                "planner": {
+                    "_type": "llm_config",
+                    "model_id": "chatgpt-azure-5.6-terra",
+                },
+                "executor": {
+                    "_type": "llm_config",
+                    "model_id": "chatgpt-azure-5.6-terra",
+                },
             },
         },
         "summarize": {
             "conversational": True,
-            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-5.6-luna"},
             "history": True,
         },
     }
@@ -72,7 +78,7 @@ async def test_agentic_configs_api(
         "title": "Updated support agent",
         "summarize": {
             "conversational": False,
-            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-4o-mini"},
+            "model": {"_type": "llm_config", "model_id": "chatgpt-azure-5.6-luna"},
             "history": True,
         },
     }
@@ -101,19 +107,19 @@ async def test_agentic_config_schema_exposes_llm_defaults(
         definitions["AgenticRephraseConfiguration"]["properties"]["model"]["default"][
             "model_id"
         ]
-        == "chatgpt-azure-4o-mini"
+        == "chatgpt-azure-5.6-luna"
     )
     assert (
         definitions["AgenticSmartAgentModels"]["properties"]["context_validation"][
             "default"
         ]["model_id"]
-        == "chatgpt-azure-4o-mini"
+        == "chatgpt-azure-5.6-luna"
     )
     assert (
         definitions["AgenticSmartAgentModels"]["properties"]["planner"]["default"][
             "model_id"
         ]
-        == "chatgpt-4.1"
+        == "chatgpt-azure-5.6-terra"
     )
 
 

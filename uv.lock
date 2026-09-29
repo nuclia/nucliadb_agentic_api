@@ -1416,7 +1416,7 @@ wheels = [
 
 [[package]]
 name = "hyperforge"
-version = "1.0.0.post346"
+version = "1.0.0.post414"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "a2a-sdk", extra = ["grpc", "http-server"] },
@@ -1454,9 +1454,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/92/7d28ba047a2a8b64e1d747ac811853fa1354b968fe7f1b299b6ef70486de/hyperforge-1.0.0.post346.tar.gz", hash = "sha256:9839a7dfa120ac762bd2e66c3cd5c13bcac9af8c139b9c24266b170b492cab4b", size = 303275, upload-time = "2026-09-10T12:31:33.045Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/af/0cffc2884922ddcc7133401e7cf80762fd44b7a5f2af2c622aad25474c19/hyperforge-1.0.0.post414.tar.gz", hash = "sha256:b9807709fefac4984f8f13130d5dd9562e459089df4bf0b1bb93be0d7b8ee5ad", size = 335551, upload-time = "2026-09-29T06:33:29.835Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/cf/4c113ffb5506216aa668f180d9a754bfe972127cf2424d97079a179cc5f0/hyperforge-1.0.0.post346-py3-none-any.whl", hash = "sha256:5364a116616f9a5b95f8fb205cf6449bcdc260e026d013380b60a39bc2aada6f", size = 352834, upload-time = "2026-09-10T12:31:31.318Z" },
+    { url = "https://files.pythonhosted.org/packages/f9/9b/f585802cc1d0118e27a972ba2356b6f530ee3e22d1e48b0b5a7a5e936740/hyperforge-1.0.0.post414-py3-none-any.whl", hash = "sha256:02732550172a23feece824ea690b9fed24306a9cb802f0a9eeaafbf51529737e", size = 388317, upload-time = "2026-09-29T06:33:28.132Z" },
 ]
 
 [[package]]
@@ -1531,7 +1531,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hyperforge", specifier = ">=1.0.0.post281" },
+    { name = "hyperforge", specifier = ">=1.0.0.post414" },
     { name = "lingua-language-detector" },
     { name = "nucliadb-sdk" },
 ]
@@ -2498,7 +2498,7 @@ server = [
     { name = "databases", extras = ["asyncpg"] },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "hyperforge", specifier = ">=1.0.0.post346" },
+    { name = "hyperforge", specifier = ">=1.0.0.post414" },
     { name = "hyperforge-conditional", specifier = ">=1.0.0.post27" },
     { name = "hyperforge-google", specifier = ">=1.0.0.post81" },
     { name = "hyperforge-mcp", specifier = ">=1.0.0.post95" },

@@ -16,7 +16,7 @@ class TestNucliaDBAgentConfigDefaults:
 
     def test_default_generative_model(self):
         cfg = NucliaDBAgentConfig()
-        assert cfg.generative_model.model_id == "chatgpt-azure-4o-mini"
+        assert cfg.generative_model.model_id == "chatgpt-azure-5.6-luna"
 
     def test_generate_inner_answer_defaults_to_true(self):
         cfg = NucliaDBAgentConfig()
