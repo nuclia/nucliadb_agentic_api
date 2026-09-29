@@ -1,5 +1,6 @@
 import os
 from asyncio import Task, create_task, timeout  # type: ignore
+from builtins import BaseExceptionGroup
 from functools import partial
 
 import nucliadb_telemetry.context
@@ -8,6 +9,7 @@ import prometheus_client
 from hyperforge.broker import Broker
 from hyperforge.configure import GLOBAL_REGISTRY, load_all_configurations, scan
 from hyperforge.engine import State, get_state
+from hyperforge.errors import actionable_exception_group, exception_detail
 from hyperforge.interaction import AnswerOperation, AragAnswer, ARAGException
 from hyperforge.memory import QuestionMemory
 from hyperforge.pubsub import AgentDone, StartInteraction
@@ -250,10 +252,16 @@ class NucliaDBAgenticSessionManager(SessionManager):
             async with timeout(self.settings.question_timeout_seconds):
                 await state.agent(question_memory, state.manager)
 
+        except BaseExceptionGroup as exc:
+            error_group = actionable_exception_group(exc)
+            logger.exception("Answering exception")
+            errors.capture_exception(error_group)
+            error = ARAGException(detail=exception_detail(error_group))
+            observation.set_status("error")
         except Exception as e:
             logger.exception("Answering exception")
             errors.capture_exception(e)
-            error = ARAGException(detail=str(e))
+            error = ARAGException(detail=exception_detail(e))
             observation.set_status("error")
         finally:
             try:
@@ -261,10 +269,9 @@ class NucliaDBAgenticSessionManager(SessionManager):
             except Exception as e:
                 logger.exception("Error closing Manager")
                 errors.capture_exception(e)
-
-        observation.end()
-        answer_running.dec()
-        keepalive.cancel()
+            observation.end()
+            answer_running.dec()
+            keepalive.cancel()
 
         await self.callback(
             topic,
