@@ -44,6 +44,38 @@ async def test_activate_rejects_invalid_ask_request_before_loading_config(
     session.send_message.assert_awaited_once()
 
 
+async def test_activate_reports_sanitized_failure():
+    session = object.__new__(NucliaDBAgenticSessionManager)
+    session.question_topic = MagicMock(return_value="answer-topic")
+    session.callback = AsyncMock()
+    session.send_message = AsyncMock()
+    session.agent_manager = MagicMock()
+    session.settings = SimpleNamespace(
+        internal_nucliadb_url="",
+        internal_nucliadb=False,
+        external_nucliadb_url="",
+        external_nucliadb_key="",
+    )
+    session.agent_manager.get_agent_config = AsyncMock(
+        side_effect=RuntimeError("token=secret-value invalid configuration")
+    )
+
+    message = SimpleNamespace(
+        account="account",
+        agent_id="kbid",
+        session="session",
+        question_id="question",
+        workflow_id="workflow",
+        arguments={"ask_request": '{"query": "question"}'},
+    )
+
+    await session.activate(message)
+
+    answer = session.callback.await_args.args[1]
+    assert answer.operation == AnswerOperation.ERROR
+    assert answer.exception.detail == "token=[REDACTED] invalid configuration"
+
+
 async def test_answer_unwraps_exception_group_for_user():
     session = object.__new__(NucliaDBAgenticSessionManager)
     session.settings = SimpleNamespace(question_timeout_seconds=10)
