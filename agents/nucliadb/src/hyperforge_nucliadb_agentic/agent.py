@@ -45,6 +45,9 @@ from nucliadb_models.search import (
 )
 from pydantic import ValidationError
 
+from hyperforge_nucliadb_agentic.ask.learning_headers import (
+    get_learning_forwarded_headers,
+)
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     CitationsType,
@@ -1109,6 +1112,7 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             origin=memory.arguments.get("origin", ""),
             resource=None,
             extra_predict_headers={"X-Show-Consumption": "true"},
+            forwarded_headers=get_learning_forwarded_headers(memory.headers),
         )
 
         # Hack to send the find results on the agent context

@@ -55,6 +55,9 @@ from hyperforge_nucliadb_agentic.ask.exceptions import (
     NoRetrievalResultsError,
     NucliaDBError,
 )
+from hyperforge_nucliadb_agentic.ask.learning_headers import (
+    with_forwarded_headers,
+)
 from hyperforge_nucliadb_agentic.ask.model import (
     AnswerAskResponseItem,
     AskRequest,
@@ -611,7 +614,11 @@ async def ask(
     origin: str,
     resource: str | None = None,
     extra_predict_headers: dict[str, str] | None = None,
+    forwarded_headers: dict[str, str] | None = None,
 ) -> AskResult:
+    # Headers in `forwarded_headers` are sent on every call to learning, while
+    # `extra_predict_headers` only apply to the answer generation call
+    predict_manager = with_forwarded_headers(predict_manager, forwarded_headers)
     metrics = AskMetrics()
     chat_history = ask_request.chat_history or []
     user_context = ask_request.extra_context or []

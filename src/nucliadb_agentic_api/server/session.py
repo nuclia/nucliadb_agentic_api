@@ -20,6 +20,9 @@ from hyperforge_nucliadb_agentic.ask.audit import (
     start_audit_utility,
     stop_audit_utility,
 )
+from hyperforge_nucliadb_agentic.ask.learning_headers import (
+    get_learning_forwarded_headers,
+)
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from lru import LRU
 from nucliadb_telemetry import errors
@@ -154,6 +157,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 external_nua_api_key=self.settings.external_nua_api_key,
                 account=message.account,
                 kbid=None if self.settings.standalone else message.agent_id,
+                extra_headers=get_learning_forwarded_headers(message.headers),
             )
 
             if message.session not in self.memory:

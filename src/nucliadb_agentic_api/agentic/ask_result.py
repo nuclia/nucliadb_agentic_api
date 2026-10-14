@@ -78,6 +78,7 @@ class AgenticAskResult(AskResult):
         origin: str | None = None,
         generate_inner_answer: bool = True,
         resource: str | None = None,
+        forwarded_headers: dict[str, str] | None = None,
     ):
         # Initial attributes
         self.kbid = kbid
@@ -95,6 +96,7 @@ class AgenticAskResult(AskResult):
         self.main_results = KnowledgeboxFindResults(resources={})
         self.generate_inner_answer = generate_inner_answer
         self.resource = resource
+        self.forwarded_headers = forwarded_headers or {}
 
         # These fields are populated by the native ask result, but the
         # inherited synchronous serializer also expects them to exist.
@@ -118,7 +120,9 @@ class AgenticAskResult(AskResult):
         self.best_matches: list[RetrievalMatch] = []
 
     async def loop(self):
-        interaction = interaction_from_ask_request(self.ask_request)
+        interaction = interaction_from_ask_request(
+            self.ask_request, headers=self.forwarded_headers
+        )
         msg: AragAnswer
         async for msg in stream_response(
             self.app,  # type: ignore

@@ -72,6 +72,7 @@ def mock_memory():
     memory = MagicMock()
     memory.original_question_uuid = "test-question-uuid"
     memory.arguments = {}
+    memory.headers = {}
     memory.add_step = AsyncMock()
     memory.get_tracking_info = MagicMock(return_value={})
     return memory

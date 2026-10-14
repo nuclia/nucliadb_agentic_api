@@ -6,6 +6,9 @@ from hyperforge.manager import Manager
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     AnswerJsonSchemaTooLong,
 )
+from hyperforge_nucliadb_agentic.ask.learning_headers import (
+    get_learning_forwarded_headers,
+)
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
     SyncAskResponse,
@@ -92,6 +95,7 @@ async def ask_knowledgebox_endpoint(
             client_type=x_ndb_client,
             origin=x_forwarded_for,
             x_synchronous=x_synchronous,
+            forwarded_headers=get_learning_forwarded_headers(request.headers),
             extra_predict_headers={
                 "X-Show-Consumption": str(x_show_consumption).lower()
             },
@@ -105,6 +109,7 @@ async def ask_knowledgebox_endpoint(
         client_type=x_ndb_client,
         origin=x_forwarded_for,
         x_synchronous=x_synchronous,
+        forwarded_headers=get_learning_forwarded_headers(request.headers),
         extra_predict_headers={"X-Show-Consumption": str(x_show_consumption).lower()},
     )
 
@@ -154,6 +159,7 @@ async def resource_ask_endpoint_by_uuid(
             client_type=x_ndb_client,
             origin=x_forwarded_for,
             x_synchronous=x_synchronous,
+            forwarded_headers=get_learning_forwarded_headers(request.headers),
             extra_predict_headers={
                 "X-Show-Consumption": str(x_show_consumption).lower()
             },
@@ -167,6 +173,7 @@ async def resource_ask_endpoint_by_uuid(
         client_type=x_ndb_client,
         origin=x_forwarded_for,
         x_synchronous=x_synchronous,
+        forwarded_headers=get_learning_forwarded_headers(request.headers),
         resource=str(rid),
         extra_predict_headers={"X-Show-Consumption": str(x_show_consumption).lower()},
     )
@@ -223,6 +230,7 @@ async def resource_ask_endpoint_by_slug(
             client_type=x_ndb_client,
             origin=x_forwarded_for,
             x_synchronous=x_synchronous,
+            forwarded_headers=get_learning_forwarded_headers(request.headers),
             resource=str(resource_id),
             extra_predict_headers={
                 "X-Show-Consumption": str(x_show_consumption).lower()
@@ -237,6 +245,7 @@ async def resource_ask_endpoint_by_slug(
         client_type=x_ndb_client,
         origin=x_forwarded_for,
         x_synchronous=x_synchronous,
+        forwarded_headers=get_learning_forwarded_headers(request.headers),
         resource=resource_id,
         extra_predict_headers={"X-Show-Consumption": str(x_show_consumption).lower()},
     )
@@ -253,6 +262,7 @@ async def create_ask_response(
     x_synchronous: bool,
     resource: str | None = None,
     extra_predict_headers: dict[str, str] | None = None,
+    forwarded_headers: dict[str, str] | None = None,
 ) -> Response:
     ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
     try:
@@ -267,6 +277,7 @@ async def create_ask_response(
             origin=origin,
             resource=resource,
             extra_predict_headers=extra_predict_headers,
+            forwarded_headers=forwarded_headers,
         )
 
     except AnswerJsonSchemaTooLong as err:

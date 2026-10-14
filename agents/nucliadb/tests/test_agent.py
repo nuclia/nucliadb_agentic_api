@@ -689,6 +689,29 @@ class TestInnerRag:
         assert internal_request.top_k == 3
         assert internal_request.filter_expression == source_filter
 
+    async def test_forwards_learning_headers_from_memory_to_ask(
+        self, nucliadb_agent, mock_memory, mock_manager, mock_source
+    ):
+        mock_memory.headers = {
+            "X-Allow-Access-External-Models": "true",
+            "x-other": "ignored",
+        }
+
+        with patch(
+            "hyperforge_nucliadb_agentic.agent.ask",
+            new=AsyncMock(return_value=NotEnoughContextAskResult()),
+        ) as mock_ask:
+            await nucliadb_agent.inner_rag(
+                source_obj=mock_source,
+                manager=mock_manager,
+                memory=mock_memory,
+                question="question",
+            )
+
+        assert mock_ask.call_args.kwargs["forwarded_headers"] == {
+            "x-allow-access-external-models": "true"
+        }
+
     async def test_uses_endpoint_ask_request_with_smart_agent_query(
         self, nucliadb_agent, mock_memory, mock_manager, mock_source
     ):

@@ -33,6 +33,7 @@ async def create_agentic_response(
     x_synchronous: bool,
     resource: str | None = None,
     extra_predict_headers: dict[str, str] | None = None,
+    forwarded_headers: dict[str, str] | None = None,
 ) -> Response:
     ask_request.max_tokens = parse_max_tokens(ask_request.max_tokens)
     if ask_request.citations is None:
@@ -46,6 +47,7 @@ async def create_agentic_response(
         client_type=client_type,
         origin=origin,
         resource=resource,
+        forwarded_headers=forwarded_headers,
     )
 
     nuclia_learning_id = await ask_result.start()

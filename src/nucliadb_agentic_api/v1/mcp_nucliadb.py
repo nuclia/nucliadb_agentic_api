@@ -1,7 +1,7 @@
 import json
 from asyncio import gather
 from collections.abc import MutableMapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
 from itertools import chain
 from typing import TYPE_CHECKING, Any, Iterable, Sequence
@@ -14,7 +14,11 @@ from hyperforge.manager import Manager
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.server.fastmcp.utilities.types import Image
 from mcp.server.lowlevel.helper_types import ReadResourceContents
-from mcp.server.lowlevel.server import Server as MCPServer, lifespan as default_lifespan
+from mcp.server.lowlevel.server import (
+    Server as MCPServer,
+    lifespan as default_lifespan,
+    request_ctx,
+)
 from mcp.types import (
     Annotations,
     EmbeddedResource,
@@ -42,6 +46,9 @@ from hyperforge_nucliadb_agentic.ask.exceptions import (
     InvalidQueryError,
     KnowledgeBoxNotFound,
     NoRetrievalResultsError,
+)
+from hyperforge_nucliadb_agentic.ask.learning_headers import (
+    get_learning_forwarded_headers,
 )
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
@@ -88,6 +95,7 @@ class MCPContext:
     x_nucliadb_user: str
     x_ndb_client: NucliaDBClientType
     x_forwarded_for: str
+    forwarded_headers: dict[str, str] = field(default_factory=dict)
 
 
 class SearchDocumentsArgs(BaseModel):
@@ -259,6 +267,7 @@ async def _tool_search_documents(
             extra_predict_headers={
                 "X-Show-Consumption": "True",
             },
+            forwarded_headers=context.forwarded_headers,
         )
     except KnowledgeBoxNotFound as e:
         raise ResourceError(f"Knowledge base '{context.kbid}' was not found") from e
@@ -471,6 +480,18 @@ async def list_tools(description: str) -> list[Tool]:
     ]
 
 
+def _get_forwarded_headers() -> dict[str, str]:
+    """Learning headers of the request currently being served. The MCP server
+    is cached per KB, so these can't be captured when it is created."""
+    try:
+        request = request_ctx.get().request
+    except LookupError:
+        return {}
+    if request is None:
+        return {}
+    return get_learning_forwarded_headers(request.headers)
+
+
 async def call_tool(
     predict_manager: Manager,
     x_stf_account: str,
@@ -503,6 +524,7 @@ async def call_tool(
         x_nucliadb_user=x_nucliadb_user,
         x_ndb_client=x_ndb_client,
         x_forwarded_for=x_forwarded_for,
+        forwarded_headers=_get_forwarded_headers(),
     )
     return await tool_def.handler(context, args)
 
