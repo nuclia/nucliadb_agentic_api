@@ -515,13 +515,22 @@ FILTER_EXPRESSION = {"field": {"prop": "label", "labelset": "lang", "label": "es
         AskSearchConfiguration(
             kind="ask",
             config=AskConfig.model_validate(
-                {"filter_expression": FILTER_EXPRESSION, "top_k": 3}
+                {
+                    "filter_expression": FILTER_EXPRESSION,
+                    "top_k": 3,
+                    "features": ["keyword", "relations"],
+                }
             ),
         ),
         FindSearchConfiguration(
             kind="find",
             config=FindConfig.model_validate(
-                {"filter_expression": FILTER_EXPRESSION, "top_k": 3}
+                {
+                    "filter_expression": FILTER_EXPRESSION,
+                    "top_k": 3,
+                    # `graph` is find-only and must be dropped
+                    "features": ["keyword", "relations", "graph"],
+                }
             ),
         ),
     ],
@@ -533,6 +542,7 @@ async def test_search_documents_applies_search_configuration(config):
     )
     assert request.filter_expression.field.label == "es"
     assert request.top_k == 3
+    assert [f.value for f in request.features] == ["keyword", "relations"]
     assert len(request.rag_strategies) == 3  # MCP defaults fill unset parameters
 
 

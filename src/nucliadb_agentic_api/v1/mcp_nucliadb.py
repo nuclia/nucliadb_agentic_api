@@ -45,6 +45,7 @@ from hyperforge_nucliadb_agentic.ask.exceptions import (
 )
 from hyperforge_nucliadb_agentic.ask.model import (
     AskRequest,
+    ChatOptions,
     CitationsType,
     FieldExtensionStrategy,
     Filter,
@@ -268,6 +269,16 @@ async def _load_search_configuration(context: MCPContext, name: str) -> dict[str
     params = config_model.model_dump(mode="json", exclude_unset=True)
     params.pop("query", None)  # the tool query always wins
     ignored = sorted(set(params) - set(AskRequest.model_fields))
+    if "features" in params:
+        # Find supports features ask does not (e.g. `graph`)
+        ask_features = {o.value for o in ChatOptions}
+        features = [f for f in params["features"] if f in ask_features]
+        if len(features) != len(params["features"]):
+            ignored.append(f"features={sorted(set(params['features']) - ask_features)}")
+        if features:
+            params["features"] = features
+        else:
+            params.pop("features")  # nothing left, use the defaults
     if ignored:
         logger.info(
             f"Search configuration '{name}' ({search_config.kind}) parameters not "
