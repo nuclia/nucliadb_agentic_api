@@ -762,10 +762,13 @@ async def mcp_protected_resource_metadata(
     mcp_url_https = str(mcp_url).replace(
         "http://", "https://"
     )  # Ensure the URL uses https
+    # Must match the `issuer` advertised by the authorization server exactly
+    # (RFC 8414 §3.3). Hydra always advertises its issuer with a trailing slash.
+    authorization_server = app.settings.hydra_public_url.rstrip("/") + "/"
     return {
         "resource": mcp_url_https,
         "scopes_supported": app.settings.hydra_scopes_supported,
-        "authorization_servers": [app.settings.hydra_public_url],
+        "authorization_servers": [authorization_server],
     }
 
 
