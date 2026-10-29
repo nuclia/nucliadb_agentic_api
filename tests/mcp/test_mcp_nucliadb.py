@@ -13,8 +13,15 @@ from hyperforge.minimal_fixtures import cassette_nua_key
 from hyperforge.models import MemoryConfig, Rule, Rules
 from hyperforge_mcp.agent import MCPAgent
 from hyperforge_mcp.config import MCPAgentConfig, Transport
+from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.types import TextContent
+from nucliadb_models.configuration import (
+    AskConfig,
+    AskSearchConfiguration,
+    FindConfig,
+    FindSearchConfiguration,
+)
 from nucliadb_sdk.v2.exceptions import NotFoundError, RateLimitError
 
 from nucliadb_agentic_api.server.session import NucliaDBAgenticSessionManager
@@ -380,9 +387,17 @@ async def test_text_content_audience_includes_assistant():
 
     ask_mock = AsyncMock(return_value=ask_result_mock)
 
-    with patch(
-        "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
-        new=ask_mock,
+    with (
+        patch(
+            "nucliadb_agentic_api.v1.mcp_nucliadb.ask",
+            new=ask_mock,
+        ),
+        patch(
+            "nucliadb_agentic_api.v1.mcp_nucliadb.rpc.get_search_configuration",
+            new=AsyncMock(
+                return_value=AskSearchConfiguration(kind="ask", config=AskConfig())
+            ),
+        ),
     ):
         results = await call_tool(
             predict_manager=MagicMock(),
@@ -438,14 +453,42 @@ async def test_text_content_audience_includes_assistant():
     ask_args_no_config = ask_mock_no_config.call_args[1]
     assert ask_args_no_config["ask_request"].search_configuration is None
 
-    # --- test call_tool search_documents with invalid configuration ---
+    # --- test call_tool search_documents with an unexpected ask failure ---
     # An unrecognised exception from `ask` is wrapped into a ResourceError.
-    ask_mock_invalid = AsyncMock(side_effect=Exception("Invalid configuration"))
+    ask_mock_failing = AsyncMock(side_effect=Exception("boom"))
     with (
-        patch("nucliadb_agentic_api.v1.mcp_nucliadb.ask", new=ask_mock_invalid),
-        pytest.raises(
-            ResourceError,
-            match="Search failed: Invalid configuration",
+        patch("nucliadb_agentic_api.v1.mcp_nucliadb.ask", new=ask_mock_failing),
+        pytest.raises(ResourceError, match="Search failed: boom"),
+    ):
+        await call_tool(
+            predict_manager=MagicMock(),
+            x_stf_account="account",
+            x_nucliadb_user="user",
+            x_ndb_client=MagicMock(),  # type: ignore
+            x_forwarded_for="",
+            ndb_reader=AsyncMock(),
+            ndb_search=AsyncMock(),
+            kbid="kbid",
+            name="search_documents",
+            arguments={"query": "test"},
+        )
+
+
+async def _call_search_documents(
+    arguments: dict, search_configuration: object = None
+) -> AskRequest:
+    """Run `search_documents` with `ask` and the configuration lookup mocked,
+    returning the AskRequest passed to `ask`."""
+    from hyperforge_nucliadb_agentic.ask.search.ask import NotEnoughContextAskResult
+
+    from nucliadb_agentic_api.v1.mcp_nucliadb import call_tool
+
+    ask_mock = AsyncMock(return_value=NotEnoughContextAskResult())
+    with (
+        patch("nucliadb_agentic_api.v1.mcp_nucliadb.ask", new=ask_mock),
+        patch(
+            "nucliadb_agentic_api.v1.mcp_nucliadb.rpc.get_search_configuration",
+            new=AsyncMock(return_value=search_configuration),
         ),
     ):
         await call_tool(
@@ -458,8 +501,103 @@ async def test_text_content_audience_includes_assistant():
             ndb_search=AsyncMock(),
             kbid="kbid",
             name="search_documents",
-            arguments={"query": "test", "search_configuration": "non-existent-config"},
+            arguments=arguments,
         )
+    return ask_mock.call_args[1]["ask_request"]
+
+
+FILTER_EXPRESSION = {"field": {"prop": "label", "labelset": "lang", "label": "es"}}
+
+
+@pytest.mark.parametrize(
+    "config",
+    [
+        AskSearchConfiguration(
+            kind="ask",
+            config=AskConfig.model_validate(
+                {"filter_expression": FILTER_EXPRESSION, "top_k": 3}
+            ),
+        ),
+        FindSearchConfiguration(
+            kind="find",
+            config=FindConfig.model_validate(
+                {"filter_expression": FILTER_EXPRESSION, "top_k": 3}
+            ),
+        ),
+    ],
+    ids=["ask", "find"],
+)
+async def test_search_documents_applies_search_configuration(config):
+    request = await _call_search_documents(
+        {"query": "test", "search_configuration": "cfg"}, config
+    )
+    assert request.filter_expression.field.label == "es"
+    assert request.top_k == 3
+    assert len(request.rag_strategies) == 3  # MCP defaults fill unset parameters
+
+
+async def test_search_documents_search_configuration_precedence():
+    from hyperforge_nucliadb_agentic.ask.model import CitationsType, RagStrategyName
+
+    config = AskSearchConfiguration(
+        kind="ask",
+        config=AskConfig.model_validate(
+            {
+                "generative_model": "my-model",
+                "rag_strategies": [{"name": "full_resource", "count": 2}],
+                "citations": False,  # required by the MCP response, always forced
+            }
+        ),
+    )
+    request = await _call_search_documents(
+        {"query": "test", "search_configuration": "cfg"}, config
+    )
+    assert request.generative_model == "my-model"
+    assert [s.name for s in request.rag_strategies] == [RagStrategyName.FULL_RESOURCE]
+    assert request.citations == CitationsType.LLM_FOOTNOTES
+
+
+async def test_search_documents_tool_filters_narrow_configuration_filters():
+    config = AskSearchConfiguration(
+        kind="ask", config=AskConfig.model_validate({"filters": ["/l/lang/es"]})
+    )
+    request = await _call_search_documents(
+        {
+            "query": "test",
+            "search_configuration": "cfg",
+            "filters": [{"any": ["/l/topic/a"]}],
+        },
+        config,
+    )
+    assert [f.model_dump(exclude_unset=True) for f in request.filters] == [
+        {"all": ["/l/lang/es"]},
+        {"any": ["/l/topic/a"]},
+    ]
+
+
+@pytest.mark.parametrize(
+    ("config", "filters", "error"),
+    [
+        (None, None, "Search configuration not found: 'cfg'"),
+        (
+            AskSearchConfiguration(
+                kind="ask",
+                config=AskConfig.model_validate(
+                    {"filter_expression": FILTER_EXPRESSION}
+                ),
+            ),
+            [{"all": ["/l/topic/a"]}],
+            "cannot be combined",
+        ),
+    ],
+    ids=["unknown", "filters-with-filter-expression"],
+)
+async def test_search_documents_search_configuration_errors(config, filters, error):
+    arguments = {"query": "test", "search_configuration": "cfg"}
+    if filters is not None:
+        arguments["filters"] = filters
+    with pytest.raises(ResourceError, match=error):
+        await _call_search_documents(arguments, config)
 
 
 async def test_call_tool_search_documents_without_retrieval_results():

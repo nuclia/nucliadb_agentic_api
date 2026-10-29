@@ -52,6 +52,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
     MetadataExtensionType,
     NeighbouringParagraphsStrategy,
 )
+from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.ask.search.ask import (
     AskResult,
     ask,
@@ -100,11 +101,11 @@ class SearchDocumentsArgs(BaseModel):
     )
     search_configuration: str | None = Field(
         None,
-        description="Optional. The name of the Search Configuration to use. If not provided, default settings are used.",
+        description="Optional. The name of a saved Search Configuration (ask or find) whose settings (filters, retrieval and RAG strategies, prompts, model...) are applied to the search. If not provided, default settings are used.",
     )
     filters: list[Filter] | None = Field(
         None,
-        description="Optional. A list of filter objects to narrow results. Each filter can include 'all' (AND), 'any' (OR), and/or 'not_all' (NOT AND) label paths like '/l/labelset/label'.",
+        description="Optional. A list of filter objects to narrow results. Each filter can include 'all' (AND), 'any' (OR), and/or 'not_all' (NOT AND) label paths like '/l/labelset/label'. When a Search Configuration is used, these filters are combined (AND) with its saved filters.",
     )
 
 
@@ -217,35 +218,139 @@ def _append_document_ids_to_answer(
     return f"{answer_text}\n\nDocument IDs:\n{document_ids_text}"
 
 
+def _mcp_default_ask_parameters() -> dict[str, Any]:
+    """Parameters used by the MCP tool when the search configuration does not set them."""
+    return {
+        "rag_strategies": [
+            FieldExtensionStrategy(fields=["a/title", "a/summary"]),
+            NeighbouringParagraphsStrategy(before=5, after=5),
+            MetadataExtensionStrategy(
+                types=[
+                    MetadataExtensionType.CLASSIFICATION_LABELS,
+                    MetadataExtensionType.ORIGIN,
+                ]
+            ),
+        ],
+        "debug": True,
+    }
+
+
+# Parameters the MCP tool response format depends on (answer text + footnote
+# citations mapped to documents), so they always win over the search configuration.
+_MCP_FORCED_ASK_PARAMETERS: dict[str, Any] = {
+    "generate_answer": True,
+    "citations": CitationsType.LLM_FOOTNOTES,
+}
+
+
+async def _load_search_configuration(context: MCPContext, name: str) -> dict[str, Any]:
+    """Fetch a saved Search Configuration and return the ask parameters it sets.
+
+    Both `ask` and `find` configurations are supported: `search_documents` runs an
+    ask, so `find` configurations contribute their retrieval parameters (filters,
+    top_k, features, reranker, ...) and parameters with no ask equivalent are ignored.
+    """
+    try:
+        search_config = await rpc.get_search_configuration(
+            context.ndb_reader, context.kbid, name=name
+        )
+    except Exception as e:
+        logger.exception(f"Error fetching search configuration '{name}'")
+        raise ResourceError(
+            f"Failed to load search configuration '{name}'"
+            + (f": {e}" if str(e) else "")
+        ) from e
+    if search_config is None:
+        raise ResourceError(f"Search configuration not found: '{name}'")
+
+    # AskConfig/FindConfig are built with `create_model`, so mypy can't see them as models
+    config_model: BaseModel = search_config.config
+    params = config_model.model_dump(mode="json", exclude_unset=True)
+    params.pop("query", None)  # the tool query always wins
+    ignored = sorted(set(params) - set(AskRequest.model_fields))
+    if ignored:
+        logger.info(
+            f"Search configuration '{name}' ({search_config.kind}) parameters not "
+            f"applicable to search_documents are ignored: {ignored}"
+        )
+    return {k: v for k, v in params.items() if k in AskRequest.model_fields}
+
+
+def _combine_filters(
+    config_params: dict[str, Any], tool_filters: list[Filter], name: str
+) -> list[dict[str, Any]]:
+    """AND the tool filters with the search configuration filters.
+
+    The tool filters can only narrow results further: they never replace the
+    filters saved in the search configuration.
+    """
+    if config_params.get("filter_expression") is not None:
+        raise ResourceError(
+            f"Search configuration '{name}' defines a filter expression, which "
+            "cannot be combined with the 'filters' argument. Retry without 'filters'."
+        )
+    combined: list[dict[str, Any]] = [
+        {"all": [f]} if isinstance(f, str) else f
+        for f in config_params.get("filters") or []
+    ]
+    combined.extend(f.model_dump(mode="json", exclude_unset=True) for f in tool_filters)
+    return combined
+
+
+async def _build_ask_request(
+    context: MCPContext, args: SearchDocumentsArgs
+) -> AskRequest:
+    """Build the ask request for `search_documents`.
+
+    Precedence: tool query/filters and MCP output requirements > saved search
+    configuration > MCP defaults.
+    """
+    params: dict[str, Any] = {}
+    if args.search_configuration is not None:
+        params = await _load_search_configuration(context, args.search_configuration)
+        params["search_configuration"] = args.search_configuration
+
+    for key, value in _mcp_default_ask_parameters().items():
+        params.setdefault(key, value)
+
+    if args.filters is not None:
+        if args.search_configuration is not None:
+            params["filters"] = _combine_filters(
+                params, args.filters, args.search_configuration
+            )
+        else:
+            params["filters"] = args.filters
+
+    params.update(_MCP_FORCED_ASK_PARAMETERS)
+    params["audit_metadata"] = {
+        **(params.get("audit_metadata") or {}),
+        "source": "mcp_tool",
+    }
+    params["query"] = args.query
+
+    try:
+        return AskRequest.model_validate(params)
+    except ValidationError as e:
+        error_details = "; ".join(
+            f"'{'.'.join(str(p) for p in err['loc'])}': {err['msg']}"
+            for err in e.errors()
+        )
+        raise ResourceError(
+            "Invalid search parameters"
+            + (
+                f" from search configuration '{args.search_configuration}'"
+                if args.search_configuration
+                else ""
+            )
+            + f": {error_details}"
+        ) from e
+
+
 async def _tool_search_documents(
     context: MCPContext,
     args: SearchDocumentsArgs,
 ) -> Sequence[TextContent | ImageContent | EmbeddedResource]:
-    ask_request = AskRequest(query=args.query)
-    ask_request.audit_metadata = {"source": "mcp_tool"}
-
-    ask_request.rag_strategies = [
-        FieldExtensionStrategy(fields=["a/title", "a/summary"]),
-        NeighbouringParagraphsStrategy(before=5, after=5),
-        MetadataExtensionStrategy(
-            types=[
-                MetadataExtensionType.CLASSIFICATION_LABELS,
-                MetadataExtensionType.ORIGIN,
-            ]
-        ),
-    ]
-
-    if args.filters is not None:
-        ask_request.filters = args.filters
-
-    if args.search_configuration is not None:
-        ask_request.search_configuration = args.search_configuration
-
-    # citations does not work with rag strategies yet
-
-    ask_request.generate_answer = True
-    ask_request.citations = CitationsType.LLM_FOOTNOTES
-    ask_request.debug = True
+    ask_request = await _build_ask_request(context, args)
     try:
         ask_result: AskResult = await ask(
             search_sdk=context.ndb_search,
