@@ -308,6 +308,12 @@ async def _build_ask_request(
     params: dict[str, Any] = {}
     if args.search_configuration is not None:
         params = await _load_search_configuration(context, args.search_configuration)
+        if params.get("answer_json_schema") is not None:
+            # The MCP response only renders text answers with footnote citations
+            raise ResourceError(
+                f"Search configuration '{args.search_configuration}' uses a structured "
+                "answer (answer_json_schema), which search_documents does not support"
+            )
         params["search_configuration"] = args.search_configuration
 
     for key, value in _mcp_default_ask_parameters().items():

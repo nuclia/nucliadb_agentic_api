@@ -589,8 +589,18 @@ async def test_search_documents_tool_filters_narrow_configuration_filters():
             [{"all": ["/l/topic/a"]}],
             "cannot be combined",
         ),
+        (
+            AskSearchConfiguration(
+                kind="ask",
+                config=AskConfig.model_validate(
+                    {"answer_json_schema": {"type": "object", "properties": {}}}
+                ),
+            ),
+            None,
+            "does not support",
+        ),
     ],
-    ids=["unknown", "filters-with-filter-expression"],
+    ids=["unknown", "filters-with-filter-expression", "structured-answer"],
 )
 async def test_search_documents_search_configuration_errors(config, filters, error):
     arguments = {"query": "test", "search_configuration": "cfg"}
