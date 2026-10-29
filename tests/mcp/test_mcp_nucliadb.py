@@ -809,5 +809,5 @@ async def test_mcp_protected_resource_metadata(
     assert body == {
         "resource": expected_url,
         "scopes_supported": ["offline_access", "openid"],
-        "authorization_servers": ["https://oauth.progress.cloud"],
+        "authorization_servers": ["https://oauth.progress.cloud/"],
     }
