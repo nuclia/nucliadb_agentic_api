@@ -107,6 +107,7 @@ server:
     ports:
       - name: metrics
         port: 8090
+        appProtocol: http
   serviceAccount:
     create: false
     name: default
