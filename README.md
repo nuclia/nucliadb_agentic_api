@@ -106,6 +106,8 @@ Run the package tests from the workspace root:
 make test
 ```
 
+Docker is required. The S3 fixtures pin LocalStack to `0.14.5` because the
+dependency's `0.12.18` image is no longer available from Docker Hub.
 
 # Objective
 Enhance the RAG experience by offering RAO features directly in a KB.

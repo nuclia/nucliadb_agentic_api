@@ -12,6 +12,8 @@ from nucliadb_protos.writer_pb2_grpc import WriterStub
 from nucliadb_sdk.tests.fixtures import NucliaFixture
 from pytest_docker_fixtures import images  # type: ignore[import-untyped]
 
+images.settings["s3"]["version"] = "0.14.5"
+
 # docker nucliadb environment
 #
 # We use it to configure nucliadb and share settings with us
