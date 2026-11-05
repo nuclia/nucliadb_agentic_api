@@ -1,11 +1,79 @@
-"""Integration tests for the sources API.
+"""Integration tests for source persistence and the sources API.
 
-Requires a real PostgreSQL database (managed by the agentic_pg_dsn fixture) and
-a real NucliaDB instance (from the nucliadb docker fixture).  Uses a uvicorn
-server behind an HTTP client so the full middleware stack is exercised.
+Persistence tests require PostgreSQL (managed by agentic_pg_dsn). HTTP API
+tests additionally require NucliaDB and use uvicorn to exercise the full
+middleware stack.
 """
 
+from uuid import uuid4
+
+import pytest
+import sqlalchemy as sa
 from httpx import AsyncClient
+
+from nucliadb_agentic_api.db.sources import (
+    Sources,
+    _serialize_source,
+    _source_from_row,
+    sources_table,
+)
+from nucliadb_agentic_api.models import MCPSourceSchema
+
+
+@pytest.mark.parametrize(
+    "current_secret,include_secret",
+    [("rotated-secret", True), (None, True), (None, False)],
+)
+async def test_mcp_patch_preserves_database_secret_with_stale_cache(
+    nucliadb_agentic_data_manager_settings,
+    endecryptor_settings,
+    current_secret,
+    include_secret,
+):
+    manager = await Sources.from_settings(nucliadb_agentic_data_manager_settings)
+    await manager.initialize()
+    source_id = uuid4().hex
+    condition = (
+        (sources_table.c.account == "test-account")
+        & (sources_table.c.kbid == "test-kb")
+        & (sources_table.c.source_id == source_id)
+    )
+    try:
+        await manager.create_source(
+            "test-account",
+            "test-kb",
+            source_id,
+            MCPSourceSchema(uri="https://example.com/mcp", client_secret="old-secret"),
+        )
+        current = _serialize_source(
+            MCPSourceSchema(uri="https://example.com/mcp", client_secret=current_secret)
+        )
+        if not include_secret:
+            del current["client_secret"]
+        await manager.database.execute(
+            sa.update(sources_table).where(condition).values(config=current)
+        )
+
+        await manager.patch_source(
+            "test-account",
+            "test-kb",
+            source_id,
+            MCPSourceSchema(uri="https://example.com/mcp", scope="updated-scope"),
+        )
+
+        row = await manager.database.fetch_one(
+            sa.select(sources_table.c.config).where(condition)
+        )
+        assert row is not None
+        assert row["config"]["client_secret"] == current.get("client_secret")
+        assert _source_from_row(row).client_secret == current_secret
+        assert row["config"]["scope"] == "updated-scope"
+        cached = await manager.get_source("test-account", "test-kb", source_id)
+        assert cached.client_secret == current_secret
+        assert cached.scope == "updated-scope"
+    finally:
+        await manager.database.execute(sa.delete(sources_table).where(condition))
+        await manager.finalize()
 
 
 async def test_sources_api(

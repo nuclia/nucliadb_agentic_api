@@ -59,6 +59,7 @@ async def create_source_endpoint(
     tags=["Sources"],
     response_model=_AnySource,
     response_model_exclude_none=True,
+    response_model_exclude={"client_secret"},
 )
 @requires(NucliaDBRoles.READER)
 async def get_source_endpoint(
@@ -85,6 +86,7 @@ async def get_source_endpoint(
     tags=["Sources"],
     response_model=dict[str, _AnySource],
     response_model_exclude_none=True,
+    response_model_exclude={"__all__": {"client_secret"}},
 )
 @requires(NucliaDBRoles.READER)
 async def list_sources_endpoint(
