@@ -18,25 +18,46 @@ from nucliadb_agentic_api.db.llm_migration_utils import (
 )
 from nucliadb_agentic_api.db.sources import sources_table
 
-REPLACEMENTS = {"chatgpt-o3-mini": "chatgpt-5.6-sol"}
+
+@pytest.fixture(params=["chatgpt-o3-mini", "chatgpt-o1"])
+def old_model(request):
+    return request.param
 
 
 @pytest.fixture
-def migration():
+def replacements(old_model):
+    return {old_model: "chatgpt-5.6-sol"}
+
+
+@pytest.fixture
+def migration(old_model):
     root = Path(__file__).resolve().parents[2]
     scripts = ScriptDirectory.from_config(Config(str(root / "alembic.ini")))
-    revision = scripts.get_revision("50540732f342")
+    revision = scripts.get_revision(
+        {
+            "chatgpt-o3-mini": "50540732f342",
+            "chatgpt-o1": "eff180d61535",
+        }[old_model]
+    )
     assert revision is not None
     return revision
 
 
-def test_revision_follows_previous_head(migration):
-    assert migration.down_revision == "b3781ec6a8ad"
+def test_revision_follows_previous_head(migration, old_model):
+    assert (
+        migration.down_revision
+        == {
+            "chatgpt-o3-mini": "b3781ec6a8ad",
+            "chatgpt-o1": "50540732f342",
+        }[old_model]
+    )
     assert migration.branch_labels == set()
     assert migration.dependencies is None
 
 
-def test_upgrade_calls_helper_with_only_o3_mini_mapping(migration, monkeypatch):
+def test_upgrade_calls_helper_with_only_retired_model_mapping(
+    migration, monkeypatch, replacements
+):
     connection = Mock(spec=Connection)
     get_bind = Mock(return_value=connection)
     migrate = Mock()
@@ -46,7 +67,7 @@ def test_upgrade_calls_helper_with_only_o3_mini_mapping(migration, monkeypatch):
     migration.module.upgrade()
 
     get_bind.assert_called_once_with()
-    migrate.assert_called_once_with(connection, REPLACEMENTS)
+    migrate.assert_called_once_with(connection, replacements)
 
 
 def test_downgrade_does_not_reverse_model_replacements(migration, monkeypatch):
@@ -61,15 +82,15 @@ def test_downgrade_does_not_reverse_model_replacements(migration, monkeypatch):
     get_bind.assert_not_called()
 
 
-def test_o3_mini_replacement_recurses_through_objects_and_nested_lists():
-    model = {"_type": "llm_config", "model_id": "chatgpt-o3-mini", "temperature": 0.2}
+def test_replacement_recurses_through_objects_and_nested_lists(old_model, replacements):
+    model = {"_type": "llm_config", "model_id": old_model, "temperature": 0.2}
     config = {
         "smart_agent": {
             "models": {"planner": copy.deepcopy(model)},
             "sources": [[{"tool_choice_model": copy.deepcopy(model)}]],
         },
         "summarize": {"model": copy.deepcopy(model)},
-        "metadata": [None, 42, False, "chatgpt-o3-mini"],
+        "metadata": [None, 42, False, old_model],
     }
     expected = copy.deepcopy(config)
     expected["smart_agent"]["models"]["planner"]["model_id"] = "chatgpt-5.6-sol"
@@ -78,9 +99,9 @@ def test_o3_mini_replacement_recurses_through_objects_and_nested_lists():
     )
     expected["summarize"]["model"]["model_id"] = "chatgpt-5.6-sol"
 
-    assert walk_and_replace(config, REPLACEMENTS)
+    assert walk_and_replace(config, replacements)
     assert config == expected
-    assert not walk_and_replace(config, REPLACEMENTS)
+    assert not walk_and_replace(config, replacements)
 
 
 @pytest.mark.parametrize(
@@ -93,24 +114,35 @@ def test_o3_mini_replacement_recurses_through_objects_and_nested_lists():
         {"_type": "llm_config", "model_id": "custom-id/chatgpt-o3-mini"},
         {"_type": "llm_config", "model_id": "chatgpt-azure-o3-mini"},
         {"_type": "llm_config", "model_id": "chatgpt-o3-mini-extra"},
+        {"model_id": "chatgpt-o1"},
+        {"_type": "custom", "model_id": "chatgpt-o1"},
+        {"_type": "LLMConfig", "model_id": "chatgpt-o1"},
+        {"_type": "llm_config", "model_id": "chatgpt-o1/custom-id"},
+        {"_type": "llm_config", "model_id": "custom-id/chatgpt-o1"},
+        {"_type": "llm_config", "model_id": "chatgpt-azure-o1"},
+        {"_type": "llm_config", "model_id": "chatgpt-o1-extra"},
+        {"_type": "llm_config", "model_id": "chatgpt4o"},
+        {"_type": "llm_config", "model_id": "chatgpt4o-mini"},
         {"_type": "llm_config", "model_id": "chatgpt-5.6-sol"},
         {"_type": "llm_config", "model_id": None},
         {"_type": "llm_config", "model_id": 42},
         {"_type": "llm_config"},
     ],
 )
-def test_o3_mini_replacement_preserves_other_models_and_discriminators(config):
+def test_replacement_preserves_other_models_and_discriminators(config, replacements):
     original = copy.deepcopy(config)
 
-    assert not walk_and_replace(config, REPLACEMENTS)
+    assert not walk_and_replace(config, replacements)
     assert config == original
 
 
 @pytest.mark.parametrize("serialize", [False, True])
-def test_o3_mini_migration_updates_only_matching_agent_and_source_rows(serialize):
+def test_migration_updates_only_matching_agent_and_source_rows(
+    serialize, old_model, replacements
+):
     config = {
-        "models": [{"_type": "llm_config", "model_id": "chatgpt-o3-mini"}],
-        "custom": {"_type": "llm_config", "model_id": "chatgpt-o3-mini/custom-id"},
+        "models": [{"_type": "llm_config", "model_id": old_model}],
+        "custom": {"_type": "llm_config", "model_id": f"{old_model}/custom-id"},
     }
     expected = copy.deepcopy(config)
     expected["models"][0]["model_id"] = "chatgpt-5.6-sol"
@@ -135,7 +167,7 @@ def test_o3_mini_migration_updates_only_matching_agent_and_source_rows(serialize
 
     connection.execute.side_effect = execute
 
-    assert migrate_llm_models(connection, REPLACEMENTS) == 2
+    assert migrate_llm_models(connection, replacements) == 2
     assert len(executions) == 4
     for (select_sql, _), (update_sql, params), table, id_column in (
         (*executions[:2], "agentic_config_table", "agentic_id"),
@@ -166,21 +198,24 @@ def test_o3_mini_migration_updates_only_matching_agent_and_source_rows(serialize
     ],
 )
 def test_upgrade_persists_agent_and_source_configs(
-    agentic_pg_dsn, migration, table, id_column, extra_values
+    agentic_pg_dsn, migration, table, id_column, extra_values, old_model
 ):
     preserved = {
-        "custom": {"_type": "llm_config", "model_id": "chatgpt-o3-mini/custom-id"},
-        "untyped": {"model_id": "chatgpt-o3-mini"},
-        "other_type": {"_type": "custom", "model_id": "chatgpt-o3-mini"},
-        "azure": {"_type": "llm_config", "model_id": "chatgpt-azure-o3-mini"},
+        "custom": {"_type": "llm_config", "model_id": f"{old_model}/custom-id"},
+        "untyped": {"model_id": old_model},
+        "other_type": {"_type": "custom", "model_id": old_model},
+        "azure": {
+            "_type": "llm_config",
+            "model_id": old_model.replace("chatgpt-", "chatgpt-azure-"),
+        },
     }
     config = {
         **preserved,
-        "nested": [[{"model": {"_type": "llm_config", "model_id": "chatgpt-o3-mini"}}]],
+        "nested": [[{"model": {"_type": "llm_config", "model_id": old_model}}]],
     }
     expected = copy.deepcopy(config)
     expected["nested"][0][0]["model"]["model_id"] = "chatgpt-5.6-sol"
-    row_id = "o3-mini-migration"
+    row_id = f"{old_model}-migration"
     rows = [
         ("o3-account", "o3-kbid", config),
         ("other-account", "o3-kbid", preserved),
@@ -207,6 +242,7 @@ def test_upgrade_persists_agent_and_source_configs(
             engine.begin() as conn,
             Operations.context(MigrationContext.configure(conn)),
         ):
+            migration.module.upgrade()
             migration.module.upgrade()
 
         with engine.connect() as conn:
