@@ -4,6 +4,8 @@ from time import time
 import databases
 import sqlalchemy as sa
 from hyperforge.database import metadata
+from hyperforge.db.encryption import decrypt_fields, encrypt_fields
+from hyperforge.driver import EncryptedPayload
 from lru import LRU
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from pydantic import TypeAdapter
@@ -11,7 +13,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 from nucliadb_agentic_api import exceptions
 from nucliadb_agentic_api.db.settings import DataManagerSettings
-from nucliadb_agentic_api.models import SourceSchema
+from nucliadb_agentic_api.models import MCPSourceSchema, SourceSchema
 
 SERVICE_NAME = "SOURCES_DB"
 
@@ -54,11 +56,16 @@ def _cache_key(account: str, kbid: str, source_id: str) -> str:
 
 
 def _serialize_source(source: SourceSchema) -> dict:  # type: ignore[valid-type]
+    if isinstance(source, EncryptedPayload):
+        return encrypt_fields(source)
     return source.model_dump(mode="json")  # type: ignore[union-attr]
 
 
 def _source_from_row(row) -> SourceSchema:  # type: ignore[valid-type]
-    return _source_adapter.validate_python(row["config"])
+    source = _source_adapter.validate_python(row["config"])
+    if isinstance(source, EncryptedPayload):
+        decrypt_fields(source)
+    return source
 
 
 class Sources:
@@ -150,24 +157,32 @@ class Sources:
         source: SourceSchema,  # type: ignore[valid-type]
     ) -> None:
         serialized = _serialize_source(source)
-        query = (
-            sa.update(sources_table)
-            .values(
-                description=serialized.get("description"),
-                type=serialized["type"],
-                config=serialized,
-            )
-            .where(
-                sources_table.c.account == account,
-                sources_table.c.kbid == kbid,
-                sources_table.c.source_id == source_id,
-            )
-            .returning(sources_table.c.source_id)
+        query = sa.update(sources_table).values(
+            description=serialized.get("description"),
+            type=serialized["type"],
+            config=serialized,
         )
+        if (
+            isinstance(source, MCPSourceSchema)
+            and "client_secret" not in source.model_fields_set
+        ):
+            query = query.values(
+                config=sa.cast(serialized, JSONB).op("||")(
+                    sa.func.jsonb_build_object(
+                        sa.cast("client_secret", sa.Text),
+                        sources_table.c.config["client_secret"],
+                    )
+                )
+            )
+        query = query.where(
+            sources_table.c.account == account,
+            sources_table.c.kbid == kbid,
+            sources_table.c.source_id == source_id,
+        ).returning(sources_table.c.config)
         updated = await self.database.fetch_one(query)
         if updated is None:
             raise exceptions.NotFound("Source not found")
-        CACHE[_cache_key(account, kbid, source_id)] = source
+        CACHE[_cache_key(account, kbid, source_id)] = _source_from_row(updated)
 
     async def delete_source(
         self,

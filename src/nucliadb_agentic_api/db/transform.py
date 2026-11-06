@@ -133,11 +133,18 @@ async def transform_agentic_config(
                     identifier=uid,
                     name="MCPHTTP",
                     provider="mcphttp",
-                    config=MCPHTTPInnerConfig(
-                        uri=source_obj.uri,  # TODO: pass real URL if needed
-                        headers=source_obj.headers if source_obj.headers else {},
+                    config=MCPHTTPInnerConfig.model_validate(
+                        source_obj.model_dump(
+                            exclude={
+                                "type",
+                                "description",
+                                "tool_choice_model",
+                                "valid_headers",
+                            },
+                            exclude_none=True,
+                        )
                     ),
-                )  # TODO: pass real config if needed
+                )
                 drivers[uid] = mcp_driver_config
                 mcp_agent_config = MCPAgentConfig(
                     id=f"mcp-agent-{source}",

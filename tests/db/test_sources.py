@@ -4,6 +4,7 @@ Uses an in-memory FakeSources store and monkeypatching so no real database or
 network connection is required.
 """
 
+import pytest
 from httpx import ASGITransport, AsyncClient
 from nucliadb_models.resource import NucliaDBRoles
 from nucliadb_utils.settings import AuditSettings
@@ -230,6 +231,116 @@ async def test_sources_mcp(monkeypatch):
         resp = await client.get("/kb/kb1/sources/src-mcp")
         assert resp.status_code == 200, resp.text
         assert resp.json() == MCP_PAYLOAD
+
+
+async def test_sources_mcp_oauth_crud(monkeypatch):
+    app = await create_app(monkeypatch)
+    payload = {
+        **MCP_PAYLOAD,
+        "auth_server_url": "https://auth.example.com",
+        "redirect_uris": ["https://mcp.example.com/api/auth/mcp/callback"],
+        "grant_types": ["authorization_code", "refresh_token"],
+        "response_types": ["code"],
+        "scope": "read write",
+        "client_id": "registered-client",
+        "client_secret": "test-client-secret",
+        "authorization_endpoint": "https://auth.example.com/authorize",
+        "token_endpoint": "https://auth.example.com/token",
+        "pkce": False,
+    }
+    public_payload = {
+        key: value for key, value in payload.items() if key != "client_secret"
+    }
+    async with create_api_client(
+        app, [NucliaDBRoles.OWNER, NucliaDBRoles.READER]
+    ) as client:
+        resp = await client.post("/kb/kb1/sources/src-mcp", json=payload)
+        assert resp.status_code == 201, resp.text
+        resp = await client.get("/kb/kb1/sources/src-mcp")
+        assert resp.status_code == 200, resp.text
+        assert resp.json() == public_payload
+        resp = await client.get("/kb/kb1/sources")
+        assert resp.json() == {"src-mcp": public_payload}
+        stored = await app.source_manager.get_source("account", "kb1", "src-mcp")
+        assert stored.client_secret == payload["client_secret"]
+
+        updated = {**payload, "scope": "", "grant_types": [], "pkce": True}
+        resp = await client.patch("/kb/kb1/sources/src-mcp", json=updated)
+        assert resp.status_code == 204, resp.text
+        resp = await client.get("/kb/kb1/sources/src-mcp")
+        assert resp.json() == {
+            key: value for key, value in updated.items() if key != "client_secret"
+        }
+
+        resp = await client.patch(
+            "/kb/kb1/sources/src-mcp", json={**MCP_PAYLOAD, "client_secret": None}
+        )
+        assert resp.status_code == 204, resp.text
+        resp = await client.get("/kb/kb1/sources/src-mcp")
+        assert resp.json() == MCP_PAYLOAD
+
+        resp = await client.delete("/kb/kb1/sources/src-mcp")
+        assert resp.status_code == 204, resp.text
+
+
+async def test_sources_mcp_hides_secret_from_reader(monkeypatch):
+    app = await create_app(monkeypatch)
+    payload = {**MCP_PAYLOAD, "client_secret": "test-client-secret"}
+    async with create_api_client(app, [NucliaDBRoles.OWNER]) as owner:
+        resp = await owner.post("/kb/kb1/sources/src-mcp", json=payload)
+        assert resp.status_code == 201, resp.text
+
+    async with create_api_client(app, [NucliaDBRoles.READER]) as reader:
+        resp = await reader.get("/kb/kb1/sources/src-mcp")
+        assert resp.status_code == 200, resp.text
+        assert resp.json() == MCP_PAYLOAD
+        resp = await reader.get("/kb/kb1/sources")
+        assert resp.status_code == 200, resp.text
+        assert resp.json() == {"src-mcp": MCP_PAYLOAD}
+
+    stored = await app.source_manager.get_source("account", "kb1", "src-mcp")
+    assert stored.client_secret == payload["client_secret"]
+
+
+@pytest.mark.parametrize(
+    "invalid_oauth",
+    [
+        {"pkce": "invalid"},
+        {"grant_types": "authorization_code"},
+        {"response_types": [123]},
+        {"scope": ["read"]},
+        {"client_id": {}},
+    ],
+)
+async def test_sources_mcp_reject_invalid_oauth(monkeypatch, invalid_oauth):
+    app = await create_app(monkeypatch)
+    async with create_api_client(app, [NucliaDBRoles.OWNER]) as client:
+        for method in (client.post, client.patch):
+            resp = await method(
+                "/kb/kb1/sources/src-mcp", json={**MCP_PAYLOAD, **invalid_oauth}
+            )
+            assert resp.status_code == 422, resp.text
+
+
+async def test_mcp_oauth_fields_are_exposed_in_openapi(monkeypatch):
+    app = await create_app(monkeypatch)
+    schema = app.openapi()["components"]["schemas"]["MCPSourceSchema"]
+    assert set(schema["required"]) == {"uri"}
+    for field in (
+        "auth_server_url",
+        "redirect_uris",
+        "grant_types",
+        "response_types",
+        "scope",
+        "client_id",
+        "client_secret",
+        "authorization_endpoint",
+        "token_endpoint",
+        "pkce",
+    ):
+        assert field in schema["properties"]
+        assert schema["properties"][field]["description"]
+    assert schema["properties"]["client_secret"]["writeOnly"] is True
 
 
 async def test_sources_google(monkeypatch):

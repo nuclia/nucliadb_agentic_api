@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, ClassVar, Dict, List, Literal, Optional, Union
 
-from hyperforge.driver import DriverConfig
+from hyperforge.driver import DriverConfig, EncryptedPayload
 from hyperforge.llm_config import LLMConfig, LLMField, llm_defaults
 from hyperforge.models import Rules
 from nucliadb_models import FilterExpression, TextFormat
@@ -290,7 +290,9 @@ class PerplexitySourceSchema(BaseModel):
     )
 
 
-class MCPSourceSchema(BaseModel):
+class MCPSourceSchema(EncryptedPayload):
+    encrypted_fields: ClassVar[list[str]] = ["client_secret"]
+
     type: Literal["mcp"] = "mcp"
     description: Optional[str] = None
 
@@ -306,6 +308,48 @@ class MCPSourceSchema(BaseModel):
     valid_headers: Optional[List[str]] = Field(
         default=None,
         description="Allowlist of header names that may be forwarded",
+    )
+    auth_server_url: Optional[str] = Field(
+        default=None,
+        description="OAuth authorization server URL. Set this to enable OAuth.",
+    )
+    redirect_uris: Optional[List[str]] = Field(
+        default=None,
+        description="OAuth redirect URIs. The MCP driver overrides these with the server's MCP_CALLBACK_URL.",
+    )
+    grant_types: Optional[List[str]] = Field(
+        default=None,
+        description="OAuth grant types. If omitted, uses the MCP driver's default.",
+    )
+    response_types: Optional[List[str]] = Field(
+        default=None,
+        description="OAuth response types. If omitted, uses the MCP driver's default.",
+    )
+    scope: Optional[str] = Field(
+        default=None,
+        description="OAuth scopes, separated by spaces. Defaults to 'user' in the MCP driver.",
+    )
+    client_id: Optional[str] = Field(
+        default=None,
+        description="Pre-registered OAuth client ID. If set, skips dynamic client registration.",
+    )
+    client_secret: Optional[str] = Field(
+        default=None,
+        repr=False,
+        description="Pre-registered OAuth client secret, if required by the authorization server.",
+        json_schema_extra={"writeOnly": True},
+    )
+    authorization_endpoint: Optional[str] = Field(
+        default=None,
+        description="Override the authorization endpoint discovered from OAuth metadata.",
+    )
+    token_endpoint: Optional[str] = Field(
+        default=None,
+        description="Override the token endpoint discovered from OAuth metadata.",
+    )
+    pkce: Optional[bool] = Field(
+        default=None,
+        description="Enable PKCE for OAuth. Defaults to true in the MCP driver.",
     )
 
 

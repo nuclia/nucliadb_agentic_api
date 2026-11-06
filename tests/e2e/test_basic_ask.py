@@ -1,6 +1,8 @@
 import pytest
 from httpx import AsyncClient
+from hyperforge_nucliadb_agentic.ask.search import rpc
 from nuclia.sdk import AsyncNucliaSearch
+from nucliadb_sdk import NucliaDBAsync
 
 
 def cleanup(request):
@@ -17,6 +19,14 @@ pytestmark = [
     ),
     pytest.mark.asyncio,
 ]
+
+
+@pytest.fixture(autouse=True)
+async def stale_ask_sdk_cache(monkeypatch):
+    sdk = NucliaDBAsync(url="http://stale-search.invalid/api")
+    monkeypatch.setitem(rpc.__SDK, "search", sdk)
+    yield
+    await sdk.session.aclose()
 
 
 async def test_basic_ask(

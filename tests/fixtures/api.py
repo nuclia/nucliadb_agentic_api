@@ -1,10 +1,11 @@
 import asyncio
-import os
 import socket
+from unittest.mock import patch
 
 import pytest
 import uvicorn
 from httpx import ASGITransport, AsyncClient
+from hyperforge_nucliadb_agentic.ask.search.rpc import __SDK
 from hyperforge_nucliadb_agentic.ask.settings import settings as ask_settings
 from nucliadb_sdk.tests.fixtures import NucliaFixture
 from nucliadb_telemetry.logs import setup_logging
@@ -53,16 +54,17 @@ async def nucliadb_agentic_api_app(
     nucliadb_agentic_audit_settings: AuditSettings,
     nucliadb: NucliaFixture,
     ask_predict_configure,
+    monkeypatch,
 ):
 
     nucliadb_url = nucliadb.url.replace("127.0.0.1", "localhost")
     nucliadb_agentic_settings.internal_nucliadb = True
     nucliadb_agentic_settings.internal_nucliadb_url = nucliadb_url
-    os.environ["INTERNAL_NUCLIADB_URL"] = nucliadb_url
+    monkeypatch.setenv("INTERNAL_NUCLIADB_URL", nucliadb_url)
 
     # Configure ask to connect to a real NucliaDB
-    ask_settings.nucliadb_reader_address = nucliadb.url
-    ask_settings.nucliadb_search_address = nucliadb.url
+    monkeypatch.setattr(ask_settings, "nucliadb_reader_address", nucliadb.url)
+    monkeypatch.setattr(ask_settings, "nucliadb_search_address", nucliadb.url)
 
     setup_logging(
         settings=LogSettings(
@@ -85,12 +87,12 @@ async def nucliadb_agentic_api_app(
         audit_settings=nucliadb_agentic_audit_settings,
     )
 
-    await application.startup()
+    with patch.dict(__SDK, {}, clear=True):
+        await application.startup()
 
-    yield application
+        yield application
 
-    await application.shutdown()
-    os.environ.pop("INTERNAL_NUCLIADB_URL", None)
+        await application.shutdown()
 
 
 @pytest.fixture

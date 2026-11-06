@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock
 import pytest
 from hyperforge_google.config import GoogleAgentConfig
 from hyperforge_mcp.config import MCPAgentConfig
-from hyperforge_mcp.config_driver import MCPHTTPDriverConfig
+from hyperforge_mcp.config_driver import MCPHTTPDriverConfig, MCPHTTPInnerConfig
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 from hyperforge_nucliadb_agentic.internal_driver import InternalNucliaDBConfig
 from hyperforge_perplexity.config import PerplexityAgentConfig
@@ -121,6 +121,97 @@ async def test_transform_mcp_source_references_its_driver(load_agents_nucliadb_a
     mcp_config = smart.registered_agents[0]
     assert isinstance(mcp_config, MCPAgentConfig)
     assert mcp_config.source in drivers
+
+
+@pytest.mark.parametrize("pkce", [True, False])
+@pytest.mark.parametrize("empty_values", [True, False])
+async def test_transform_preserves_mcp_oauth_after_source_reload(
+    load_agents_nucliadb_agentic,
+    endecryptor_settings,
+    monkeypatch,
+    pkce: bool,
+    empty_values: bool,
+):
+    callback_url = "https://mcp.example.com/api/auth/mcp/callback"
+    monkeypatch.setenv("MCP_CALLBACK_URL", callback_url)
+    payload = {
+        "uri": "https://example.com/mcp",
+        "headers": {"X-Client": "kb"},
+        "auth_server_url": "https://auth.example.com",
+        "redirect_uris": ["https://ignored.example.com/callback"],
+        "grant_types": ["authorization_code", "refresh_token"],
+        "response_types": ["code"],
+        "scope": "read write",
+        "client_id": "registered-client",
+        "client_secret": "test-client-secret",
+        "authorization_endpoint": "https://auth.example.com/authorize",
+        "token_endpoint": "https://auth.example.com/token",
+        "pkce": pkce,
+    }
+    if empty_values:
+        payload.update({"scope": "", "grant_types": [], "response_types": []})
+    source = MCPSourceSchema.model_validate(payload)
+    reloaded = _source_from_row({"config": _serialize_source(source)})
+    assert reloaded.model_dump(include=set(payload)) == payload
+    source_manager = AsyncMock()
+    source_manager.get_source.return_value = reloaded
+
+    _, drivers, _ = await transform_agentic_config(
+        AgenticConfigSchema(
+            smart_agent=AgenticSmartAgentConfiguration(sources=["mcp"])
+        ),
+        source_manager,
+        account="account",
+        kbid="kbid",
+    )
+
+    driver = next(iter(drivers.values()))
+    assert isinstance(driver, MCPHTTPDriverConfig)
+    assert driver.config.model_dump(include=set(payload)) == {
+        **payload,
+        "redirect_uris": [callback_url],
+    }
+
+
+@pytest.mark.parametrize("explicit_nulls", [True, False])
+async def test_transform_preserves_mcp_driver_defaults(
+    load_agents_nucliadb_agentic, explicit_nulls: bool
+):
+    payload = {"uri": "https://example.com/mcp"}
+    if explicit_nulls:
+        payload.update(
+            {
+                field: None
+                for field in (
+                    "headers",
+                    "auth_server_url",
+                    "redirect_uris",
+                    "grant_types",
+                    "response_types",
+                    "scope",
+                    "client_id",
+                    "client_secret",
+                    "authorization_endpoint",
+                    "token_endpoint",
+                    "pkce",
+                )
+            }
+        )
+    source_manager = AsyncMock()
+    source_manager.get_source.return_value = MCPSourceSchema.model_validate(payload)
+
+    _, drivers, _ = await transform_agentic_config(
+        AgenticConfigSchema(
+            smart_agent=AgenticSmartAgentConfiguration(sources=["mcp"])
+        ),
+        source_manager,
+        account="account",
+        kbid="kbid",
+    )
+
+    driver = next(iter(drivers.values()))
+    assert isinstance(driver, MCPHTTPDriverConfig)
+    assert driver.config == MCPHTTPInnerConfig(uri=payload["uri"])
 
 
 async def test_transform_applies_explicit_configuration(load_agents_nucliadb_agentic):
