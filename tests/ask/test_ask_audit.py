@@ -32,12 +32,14 @@ from hyperforge_nucliadb_agentic.ask.audit import (
     external_usage_to_predict,
 )
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
+from hyperforge_nucliadb_agentic.ask.utils.proto import client_type as audit_client_type
 from nats.aio.client import Client
 from nats.js import JetStreamContext
 from nucliadb_models.search import NucliaDBClientType
-from nucliadb_protos.audit_pb2 import AuditRequest
+from nucliadb_protos.audit_pb2 import AuditRequest, ClientType
 from nucliadb_protos.kb_usage_pb2 import (
     ActivityLogMatchType,
+    ClientType as UsageClientType,
     KBSource,
     PredictType,
     Service,
@@ -52,7 +54,9 @@ async def get_audit_messages(sub):
     return auditreq
 
 
-def test_external_usage_to_predict() -> None:
+@pytest.mark.parametrize("client", ["api", "agentic"])
+def test_external_usage_to_predict(client: str) -> None:
+    ndb_client = NucliaDBClientType(client)
     predicts = external_usage_to_predict(
         ExternalUsage(
             operation=ExternalUsageOperation.INTERNET_SEARCH,
@@ -62,10 +66,14 @@ def test_external_usage_to_predict() -> None:
             output_tokens=20,
             requests=2,
         ),
-        NucliaDBClientType.API,
+        ndb_client,
     )
 
     assert len(predicts) == 2
+    assert audit_client_type(ndb_client) == ClientType.Value(ndb_client.name)
+    assert all(
+        predict.client == UsageClientType.Value(ndb_client.name) for predict in predicts
+    )
     search, generation = predicts
     assert generation.type == PredictType.QUESTION_ANSWER
     assert generation.model == "gemini-2.5-flash"

@@ -63,7 +63,7 @@ server = [
     "nats-py",
     "nuclia>=4.14.0",
     "nuclia-models>=0.59.0",
-    "nucliadb-protos",
+    "nucliadb-protos>=7.2.0.post7472",
     "nucliadb-sdk>=6.14.0.post6532",
     "nucliadb-telemetry[otel]>=6.14.0.post6534",
     "nucliadb-utils[storages,fastapi]>=6.15.0.post6671",
@@ -96,7 +96,7 @@ server = [
 ]
 
 models = [
-    "nucliadb-models>=6.13.0.post6252",
+    "nucliadb-models>=7.2.0.post7472",
     "nuclia-models>=0.52.1",
     "pydantic",
 ]
