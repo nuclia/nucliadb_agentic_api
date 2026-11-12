@@ -473,6 +473,7 @@ async def test_transform_wires_sources_and_internal_nucliadb_driver(
     assert isinstance(perplexity_agent, PerplexityAgentConfig)
     assert kb_agent.sources[0] in drivers
     assert kb_agent.search_config == "legal-rag"
+    assert kb_agent.generative_model is None
     assert mcp_agent.source in drivers
     kb_driver = drivers[kb_agent.sources[0]]
     mcp_driver = drivers[mcp_agent.source]
