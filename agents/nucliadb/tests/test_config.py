@@ -16,7 +16,7 @@ class TestNucliaDBAgentConfigDefaults:
 
     def test_default_generative_model(self):
         cfg = NucliaDBAgentConfig()
-        assert cfg.generative_model.model_id == "chatgpt-azure-5.6-luna"
+        assert cfg.generative_model is None
 
     def test_generate_inner_answer_defaults_to_true(self):
         cfg = NucliaDBAgentConfig()
@@ -91,6 +91,11 @@ class TestNucliaDBAgentConfigKnownFunctions:
 
 
 class TestNucliaDBAgentConfigSerialization:
+    def test_inherited_model_survives_round_trip(self):
+        cfg = NucliaDBAgentConfig(sources=["kb-a"])
+        restored = NucliaDBAgentConfig.model_validate_json(cfg.model_dump_json())
+        assert restored.generative_model is None
+
     def test_round_trip_json(self):
         cfg = NucliaDBAgentConfig(
             sources=["kb-a"],

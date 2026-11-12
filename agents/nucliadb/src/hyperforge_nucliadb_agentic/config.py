@@ -1,7 +1,7 @@
 from typing import List, Literal, Optional, Tuple
 
 from hyperforge.context.agent import ContextAgentConfig
-from hyperforge.llm_config import LLMConfig, LLMField, llm_defaults
+from hyperforge.llm_config import LLMField
 from hyperforge.utils import WidgetType
 from pydantic import Field
 from pydantic.config import ConfigDict
@@ -20,10 +20,10 @@ class NucliaDBAgentConfig(ContextAgentConfig):
             "show_in_node": True,
         },
     )
-    generative_model: LLMField = Field(
-        default=LLMConfig(model_id=llm_defaults.default),
+    generative_model: LLMField | None = Field(
+        default=None,
         title="Generative model",
-        description="Model used to generate answers",
+        description="Model used by KB source tools. If unset, inherit the Knowledge Box's configured model.",
     )
     published_functions: Optional[Tuple[str, ...]] = Field(
         default=(
