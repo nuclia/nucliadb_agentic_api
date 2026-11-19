@@ -1011,11 +1011,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 nucliadb_driver.config.kbid,
                 ask_request,
             )
-            if (
-                "generative_model" in ask_request.model_fields_set
-                and ask_request.generative_model is None
-            ):
-                ask_request.model_fields_set.discard("generative_model")
 
         # Agent defaults fill any remaining fields.
         fallback_values = {
@@ -1031,6 +1026,9 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 field: value
                 for field, value in fallback_values.items()
                 if field not in ask_request.model_fields_set
+                or (
+                    field == "generative_model" and ask_request.generative_model is None
+                )
             }
         )
 

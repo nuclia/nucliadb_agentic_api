@@ -37,23 +37,27 @@ from nucliadb_agentic_api.models import AgenticConfigSchema
 # from hyperforge_nucliadb_agentic.ask.model import AskRequest
 
 
-async def _resolve_nucliadb_source_model(
-    reader_sdk: NucliaDBAsync | None,
+async def _get_kb_generative_model(reader_sdk: NucliaDBAsync, kbid: str) -> str | None:
+    config = await reader_sdk.get_configuration(kbid=kbid)
+    model = config.get("generative_model") if isinstance(config, dict) else None
+    return model if isinstance(model, str) and model.strip() else None
+
+
+async def _get_search_config_generative_model(
+    reader_sdk: NucliaDBAsync,
     kbid: str,
-    search_config_name: str | None,
-    kb_generative_model: str | None,
+    search_config_name: str,
 ) -> str | None:
-    if reader_sdk is not None and kbid and search_config_name is not None:
-        search_cfg = await rpc.get_search_configuration(
-            reader_sdk, kbid, name=search_config_name
-        )
-        if (
-            search_cfg is not None
-            and isinstance(search_cfg.config, AskConfig)
-            and search_cfg.config.generative_model
-        ):
-            return search_cfg.config.generative_model
-    return kb_generative_model
+    search_cfg = await rpc.get_search_configuration(
+        reader_sdk, kbid, name=search_config_name
+    )
+    if (
+        search_cfg is not None
+        and isinstance(search_cfg.config, AskConfig)
+        and search_cfg.config.generative_model
+    ):
+        return search_cfg.config.generative_model
+    return None
 
 
 async def transform_agentic_config(
@@ -69,7 +73,6 @@ async def transform_agentic_config(
     # ask_request: AskRequest | None = None,
     kbid: str = "",
     reader_sdk: NucliaDBAsync | None = None,
-    kb_generative_model: str | None = None,
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
     drivers: Dict[str, DriverConfig] = {}
     global_driver = []
@@ -94,8 +97,8 @@ async def transform_agentic_config(
     if agentic_config.smart_agent:
         smart_agent = agentic_config.smart_agent
         registered_agents: list[ContextAgentConfig] = []
-        kb_model_loaded = kb_generative_model is not None
-        resolved_kb_model = kb_generative_model
+        kb_model_loaded = False
+        kb_generative_model: str | None = None
         for source in smart_agent.sources:
             source_obj = await source_manager.get_source(account, kbid, source)
             source_title = (
@@ -144,17 +147,19 @@ async def transform_agentic_config(
                     raise ValueError(
                         "No NucliaDB URL configured for internal or external access"
                     )
-                if not kb_model_loaded and reader_sdk is not None and kbid:
-                    resolved_kb_model = await rpc.get_kb_generative_model(
-                        reader_sdk, kbid
-                    )
-                    kb_model_loaded = True
-                source_model = await _resolve_nucliadb_source_model(
-                    reader_sdk=reader_sdk,
-                    kbid=kbid,
-                    search_config_name=source_obj.search_config,
-                    kb_generative_model=resolved_kb_model,
-                )
+                source_model: str | None = None
+                if reader_sdk is not None and kbid:
+                    if source_obj.search_config is not None:
+                        source_model = await _get_search_config_generative_model(
+                            reader_sdk, kbid, source_obj.search_config
+                        )
+                    if source_model is None:
+                        if not kb_model_loaded:
+                            kb_generative_model = await _get_kb_generative_model(
+                                reader_sdk, kbid
+                            )
+                            kb_model_loaded = True
+                        source_model = kb_generative_model
                 drivers[uid] = ndb_driver_config
                 ndb_agent_kwargs: dict[str, Any] = {
                     "id": f"nucliadb-agent-{source}",
