@@ -473,7 +473,6 @@ async def test_transform_wires_sources_and_internal_nucliadb_driver(
     assert isinstance(perplexity_agent, PerplexityAgentConfig)
     assert kb_agent.sources[0] in drivers
     assert kb_agent.search_config == "legal-rag"
-    assert kb_agent.generative_model is None
     assert mcp_agent.source in drivers
     kb_driver = drivers[kb_agent.sources[0]]
     mcp_driver = drivers[mcp_agent.source]
@@ -551,3 +550,132 @@ def test_history_can_be_disabled_or_unsupported():
         unsupported.smart_agent is not None and unsupported.smart_agent.history is None
     )
     assert unsupported.summarize is not None and unsupported.summarize.history is None
+
+
+async def test_transform_resolves_nucliadb_source_model_from_kb_and_search_config(
+    load_agents_nucliadb_agentic,
+):
+    import httpx
+    from nucliadb_sdk import NucliaDBAsync
+
+    config = AgenticConfigSchema(
+        smart_agent=AgenticSmartAgentConfiguration(
+            sources=["kb-default", "kb-with-model-sc", "kb-with-filter-only-sc"]
+        )
+    )
+    source_manager = AsyncMock()
+    source_manager.get_source.side_effect = [
+        NucliaDBSourceSchema(),
+        NucliaDBSourceSchema(search_config="sc-with-model"),
+        NucliaDBSourceSchema(search_config="sc-without-model"),
+    ]
+
+    calls: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request.url.path)
+        if request.url.path == "/v1/kb/kbid/configuration":
+            return httpx.Response(
+                200, json={"generative_model": "custom:kb-default-llm"}
+            )
+        if request.url.path == "/v1/kb/kbid/search_configurations/sc-with-model":
+            return httpx.Response(
+                200,
+                json={
+                    "kind": "ask",
+                    "config": {"generative_model": "custom:search-config-llm"},
+                },
+            )
+        if request.url.path == "/v1/kb/kbid/search_configurations/sc-without-model":
+            return httpx.Response(
+                200,
+                json={
+                    "kind": "ask",
+                    "config": {"top_k": 5},
+                },
+            )
+        return httpx.Response(404)
+
+    reader_sdk = NucliaDBAsync(
+        url="http://reader.internal",
+        _httpx_transport=httpx.MockTransport(handler),
+    )
+    try:
+        retrieval_config, _, _ = await transform_agentic_config(
+            config,
+            source_manager,
+            account="account",
+            kbid="kbid",
+            internal_nucliadb_url="http://{component}.internal",
+            reader_sdk=reader_sdk,
+        )
+    finally:
+        await reader_sdk.session.aclose()
+
+    smart = retrieval_config.context[0]
+    assert isinstance(smart, SmartAgentConfig)
+    default_agent, sc_model_agent, sc_filter_agent = smart.registered_agents
+    assert isinstance(default_agent, NucliaDBAgentConfig)
+    assert isinstance(sc_model_agent, NucliaDBAgentConfig)
+    assert isinstance(sc_filter_agent, NucliaDBAgentConfig)
+    assert default_agent.generative_model.model_id == "custom:kb-default-llm"
+    assert sc_model_agent.generative_model.model_id == "custom:search-config-llm"
+    assert sc_filter_agent.generative_model.model_id == "custom:kb-default-llm"
+    # KB learning configuration is fetched only once across all KB sources.
+    assert calls.count("/v1/kb/kbid/configuration") == 1
+
+
+async def test_get_agent_config_fetches_kb_model_and_closes_reader_session(
+    load_agents_nucliadb_agentic,
+    monkeypatch,
+):
+    from nucliadb_agentic_api.db.agentic_configs import AgenticConfigs
+
+    created_sdks: list[AsyncMock] = []
+
+    class FakeNucliaDBAsync:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+            self.session = AsyncMock()
+            self.session.get = AsyncMock(
+                return_value=AsyncMock(
+                    status_code=200,
+                    json=lambda: {"generative_model": "kb-configured-model"},
+                )
+            )
+            created_sdks.append(self)
+
+    monkeypatch.setattr(
+        "nucliadb_agentic_api.db.agentic_configs.NucliaDBAsync", FakeNucliaDBAsync
+    )
+    agent_configs = AgenticConfigs(database=AsyncMock(), settings=AsyncMock())
+    monkeypatch.setattr(
+        agent_configs,
+        "get_agentic_config",
+        AsyncMock(
+            return_value=AgenticConfigSchema(
+                smart_agent=AgenticSmartAgentConfiguration(sources=["kb"])
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        "nucliadb_agentic_api.db.agentic_configs.Sources.get_source",
+        AsyncMock(return_value=NucliaDBSourceSchema()),
+    )
+
+    retrieval_config = await agent_configs.get_agent_config(
+        account="account",
+        kbid="kbid",
+        internal_nucliadb=True,
+        internal_nucliadb_url="http://{component}.internal",
+        workflow_id="wf-1",
+    )
+
+    assert len(created_sdks) == 1
+    assert created_sdks[0].kwargs["url"] == "http://reader.internal"
+    created_sdks[0].session.aclose.assert_awaited_once()
+    smart = retrieval_config.context[0]
+    assert isinstance(smart, SmartAgentConfig)
+    kb_agent = smart.registered_agents[0]
+    assert isinstance(kb_agent, NucliaDBAgentConfig)
+    assert kb_agent.generative_model.model_id == "kb-configured-model"

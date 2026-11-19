@@ -9,8 +9,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from hyperforge.llm_config import LLMConfig
-from hyperforge.memory import Source
-
 from hyperforge_nucliadb_agentic.agent import (
     NucliaDBAgent,
     choose_sources,
@@ -28,36 +26,6 @@ from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 
 
 class TestChooseSources:
-    async def test_router_forwards_inherited_model_and_common_kb(
-        self, mock_memory, mock_manager, mock_nucliadb_driver
-    ):
-        mock_manager.drivers.update(
-            {"first": mock_nucliadb_driver, "second": mock_nucliadb_driver}
-        )
-        mock_memory.get_session_source = AsyncMock(
-            side_effect=[
-                Source.model_construct(id="first"),
-                Source.model_construct(id="second"),
-            ]
-        )
-        mock_memory.get_rules.return_value = []
-        mock_manager.execute_json.return_value = (
-            {"sources": ["first"], "reason": "Relevant source"},
-            1,
-            1,
-        )
-        sources = await choose_sources(
-            mock_memory,
-            mock_manager,
-            ["first", "second"],
-            "question",
-            ident="agent",
-            step_title="Choose sources",
-        )
-        assert [source.id for source in sources] == ["first"]
-        assert mock_manager.execute_json.await_args.kwargs["model"] is None
-        assert mock_manager.execute_json.await_args.kwargs["kbid"] == "test-kbid"
-
     async def test_single_source_does_not_load_routing_metadata(
         self, mock_memory, mock_manager
     ):
@@ -77,15 +45,7 @@ class TestChooseSources:
         assert [source.id for source in sources] == ["local-kb"]
         choose_source.assert_not_awaited()
 
-    async def test_multiple_sources_use_router(
-        self, mock_memory, mock_manager, mock_nucliadb_driver
-    ):
-        mock_manager.drivers.update(
-            {
-                "first-kb": mock_nucliadb_driver,
-                "second-kb": mock_nucliadb_driver,
-            }
-        )
+    async def test_multiple_sources_use_router(self, mock_memory, mock_manager):
         expected = [MagicMock()]
         with patch(
             "hyperforge_nucliadb_agentic.agent.choose_source",
@@ -103,29 +63,6 @@ class TestChooseSources:
 
         assert sources == expected
         choose_source.assert_awaited_once()
-        assert choose_source.await_args.kwargs["choose_source_model"] is None
-        assert choose_source.await_args.kwargs["kbid"] == "test-kbid"
-
-    async def test_multiple_kbs_require_explicit_routing_model(
-        self, mock_memory, mock_manager, mock_nucliadb_driver
-    ):
-        other_driver = MagicMock()
-        other_driver.config.kbid = "other-kb"
-        mock_manager.drivers.update(
-            {
-                "first": mock_nucliadb_driver,
-                "second": other_driver,
-            }
-        )
-        with pytest.raises(ValueError, match="explicit routing model"):
-            await choose_sources(
-                mock_memory,
-                mock_manager,
-                ["first", "second"],
-                "question",
-                ident="agent",
-                step_title="Choose sources",
-            )
 
 
 class TestNucliaDBAgentInit:
@@ -607,55 +544,6 @@ class TestRetrieve:
 
 
 class TestPrepareAskRequest:
-    @pytest.mark.parametrize("public_model", [None, "custom:requested-model"])
-    async def test_inherits_kb_default_or_preserves_public_model(
-        self, mock_nucliadb_driver, public_model
-    ):
-        agent = NucliaDBAgent(
-            config=NucliaDBAgentConfig(sources=["kb-source-1"]), agent_id="rag-agent"
-        )
-        public_request = (
-            AskRequest(query="question", generative_model=public_model).model_dump_json(
-                exclude_unset=True
-            )
-            if public_model is not None
-            else None
-        )
-        request = await agent.prepare_ask_request(
-            mock_nucliadb_driver, "question", public_request, []
-        )
-        assert request.generative_model == public_model
-        if public_request is None:
-            assert "generative_model" not in request.model_fields_set
-
-    async def test_source_search_config_supplies_model(self, mock_nucliadb_driver):
-        from nucliadb_models.configuration import AskConfig, AskSearchConfiguration
-
-        agent = NucliaDBAgent(
-            config=NucliaDBAgentConfig(
-                sources=["kb-source-1"], search_config="legal-rag"
-            ),
-            agent_id="rag-agent",
-        )
-        with patch(
-            "hyperforge_nucliadb_agentic.ask.search.rpc.get_search_configuration",
-            new=AsyncMock(
-                return_value=AskSearchConfiguration(
-                    kind="ask", config=AskConfig(generative_model="custom:legal-model")
-                )
-            ),
-        ):
-            request = await agent.prepare_ask_request(
-                mock_nucliadb_driver, "question", None, []
-            )
-        assert request.generative_model == "custom:legal-model"
-
-    async def test_missing_kb_scope_fails(self, mock_nucliadb_driver):
-        mock_nucliadb_driver.config.kbid = ""
-        agent = NucliaDBAgent(config=NucliaDBAgentConfig(), agent_id="rag-agent")
-        with pytest.raises(ValueError, match="KB ID is required"):
-            await agent.prepare_ask_request(mock_nucliadb_driver, "question", None, [])
-
     async def test_uses_agent_defaults(self, nucliadb_agent, mock_nucliadb_driver):
         request = await nucliadb_agent.prepare_ask_request(
             mock_nucliadb_driver,
@@ -674,7 +562,7 @@ class TestPrepareAskRequest:
         assert request.rag_strategies == []
         assert request.generate_answer is nucliadb_agent.config.generate_inner_answer
 
-    async def test_public_ask_overrides_search_config_and_runtime_query_wins(
+    async def test_null_public_ask_model_preserves_search_config_while_non_null_overrides(
         self, mock_nucliadb_driver
     ):
         agent = NucliaDBAgent(
@@ -685,10 +573,15 @@ class TestPrepareAskRequest:
             ),
             agent_id="rag-agent",
         )
-        public_request = AskRequest(
+        null_model_request = AskRequest(
             query="public question",
             top_k=7,
             generative_model=None,
+        )
+        override_model_request = AskRequest(
+            query="public question",
+            top_k=7,
+            generative_model="public-model",
         )
 
         async def apply_config(reader_sdk, kbid, request):
@@ -702,16 +595,23 @@ class TestPrepareAskRequest:
             "hyperforge_nucliadb_agentic.agent.rpc.apply_ask_search_configuration",
             new=AsyncMock(side_effect=apply_config),
         ):
-            request = await agent.prepare_ask_request(
+            preserved = await agent.prepare_ask_request(
                 mock_nucliadb_driver,
                 "runtime question",
-                public_request.model_dump_json(exclude_unset=True),
+                null_model_request.model_dump_json(exclude_unset=True),
+                [],
+            )
+            overridden = await agent.prepare_ask_request(
+                mock_nucliadb_driver,
+                "runtime question",
+                override_model_request.model_dump_json(exclude_unset=True),
                 [],
             )
 
-        assert request.query == "runtime question"
-        assert request.top_k == 7
-        assert request.generative_model is None
+        assert preserved.query == "runtime question"
+        assert preserved.top_k == 7
+        assert preserved.generative_model == "config-model"
+        assert overridden.generative_model == "public-model"
 
     async def test_uses_model_reasoning_as_fallback(self, mock_nucliadb_driver):
         agent = NucliaDBAgent(
@@ -800,32 +700,6 @@ class TestInnerRag:
         internal_request = mock_ask.call_args.kwargs["ask_request"]
         assert internal_request.top_k == 3
         assert internal_request.filter_expression == source_filter
-        assert internal_request.generative_model is None
-        assert mock_ask.call_args.kwargs["kbid"] == "test-kbid"
-        mock_manager.require_kb_model_scope.assert_called_once_with("test-kbid")
-
-    async def test_unscoped_backend_fails_before_ask(
-        self, mock_memory, mock_manager, mock_source
-    ):
-        agent = NucliaDBAgent(
-            config=NucliaDBAgentConfig(sources=["kb-source-1"]), agent_id="rag-agent"
-        )
-        mock_manager.require_kb_model_scope.side_effect = ValueError(
-            "Inheriting a KB model requires a KB-scoped prediction backend"
-        )
-        with (
-            patch(
-                "hyperforge_nucliadb_agentic.agent.ask", new_callable=AsyncMock
-            ) as mock_ask,
-            pytest.raises(ValueError, match="KB-scoped prediction backend"),
-        ):
-            await agent.inner_rag(
-                source_obj=mock_source,
-                manager=mock_manager,
-                memory=mock_memory,
-                question="question",
-            )
-        mock_ask.assert_not_awaited()
 
     async def test_uses_endpoint_ask_request_with_smart_agent_query(
         self, nucliadb_agent, mock_memory, mock_manager, mock_source
@@ -877,49 +751,6 @@ class TestInnerRag:
 # ---------------------------------------------------------------------------
 # all_images_by_title
 # ---------------------------------------------------------------------------
-
-
-class TestHelperModels:
-    @pytest.mark.parametrize(
-        "method", ["inner_facets_search", "inner_facets", "inner_catalog_search"]
-    )
-    @pytest.mark.parametrize("model", [None, "custom:kb-model"])
-    async def test_helper_calls_use_source_model_and_kb(
-        self,
-        method,
-        model,
-        mock_memory,
-        mock_manager,
-        mock_source,
-        mock_nucliadb_driver,
-    ):
-        agent = NucliaDBAgent(
-            config=NucliaDBAgentConfig(sources=["kb-source-1"], generative_model=model),
-            agent_id="source-agent",
-        )
-        mock_nucliadb_driver.labels.return_value = {"topic": ["legal"]}
-        mock_nucliadb_driver.field_labels.return_value = ({"legal": 1}, 1)
-        mock_nucliadb_driver.catalog_search_raw.return_value = MagicMock(
-            resources={}, fulltext=MagicMock(facets={"topic": {"legal": 1}}, total=0)
-        )
-        mock_manager.execute_json.return_value = (
-            {"label_sets": ["topic"], "labels": ["topic/legal"], "filters": "[]"},
-            10,
-            5,
-        )
-
-        await getattr(agent, method)(
-            mock_memory, mock_manager, "Which documents?", mock_source, 0
-        )
-
-        mock_manager.execute_json.assert_awaited_once()
-        mock_manager.execute.assert_awaited_once()
-        for call in [
-            mock_manager.execute_json.await_args,
-            mock_manager.execute.await_args,
-        ]:
-            assert call.kwargs["model"] == agent.config.generative_model
-            assert call.kwargs["kbid"] == "test-kbid"
 
 
 class TestAllImagesByTitle:

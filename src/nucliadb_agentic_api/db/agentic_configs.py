@@ -9,6 +9,7 @@ from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
 from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
+from nucliadb_sdk import NucliaDBAsync
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -295,19 +296,36 @@ class AgenticConfigs:
         agentic_config = await self.get_agentic_config(account, kbid, workflow_id)
 
         source_manager = Sources(self.database, self.settings)
-        retrieval_config, drivers, global_drivers = await transform_agentic_config(
-            agentic_config,
-            source_manager,
-            account,
-            internal_nucliadb=internal_nucliadb,
-            internal_nucliadb_url=internal_nucliadb_url,
-            external_nucliadb_url=external_nucliadb_url,
-            external_nucliadb_key=external_nucliadb_key,
-            # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
-            # Keep this dormant config path visible until its intended use is known.
-            # ask_request=ask_request,
-            kbid=kbid,
-        )
+        reader_sdk: NucliaDBAsync | None = None
+        if agentic_config.smart_agent and agentic_config.smart_agent.sources:
+            if internal_nucliadb and internal_nucliadb_url:
+                reader_sdk = NucliaDBAsync(
+                    url=internal_nucliadb_url.format(component="reader"),
+                    headers={"X-NUCLIADB-ROLES": "READER"},
+                )
+            elif external_nucliadb_url:
+                reader_sdk = NucliaDBAsync(
+                    url=external_nucliadb_url,
+                    api_key=external_nucliadb_key,
+                )
+        try:
+            retrieval_config, drivers, global_drivers = await transform_agentic_config(
+                agentic_config,
+                source_manager,
+                account,
+                internal_nucliadb=internal_nucliadb,
+                internal_nucliadb_url=internal_nucliadb_url,
+                external_nucliadb_url=external_nucliadb_url,
+                external_nucliadb_key=external_nucliadb_key,
+                # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
+                # Keep this dormant config path visible until its intended use is known.
+                # ask_request=ask_request,
+                kbid=kbid,
+                reader_sdk=reader_sdk,
+            )
+        finally:
+            if reader_sdk is not None:
+                await reader_sdk.session.aclose()
 
         for driver_config in drivers.values():
             retrieval_config.drivers.append(driver_config)

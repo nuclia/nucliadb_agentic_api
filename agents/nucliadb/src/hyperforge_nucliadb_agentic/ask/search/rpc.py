@@ -41,6 +41,22 @@ async def get_resource_uuid_from_slug(
         return resource.id
 
 
+async def get_kb_generative_model(reader_sdk: NucliaDBAsync, kbid: str) -> str | None:
+    resp = await reader_sdk.session.get(f"/v1/kb/{kbid}/configuration")
+
+    if resp.status_code == 404:
+        raise KnowledgeBoxNotFound()
+
+    if resp.status_code != 200:
+        raise Exception(
+            f"/configuration call failed: {resp.status_code} {resp.content.decode()}"
+        )
+
+    data = resp.json()
+    model = data.get("generative_model") if isinstance(data, dict) else None
+    return model if isinstance(model, str) and model.strip() else None
+
+
 async def get_search_configuration(
     reader_sdk: NucliaDBAsync, kbid: str, name: str
 ) -> SearchConfiguration | None:

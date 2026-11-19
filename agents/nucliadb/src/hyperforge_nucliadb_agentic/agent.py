@@ -9,7 +9,6 @@ from hyperforge.agent import Agent
 from hyperforge.configure import agent
 from hyperforge.context.agent import ContextAgent
 from hyperforge.definition import FunctionDefinition
-from hyperforge.llm_config import LLMConfig
 from hyperforge.manager import Manager, build_reasoning
 from hyperforge.memory import Chunk, Context, QuestionMemory, Source
 from hyperforge.models import JSONObject
@@ -68,20 +67,9 @@ async def choose_sources(
     question: str,
     ident: str,
     step_title: str,
-    model: LLMConfig | None = None,
 ) -> list[Source]:
     if len(sources) == 1:
         return [Source.model_construct(id=sources[0])]
-    kbid = None
-    if model is None and sources:
-        kbids = {get_ndb_driver(manager, source).config.kbid for source in sources}
-        if len(kbids) != 1:
-            raise ValueError(
-                "An explicit routing model is required for sources from different KBs"
-            )
-        kbid = kbids.pop()
-        if not kbid or not kbid.strip():
-            raise ValueError("A KB ID is required to inherit its generative model")
     return await choose_source(
         memory,
         manager,
@@ -89,8 +77,6 @@ async def choose_sources(
         question,
         ident=ident,
         step_title=step_title,
-        choose_source_model=model,
-        kbid=kbid,
     )
 
 
@@ -789,7 +775,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             question,
             ident=self.agent_id,
             step_title=self.step_title("Choose sources"),
-            model=self.config.generative_model,
         )
 
         contexts: list[Context] = await asyncio.gather(
@@ -827,7 +812,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             question,
             ident=self.agent_id,
             step_title=self.step_title("Choose sources"),
-            model=self.config.generative_model,
         )
 
         missing: list[tuple[str, str] | None] = await asyncio.gather(
@@ -995,8 +979,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         rag_strategies: list[RagStrategies],
     ) -> AskRequest:
         """Apply agent defaults, search config, public ASK overrides, and runtime query."""
-        if not nucliadb_driver.config.kbid or not nucliadb_driver.config.kbid.strip():
-            raise ValueError("A KB ID is required for KB source generation")
         # Load explicit options from the public ASK request.
         ask_request: AskRequest | None = None
         if ask_request_json:
@@ -1011,7 +993,13 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         if ask_request is None:
             ask_request = AskRequest(query=question)
         else:
+            has_null_model = (
+                "generative_model" in ask_request.model_fields_set
+                and ask_request.generative_model is None
+            )
             ask_request = ask_request.model_copy(update={"query": question})
+            if has_null_model:
+                ask_request.model_fields_set.discard("generative_model")
 
         # Search config fills fields not explicitly set by the public ASK.
         if self.config.search_config is not None:
@@ -1023,17 +1011,21 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 nucliadb_driver.config.kbid,
                 ask_request,
             )
+            if (
+                "generative_model" in ask_request.model_fields_set
+                and ask_request.generative_model is None
+            ):
+                ask_request.model_fields_set.discard("generative_model")
 
         # Agent defaults fill any remaining fields.
-        fallback_values: dict[str, object] = {
+        fallback_values = {
             "show": [ResourceProperties.BASIC, ResourceProperties.ORIGIN],
             "citations": CitationsType.LLM_FOOTNOTES,
+            "generative_model": self.config.generative_model.model_id,
             "rag_strategies": rag_strategies,
             "generate_answer": self.config.generate_inner_answer,
+            "reasoning": build_reasoning(self.config.generative_model),
         }
-        if self.config.generative_model is not None:
-            fallback_values["generative_model"] = self.config.generative_model.model_id
-            fallback_values["reasoning"] = build_reasoning(self.config.generative_model)
         return ask_request.model_copy(
             update={
                 field: value
@@ -1091,8 +1083,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             memory.arguments.get("ask_request"),
             rag_strategies,
         )
-        if ask_request.generative_model is None:
-            manager.require_kb_model_scope(nucliadb_driver.config.kbid)
 
         filter_expression = await self.build_filter_expression(
             nucliadb_driver,
@@ -1254,7 +1244,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             question,
             ident=self.agent_id,
             step_title=self.step_title("Choose sources"),
-            model=self.config.generative_model,
         )
         contexts: list[Context] = await asyncio.gather(
             *[
@@ -1309,7 +1298,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 "additionalProperties": False,
             },
             model=self.config.generative_model,
-            kbid=ndb.config.kbid,
             tracking=memory.get_tracking_info(),
         )
         labelsets_selected = selected_labels.get("label_sets", [])
@@ -1364,7 +1352,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 prompt,
                 user_id="rao-facets-answer-generation",
                 model=self.config.generative_model,
-                kbid=ndb.config.kbid,
                 tracking=memory.get_tracking_info(),
             )
             # TODO: Error if code is not success
@@ -1416,7 +1403,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             question,
             ident=self.agent_id,
             step_title=self.step_title("Choose sources"),
-            model=self.config.generative_model,
         )
         contexts: list[Context] = await asyncio.gather(
             *[
@@ -1466,7 +1452,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 "additionalProperties": False,
             },
             model=self.config.generative_model,
-            kbid=ndb.config.kbid,
             tracking=memory.get_tracking_info(),
         )
         labels_selected = selected_labels.get("label_sets", [])
@@ -1488,7 +1473,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 prompt,
                 user_id="rao-facets-answer-generation",
                 model=self.config.generative_model,
-                kbid=ndb.config.kbid,
                 tracking=memory.get_tracking_info(),
             )
             # TODO: Error if code is not success
@@ -1539,7 +1523,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             question,
             ident=self.agent_id,
             step_title=self.step_title("Choose sources"),
-            model=self.config.generative_model,
         )
         contexts: list[Context] = await asyncio.gather(
             *[
@@ -1585,7 +1568,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 "required": ["filters"],
             },
             model=self.config.generative_model,
-            kbid=ndb.config.kbid,
             tracking=memory.get_tracking_info(),
         )
         filters = self.parse_selected_filters(question, source, selected_filters)
@@ -1616,7 +1598,6 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
             prompt,
             user_id="rao-catalog-search-answer",
             model=self.config.generative_model,
-            kbid=ndb.config.kbid,
             tracking=memory.get_tracking_info(),
         )
         # TODO: Error if code is not success

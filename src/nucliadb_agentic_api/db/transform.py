@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 from uuid import uuid4
 
 from hyperforge.agent import AgentConfig
@@ -17,6 +17,7 @@ from hyperforge_nucliadb.driver_config import (
     NucliaDBConfig,
     NucliaDBConnection,
 )
+from hyperforge_nucliadb_agentic.ask.search import rpc
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
 from hyperforge_nucliadb_agentic.internal_driver import (
     InternalNucliaDBConfig,
@@ -26,12 +27,33 @@ from hyperforge_perplexity.config import PerplexityAgentConfig
 from hyperforge_rephrase.config import RephraseAgentConfig
 from hyperforge_smart.config import SmartAgentConfig
 from hyperforge_summarize.config import SummarizeAgentConfig
+from nucliadb_models.configuration import AskConfig
+from nucliadb_sdk import NucliaDBAsync
 
 from nucliadb_agentic_api.db.sources import Sources
 from nucliadb_agentic_api.models import AgenticConfigSchema
 
 # Kept for the dormant AskRequest configuration path below.
 # from hyperforge_nucliadb_agentic.ask.model import AskRequest
+
+
+async def _resolve_nucliadb_source_model(
+    reader_sdk: NucliaDBAsync | None,
+    kbid: str,
+    search_config_name: str | None,
+    kb_generative_model: str | None,
+) -> str | None:
+    if reader_sdk is not None and kbid and search_config_name is not None:
+        search_cfg = await rpc.get_search_configuration(
+            reader_sdk, kbid, name=search_config_name
+        )
+        if (
+            search_cfg is not None
+            and isinstance(search_cfg.config, AskConfig)
+            and search_cfg.config.generative_model
+        ):
+            return search_cfg.config.generative_model
+    return kb_generative_model
 
 
 async def transform_agentic_config(
@@ -46,6 +68,8 @@ async def transform_agentic_config(
     # Keep this dormant configuration parameter visible until its intended use is known.
     # ask_request: AskRequest | None = None,
     kbid: str = "",
+    reader_sdk: NucliaDBAsync | None = None,
+    kb_generative_model: str | None = None,
 ) -> Tuple[RetrievalAgentConfig, Dict[str, DriverConfig], list[str]]:
     drivers: Dict[str, DriverConfig] = {}
     global_driver = []
@@ -70,6 +94,8 @@ async def transform_agentic_config(
     if agentic_config.smart_agent:
         smart_agent = agentic_config.smart_agent
         registered_agents: list[ContextAgentConfig] = []
+        kb_model_loaded = kb_generative_model is not None
+        resolved_kb_model = kb_generative_model
         for source in smart_agent.sources:
             source_obj = await source_manager.get_source(account, kbid, source)
             source_title = (
@@ -118,15 +144,27 @@ async def transform_agentic_config(
                     raise ValueError(
                         "No NucliaDB URL configured for internal or external access"
                     )
-                drivers[uid] = ndb_driver_config
-                registered_agents.append(
-                    NucliaDBAgentConfig(
-                        id=f"nucliadb-agent-{source}",
-                        title=source_title,
-                        sources=[uid],
-                        search_config=source_obj.search_config,
+                if not kb_model_loaded and reader_sdk is not None and kbid:
+                    resolved_kb_model = await rpc.get_kb_generative_model(
+                        reader_sdk, kbid
                     )
+                    kb_model_loaded = True
+                source_model = await _resolve_nucliadb_source_model(
+                    reader_sdk=reader_sdk,
+                    kbid=kbid,
+                    search_config_name=source_obj.search_config,
+                    kb_generative_model=resolved_kb_model,
                 )
+                drivers[uid] = ndb_driver_config
+                ndb_agent_kwargs: dict[str, Any] = {
+                    "id": f"nucliadb-agent-{source}",
+                    "title": source_title,
+                    "sources": [uid],
+                    "search_config": source_obj.search_config,
+                }
+                if source_model is not None:
+                    ndb_agent_kwargs["generative_model"] = source_model
+                registered_agents.append(NucliaDBAgentConfig(**ndb_agent_kwargs))
             elif source_obj.type == "mcp":
                 uid = uuid4().hex
                 mcp_driver_config = MCPHTTPDriverConfig(
