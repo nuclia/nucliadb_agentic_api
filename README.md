@@ -164,6 +164,10 @@ Out of scope
 }
 ```
 
+NucliaDB source tools use the Knowledge Box's configured generative model unless
+a linked ASK search configuration (or explicit ASK request override) selects
+another model.
+
 And sources can be:
 
 ```json
