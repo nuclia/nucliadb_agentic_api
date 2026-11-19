@@ -562,7 +562,7 @@ class TestPrepareAskRequest:
         assert request.rag_strategies == []
         assert request.generate_answer is nucliadb_agent.config.generate_inner_answer
 
-    async def test_public_ask_overrides_search_config_and_runtime_query_wins(
+    async def test_null_public_ask_model_preserves_search_config_while_non_null_overrides(
         self, mock_nucliadb_driver
     ):
         agent = NucliaDBAgent(
@@ -573,10 +573,15 @@ class TestPrepareAskRequest:
             ),
             agent_id="rag-agent",
         )
-        public_request = AskRequest(
+        null_model_request = AskRequest(
             query="public question",
             top_k=7,
             generative_model=None,
+        )
+        override_model_request = AskRequest(
+            query="public question",
+            top_k=7,
+            generative_model="public-model",
         )
 
         async def apply_config(reader_sdk, kbid, request):
@@ -590,16 +595,23 @@ class TestPrepareAskRequest:
             "hyperforge_nucliadb_agentic.agent.rpc.apply_ask_search_configuration",
             new=AsyncMock(side_effect=apply_config),
         ):
-            request = await agent.prepare_ask_request(
+            preserved = await agent.prepare_ask_request(
                 mock_nucliadb_driver,
                 "runtime question",
-                public_request.model_dump_json(exclude_unset=True),
+                null_model_request.model_dump_json(exclude_unset=True),
+                [],
+            )
+            overridden = await agent.prepare_ask_request(
+                mock_nucliadb_driver,
+                "runtime question",
+                override_model_request.model_dump_json(exclude_unset=True),
                 [],
             )
 
-        assert request.query == "runtime question"
-        assert request.top_k == 7
-        assert request.generative_model is None
+        assert preserved.query == "runtime question"
+        assert preserved.top_k == 7
+        assert preserved.generative_model == "config-model"
+        assert overridden.generative_model == "public-model"
 
     async def test_uses_model_reasoning_as_fallback(self, mock_nucliadb_driver):
         agent = NucliaDBAgent(

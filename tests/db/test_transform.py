@@ -550,3 +550,76 @@ def test_history_can_be_disabled_or_unsupported():
         unsupported.smart_agent is not None and unsupported.smart_agent.history is None
     )
     assert unsupported.summarize is not None and unsupported.summarize.history is None
+
+
+async def test_transform_resolves_nucliadb_source_model_from_kb_and_search_config(
+    load_agents_nucliadb_agentic,
+):
+    import httpx
+    from nucliadb_sdk import NucliaDBAsync
+
+    config = AgenticConfigSchema(
+        smart_agent=AgenticSmartAgentConfiguration(
+            sources=["kb-default", "kb-with-model-sc", "kb-with-filter-only-sc"]
+        )
+    )
+    source_manager = AsyncMock()
+    source_manager.get_source.side_effect = [
+        NucliaDBSourceSchema(),
+        NucliaDBSourceSchema(search_config="sc-with-model"),
+        NucliaDBSourceSchema(search_config="sc-without-model"),
+    ]
+
+    calls: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request.url.path)
+        if request.url.path == "/v1/kb/kbid/configuration":
+            return httpx.Response(
+                200, json={"generative_model": "custom:kb-default-llm"}
+            )
+        if request.url.path == "/v1/kb/kbid/search_configurations/sc-with-model":
+            return httpx.Response(
+                200,
+                json={
+                    "kind": "ask",
+                    "config": {"generative_model": "custom:search-config-llm"},
+                },
+            )
+        if request.url.path == "/v1/kb/kbid/search_configurations/sc-without-model":
+            return httpx.Response(
+                200,
+                json={
+                    "kind": "ask",
+                    "config": {"top_k": 5},
+                },
+            )
+        return httpx.Response(404)
+
+    reader_sdk = NucliaDBAsync(
+        url="http://reader.internal",
+        _httpx_transport=httpx.MockTransport(handler),
+    )
+    try:
+        retrieval_config, _, _ = await transform_agentic_config(
+            config,
+            source_manager,
+            account="account",
+            kbid="kbid",
+            internal_nucliadb_url="http://{component}.internal",
+            reader_sdk=reader_sdk,
+        )
+    finally:
+        await reader_sdk.session.aclose()
+
+    smart = retrieval_config.context[0]
+    assert isinstance(smart, SmartAgentConfig)
+    default_agent, sc_model_agent, sc_filter_agent = smart.registered_agents
+    assert isinstance(default_agent, NucliaDBAgentConfig)
+    assert isinstance(sc_model_agent, NucliaDBAgentConfig)
+    assert isinstance(sc_filter_agent, NucliaDBAgentConfig)
+    assert default_agent.generative_model.model_id == "custom:kb-default-llm"
+    assert sc_model_agent.generative_model.model_id == "custom:search-config-llm"
+    assert sc_filter_agent.generative_model.model_id == "custom:kb-default-llm"
+    # KB learning configuration is fetched only once across all KB sources.
+    assert calls.count("/v1/kb/kbid/configuration") == 1

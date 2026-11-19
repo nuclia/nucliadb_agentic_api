@@ -9,6 +9,7 @@ from hyperforge.retrieval.config import RetrievalAgentConfig
 from hyperforge_google.config import GoogleDriverConfig, GoogleInnerConfig
 from hyperforge_perplexity.config import PerplexityDriverConfig, PerplexityInnerConfig
 from lru import LRU
+from nucliadb_sdk import NucliaDBAsync
 from nucliadb_telemetry.utils import get_telemetry, init_telemetry
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -285,6 +286,7 @@ class AgenticConfigs:
         external_nucliadb_url: str | None = None,
         default_memory: bool = False,
         workflow_id: str = "default",
+        reader_sdk: NucliaDBAsync | None = None,
         # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
         # Keep this dormant configuration parameter visible until its intended use is known.
         # ask_request: AskRequest | None = None,
@@ -307,6 +309,7 @@ class AgenticConfigs:
             # Keep this dormant config path visible until its intended use is known.
             # ask_request=ask_request,
             kbid=kbid,
+            reader_sdk=reader_sdk,
         )
 
         for driver_config in drivers.values():

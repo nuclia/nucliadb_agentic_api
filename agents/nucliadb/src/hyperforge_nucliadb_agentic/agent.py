@@ -993,7 +993,13 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
         if ask_request is None:
             ask_request = AskRequest(query=question)
         else:
+            has_null_model = (
+                "generative_model" in ask_request.model_fields_set
+                and ask_request.generative_model is None
+            )
             ask_request = ask_request.model_copy(update={"query": question})
+            if has_null_model:
+                ask_request.model_fields_set.discard("generative_model")
 
         # Search config fills fields not explicitly set by the public ASK.
         if self.config.search_config is not None:
@@ -1020,6 +1026,9 @@ class NucliaDBAgent(ContextAgent, Agent[NucliaDBAgentConfig]):
                 field: value
                 for field, value in fallback_values.items()
                 if field not in ask_request.model_fields_set
+                or (
+                    field == "generative_model" and ask_request.generative_model is None
+                )
             }
         )
 
