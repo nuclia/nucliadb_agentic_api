@@ -84,7 +84,6 @@ class AgenticConfigs:
     ):
         self.database = database
         self.settings = settings
-        self._reader_sdks: dict[tuple[str, str | None, bool], NucliaDBAsync] = {}
 
     @classmethod
     async def from_settings(
@@ -103,37 +102,7 @@ class AgenticConfigs:
         await self.database.connect()
 
     async def finalize(self):
-        for sdk in self._reader_sdks.values():
-            await sdk.session.aclose()
-        self._reader_sdks.clear()
         await self.database.disconnect()
-
-    def _get_reader_sdk(
-        self,
-        internal_nucliadb: bool,
-        internal_nucliadb_url: str | None,
-        external_nucliadb_url: str | None,
-        external_nucliadb_key: str | None,
-    ) -> NucliaDBAsync | None:
-        key: tuple[str, str | None, bool]
-        if internal_nucliadb and internal_nucliadb_url:
-            url = internal_nucliadb_url.format(component="reader")
-            key = (url, None, True)
-            if key not in self._reader_sdks:
-                self._reader_sdks[key] = NucliaDBAsync(
-                    url=url,
-                    headers={"X-NUCLIADB-ROLES": "READER"},
-                )
-            return self._reader_sdks[key]
-        if external_nucliadb_url:
-            key = (external_nucliadb_url, external_nucliadb_key, False)
-            if key not in self._reader_sdks:
-                self._reader_sdks[key] = NucliaDBAsync(
-                    url=external_nucliadb_url,
-                    api_key=external_nucliadb_key,
-                )
-            return self._reader_sdks[key]
-        return None
 
     async def patch_agentic_config(
         self, account: str, kbid: str, agentic_id: str, config: AgenticConfigSchema
@@ -317,6 +286,7 @@ class AgenticConfigs:
         external_nucliadb_url: str | None = None,
         default_memory: bool = False,
         workflow_id: str = "default",
+        reader_sdk: NucliaDBAsync | None = None,
         # The runtime AskRequest is consumed from QuestionMemory by NucliaDBAgent.
         # Keep this dormant configuration parameter visible until its intended use is known.
         # ask_request: AskRequest | None = None,
@@ -327,16 +297,6 @@ class AgenticConfigs:
         agentic_config = await self.get_agentic_config(account, kbid, workflow_id)
 
         source_manager = Sources(self.database, self.settings)
-        reader_sdk = (
-            self._get_reader_sdk(
-                internal_nucliadb=internal_nucliadb,
-                internal_nucliadb_url=internal_nucliadb_url,
-                external_nucliadb_url=external_nucliadb_url,
-                external_nucliadb_key=external_nucliadb_key,
-            )
-            if agentic_config.smart_agent and agentic_config.smart_agent.sources
-            else None
-        )
         retrieval_config, drivers, global_drivers = await transform_agentic_config(
             agentic_config,
             source_manager,

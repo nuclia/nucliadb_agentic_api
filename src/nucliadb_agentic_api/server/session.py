@@ -22,6 +22,7 @@ from hyperforge_nucliadb_agentic.ask.audit import (
 )
 from hyperforge_nucliadb_agentic.ask.model import AskRequest
 from lru import LRU
+from nucliadb_sdk import NucliaDBAsync
 from nucliadb_telemetry import errors
 from nucliadb_telemetry.utils import get_telemetry
 from nucliadb_utils.settings import AuditSettings
@@ -55,6 +56,7 @@ def tracer():
 
 class NucliaDBAgenticSessionManager(SessionManager):
     agent_manager: AgenticConfigs  # type: ignore[assignment]
+    reader_sdk: NucliaDBAsync | None = None
 
     def __init__(
         self,
@@ -72,9 +74,21 @@ class NucliaDBAgenticSessionManager(SessionManager):
         self.activation_task: Task | None = None
         self.tasks = []
         self.cache = cache
+        self.reader_sdk = None
 
     async def initialize(self, health_check: bool = True):
         await super().initialize(health_check)
+
+        if self.settings.internal_nucliadb and self.settings.internal_nucliadb_url:
+            self.reader_sdk = NucliaDBAsync(
+                url=self.settings.internal_nucliadb_url.format(component="reader"),
+                headers={"X-NUCLIADB-ROLES": "READER"},
+            )
+        elif self.settings.external_nucliadb_url:
+            self.reader_sdk = NucliaDBAsync(
+                url=self.settings.external_nucliadb_url,
+                api_key=self.settings.external_nucliadb_key,
+            )
 
         await start_audit_utility(SERVICE_NAME, self.audit_settings)
 
@@ -86,6 +100,9 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 logger.error(f"Module {load_module} could not be loaded")
 
     async def finalize(self):
+        if self.reader_sdk is not None:
+            await self.reader_sdk.session.aclose()
+            self.reader_sdk = None
         await super().finalize()
         await stop_audit_utility()
         GLOBAL_REGISTRY.clear()
@@ -140,6 +157,7 @@ class NucliaDBAgenticSessionManager(SessionManager):
                 external_nucliadb_url=self.settings.external_nucliadb_url,
                 external_nucliadb_key=self.settings.external_nucliadb_key,
                 workflow_id=message.workflow_id,
+                reader_sdk=self.reader_sdk,
                 # The AskRequest is consumed from QuestionMemory by NucliaDBAgent.
                 # Keep this dormant config path visible until its intended use is known.
                 # ask_request=ask_request,
