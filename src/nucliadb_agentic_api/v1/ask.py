@@ -3,6 +3,7 @@ from uuid import UUID
 
 from fastapi import Header, Request, Response
 from hyperforge.manager import Manager
+from hyperforge_nucliadb_agentic.ask.account import get_account_id
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     AnswerJsonSchemaTooLong,
 )
@@ -88,7 +89,7 @@ async def ask_knowledgebox_endpoint(
             kbid=kbid,
             ask_request=item,
             user_id=x_nucliadb_user,
-            account=x_nucliadb_account,
+            account=get_account_id() or x_nucliadb_account,
             client_type=x_ndb_client,
             origin=x_forwarded_for,
             x_synchronous=x_synchronous,
@@ -148,7 +149,7 @@ async def resource_ask_endpoint_by_uuid(
             app=request.app,
             agentic_config_id=item.agentic_config_id,
             kbid=kbid,
-            account=x_nucliadb_account,
+            account=get_account_id() or x_nucliadb_account,
             ask_request=item,
             user_id=x_nucliadb_user,
             client_type=x_ndb_client,
@@ -217,7 +218,7 @@ async def resource_ask_endpoint_by_slug(
             app=request.app,
             agentic_config_id=item.agentic_config_id,
             kbid=kbid,
-            account=x_nucliadb_account,
+            account=get_account_id() or x_nucliadb_account,
             ask_request=item,
             user_id=x_nucliadb_user,
             client_type=x_ndb_client,

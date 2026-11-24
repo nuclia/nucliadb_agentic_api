@@ -17,10 +17,12 @@ from nucliadb_models.search import (
 )
 from nucliadb_sdk import NucliaDBAsync
 from nucliadb_sdk.v2.exceptions import NotFoundError, UnknownError
+from nucliadb_utils.settings import nuclia_settings
 from pydantic import TypeAdapter
 from typing_extensions import assert_never
 
 from hyperforge_nucliadb_agentic.ask import logger
+from hyperforge_nucliadb_agentic.ask.account import add_nucliadb_account_header
 from hyperforge_nucliadb_agentic.ask.exceptions import (
     KnowledgeBoxNotFound,
     NucliaDBError,
@@ -218,5 +220,7 @@ def get_sdk(service: Literal["reader"] | Literal["search"]) -> NucliaDBAsync:
         url=service_address,
         headers={"x-nucliadb-roles": "READER"},
     )
+    if not nuclia_settings.onprem:
+        sdk.session.event_hooks["request"].append(add_nucliadb_account_header)
     __SDK[service] = sdk
     return sdk
