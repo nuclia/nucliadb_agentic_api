@@ -21,6 +21,7 @@ from hyperforge_nucliadb_agentic.ask.model import (
     SyncAskResponse,
 )
 from hyperforge_nucliadb_agentic.ask.predict import AnswerStatusCode
+from nuclia.exceptions import PredictAPIException
 from nuclia_models.predict.generative_responses import (
     CitationsGenerativeResponse,
     FootnoteCitationsGenerativeResponse,
@@ -108,6 +109,40 @@ async def test_ask_handles_predict_errors_while_parsing(
         assert resp.json() == {
             "detail": "Temporary error on information retrieval. Please try again."
         }
+
+
+async def test_ask_preserves_predict_model_rejection_in_prequery(
+    nucliadb_agentic_ask_api: AsyncClient, knowledgebox: str
+):
+    model = "gemini-2.0-flash"
+    detail = f"Model {model} not allowed"
+    with patch.object(
+        get_predict(), "query_predict", side_effect=PredictAPIException(403, detail)
+    ) as query_predict:
+        resp = await nucliadb_agentic_ask_api.post(
+            f"/kb/{knowledgebox}/ask",
+            json={
+                "query": "main query",
+                "rag_strategies": [
+                    {
+                        "name": "prequeries",
+                        "queries": [
+                            {
+                                "request": {
+                                    "query": "prequery",
+                                    "features": ["semantic"],
+                                    "generative_model": model,
+                                }
+                            }
+                        ],
+                    }
+                ],
+            },
+        )
+
+    assert resp.status_code == 403, resp.text
+    assert resp.json() == {"detail": detail}
+    assert query_predict.await_args.args[0].generative_model == model
 
 
 async def test_ask_synchronous(
