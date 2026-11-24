@@ -115,6 +115,7 @@ async def transform_agentic_config(
                         name="NucliaDB",
                         provider="nucliadb_internal",
                         config=InternalNucliaDBConnection(
+                            account=account,
                             url=internal_nucliadb_url,
                             key=None,
                             manager="",

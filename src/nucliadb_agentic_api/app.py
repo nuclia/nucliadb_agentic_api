@@ -9,6 +9,11 @@ from hyperforge.broker import Broker
 from hyperforge.broker.redis import RedisBroker
 from hyperforge.driver import Driver
 from hyperforge.manager import Manager
+from hyperforge_nucliadb_agentic.ask.account import (
+    AccountContextMiddleware,
+    add_nucliadb_account_header,
+    add_predict_account_header,
+)
 from hyperforge_nucliadb_agentic.ask.audit import (
     AuditMiddleware,
     start_audit_utility,
@@ -99,6 +104,7 @@ class HTTPApplication(FastAPI):
             allow_methods=["*"],
             allow_headers=["*"],
         )
+        self.add_middleware(AccountContextMiddleware)
         self.add_middleware(AuditMiddleware)
 
     async def startup(self) -> None:
@@ -116,6 +122,8 @@ class HTTPApplication(FastAPI):
             )
         else:
             nua = AsyncNuaClient.internal(nuclia_settings.nuclia_inner_predict_url)
+            nua.client.event_hooks["request"].append(add_predict_account_header)
+            nua.stream_client.event_hooks["request"].append(add_predict_account_header)
         self.predict_manager = await Manager.from_config(
             drivers=[],
             nua=nua,
@@ -158,6 +166,13 @@ class HTTPApplication(FastAPI):
             api_key=api_key,
             headers=headers,
         )
+        if self.settings.internal_nucliadb and not nuclia_settings.onprem:
+            self.arag_reader.session.event_hooks["request"].append(
+                add_nucliadb_account_header
+            )
+            self.arag_search.session.event_hooks["request"].append(
+                add_nucliadb_account_header
+            )
 
         self.sses: LRU[Tuple[str, str], StreamableHTTPServerTransport] = LRU(size=100)
         self.mcp_servers: LRU[str, MCPServer] = LRU(size=100)

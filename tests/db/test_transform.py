@@ -5,7 +5,10 @@ from hyperforge_google.config import GoogleAgentConfig
 from hyperforge_mcp.config import MCPAgentConfig
 from hyperforge_mcp.config_driver import MCPHTTPDriverConfig, MCPHTTPInnerConfig
 from hyperforge_nucliadb_agentic.config import NucliaDBAgentConfig
-from hyperforge_nucliadb_agentic.internal_driver import InternalNucliaDBConfig
+from hyperforge_nucliadb_agentic.internal_driver import (
+    InternalNucliaDBConfig,
+    InternalNucliaDBDriver,
+)
 from hyperforge_perplexity.config import PerplexityAgentConfig
 from hyperforge_rephrase.config import RephraseAgentConfig
 from hyperforge_smart.config import SmartAgentConfig
@@ -623,3 +626,51 @@ async def test_transform_resolves_nucliadb_source_model_from_kb_and_search_confi
     assert sc_filter_agent.generative_model.model_id == "custom:kb-default-llm"
     # KB learning configuration is fetched only once across all KB sources.
     assert calls.count("/v1/kb/kbid/configuration") == 1
+
+
+async def test_internal_driver_sends_transformed_account(monkeypatch):
+    import httpx
+    from nucliadb_models.search import FindRequest, KnowledgeboxFindResults
+    from nucliadb_sdk import NucliaDBAsync
+
+    source_manager = AsyncMock()
+    source_manager.get_source.return_value = NucliaDBSourceSchema()
+    _, drivers, _ = await transform_agentic_config(
+        AgenticConfigSchema(smart_agent=AgenticSmartAgentConfiguration(sources=["kb"])),
+        source_manager,
+        account="owning-account",
+        kbid="kbid",
+        internal_nucliadb_url="http://{component}.internal/api",
+    )
+    config = next(iter(drivers.values()))
+    assert isinstance(config, InternalNucliaDBConfig)
+    recorded = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        recorded.append(request)
+        if request.url.path.endswith("/find"):
+            return httpx.Response(
+                200, json=KnowledgeboxFindResults(resources={}).model_dump()
+            )
+        if request.url.path.endswith("/resource/rid"):
+            return httpx.Response(200, json={"id": "rid"})
+        raise AssertionError(f"Unexpected request: {request.url}")
+
+    def client(**kwargs):
+        return NucliaDBAsync(_httpx_transport=httpx.MockTransport(handler), **kwargs)
+
+    monkeypatch.setenv("INTERNAL_NUCLIADB_URL", "http://{component}.internal/api")
+    monkeypatch.setattr(
+        "hyperforge_nucliadb_agentic.internal_driver.NucliaDBAsync", client
+    )
+    driver = await InternalNucliaDBDriver.init(config)
+    try:
+        await driver.driver.find(kbid="kbid", content=FindRequest(query="question"))
+        await driver.driver.get_resource_by_id(kbid="kbid", rid="rid")
+    finally:
+        await driver.driver._reader.session.aclose()
+        await driver.driver._search.session.aclose()
+    assert len(recorded) == 2
+    for request in recorded:
+        assert request.headers["X-NUCLIADB-ACCOUNT"] == "owning-account"
+        assert request.headers["X-NUCLIADB-ROLES"] == "READER"

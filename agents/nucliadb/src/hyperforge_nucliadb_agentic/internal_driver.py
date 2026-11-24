@@ -47,7 +47,7 @@ class NucliaDBProxy:
 class InternalNucliaDBConnection(NucliaDBConnection):
     """Connection config for internal cluster access. Provider is nucliadb_internal."""
 
-    pass
+    account: str
 
 
 class InternalNucliaDBConfig(DriverConfig[InternalNucliaDBConnection]):
@@ -74,7 +74,10 @@ class InternalNucliaDBDriver(NucliaDBDriver):
             )
         reader_url = base_url.format(component="reader")
         search_url = base_url.format(component="search")
-        headers = {"X-NUCLIADB-ROLES": "READER"}
+        headers = {
+            "X-NUCLIADB-ROLES": "READER",
+            "X-NUCLIADB-ACCOUNT": driver.config.account,
+        }
         reader_ndb = NucliaDBAsync(url=reader_url, headers=headers)
         search_ndb = NucliaDBAsync(url=search_url, headers=headers)
         return cls(

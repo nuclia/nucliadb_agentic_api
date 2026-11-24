@@ -38,6 +38,13 @@ Pydantic settings. Common settings include:
 - `IDP_REGIONAL_GRPC`
 - `LOAD_MODULES`
 
+Hosted requests use the gateway-authenticated `X-NUCLIADB-ACCOUNT` header
+(or `X-STF-ACCOUNT` for Hyperforge endpoints). NAA forwards the account as
+`X-STF-ACCOUNT` to internal Predict and `X-NUCLIADB-ACCOUNT` to internal
+NucliaDB. Accounts are request-scoped, including streaming and MCP calls;
+agentic workers carry the account in their internal driver configuration.
+On-prem Predict and public NucliaDB authentication remain unchanged.
+
 ## MCP sources with OAuth
 
 Create an MCP source using `POST /api/v1/kb/{kbid}/sources/{source_id}`:
