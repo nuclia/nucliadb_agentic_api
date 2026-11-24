@@ -418,6 +418,8 @@ async def find_retrieval(
                 predict_manager=predict_manager,
             )
         except (SendToPredictError, PredictAPIException) as exc:
+            if isinstance(exc, PredictAPIException) and exc.code == 403:
+                raise
             raise IncompleteFindResultsError("Predict API error") from exc
 
         query = find_request.query
